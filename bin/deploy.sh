@@ -45,8 +45,9 @@ echo "ok"
 
 log "Syncing app to ${TARGET}:${DEPLOY_APP_DIR}/"
 "${SSH_CMD[@]}" "$TARGET" "mkdir -p '${DEPLOY_APP_DIR}/var'"
-# --delete only acts inside the listed directories; var/ (server-built cache) is never sent
-# and never deleted.
+# --delete only acts inside the listed directories; var/ (server-built cache, explorer rate-limit
+# counters in var/ratelimit and response cache in var/explore-cache, created 0700 on demand by
+# the app) is never sent and never deleted.
 rsync -rlptz --delete --omit-dir-times \
   -e "${SSH_CMD[*]}" \
   --exclude='.git' --exclude='.github' --exclude='.claude' --exclude='tests' \
@@ -150,6 +151,26 @@ $r "GET /llms.txt" "$status $ctype"
 fetch "/api/v1/no-such-resource-smoke-test"
 if [ "$status" = 404 ] && [[ "$ctype" == application/problem+json* ]]; then r=pass; else r=fail; fi
 $r "GET /api/v1/<bogus> (404 problem+json)" "$status $ctype"
+
+# Explorer proxy: the open-meteo example comes back 200 through it; a foreign host is refused.
+explore() {
+  local out
+  out="$(curl -sS -o "$tmp/body" -w '%{http_code} %{content_type}' --max-time 30 \
+    -X POST -H 'Content-Type: application/json' --data "$1" "${DEPLOY_PUBLIC_URL}/explore" 2>"$tmp/err")" || out="000 -"
+  status="${out%% *}"
+  ctype="${out#* }"
+}
+explore '{"slug":"open-meteo-forecast","method":"GET","url":"https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m"}'
+# shellcheck disable=SC2016 # PHP code, not shell
+upstream="$(php -r '$d = json_decode((string) file_get_contents($argv[1]), true); echo is_array($d) ? (int) ($d["status"] ?? 0) : -1;' "$tmp/body" 2>/dev/null || echo -1)"
+if [ "$status" = 200 ] && [[ "$ctype" == application/json* ]] && [ "$upstream" = 200 ]; then
+  pass "POST /explore (open-meteo example)" "$status, upstream $upstream"
+else
+  fail "POST /explore (open-meteo example)" "$status $ctype, upstream $upstream"
+fi
+explore '{"slug":"open-meteo-forecast","method":"GET","url":"https://example.com/"}'
+if [[ "$status" == 4* ]] && [[ "$ctype" == application/problem+json* ]]; then r=pass; else r=fail; fi
+$r "POST /explore (foreign host refused)" "$status $ctype"
 
 if [ "$failures" -gt 0 ]; then
   echo

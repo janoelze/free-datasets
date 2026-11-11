@@ -9,7 +9,7 @@ plus semantic rules. The app serves a read-only REST API under `/api/v1` and HTM
 public/index.php        front controller (tiny); public/.htaccess rewrites non-files to it
 src/bootstrap.php       PSR-4 autoloader for Datasets\ -> src/, loads src/helpers.php
 src/App.php             routing table, dispatch, common headers (CORS, Cache-Control, ETag/304)
-src/Config.php          paths + env (APP_DATASETS_DIR, APP_CACHE_FILE, APP_BASE_PATH, APP_PUBLIC_URL, APP_TEMPLATES_DIR)
+src/Config.php          paths + env (APP_DATASETS_DIR, APP_CACHE_FILE, APP_BASE_PATH, APP_PUBLIC_URL, APP_TEMPLATES_DIR, APP_VAR_DIR)
 src/Url.php             base-path-aware URL builder (url(), abs_url(), asset() delegate to it)
 src/Catalog.php         loads/queries the catalogue (see below)
 src/ResultPage.php      one page of results
@@ -23,6 +23,8 @@ src/Api/ListParams.php       query-parameter parsing/validation for /datasets an
 src/Api/OpenApi.php          generated OpenAPI 3.1 document
 src/Api/LlmsTxt.php          /llms.txt and /robots.txt
 src/Web/PageController.php   HTML routes -> templates/*.php
+src/Explore/{ExploreController,Policy,Target,Fetcher,RateLimiter,Storage,Refusal}.php   POST /explore proxy
+public/assets/explorer.js    "Try it" explorer (dataset pages only)
 bin/validate.php  bin/build.php  bin/verify.php
 tests/run.php     tests/*Test.php  tests/fixtures/
 ```
@@ -128,6 +130,106 @@ URLs with a trailing slash 308-redirect to the slash-less form.
 The OpenAPI document is generated from `schema/dataset.schema.json` and `schema/categories.json`
 (`components.schemas.Dataset` is the schema verbatim minus `$schema`/`$id`), so it cannot drift.
 
+## Explorer & proxy
+
+Every dataset page has a "Try it" section (`templates/dataset.php`, `public/assets/explorer.js`,
+loaded only there). It edits and sends a request (method, URL, POST body; an endpoint picker fills
+`base_url + path` and sending is blocked while `{placeholders}` remain) and shows status,
+duration, size, transport, a few response headers and the body (pretty-printed JSON; at most
+200 KB rendered). Without JavaScript the section only says so and points at the curl command.
+`Datasets\Explore\Policy` decides, for the page and the server alike:
+
+| Record | Explorer |
+|---|---|
+| `status: deprecated` | off, with a note |
+| `auth.type: none`, or a `demo_key` | proxy allowed; direct too when possible |
+| own key needed (api_key without demo key, oauth2) | never proxied; direct-only if CORS allows, otherwise just a note with the signup link |
+
+*Direct* = the browser calls the API with `fetch` (no credentials): only when `api.cors` is `any`
+or `reflect`, the record has no `required_headers` and the method is GET. When direct is the
+default the user can switch to the proxy; a failed direct call offers "retry via proxy".
+
+### The proxy: `POST {base}/explore`
+
+JSON in `{"slug", "method", "url", "body"?}`; JSON out `{status, status_text, headers, duration_ms,
+size, truncated, body, content_type, final_url, redirects, cached, note?}`, or an RFC 9457 problem
+with a specific `title`. Not under `/api/v1`, not in OpenAPI, never CORS-enabled (`App` routes
+`/explore` before the generic dispatcher, so the global API CORS headers and the permissive
+`OPTIONS` preflight never apply: every method but POST, OPTIONS included, gets 405 `Allow: POST`).
+Every response: `Cache-Control: no-store`, `X-Robots-Tag: noindex`, `nosniff`; robots.txt has
+`Disallow: {base}/explore`.
+
+**Threat model.** The proxy runs on a shared host next to other sites. An attacker controls the
+whole request (and can mint DNS records), so the proxy must not become: an SSRF into the host or
+its network (metadata, localhost services, other tenants); an open relay for arbitrary hosts; a
+way to launder personal API keys or our visitors' cookies; a CSRF/cross-site gadget; a
+bandwidth/CPU amplifier; or a way to make upstream APIs block this server.
+
+Controls, in order (each has a test in `tests/ExploreTest.php`):
+
+1. **Origin.** `Sec-Fetch-Site` present and not `same-origin` → 403; `Origin` present and not this
+   site's origin → 403. Requests with neither (curl) are allowed and left to the rate limit.
+2. **Format.** `Content-Type: application/json` (else 415), body ≤ 8 KB (else 413), a JSON object
+   with string `slug`, `method`, `url` (else 400).
+3. **Rate limit** (`RateLimiter`, before any parsing work): per client 20/minute and 200/day,
+   globally 300/minute; fixed windows in `var/ratelimit/` (one counter file per window, `flock`,
+   stale windows deleted on ~2% of requests); 429 with `Retry-After`. Clients are an HMAC-SHA256
+   of the address with a random per-install salt (`var/ratelimit/.salt`), so no raw IPs are
+   stored; IPv6 clients are keyed by their /64. The client address is `REMOTE_ADDR` only: on the
+   production host (Uberspace: nginx → Apache → PHP-FPM) `REMOTE_ADDR` is already the real client
+   (v4 and v6, checked 2026-11-11), while `X-Forwarded-For` is passed through from the client
+   unmodified and therefore spoofable — it is never read.
+4. **Eligibility.** Unknown slug 404; deprecated or own-key records 403. With a query-string key
+   (`auth.key_in: query`), any value of `key_name` other than the documented demo key is refused
+   (403), so personal keys never pass through; the server never adds credentials.
+5. **Method.** GET always; POST only if the record's example or an endpoint is POST, body ≤ 4000
+   bytes, sent as the example's `Content-Type` or `application/x-www-form-urlencoded`.
+6. **URL** (`Target::parse`). ≤ 2000 chars; printable ASCII only (no whitespace, CR/LF, NUL,
+   non-ASCII — the page percent-encodes spaces and non-ASCII for you), no backslash; scheme `https`;
+   authority must be a plain `host[:port]` (no `user@`, no IP literals/brackets, no `%`, no trailing
+   dot); our own split must agree with `parse_url` on scheme/host/port/path/query; host must equal
+   (case-insensitively) a host of *that record's* `api.base_url`, `example.url` or absolute
+   endpoint paths — no wildcards, no subdomains; port 443 or one the record's URLs name. The URL
+   sent is rebuilt from the validated parts (fragment dropped).
+7. **Address** (`Fetcher::vet`). Resolve A and AAAA; refuse if *any* address is not global unicast:
+   `filter_var(NO_PRIV_RANGE | NO_RES_RANGE)` plus explicit IPv4 blocks (0/8, 10/8, 100.64/10,
+   127/8, 169.254/16, 172.16/12, 192.0.0/24, 192.0.2/24, 192.88.99/24, 192.168/16, 198.18/15,
+   198.51.100/24, 203.0.113/24, 224/4, 240/4 …) and IPv6 allowed only inside 2000::/3 minus
+   2001::/23 (Teredo etc.), 2001:db8::/32, 2002::/16 (6to4), 3fff::/20 — which also refuses ::1,
+   IPv4-mapped/compatible, NAT64, ULA, link-local and multicast. curl is then pinned to exactly the
+   vetted addresses with `CURLOPT_RESOLVE` (no DNS rebinding between check and use; curl still
+   chooses between IPv4 and IPv6 itself, which matters for hosts with a dead IPv4 path).
+8. **Fetch** (`Fetcher`). HTTPS only (`CURLOPT_PROTOCOLS_STR`/`REDIR_PROTOCOLS_STR`), TLS verified,
+   proxies disabled (`CURLOPT_PROXY ''`, `NOPROXY *`), no cookies. curl never follows redirects:
+   up to 3 hops are followed by hand, each re-validated against the same record (steps 6–7, fresh
+   resolve and pin); a redirect elsewhere is returned as the final 3xx with its `location` and a
+   `note`. Connect timeout 5 s, 12 s total across hops. Body capped at 512 KB (decoded; the write
+   callback aborts the transfer, `truncated: true`); response headers capped at 64 KB.
+9. **Sent upstream:** `User-Agent: datasets-library-explorer/1.0 (+https://endtime-instruments.org/datasets/)`,
+   `Accept: application/json, */*;q=0.5` (unless the record sets Accept), the record's own
+   `example.headers` / `required_headers` examples (never User-Agent, Host, Cookie, Authorization,
+   hop-by-hop or forwarding headers; values must be printable), `Content-Type` for POST. Nothing
+   from the visitor's request.
+10. **Returned:** only `content-type`, `content-length` (dropped when the upstream body was
+   compressed), `location`, `retry-after`, `cache-control`, `etag`, `last-modified` and
+   `x-ratelimit*`/`ratelimit*`/`x-rate-limit*`. Binary or non-UTF-8 bodies are not returned, only
+   a note with type and size.
+11. **Cache.** Identical GETs (slug + rebuilt URL) within 30 s are served from
+   `var/explore-cache/` (`"cached": true`); at most 64 files / 16 MB, expired and oldest entries
+   pruned on every write. Upstream errors (problems) are not cached.
+
+`var/ratelimit` and `var/explore-cache` are created on demand with mode 0700 (files 0600) by the
+app (PHP-FPM runs as the site user); `var/` is outside the web root and `bin/deploy.sh` never
+sends or deletes it. `APP_VAR_DIR` relocates it.
+
+**Test mode.** `APP_EXPLORE_TEST_MODE=1` is honoured only when `PHP_SAPI === 'cli-server'` (never
+under Apache/FPM; a unit test asserts it is ignored elsewhere). It accepts `http://` and loopback
+addresses (other private ranges stay blocked), reads fake DNS from
+`APP_EXPLORE_TEST_RESOLVE="up.test=127.0.0.1,private.test=10.0.0.1"` and limits from
+`APP_EXPLORE_TEST_LIMITS="minute,day,global"`. The HTTP tests run a fake upstream
+(`tests/fixtures/explore-upstream.php`) under `php -S`; `Target` and the IP classifier are
+unit-tested directly without relaxation.
+
 ## Deployment
 
 `bin/deploy.sh` is the only deploy path, used by hand and by CI. It runs `php bin/validate.php`
@@ -138,7 +240,8 @@ records the directory it was built from, so it must be built there), creates the
 `/var/www/virtual/janoelze/endtime-instruments.org/datasets -> /var/www/virtual/janoelze/datasets/public`
 if it is missing (only after checking the target exists and Apache can traverse it; it refuses to
 replace anything else at that path), then smoke-tests the public URL and exits non-zero if any
-check fails. Host, user, paths and URL are overridable: `DEPLOY_HOST`, `DEPLOY_USER`,
+check fails (including `POST /explore` with the open-meteo example → 200, and a foreign host →
+4xx problem). Host, user, paths and URL are overridable: `DEPLOY_HOST`, `DEPLOY_USER`,
 `DEPLOY_APP_DIR`, `DEPLOY_DOCROOT`, `DEPLOY_MOUNT`, `DEPLOY_PUBLIC_URL`, `DEPLOY_SSH_OPTS`,
 `DEPLOY_SKIP_SMOKE=1`. The app lives under `/var/www/virtual/janoelze/`, not `~/`, because the
 home directory is `0700` and Apache cannot follow a symlink into it (403, `AH00037`).

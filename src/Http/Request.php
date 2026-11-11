@@ -26,6 +26,8 @@ final class Request
         public readonly string $basePath = '',
         public readonly string $publicUrl = 'http://localhost',
         public readonly string $rawQuery = '',
+        public readonly string $remoteAddr = '',
+        private readonly ?string $rawBody = null,
     ) {
     }
 
@@ -52,6 +54,12 @@ final class Request
                 $headers[strtolower(str_replace('_', '-', substr($key, 5)))] = $value;
             }
         }
+        // CGI puts these two outside HTTP_*.
+        foreach (['CONTENT_TYPE' => 'content-type', 'CONTENT_LENGTH' => 'content-length'] as $key => $name) {
+            if (isset($server[$key]) && is_string($server[$key]) && $server[$key] !== '') {
+                $headers[$name] = $server[$key];
+            }
+        }
 
         $publicUrl = Config::env('APP_PUBLIC_URL');
         if ($publicUrl === null) {
@@ -74,7 +82,22 @@ final class Request
             basePath: $basePath,
             publicUrl: rtrim($publicUrl, '/'),
             rawQuery: $rawQuery,
+            remoteAddr: (string) ($server['REMOTE_ADDR'] ?? ''),
         );
+    }
+
+    /**
+     * Request body, read at most $max bytes (read $max + 1 to detect an oversized body).
+     * Tests pass the body to the constructor; otherwise it comes from php://input.
+     */
+    public function body(int $max): string
+    {
+        if ($this->rawBody !== null) {
+            return substr($this->rawBody, 0, $max);
+        }
+        $body = @file_get_contents('php://input', false, null, 0, $max);
+
+        return is_string($body) ? $body : '';
     }
 
     /**

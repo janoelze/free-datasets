@@ -82,9 +82,10 @@ final class LlmsTxt
         return implode("\n", $out) . "\n";
     }
 
-    public static function robots(): string
+    /** @param string|null $explorePath root-relative path of the explorer proxy, kept out of crawlers */
+    public static function robots(?string $explorePath = null): string
     {
-        return "User-agent: *\nAllow: /\n";
+        return "User-agent: *\nAllow: /\n" . ($explorePath !== null ? "Disallow: $explorePath\n" : '');
     }
 
     private static function md(string $s): string

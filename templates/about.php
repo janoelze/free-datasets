@@ -11,7 +11,7 @@ $title = 'About';
 $description = 'What qualifies for this library of free datasets with open REST APIs, how each record is verified, and how to contribute one.';
 $canonical = abs_url('/about');
 $current = 'about';
-$sections = ['inclusion' => 'What qualifies', 'verification' => 'Verification', 'schema' => 'Schema', 'contributing' => 'Contributing', 'fields' => 'Field reference'];
+$sections = ['inclusion' => 'What qualifies', 'verification' => 'Verification', 'explorer' => 'Live explorer', 'schema' => 'Schema', 'contributing' => 'Contributing', 'fields' => 'Field reference'];
 $rail = static function () use ($sections): void { ?>
     <div class="rail-section">
       <h2 class="micro">On this page</h2>
@@ -42,6 +42,11 @@ include __DIR__ . '/partials/header.php';
         <h2 id="h-verification">How records are verified</h2>
         <p>Each record’s example request is executed by <code>bin/verify.php</code>, sending the record’s own headers and required headers, and has to come back with a 2xx status — or, for a keyed API checked without a key, the 401/403 the record says to expect. Facts that matter for a first call — the auth type, where the key goes, a required <code>User-Agent</code>, the rate limit, CORS — come from the provider’s documentation checked against what the response actually did. Where they disagree, the record says so in its caveats.</p>
         <p><code>verification.last_verified</code> is the date of the last run; <code>verification.with_key</code> is false when an API needs a key and only the unauthenticated error was observed. CORS values are taken from real response headers; <code>unknown</code> means it could not be confirmed.</p>
+      </section>
+
+      <section class="section" id="explorer" aria-labelledby="h-explorer">
+        <h2 id="h-explorer">The live explorer</h2>
+        <p>Each dataset page has a “Try it” section that sends a real request and shows the response. When an API allows calls from web pages (CORS) and needs no special headers, your browser calls it directly. Otherwise the request goes through a small proxy on this site that only talks to that dataset’s own hosts over https, sends its own identifying <code>User-Agent</code> and nothing of yours (no cookies, no credentials), caps responses at 512&nbsp;KB, is rate-limited, and caches identical requests for 30 seconds. It never adds keys: APIs that need a personal key are not proxied, and only a provider’s published demo key passes through. The proxy exists for these pages only and is not part of the public API.</p>
       </section>
 
       <section class="section" id="schema" aria-labelledby="h-schema">

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 /** Dataset detail. Vars: $catalog, $request, $urls, $dataset, $category, $related, $apiUrl */
+use Datasets\Explore\Policy;
 use Datasets\Web\View;
 
 $d = $dataset;
@@ -22,7 +23,8 @@ $canonical = $pageUrl;
 $current = '';
 $ogType = 'article';
 $headExtra = '<link rel="alternate" type="application/json" href="' . e($apiUrl) . '" title="This record as JSON">' . "\n"
-    . '<script type="application/ld+json">' . View::jsonLd($d, $pageUrl, $apiUrl) . '</script>' . "\n";
+    . '<script type="application/ld+json">' . View::jsonLd($d, $pageUrl, $apiUrl) . '</script>' . "\n"
+    . '<script src="' . e(asset('assets/explorer.js')) . '" defer></script>' . "\n";
 
 $authText = match ($auth['type']) {
     'none' => !empty($auth['key_optional']) ? 'None required (a free key raises limits)' : 'None — no key, no signup',
@@ -31,7 +33,11 @@ $authText = match ($auth['type']) {
     default => $auth['type'],
 };
 
-$sections = ['access' => 'Access', 'endpoints' => 'Endpoints', 'example' => 'Example request'];
+$explorer = new Policy($d);
+$xMode = $explorer->mode();
+$xConfig = $explorer->clientConfig(url('/explore'));
+
+$sections = ['access' => 'Access', 'endpoints' => 'Endpoints', 'example' => 'Example request', 'try' => 'Try it'];
 if (!empty($d['agent_notes']) || !empty($d['caveats'])) {
     $sections['notes'] = 'Notes & caveats';
 }
@@ -160,6 +166,55 @@ include __DIR__ . '/partials/header.php';
           <div class="code-head"><span class="micro">Response excerpt<?= $excerpt['json'] ? ' · JSON' : '' ?></span><button type="button" class="copy" data-copy="#response" hidden>Copy</button></div>
           <pre id="response" class="response"><code><?= e($excerpt['text']) ?></code></pre>
         </div>
+      </section>
+
+      <section class="section" id="try" aria-labelledby="h-try">
+        <h2 id="h-try">Try it</h2>
+        <?php if ($xMode === 'off'): ?>
+          <p class="x-note"><?= e($d['status'] === 'deprecated' ? 'This API is marked deprecated, so the live explorer is turned off.' : 'This API needs your own free key') ?><?php if ($d['status'] !== 'deprecated'): ?><?php if (isset($links['signup'])): ?> — get one at <a href="<?= e($links['signup']) ?>" rel="noopener"><?= e(View::host($links['signup'])) ?></a><?php endif ?>. Requests with personal keys are not sent through this site, and this API is not known to accept calls from browser JavaScript, so there is no live explorer here. Use the curl command above with your key.<?php endif ?></p>
+        <?php else: ?>
+          <?php if ($xMode === 'direct'): ?>
+            <p class="x-note">This API needs your own free key<?php if (isset($links['signup'])): ?> — get one at <a href="<?= e($links['signup']) ?>" rel="noopener"><?= e(View::host($links['signup'])) ?></a><?php endif ?>. Requests with personal keys are not sent through this site; the explorer below calls the API directly from your browser.</p>
+          <?php endif ?>
+          <p class="aside">Send a live request and see the response here. It goes straight from your browser when the API allows that, otherwise through a small proxy on this site that only talks to this API’s own hosts.</p>
+          <p class="x-note" data-x-nojs>The live explorer needs JavaScript. Without it, copy the curl command under “Example request” above.</p>
+          <form class="explorer" data-explorer hidden novalidate>
+            <script type="application/json" data-explorer-config><?= json_encode($xConfig, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR) ?></script>
+            <div class="x-line">
+              <?php if (count($xConfig['methods']) > 1): ?>
+                <label class="sr" for="x-method">Method</label>
+                <select id="x-method" class="x-method" data-x-method>
+                  <?php foreach ($xConfig['methods'] as $m): ?><option<?= $m === $d['example']['method'] ? ' selected' : '' ?>><?= e($m) ?></option><?php endforeach ?>
+                </select>
+              <?php else: ?>
+                <span class="x-method x-method-fixed" title="Method">GET</span>
+              <?php endif ?>
+              <label class="sr" for="x-url">Request URL</label>
+              <input id="x-url" class="x-url" data-x-url type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" value="<?= e($d['example']['url']) ?>">
+              <button type="submit" class="x-send" data-x-send>Send</button>
+            </div>
+            <?php if (in_array('POST', $xConfig['methods'], true)): ?>
+              <div class="x-body-wrap" data-x-body-wrap<?= $d['example']['method'] === 'POST' ? '' : ' hidden' ?>>
+                <label class="micro" for="x-body">Body <span class="x-body-type"><?= e($xConfig['postType']) ?></span></label>
+                <textarea id="x-body" class="x-body" data-x-body rows="3" spellcheck="false" autocomplete="off"><?= e($d['example']['body'] ?? '') ?></textarea>
+              </div>
+            <?php endif ?>
+            <div class="x-endpoints">
+              <span class="micro">Endpoints</span>
+              <ul>
+                <?php foreach ($xConfig['endpoints'] as $i => $ep): ?>
+                  <li><button type="button" data-x-endpoint="<?= e($i) ?>" title="<?= e($ep['summary']) ?>"><span class="verb"><?= e($ep['method']) ?></span> <?= e($ep['path']) ?></button></li>
+                <?php endforeach ?>
+              </ul>
+            </div>
+            <div class="x-meta">
+              <div class="x-transport" data-x-transport></div>
+              <button type="button" class="copy" data-x-curl>Copy as curl</button>
+            </div>
+            <p class="x-hint" data-x-hint aria-live="polite"></p>
+          </form>
+          <div class="x-result" data-x-result hidden></div>
+        <?php endif ?>
       </section>
 
       <?php if (isset($sections['notes'])): ?>

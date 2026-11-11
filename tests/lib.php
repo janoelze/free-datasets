@@ -159,8 +159,13 @@ final class TestServer
 
     public readonly string $base;
 
-    /** @param array<string, string> $env */
-    public function __construct(array $env)
+    public readonly int $port;
+
+    /**
+     * @param array<string, string> $env
+     * @param string|null $router router script (default: the app's public/index.php)
+     */
+    public function __construct(array $env, ?string $router = null)
     {
         $sock = stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
         if ($sock === false) {
@@ -172,7 +177,7 @@ final class TestServer
         $root = dirname(__DIR__);
         $log = sys_get_temp_dir() . "/datasets-test-server-$port.log";
         $proc = proc_open(
-            [PHP_BINARY, '-S', "127.0.0.1:$port", '-t', "$root/public", "$root/public/index.php"],
+            [PHP_BINARY, '-S', "127.0.0.1:$port", '-t', $router === null ? "$root/public" : dirname($router), $router ?? "$root/public/index.php"],
             [0 => ['file', '/dev/null', 'r'], 1 => ['file', $log, 'a'], 2 => ['file', $log, 'a']],
             $pipes,
             $root,
@@ -183,6 +188,7 @@ final class TestServer
         }
         $this->proc = $proc;
         $this->base = "http://127.0.0.1:$port";
+        $this->port = $port;
         $deadline = microtime(true) + 10;
         while (microtime(true) < $deadline) {
             $c = @fsockopen('127.0.0.1', $port, $e1, $e2, 0.2);
@@ -211,9 +217,10 @@ final class TestServer
  * HTTP request with the curl extension.
  *
  * @param list<string> $headers "Name: value"
+ * @param string|null $body request body (sent as is)
  * @return array{status: int, headers: array<string, string>, body: string, json: mixed}
  */
-function http(string $method, string $url, array $headers = []): array
+function http(string $method, string $url, array $headers = [], ?string $body = null): array
 {
     $ch = curl_init($url);
     $respHeaders = [];
@@ -222,7 +229,7 @@ function http(string $method, string $url, array $headers = []): array
         CURLOPT_CUSTOMREQUEST => $method,
         CURLOPT_NOBODY => $method === 'HEAD',
         CURLOPT_HTTPHEADER => $headers,
-        CURLOPT_TIMEOUT => 10,
+        CURLOPT_TIMEOUT => 20,
         CURLOPT_HEADERFUNCTION => static function ($ch, string $line) use (&$respHeaders): int {
             $p = strpos($line, ':');
             if ($p !== false) {
@@ -232,6 +239,9 @@ function http(string $method, string $url, array $headers = []): array
             return strlen($line);
         },
     ]);
+    if ($body !== null) {
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+    }
     $body = curl_exec($ch);
     if ($body === false) {
         fail("request to $url failed: " . curl_error($ch));

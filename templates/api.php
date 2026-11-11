@@ -198,6 +198,7 @@ include __DIR__ . '/partials/header.php';
           <li><code>Cache-Control: public, max-age=300</code> and a strong <code>ETag</code>; send <code>If-None-Match</code> to get <code>304 Not Modified</code>.</li>
           <li>List responses include an RFC 8288 <code>Link</code> header (<code>rel="next"</code> etc.) mirroring <code>links</code> in the body.</li>
         </ul>
+        <p class="aside">Not part of this API: the “Try it” explorer on dataset pages uses a private proxy at <code><?= e(url('/explore')) ?></code>. It only serves this site’s own pages (no CORS, same-origin only, rate-limited), only contacts the listed dataset’s hosts, never forwards your cookies or credentials and never proxies personal API keys. It is not in the OpenAPI document and may change without notice — call the dataset APIs directly instead.</p>
       </section>
 
       <section class="section" id="machine" aria-labelledby="h-machine">

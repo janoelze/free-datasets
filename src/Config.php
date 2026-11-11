@@ -13,6 +13,8 @@ namespace Datasets;
  *   APP_BASE_PATH     URL path prefix the app is mounted under, e.g. "/datasets" (default: detected from SCRIPT_NAME)
  *   APP_PUBLIC_URL    absolute public URL of the app root, e.g. "https://endtime-instruments.org/datasets"
  *                     (default: request scheme + host + base path)
+ *   APP_VAR_DIR       writable runtime state: explorer rate-limit counters and response cache
+ *                     (default: <root>/var; outside the web root)
  */
 final class Config
 {
@@ -23,6 +25,7 @@ final class Config
         public readonly string $templatesDir,
         public readonly string $publicDir,
         public readonly string $cacheFile,
+        public readonly string $varDir = '',
     ) {
     }
 
@@ -38,6 +41,7 @@ final class Config
             templatesDir: rtrim(self::env('APP_TEMPLATES_DIR') ?? $root . '/templates', '/'),
             publicDir: $root . '/public',
             cacheFile: self::env('APP_CACHE_FILE') ?? $root . '/var/catalog.json',
+            varDir: rtrim(self::env('APP_VAR_DIR') ?? $root . '/var', '/'),
         );
     }
 

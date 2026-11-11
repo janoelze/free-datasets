@@ -6,6 +6,7 @@ namespace Datasets;
 
 use Datasets\Api\ApiController;
 use Datasets\Api\LlmsTxt;
+use Datasets\Explore\ExploreController;
 use Datasets\Http\Http;
 use Datasets\Http\Request;
 use Datasets\Http\Response;
@@ -42,15 +43,22 @@ final class App
     {
         Url::setCurrent(new Url($req->basePath, $req->publicUrl, $this->config->publicDir));
         $isApi = $req->isApi();
+        // The explorer proxy speaks JSON but is not part of the API: no CORS headers, ever.
+        $isExplore = $req->path === '/explore';
 
         try {
-            $response = $this->dispatch($req, $isApi);
+            $response = $isExplore
+                ? (new ExploreController($this->catalog(), $req, $this->config))->handle()
+                : $this->dispatch($req, $isApi);
         } catch (\Throwable $e) {
             error_log('[datasets] ' . $e::class . ': ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
-            $response = $isApi
+            $response = $isApi || $isExplore
                 ? Http::problem(500, 'An unexpected error occurred.', $req->target())
                 : Http::text("Internal Server Error\n", 500);
             $response->withHeader('Cache-Control', 'no-store');
+            if ($isExplore) {
+                ExploreController::withHeaders($response);
+            }
         }
 
         if ($isApi) {
@@ -116,7 +124,7 @@ final class App
             ->get('/api/v1/schema', fn () => $api()->schema())
             ->get('/api/v1/openapi.json', fn () => $api()->openapi())
             ->get('/llms.txt', fn () => Http::text((new LlmsTxt($this->catalog(), Url::current()))->render(), 200, 'text/plain; charset=utf-8'))
-            ->get('/robots.txt', fn () => Http::text(LlmsTxt::robots()))
+            ->get('/robots.txt', fn () => Http::text(LlmsTxt::robots(Url::current()->path('/explore'))))
             ->get('/', fn () => $pages()->home())
             ->get('/d/{slug}', fn (string $slug) => $pages()->dataset($slug))
             ->get('/api', fn () => $pages()->api())
