@@ -7,6 +7,9 @@ declare(strict_types=1);
  * Filtering works without JavaScript (GET form, parameter names = API parameter names);
  * assets/app.js re-fetches this page and swaps #results, #rail-cats and #hidden-filters.
  */
+use Datasets\Seo\IndexPolicy;
+use Datasets\Seo\Meta;
+use Datasets\Seo\StructuredData;
 use Datasets\Web\View;
 
 $crit = $params->criteria;
@@ -88,25 +91,44 @@ foreach ($canon as $name => $value) {
 }
 
 $title = null;
-$description = sprintf('A curated library of %d free datasets with free, open REST APIs: auth, CORS, rate limits, license and a verified example request for each.', $catalog->count());
+$siteDescription = sprintf('A curated library of %d free datasets with free, open REST APIs: auth, CORS, rate limits, license and a verified example request for each.', $catalog->count());
+$description = $siteDescription;
 if ($activeCategory !== null) {
     $title = ($categoryNames[$activeCategory] ?? $activeCategory) . ' datasets with free APIs';
     $description = ($catalog->category($activeCategory)['description'] ?? '') . ' ' . $description;
 } elseif (isset($crit['q'])) {
     $title = 'Search: ' . $crit['q'];
+} elseif (array_keys(array_diff_key($canon, ['sort' => 1])) === ['tag']) {
+    $title = 'Datasets tagged ' . str_replace(',', ' + ', $canon['tag']);
+} elseif ($hasFilters) {
+    $title = 'Filtered catalogue';
 }
-$canonical = abs_url('/', $canon);
+// Indexing: see Seo\IndexPolicy. Filter views are noindex,follow or canonicalise to a landing page.
+$canonical = $policy->canonical;
+$robots = $policy->robots;
 $current = 'home';
+if ($policy->landing === 'home') {
+    $sd = new StructuredData($urls);
+    $jsonLd = array_merge(
+        [$sd->website($siteDescription), $sd->organization(), $sd->dataCatalog($siteDescription)],
+        $sd->collection(abs_url('/'), Meta::SITE, $siteDescription, $results->items, [], false),
+    );
+}
 
+// Rail links: plain crawlable URLs (/c/x, /) for search engines and no-JS visitors; the JS filter
+// follows data-filter-href instead, which keeps the other active filters.
 $rail = static function () use ($categories, $activeCategory, $with, $catalog): void { ?>
     <div class="rail-section" id="rail-cats">
       <h2 class="micro">Categories</h2>
       <ol>
-        <li><a href="<?= e($with(['category' => null])) ?>" data-filter-link<?= $activeCategory === null ? ' class="current" aria-current="true"' : '' ?>>All<span><?= e($catalog->count()) ?></span></a></li>
+        <li><a href="<?= e(url('/')) ?>" data-filter-link data-filter-href="<?= e($with(['category' => null])) ?>"<?= $activeCategory === null ? ' class="current" aria-current="true"' : '' ?>>All<span><?= e($catalog->count()) ?></span></a></li>
         <?php foreach ($categories as $c): ?>
-          <li><a href="<?= e($with(['category' => $c['id']])) ?>" data-filter-link<?= $activeCategory === $c['id'] ? ' class="current" aria-current="true"' : '' ?>><?= e($c['name']) ?><span><?= e($c['count']) ?></span></a></li>
+          <li><a href="<?= e(url('/c/' . $c['id'])) ?>" data-filter-link data-filter-href="<?= e($with(['category' => $c['id']])) ?>"<?= $activeCategory === $c['id'] ? ' class="current" aria-current="true"' : '' ?>><?= e($c['name']) ?><span><?= e($c['count']) ?></span></a></li>
         <?php endforeach ?>
       </ol>
+    </div>
+    <div class="rail-section">
+      <p class="rail-back"><a href="<?= e(url('/t')) ?>">Browse by tag</a></p>
     </div>
 <?php };
 
@@ -155,7 +177,7 @@ include __DIR__ . '/partials/header.php';
 
     <section id="results" class="results" aria-labelledby="results-count">
       <div class="results-head">
-        <h2 id="results-count" class="count" role="status"><strong><?= e($results->total) ?></strong> <?= $results->total === 1 ? 'dataset' : 'datasets' ?><?php if ($activeCategory !== null): ?> in <?= e($categoryNames[$activeCategory] ?? $activeCategory) ?><?php endif ?></h2>
+        <h2 id="results-count" class="count" aria-live="polite"><strong><?= e($results->total) ?></strong> <?= $results->total === 1 ? 'dataset' : 'datasets' ?><?php if ($activeCategory !== null): ?> in <?= e($categoryNames[$activeCategory] ?? $activeCategory) ?><?php endif ?></h2>
         <?php if ($chips !== []): ?>
           <ul class="chips" aria-label="Active filters">
             <?php foreach ($chips as [$name, $shown, $href]): ?>

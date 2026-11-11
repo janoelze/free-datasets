@@ -63,6 +63,6 @@ test('http: dataset page has the Try it section (curl, excerpt), JSON alternate 
     assert_contains('data-explorer hidden', $r['body'], 'explorer mount (enabled for a keyless record)');
     preg_match('~<script type="application/ld\+json">(.*?)</script>~s', $r['body'], $m);
     $ld = json_decode($m[1] ?? '', true);
-    assert_same(['Dataset', 'WebAPI'], array_column($ld['@graph'] ?? [], '@type'));
+    assert_same(['ItemPage', 'Dataset', 'WebAPI', 'BreadcrumbList'], array_column($ld['@graph'] ?? [], '@type'));
     assert_contains('Free API key', get('/d/nasa-apod')['body']);
 });
