@@ -46,8 +46,11 @@ defaults apply:
    failure (`git log -p -- datasets/<slug>.json`, or a `Failing since` caveat dated before
    `DATE`); otherwise mark the record `unstable` with the caveat
    `Failing since DATE: <what you saw>.`
-3. Add up to `ADD_COUNT` new records (section 11 "Adding policy"): backlog first, full
-   checklist, `template.json` as the start, reciprocal `related`, remove the backlog line.
+3. Scan fresh submissions (SKILL.md section 3, "Fresh submissions": Hacker News newest-first
+   and Reddit via Arctic Shift, 5 s between Arctic Shift calls) and note real leads in
+   `backlog.md` with `DATE`. Then add up to `ADD_COUNT` new records (section 11 "Adding
+   policy"): full checklist, `template.json` as the start, reciprocal `related`, remove the
+   backlog line.
    Skip any candidate you are not sure about; zero additions is fine.
 4. Done-check, and fix what fails:
    - `php bin/validate.php`
