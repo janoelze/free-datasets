@@ -107,6 +107,7 @@ if ($activeCategory !== null) {
 $canonical = $policy->canonical;
 $robots = $policy->robots;
 $current = 'home';
+$agentPanel = 'masthead';
 if ($policy->landing === 'home') {
     $sd = new StructuredData($urls);
     $jsonLd = array_merge(
@@ -138,7 +139,7 @@ include __DIR__ . '/partials/header.php';
       <h1>Free datasets with free, open REST APIs</h1>
       <p class="lede">Public data you can query over HTTP today. Each entry says whether you need a key, whether a browser can call it, how fast you may go and what the license allows — with a request that was actually run.</p>
       <p class="counts"><span><strong><?= e($catalog->count()) ?></strong> datasets</span><span><strong><?= e(count($categories)) ?></strong> categories</span><span><strong><?= e($keylessCount) ?></strong> keyless</span></p>
-      <p class="agents"><span class="micro">For agents</span> Start with <a href="<?= e(url('/llms.txt')) ?>"><code>/llms.txt</code></a>, query the same catalogue as JSON at <a href="<?= e(url('/api/v1')) ?>"><code>/api/v1</code></a>, described by <a href="<?= e(url('/api/v1/openapi.json')) ?>"><code>/api/v1/openapi.json</code></a>. No key, CORS open.</p>
+      <?php include __DIR__ . '/partials/agent-panel.php'; ?>
     </header>
 
     <form class="filters" role="search" method="get" action="<?= e(url('/')) ?>" data-filter-form aria-label="Filter datasets">

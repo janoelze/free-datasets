@@ -136,6 +136,41 @@ h1 { font: 400 var(--fs-display)/var(--lh-tight) var(--serif); letter-spacing: -
 .agents .micro { margin-right: 6px; color: var(--signal); }
 .agents code { color: var(--ink); }
 
+/* ---------- "Use with your agent" (partials/agent-panel.php) ----------
+   A <details> with CSS-only tabs (radio + label). Filled controls on --tint, the selected tab in
+   --ink like a checked filter; snippets reuse .code / .copy. Home: in the masthead. Elsewhere: a
+   small control floated into the top right corner of <main>, opening full width. */
+.agent > summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); list-style: none; cursor: pointer; }
+.agent > summary::-webkit-details-marker { display: none; }
+.agent > summary:focus-visible { outline: none; }
+.agent > summary:focus-visible .agent-button { outline: 2px solid var(--signal); outline-offset: 2px; }
+.agent-button { display: inline-flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; font: 500 var(--fs-ui)/1 var(--sans); color: var(--ink); background: var(--tint); border-radius: 4px; white-space: nowrap; transition: background-color .12s; }
+.agent-button::after { content: ""; width: 5px; height: 5px; margin-top: -3px; border: solid var(--ink-2); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.agent[open] .agent-button::after { margin-top: 3px; transform: rotate(-135deg); }
+.agent > summary:hover .agent-button { background: var(--tint-2); }
+.agent-hint { font: var(--fs-small)/var(--lh-ui) var(--sans); color: var(--ink-2); }
+.agent-body { padding-top: var(--sp-4); }
+.agent-tabs { display: flex; flex-wrap: wrap; gap: var(--sp-2); min-width: 0; margin: 0; padding: 0; border: 0; }
+.agent-tabs > input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
+.agent-tabs > label { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; font: var(--fs-ui)/1 var(--sans); color: var(--ink-2); background: var(--tint); border-radius: 4px; cursor: pointer; user-select: none; }
+.agent-tabs > label:hover { color: var(--ink); background: var(--tint-2); }
+.agent-tabs > input:checked + label { color: var(--bg); background: var(--ink); }
+.agent-tabs > input:focus-visible + label { outline: 2px solid var(--signal); outline-offset: 2px; }
+.agent-panes { flex-basis: 100%; min-width: 0; padding-top: var(--sp-3); }
+.agent-pane { display: none; }
+#at-prompt:checked ~ .agent-panes [data-pane="prompt"], #at-skill:checked ~ .agent-panes [data-pane="skill"],
+#at-mcp:checked ~ .agent-panes [data-pane="mcp"], #at-curl:checked ~ .agent-panes [data-pane="curl"] { display: block; }
+.agent-pane > p, .agent-more { margin: 0 0 var(--sp-3); max-width: var(--measure); font: var(--fs-small)/var(--lh-ui) var(--sans); color: var(--ink-2); text-wrap: pretty; }
+.agent-pane > p.agent-note { margin: calc(var(--sp-2) - var(--sp-4)) 0 var(--sp-4); }
+.agent-pane > :last-child { margin-bottom: 0; }
+.agent-pane code { color: var(--ink); }
+.agent-pane .code { margin-bottom: var(--sp-4); }
+.agent-more { margin: var(--sp-4) 0 0; }
+.agent-masthead { margin-top: var(--sp-4); }
+.agent-corner { float: right; position: relative; z-index: 1; margin: 0 max(0px, calc(100% - var(--wide))) var(--sp-3) var(--sp-5); }
+.agent-corner[open] { float: none; max-width: var(--wide); margin: 0 0 var(--sp-6); padding-bottom: var(--sp-5); border-bottom: var(--hairline); }
+.agent-corner[open] > summary { justify-content: flex-end; }
+
 .filters { border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: 4px; }
 .search { position: relative; display: flex; gap: 10px; align-items: center; }
 .search input {
@@ -517,6 +552,8 @@ select.x-method option { background: var(--bg); color: var(--ink); }
   .x-meta .copy { justify-self: start; }
   .x-transport, .x-seg { display: grid; }
   .x-headers { column-gap: 10px; }
+  .agent-corner { float: none; margin: 0 0 var(--sp-4); }
+  .agent-corner[open] > summary { justify-content: flex-start; }
   .params-table td.type, .params-table th:nth-child(2) { display: none; }
   .fields-table td.field { white-space: normal; }
   .fields-table .type, .fields-table th:nth-child(2) { display: none; }
@@ -526,6 +563,6 @@ select.x-method option { background: var(--bg); color: var(--ink); }
   .rail .brand { font-size: 14px; }
 }
 @media print {
-  .rail, .filters, .copy, .theme-toggle, .explorer { display: none !important; }
+  .rail, .filters, .copy, .theme-toggle, .explorer, .agent { display: none !important; }
   .shell { display: block; }
 }

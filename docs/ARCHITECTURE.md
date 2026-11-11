@@ -25,6 +25,10 @@ src/Api/LlmsTxt.php          /llms.txt and /robots.txt
 src/Web/PageController.php   HTML routes -> templates/*.php
 src/Seo/{IndexPolicy,Meta,StructuredData,Sitemap,Feed}.php   indexing policy, titles, JSON-LD, /sitemap.xml, /feed.xml
 src/Explore/{ExploreController,Policy,Target,Fetcher,RateLimiter,Storage,Refusal}.php   POST /explore proxy
+src/Agents/{Skill,Setup}.php  agent-skills discovery + SKILL.md routes; every visitor command (panel, /agents, README)
+src/Mcp/{Server,Tools,RpcError,ToolError}.php   POST /mcp, stateless MCP server
+plugins/free-datasets/       Claude Code plugin holding the agent skill (served by the site too)
+.claude-plugin/marketplace.json   makes the repo a Claude Code marketplace named free-datasets
 public/assets/explorer.js    "Try it" explorer (dataset pages, section #example)
 bin/validate.php  bin/build.php  bin/verify.php
 tests/run.php     tests/*Test.php  tests/fixtures/
@@ -114,13 +118,14 @@ template yields a plain-text fallback. All templates receive:
 | `/t` | `tags.php` | `$tags` (tags with pages), `$categories` |
 | `/api` | `api.php` | `$apiBase`, `$openapiUrl`, `$schemaUrl` (absolute) |
 | `/about` | `about.php` | – |
+| `/agents` | `agents.php` | – (commands from `Agents\Setup`) |
 | anything else, unknown slug | `404.php` (status 404) | `$path` |
 
 HTML responses get `Cache-Control: public, max-age=300`, an ETag and `X-Content-Type-Options: nosniff`.
 
 Head variables a template may set before including `partials/header.php`: `$title`, `$metaTitle`
 (complete `<title>`), `$ogTitle`, `$description`, `$canonical` (null = none), `$robots`, `$jsonLd`
-(list of schema.org nodes, rendered as one `@graph`), `$ogType`, `$headExtra`, `$rail`, `$current`.
+(list of schema.org nodes, rendered as one `@graph`), `$ogType`, `$headExtra`, `$rail`, `$current`, `$agentPanel` (`corner` default, `masthead`, `none`).
 
 ## SEO
 
@@ -135,9 +140,9 @@ host-root `/robots.txt` is not ours (it currently 404s, which crawlers treat as 
 | `/?category=x` (one category, optional sort) | yes (duplicate) | `/c/x` |
 | `/?tag=x` (one tag with ≥ 3 datasets, optional sort) | yes (duplicate) | `/t/x` |
 | `/?q=…`, other facets, several values/filters, `limit`/`offset`, thin tags | `noindex,follow` | itself, normalised (known params, fixed order, sorted lists) |
-| `/c/{id}`, `/t`, `/t/{tag}`, `/d/{slug}`, `/api`, `/about` | yes | itself |
+| `/c/{id}`, `/t`, `/t/{tag}`, `/d/{slug}`, `/api`, `/about`, `/agents` | yes | itself |
 | 404 pages | `noindex` | none |
-| `/api/v1/*`, `/llms.txt`, `/sitemap.xml`, `/feed.xml` | `X-Robots-Tag: noindex` | – |
+| `/api/v1/*`, `/llms.txt`, `/sitemap.xml`, `/feed.xml`, `/.well-known/agent-skills/*`, `/mcp` | `X-Robots-Tag: noindex` | – |
 
 `?category=x` is canonicalised rather than 301-redirected because it is the in-place filter view
 (home page JS, GET form); rail and row links use the clean `/c/x` URL as `href` and give the JS the
@@ -281,10 +286,79 @@ addresses (other private ranges stay blocked), reads fake DNS from
 (`tests/fixtures/explore-upstream.php`) under `php -S`; `Target` and the IP classifier are
 unit-tested directly without relaxation.
 
+## Agents: skill, discovery, panel, MCP
+
+Visitors get four ways to point an agent at the catalogue, shown by `templates/partials/agent-panel.php`
+("Use with your agent": a `<details>` with CSS-only radio tabs, so it works without JavaScript;
+`app.js` adds the Copy buttons and Escape-to-close; rendered at the top of `<main>` on every page,
+in the masthead on `/`, not on `/agents`) and in full on `/agents` (indexable, in the sitemap; it
+exists so README, llms.txt and the panel can link to a permanent page with the per-client notes).
+All commands come from `Agents\Setup`, built from the public URL, so they are base-path aware;
+`tests/AgentsTest.php` checks the README shows the production versions.
+
+- **Prompt**: "Read `{base}/.well-known/agent-skills/free-datasets/SKILL.md` and follow it …". Always current.
+- **Skill**: one file, `plugins/free-datasets/skills/free-datasets/SKILL.md` (thin: how to query the
+  live API, no data). Distributed three ways, all from that file: the Claude Code plugin
+  (`.claude-plugin/marketplace.json` → `plugins/free-datasets`; `claude plugin install free-datasets
+  --marketplace https://github.com/janoelze/free-datasets`), the skills CLI (`npx skills add {base}`
+  reads `{base}/.well-known/agent-skills/index.json`, Agent Skills discovery draft 0.2.0; the repo
+  URL works too) and by hand. The maintainer skill `.claude/skills/add-datasets` carries
+  `metadata.internal: "true"` so installers skip it. Installed copies do not auto-update:
+  `claude plugin update free-datasets@free-datasets` only sees a change when
+  `plugins/free-datasets/.claude-plugin/plugin.json` `version` is bumped (a test pins the SKILL.md
+  hash per version and fails until you bump it); `npx skills update` compares content.
+- **Discovery routes** (`Agents\Skill`): `{base}/.well-known/agent-skills/index.json`
+  (`$schema`, one `skill-md` entry, `url: "free-datasets/SKILL.md"`, `digest: "sha256:…"` computed per
+  request from the served bytes) and `{base}/.well-known/agent-skills/free-datasets/SKILL.md`
+  (`text/markdown; charset=utf-8`, read from `plugins/…`; no copy in `public/`). Both get the API's
+  headers: CORS `*`, `Cache-Control: public, max-age=300`, ETag, `X-Robots-Tag: noindex`.
+  `public/.htaccess` denies dotfiles except the single name `.well-known` (Apache maps the URL to that
+  missing path component and would deny it before the rewrite; checked under Docker `httpd:2.4` +
+  PHP-FPM). Host-root `/.well-known/` is not ours.
+
+### MCP server: `POST {base}/mcp`
+
+`Mcp\Server`, routed by `App` before the generic dispatcher (like `/explore`) and sending its own
+headers. Stateless Streamable HTTP with one `application/json` response per request (no SSE, no
+sessions, no GET stream). Dual-era:
+
+| | Modern (2026-07-28) | Legacy (2025-03-26, 2025-06-18, 2025-11-25) |
+|---|---|---|
+| detected by | `params._meta["io.modelcontextprotocol/protocolVersion"]` or a modern `MCP-Protocol-Version` header | neither |
+| handshake | none; `server/discover` | `initialize` answered (supported version echoed, else 2025-11-25), no `Mcp-Session-Id`; notifications → 202 |
+| checks | `MCP-Protocol-Version` and `Mcp-Method` (and `Mcp-Name` for `tools/call`, base64 sentinel decoded) must match the body → else 400 / -32020; `_meta` protocolVersion + clientCapabilities required → else 400 / -32602; unknown version → 400 / -32022 `{supported, requested}` | unknown `MCP-Protocol-Version` header → 400 / -32022 |
+| results | `resultType: "complete"`, `_meta` serverInfo; `tools/list` and `server/discover` carry `ttlMs`/`cacheScope` | plain |
+| unknown method | 404 / -32601 | 200 / -32601 (a 404 would make old clients think their session expired) |
+
+Methods: `ping`, `server/discover`, `tools/list`, `tools/call`. Transport errors: non-POST → 405
+`Allow: POST, OPTIONS` (OPTIONS is a CORS preflight, 204); non-JSON content type 415; body over
+64 KB 413; invalid JSON 400 / -32700; batches (JSON arrays) 400 / -32600 (both current revisions
+forbid them); malformed envelopes 400 / -32600. Errors whose id could not be read omit `id`.
+
+Tools (`Mcp\Tools`, all annotated read-only/idempotent/closed-world, results as `structuredContent`
+plus the same JSON in a text block; argument problems are `isError: true` results so the model
+can correct itself, an unknown tool name is -32602): `search_datasets {q, category, tag, keyless,
+browser, has_openapi, limit 1–50 (10), offset}` → `{total, offset, items: [{slug, name, summary,
+category, auth, cors, status, html_url, api_url}]}`, validated by `Api\ListParams` exactly like
+`GET /api/v1/datasets`; `get_dataset {slug}` → the REST record (`ApiController::present`, with
+`url` and `html_url`); `list_categories {}` → non-empty categories with counts. `tools/list` is
+about 2.2 KB (a test caps it at 4.5 KB). Reads the in-memory `Catalog` only: no upstream requests, so no
+new SSRF surface; no auth, no cookies.
+
+Origin policy: the spec asks servers to validate `Origin` against DNS rebinding, which threatens
+local servers. This one is public, read-only and credential-free, so any well-formed origin (or
+`null`, or none) is accepted and browsers may call it cross-origin (`Access-Control-Allow-Origin: *`,
+never `Allow-Credentials`); malformed `Origin` values get 403. Rate limit: `Explore\RateLimiter`
+with its own bucket `var/ratelimit-mcp/`, 120/minute and 5000/day per client, 1200/minute overall;
+429 / -31429 with `Retry-After` (test override `APP_MCP_TEST_LIMITS`, honoured under `php -S`
+only). Every response: `Cache-Control: no-store`, `X-Robots-Tag: noindex`, `nosniff`; robots.txt
+disallows `{base}/mcp`. Clients checked: MCP Inspector CLI 2.14 (modern, legacy, auto) and
+Claude Code 2.1.322 (uses the modern era: `server/discover`, `tools/list`, `tools/call`).
+
 ## Deployment
 
 `bin/deploy.sh` is the only deploy path, used by hand and by CI. It runs `php bin/validate.php`
-(fail fast), rsyncs `public src templates datasets schema bin docs deploy` to
+(fail fast), rsyncs `public src templates datasets schema bin docs deploy plugins` to
 `janoelze@aquila.uberspace.de:/var/www/virtual/janoelze/free-datasets/` (`--delete` inside those
 directories; `var/` is never sent or deleted), runs `php bin/build.php` on the server (the cache
 records the directory it was built from, so it must be built there), creates the docroot symlink
@@ -293,7 +367,8 @@ if it is missing (only after checking the target exists and Apache can traverse 
 replace anything else at that path), then (re)installs the redirect at the former path (below), then
 smoke-tests the public URL and exits non-zero if any
 check fails (including `POST /explore` with the open-meteo example → 200, and a foreign host →
-4xx problem). Host, user, paths and URL are overridable: `DEPLOY_HOST`, `DEPLOY_USER`,
+4xx problem; the agent-skills index whose digest must match the served SKILL.md; and a
+2026-07-28 `tools/list` POST to `/mcp`, which also proves the `MCP-*` headers reach PHP). Host, user, paths and URL are overridable: `DEPLOY_HOST`, `DEPLOY_USER`,
 `DEPLOY_APP_DIR`, `DEPLOY_DOCROOT`, `DEPLOY_MOUNT`, `DEPLOY_PUBLIC_URL`, `DEPLOY_SSH_OPTS`,
 `DEPLOY_LEGACY_MOUNT` (empty = skip the redirect), `DEPLOY_SKIP_SMOKE=1`. The app lives under `/var/www/virtual/janoelze/`, not `~/`, because the
 home directory is `0700` and Apache cannot follow a symlink into it (403, `AH00037`).

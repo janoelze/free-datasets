@@ -10,8 +10,11 @@ AddDefaultCharset utf-8
   AddType application/manifest+json .webmanifest
 </IfModule>
 
-# Never serve dotfiles.
-<FilesMatch "^\.">
+# Never serve dotfiles. The one exception is the name ".well-known": there is no such directory
+# here, but Apache maps /free-datasets/.well-known/agent-skills/... to that (missing) path
+# component and would deny it before the rewrite below hands the URL to the app (index.php
+# serves the agent-skills discovery files).
+<FilesMatch "^\.(?!well-known$)">
   Require all denied
 </FilesMatch>
 

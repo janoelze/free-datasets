@@ -209,6 +209,7 @@ include __DIR__ . '/partials/header.php';
           <li><a href="<?= e($schemaUrl) ?>">Dataset JSON Schema</a> <span class="host"><?= e($schemaUrl) ?></span></li>
           <li><a href="<?= e($llms) ?>">llms.txt</a> <span class="host"><?= e($llms) ?></span></li>
         </ul>
+        <p class="aside">For AI agents there are also an agent skill (<a href="<?= e(abs_url('/.well-known/agent-skills/free-datasets/SKILL.md')) ?>">SKILL.md</a>, listed in <a href="<?= e(abs_url('/.well-known/agent-skills/index.json')) ?>">/.well-known/agent-skills/index.json</a>) and a read-only MCP server at <code class="url"><?= e(abs_url('/mcp')) ?></code> that answers from this same catalogue; <a href="<?= e(url('/agents')) ?>">setup for Claude Code, Codex, Cursor, claude.ai and others</a>. The prompt, the MCP server and this API are always current; an installed skill is a copy that updates with <code>claude plugin update</code> or <code>npx skills update</code>.</p>
       </section>
     </article>
 <?php include __DIR__ . '/partials/footer.php';

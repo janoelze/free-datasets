@@ -15,6 +15,8 @@ declare(strict_types=1);
  *   $rail         optional callable that echoes extra rail sections
  *   $headExtra    optional raw HTML for <head> (already escaped/encoded by the caller)
  *   $ogType       optional, default 'website'
+ *   $agentPanel   'corner' (default: "Use with your agent" at the top of <main>), 'masthead' (the
+ *                 template includes partials/agent-panel.php itself) or 'none'
  */
 use Datasets\Seo\StructuredData;
 
@@ -24,6 +26,7 @@ $current ??= '';
 $ogType ??= 'website';
 $canonical ??= null;
 $robots ??= null;
+$agentPanel ??= 'corner';
 $navItems = ['home' => ['/', 'Catalogue'], 'api' => ['/api', 'API'], 'about' => ['/about', 'About']];
 ?><!doctype html>
 <html lang="en">
@@ -80,10 +83,11 @@ $navItems = ['home' => ['/', 'Catalogue'], 'api' => ['/api', 'API'], 'about' => 
     <?php if (isset($rail) && is_callable($rail)) { $rail(); } ?>
     <div class="rail-meta">
       <p class="rail-agents">For agents:
+        <a href="<?= e(url('/agents')) ?>"<?= $current === 'agents' ? ' aria-current="page"' : '' ?>>setup</a>,
         <a href="<?= e(url('/llms.txt')) ?>">llms.txt</a>,
-        <a href="<?= e(url('/api/v1')) ?>">/api/v1</a>,
         <a href="<?= e(url('/api/v1/openapi.json')) ?>">OpenAPI</a></p>
       <button type="button" class="theme-toggle" data-theme-toggle hidden aria-label="Switch colour theme">Dark mode</button>
     </div>
   </nav>
   <main id="main" tabindex="-1">
+<?php if ($agentPanel === 'corner') { include __DIR__ . '/agent-panel.php'; } ?>

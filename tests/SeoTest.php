@@ -260,8 +260,8 @@ test('seo: sitemap.xml is valid and lists exactly the indexable URLs', function 
         }
         assert_false(isset($u->changefreq) || isset($u->priority), 'no changefreq/priority');
     }
-    // 3 pages + 4 categories with datasets (no tag pages in the fixtures) + 4 datasets
-    assert_same(["$base/", "$base/api", "$base/about", "$base/c/weather-climate", "$base/c/space-astronomy", "$base/c/earth-environment", "$base/c/knowledge-reference",
+    // 4 pages + 4 categories with datasets (no tag pages in the fixtures) + 4 datasets
+    assert_same(["$base/", "$base/api", "$base/about", "$base/agents", "$base/c/weather-climate", "$base/c/space-astronomy", "$base/c/earth-environment", "$base/c/knowledge-reference",
         "$base/d/nasa-apod", "$base/d/open-meteo", "$base/d/usgs-earthquakes", "$base/d/wikidata"], $locs);
     assert_contains("<loc>$base/d/open-meteo</loc><lastmod>2026-11-01</lastmod>", $r['body'], 'lastmod = later of added/last_verified');
     assert_contains("<loc>$base/</loc><lastmod>2026-11-05</lastmod>", $r['body']);
@@ -272,6 +272,7 @@ test('seo: sitemap.xml is valid and lists exactly the indexable URLs', function 
     assert_same('', $head['body']);
     assert_contains("Sitemap: $base/sitemap.xml", get('/robots.txt')['body']);
     assert_contains("Disallow: /explore", get('/robots.txt')['body']);
+    assert_contains("Disallow: /mcp", get('/robots.txt')['body']);
 
     // Real data, prefixed: counts add up, and every URL is 200, self-canonical and indexable.
     $rb = real_server()->base;
@@ -279,7 +280,7 @@ test('seo: sitemap.xml is valid and lists exactly the indexable URLs', function 
     $r = http('GET', "$rb/free-datasets/sitemap.xml");
     $locs = array_map('strval', iterator_to_array((new SimpleXMLElement($r['body']))->xpath('//*[local-name()="loc"]'), false));
     $cats = count(array_filter($c->categories(), static fn ($x) => $x['count'] > 0));
-    assert_same(3 + $cats + 1 + count(IndexPolicy::landingTags($c)) + $c->count(), count($locs));
+    assert_same(4 + $cats + 1 + count(IndexPolicy::landingTags($c)) + $c->count(), count($locs));
     assert_same(count($locs), count(array_unique($locs)));
     foreach ($locs as $i => $loc) {
         assert_true(str_starts_with($loc, "$rb/free-datasets/"), 'absolute, prefixed');
@@ -319,7 +320,7 @@ test('seo: Atom feed of newly added datasets', function () {
 
 test('seo: head tags on every page type', function () {
     $base = server()->base;
-    foreach (['/', '/c/weather-climate', '/d/open-meteo', '/api', '/about'] as $path) {
+    foreach (['/', '/c/weather-climate', '/d/open-meteo', '/api', '/about', '/agents'] as $path) {
         $b = get($path)['body'];
         assert_contains('<html lang="en">', $b, $path);
         assert_contains('<meta property="og:image" content="' . $base . '/assets/og.png">', $b, $path);

@@ -132,6 +132,12 @@ final class PageController
         return $this->render('about', []);
     }
 
+    /** /agents: every way to connect an agent (prompt, skill, MCP, curl) and how each one updates. */
+    public function agents(): Response
+    {
+        return $this->render('agents', []);
+    }
+
     public function notFound(): Response
     {
         return $this->render('404', ['path' => $this->request->path], 404);

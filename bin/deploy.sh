@@ -4,7 +4,8 @@
 #
 #   bin/deploy.sh
 #
-# Steps: validate datasets locally (fail fast) -> rsync the app tree -> on the server
+# Steps: validate datasets locally (fail fast) -> rsync the app tree (incl. plugins/, which holds
+# the agent skill the site serves) -> on the server
 # build var/catalog.json, create the docroot symlink if missing and (re)install the redirect
 # directory at the app's former path -> smoke test.
 # Rollback = check out an older commit and run this script again.
@@ -57,7 +58,7 @@ rsync -rlptz --delete --omit-dir-times \
   -e "${SSH_CMD[*]}" \
   --exclude='.git' --exclude='.github' --exclude='.claude' --exclude='tests' \
   --exclude='var' --exclude='.DS_Store' --exclude='node_modules' \
-  public src templates datasets schema bin docs deploy \
+  public src templates datasets schema bin docs deploy plugins \
   "${TARGET}:${DEPLOY_APP_DIR}/"
 
 log "Building catalogue and linking docroot on the server"
@@ -209,6 +210,31 @@ $r "GET /sitemap.xml (absolute public URLs)" "$status $ctype"
 fetch "/api/v1/no-such-resource-smoke-test"
 if [ "$status" = 404 ] && [[ "$ctype" == application/problem+json* ]]; then r=pass; else r=fail; fi
 $r "GET /api/v1/<bogus> (404 problem+json)" "$status $ctype"
+
+# Agent skill discovery: the index (reached through the .well-known exemption in .htaccess) names
+# the skill, and its digest matches the SKILL.md served next to it.
+fetch "/.well-known/agent-skills/index.json"
+cp "$tmp/body" "$tmp/index.json"
+istatus="$status"; ictype="$ctype"
+fetch "/.well-known/agent-skills/free-datasets/SKILL.md"
+# shellcheck disable=SC2016 # PHP code, not shell
+digest_ok="$(php -r '$d = json_decode((string) file_get_contents($argv[1]), true); $s = $d["skills"][0] ?? []; echo (($s["name"] ?? "") === "free-datasets" && ($s["digest"] ?? "") === "sha256:" . hash_file("sha256", $argv[2])) ? 1 : 0;' "$tmp/index.json" "$tmp/body" 2>/dev/null || echo 0)"
+if [ "$istatus" = 200 ] && [[ "$ictype" == application/json* ]] && [ "$status" = 200 ] && [[ "$ctype" == text/markdown* ]] && [ "$digest_ok" = 1 ]; then r=pass; else r=fail; fi
+$r "GET /.well-known/agent-skills/ (index + SKILL.md)" "$istatus $ictype; $status $ctype; digest_ok=$digest_ok"
+
+# MCP endpoint, modern (stateless) request: the MCP-Protocol-Version / Mcp-Method headers must
+# reach PHP (the server rejects a request whose headers are missing), and tools/list returns the
+# three tools.
+out="$(curl -sS -o "$tmp/body" -w '%{http_code} %{content_type}' --max-time 20 -X POST \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -H 'MCP-Protocol-Version: 2026-07-28' -H 'Mcp-Method: tools/list' \
+  --data '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{}}}}' \
+  "${DEPLOY_PUBLIC_URL}/mcp" 2>"$tmp/err")" || out="000 -"
+status="${out%% *}"; ctype="${out#* }"
+# shellcheck disable=SC2016 # PHP code, not shell
+tools="$(php -r '$d = json_decode((string) file_get_contents($argv[1]), true); echo implode(",", array_column($d["result"]["tools"] ?? [], "name")) ?: ($d["error"]["message"] ?? "-");' "$tmp/body" 2>/dev/null || echo -)"
+if [ "$status" = 200 ] && [ "$tools" = "search_datasets,get_dataset,list_categories" ]; then r=pass; else r=fail; fi
+$r "POST /mcp tools/list (2026-07-28 headers)" "$status, $tools"
 
 # Explorer proxy: the open-meteo example comes back 200 through it; a foreign host is refused.
 explore() {

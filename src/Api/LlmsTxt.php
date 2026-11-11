@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Datasets\Api;
 
+use Datasets\Agents\Setup;
 use Datasets\Catalog;
 use Datasets\Url;
 
@@ -35,6 +36,10 @@ final class LlmsTxt
         $out[] = "- List / search: `GET $api/datasets?q=earthquake&keyless=true&limit=10`";
         $out[] = "- One dataset: `GET $api/datasets/{slug}`";
         $out[] = "- Categories: $api/categories, tags: $api/tags, facet counts: $api/facets";
+        $setup = new Setup($this->url);
+        $out[] = '- Agent skill (how to use this catalogue): ' . $setup->skillUrl() . ' (install: `' . $setup->skillsAdd() . '`)';
+        $out[] = '- MCP server (remote, read-only, no key): ' . $setup->mcpUrl();
+        $out[] = '- Setup for agents (prompt, skill, MCP, curl): ' . $this->url->absolute('/agents');
         $out[] = '';
         $out[] = '## Key filters for /datasets';
         $out[] = '';
@@ -90,13 +95,18 @@ final class LlmsTxt
      * prefixed install this file is advisory (it documents intent and is what tools fetch when
      * pointed at the app); the real controls are the noindex headers and meta tags.
      *
-     * @param string|null $explorePath root-relative path of the explorer proxy, kept out of crawlers
-     * @param string|null $sitemapUrl  absolute URL of the sitemap
+     * @param list<string>|string|null $disallow root-relative paths kept out of crawlers (the
+     *                                           explorer proxy, the MCP endpoint)
+     * @param string|null              $sitemapUrl absolute URL of the sitemap
      */
-    public static function robots(?string $explorePath = null, ?string $sitemapUrl = null): string
+    public static function robots(array|string|null $disallow = null, ?string $sitemapUrl = null): string
     {
-        return "User-agent: *\nAllow: /\n" . ($explorePath !== null ? "Disallow: $explorePath\n" : '')
-            . ($sitemapUrl !== null ? "\nSitemap: $sitemapUrl\n" : '');
+        $lines = '';
+        foreach ((array) $disallow as $path) {
+            $lines .= "Disallow: $path\n";
+        }
+
+        return "User-agent: *\nAllow: /\n" . $lines . ($sitemapUrl !== null ? "\nSitemap: $sitemapUrl\n" : '');
     }
 
     private static function md(string $s): string

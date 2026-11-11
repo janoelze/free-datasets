@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Datasets;
 
+use Datasets\Agents\Skill;
 use Datasets\Api\ApiController;
 use Datasets\Api\LlmsTxt;
 use Datasets\Explore\ExploreController;
@@ -11,6 +12,7 @@ use Datasets\Http\Http;
 use Datasets\Http\Request;
 use Datasets\Http\Response;
 use Datasets\Http\Router;
+use Datasets\Mcp\Server as McpServer;
 use Datasets\Seo\Feed;
 use Datasets\Seo\Sitemap;
 use Datasets\Web\PageController;
@@ -20,6 +22,9 @@ final class App
 {
     /** Machine-readable files that crawlers should read but not list as search results. */
     private const NOINDEX_FILES = ['/llms.txt', '/sitemap.xml', '/feed.xml'];
+
+    /** Files for agents and tools: CORS-open like the API, never search results. */
+    private const AGENT_FILES = [Skill::INDEX_PATH, Skill::SKILL_PATH];
 
     private ?Catalog $catalog = null;
 
@@ -50,11 +55,15 @@ final class App
         $isApi = $req->isApi();
         // The explorer proxy speaks JSON but is not part of the API: no CORS headers, ever.
         $isExplore = $req->path === '/explore';
+        // The MCP endpoint sets its own headers (CORS "*", no-store) and answers every method itself.
+        $isMcp = $req->path === '/mcp';
 
         try {
-            $response = $isExplore
-                ? (new ExploreController($this->catalog(), $req, $this->config))->handle()
-                : $this->dispatch($req, $isApi);
+            $response = match (true) {
+                $isExplore => (new ExploreController($this->catalog(), $req, $this->config))->handle(),
+                $isMcp => (new McpServer($this->catalog(), $req, $this->config))->handle(),
+                default => $this->dispatch($req, $isApi),
+            };
         } catch (\Throwable $e) {
             error_log('[datasets] ' . $e::class . ': ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             $response = $isApi || $isExplore
@@ -64,9 +73,15 @@ final class App
             if ($isExplore) {
                 ExploreController::withHeaders($response);
             }
+            if ($isMcp) {
+                $response = McpServer::withHeaders(Http::json(['jsonrpc' => '2.0', 'error' => ['code' => -32603, 'message' => 'Internal error']], 500));
+            }
         }
 
-        if ($isApi) {
+        if ($isMcp) {
+            return Http::finalize($req, $response);
+        }
+        if ($isApi || in_array($req->path, self::AGENT_FILES, true)) {
             Http::withApiHeaders($response);
             // The JSON mirrors the HTML pages; keep it out of search results (the HTML is canonical).
             $response->withHeader('X-Robots-Tag', 'noindex');
@@ -158,7 +173,9 @@ final class App
             ->get('/api/v1/schema', fn () => $api()->schema())
             ->get('/api/v1/openapi.json', fn () => $api()->openapi())
             ->get('/llms.txt', fn () => Http::text((new LlmsTxt($this->catalog(), Url::current()))->render(), 200, 'text/plain; charset=utf-8'))
-            ->get('/robots.txt', fn () => Http::text(LlmsTxt::robots(Url::current()->path('/explore'), Url::current()->absolute('/sitemap.xml'))))
+            ->get('/robots.txt', fn () => Http::text(LlmsTxt::robots([Url::current()->path('/explore'), Url::current()->path('/mcp')], Url::current()->absolute('/sitemap.xml'))))
+            ->get(Skill::INDEX_PATH, fn () => Http::json(Skill::fromConfig($this->config)->discovery()))
+            ->get(Skill::SKILL_PATH, fn () => Http::text(Skill::fromConfig($this->config)->markdown(), 200, 'text/markdown; charset=utf-8'))
             ->get('/sitemap.xml', fn () => Http::text((new Sitemap($this->catalog(), Url::current()))->render(), 200, 'application/xml; charset=utf-8'))
             ->get('/feed.xml', fn () => Http::text((new Feed($this->catalog(), Url::current()))->render(), 200, 'application/atom+xml; charset=utf-8'))
             ->get('/', fn () => $pages()->home())
@@ -167,7 +184,8 @@ final class App
             ->get('/t', fn () => $pages()->tags())
             ->get('/t/{tag}', fn (string $tag) => $pages()->tag($tag))
             ->get('/api', fn () => $pages()->api())
-            ->get('/about', fn () => $pages()->about());
+            ->get('/about', fn () => $pages()->about())
+            ->get('/agents', fn () => $pages()->agents());
     }
 
     private function pages(Request $req): PageController

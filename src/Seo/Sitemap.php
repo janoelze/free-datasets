@@ -11,7 +11,7 @@ use Datasets\Url;
  * Every indexable HTML URL, for /sitemap.xml (sitemaps.org 0.9) and the tests that check the
  * sitemap against the index policy. lastmod is a real date: a record's is the later of `added`
  * and `verification.last_verified`; a listing page's is the latest of its records. Pages that do
- * not derive from records (/api, /about) have no lastmod rather than an invented one. No
+ * not derive from records (/api, /about, /agents) have no lastmod rather than an invented one. No
  * changefreq/priority: Google ignores both.
  */
 final class Sitemap
@@ -47,6 +47,7 @@ final class Sitemap
             ['loc' => $this->url->absolute('/'), 'lastmod' => self::latest($all)],
             ['loc' => $this->url->absolute('/api'), 'lastmod' => null],
             ['loc' => $this->url->absolute('/about'), 'lastmod' => null],
+            ['loc' => $this->url->absolute('/agents'), 'lastmod' => null],
         ];
         foreach ($this->catalog->categories() as $c) {
             if ($c['count'] > 0) {

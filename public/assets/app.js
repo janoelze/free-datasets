@@ -66,6 +66,20 @@
     return ok;
   }
 
+  /* ---------- "Use with your agent" panel ---------- */
+  // Works as plain <details> + CSS tabs; this only lets Escape close it and return focus.
+  function initAgentPanel() {
+    var panel = document.querySelector('[data-agent]');
+    if (!panel) return;
+    panel.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape' || !panel.open) return;
+      ev.preventDefault();
+      panel.open = false;
+      var summary = panel.querySelector('summary');
+      if (summary) summary.focus();
+    });
+  }
+
   /* ---------- instant filtering (home) ---------- */
   function initFilters() {
     var form = document.querySelector('[data-filter-form]');
@@ -208,6 +222,7 @@
   function init() {
     initTheme();
     initCopy();
+    initAgentPanel();
     initFilters();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -40,6 +40,49 @@ coordinate order, gotchas), `caveats`, any `required_headers` (several APIs bloc
 without a descriptive User-Agent) and a verified `example` request you can adapt. Check
 `verification.last_verified` and `status` before relying on an entry.
 
+## Use it from your agent
+
+Four ways, all reading the live catalogue, none needing a key (also on
+https://endtime-instruments.org/free-datasets/agents and behind "Use with your agent" on every page).
+
+**Prompt**, for any agent or chat that can fetch a web page:
+
+```text
+Read https://endtime-instruments.org/free-datasets/.well-known/agent-skills/free-datasets/SKILL.md and follow it whenever I need a free API or dataset: search that live catalogue first, then call the API it recommends.
+```
+
+**Skill**: [`plugins/free-datasets/skills/free-datasets/SKILL.md`](plugins/free-datasets/skills/free-datasets/SKILL.md),
+one Markdown file that tells the agent how to query the catalogue (it holds no data).
+
+```sh
+# Claude Code (this repo is a plugin marketplace)
+claude plugin install free-datasets --marketplace https://github.com/janoelze/free-datasets
+
+# Codex, Cursor, Gemini CLI, GitHub Copilot, opencode and others (skills CLI; reads the site's
+# /.well-known/agent-skills/index.json; `npx skills add https://github.com/janoelze/free-datasets` works too)
+npx skills add https://endtime-instruments.org/free-datasets
+
+# By hand
+mkdir -p ~/.claude/skills/free-datasets && curl -fsSL https://endtime-instruments.org/free-datasets/.well-known/agent-skills/free-datasets/SKILL.md -o ~/.claude/skills/free-datasets/SKILL.md
+```
+
+**MCP server** (remote, read-only, stateless Streamable HTTP; tools `search_datasets`,
+`get_dataset`, `list_categories`), mainly for chat apps without a shell: add
+`https://endtime-instruments.org/free-datasets/mcp` as a custom connector in claude.ai / Claude
+Desktop, ChatGPT or any client that takes a server URL.
+
+```sh
+claude mcp add --transport http free-datasets https://endtime-instruments.org/free-datasets/mcp
+```
+
+**curl**: see [Using the API](#using-the-api).
+
+Updates: the prompt, the MCP server and the API are always current. Installed skills are copies
+and are not refreshed automatically, but they only describe how to query the catalogue, so they
+rarely change. Update with `claude plugin update free-datasets@free-datasets` (Claude Code; the
+plugin version in `plugins/free-datasets/.claude-plugin/plugin.json` must be bumped for a change
+to reach users) or `npx skills update`; by hand, run the same command again.
+
 ## The record format
 
 One file per dataset, `datasets/<slug>.json`, validated against
