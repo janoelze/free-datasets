@@ -1,0 +1,88 @@
+{
+  "slug": "first-epss",
+  "name": "FIRST EPSS API",
+  "provider": {
+    "name": "FIRST.org",
+    "url": "https://www.first.org/epss/",
+    "type": "nonprofit"
+  },
+  "summary": "Exploit Prediction Scoring System: daily probability that a CVE will be exploited.",
+  "description": "Returns EPSS probability and percentile for CVEs, with daily snapshots and time-series history. Complements CVSS severity with exploitation likelihood.",
+  "category": "security",
+  "tags": [
+    "epss",
+    "cve",
+    "exploit-prediction",
+    "risk",
+    "vulnerabilities"
+  ],
+  "links": {
+    "homepage": "https://www.first.org/epss/",
+    "docs": "https://www.first.org/epss/api",
+    "terms": "https://www.first.org/epss/"
+  },
+  "api": {
+    "base_url": "https://api.first.org/data/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not numerically documented; reasonable use. Batch up to 100 CVEs per request"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/epss",
+      "summary": "Scores for CVEs",
+      "params": [
+        "cve (comma list)",
+        "date",
+        "scope=time-series",
+        "order",
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.first.org/data/v1/epss?cve=CVE-2021-44228",
+    "response_excerpt": "{\n \"status\": \"OK\",\n \"total\": 1,\n \"data\": [\n  {\n   \"cve\": \"CVE-2021-44228\",\n   \"epss\": \"0.999990000\",\n   \"percentile\": \"1.000000000\",\n   \"date\": \"2026-11-10\"\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Free to use with attribution to FIRST EPSS",
+      "url": "https://www.first.org/epss/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Daily snapshots with time-series history"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Pass up to 100 comma-separated CVE IDs in the cve parameter. Scores come back as strings; epss is the probability and percentile the rank among all CVEs.",
+  "caveats": [
+    "Attribution requested."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "nvd-cve-api",
+    "cisa-kev",
+    "osv-dev"
+  ],
+  "added": "2026-11-11"
+}

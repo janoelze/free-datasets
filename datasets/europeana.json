@@ -1,0 +1,111 @@
+{
+  "slug": "europeana",
+  "name": "Europeana REST API",
+  "provider": {
+    "name": "Europeana Foundation",
+    "url": "https://www.europeana.eu",
+    "type": "nonprofit"
+  },
+  "summary": "Search 60M+ cultural heritage items from European museums, libraries and archives.",
+  "description": "Aggregates digitised books, artworks, photographs, audio and video from 4,000+ European institutions. The Search API supports faceting and reusability filters (open rights) and returns Dublin Core-style metadata, thumbnails and rights statements. Record, Entity, Annotation and IIIF APIs are also available.",
+  "category": "art-museums",
+  "tags": [
+    "cultural-heritage",
+    "europe",
+    "museums",
+    "archives",
+    "images",
+    "dublin-core",
+    "iiif"
+  ],
+  "links": {
+    "homepage": "https://www.europeana.eu",
+    "docs": "https://pro.europeana.eu/page/search",
+    "terms": "https://www.europeana.eu/en/rights/api-terms-of-use",
+    "signup": "https://pro.europeana.eu/pages/get-api"
+  },
+  "api": {
+    "base_url": "https://api.europeana.eu/record/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "wskey",
+      "demo_key": "api2demo",
+      "notes": "Free key by signup; the shared api2demo key works for testing but is heavily limited."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Default 10,000 requests/day per key (documented).",
+      "requests": 10000,
+      "per": "day",
+      "scope": "key"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search.json",
+      "summary": "Search items",
+      "params": [
+        "wskey",
+        "query",
+        "rows",
+        "start",
+        "reusability",
+        "profile",
+        "qf"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{datasetId}/{localId}.json",
+      "summary": "Single record"
+    },
+    {
+      "method": "GET",
+      "path": "https://api.europeana.eu/entity/suggest",
+      "summary": "Entity suggestions"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.europeana.eu/record/v2/search.json?wskey=api2demo&query=mona+lisa&rows=1",
+    "response_excerpt": "{\"apikey\":\"api2demo\",\"success\":true,\"itemsCount\":1,\"totalResults\":627,\"items\":[{\"id\":\"/92023/images_billed_2010_okt_billeder_object366120\",\"title\":[\"Mona Lisa\"],\"type\":\"IMAGE\",\"year\":[\"1978\"],\"rights\":[\"http://creativecommons.org/licenses/by-nc-nd/4.0/\"]}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Metadata CC0; items carry their own rights (for example CC BY-NC-ND or public domain)",
+      "url": "https://www.europeana.eu/en/rights/api-terms-of-use",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "60M+ items from institutions in 40+ countries",
+      "temporal": "Continuously aggregated"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Register for a personal key; api2demo is shared. Check the rights field on every item before reuse, and use reusability=open to filter to openly licensed items. A wskey that is invalid returns a 401 JSON error.",
+  "caveats": [
+    "api2demo is shared and heavily limited.",
+    "Items have mixed licenses; metadata is CC0 but the digital objects are not."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Executed with the shared api2demo key; an invalid key returned 401 (401_key_invalid)."
+  },
+  "related": [
+    "met-museum",
+    "rijksmuseum",
+    "internet-archive"
+  ],
+  "added": "2026-11-11"
+}

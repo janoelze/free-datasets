@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://endtime-instruments.org/datasets/api/v1/schema",
+  "title": "Dataset",
+  "description": "One free dataset with a free, open REST API. Every file in datasets/ must validate against this schema. Unknown properties are rejected.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "name", "provider", "summary", "description", "category", "tags", "links", "api", "endpoints", "example", "data", "status", "verification", "added"],
+  "properties": {
+    "slug": {
+      "description": "Stable identifier. Must equal the file name without .json.",
+      "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "minLength": 2, "maxLength": 60
+    },
+    "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+    "provider": {
+      "type": "object", "additionalProperties": false, "required": ["name", "type"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "url": { "type": "string", "format": "uri" },
+        "type": { "description": "Who runs the API.", "enum": ["government", "intergovernmental", "nonprofit", "academic", "community", "company", "individual"] }
+      }
+    },
+    "summary": { "description": "One sentence, plain text, no trailing marketing.", "type": "string", "minLength": 20, "maxLength": 200 },
+    "description": { "description": "Two to four sentences on what data is available.", "type": "string", "minLength": 60, "maxLength": 1200 },
+    "category": { "description": "Exactly one id from schema/categories.json.", "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "tags": {
+      "description": "Lower-case kebab-case topic tags. Do not repeat facts held elsewhere (no 'no-key', 'cors', 'free', 'json').",
+      "type": "array", "minItems": 2, "maxItems": 8, "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 30 }
+    },
+    "links": {
+      "type": "object", "additionalProperties": false, "required": ["homepage", "docs"],
+      "properties": {
+        "homepage": { "type": "string", "format": "uri" },
+        "docs": { "type": "string", "format": "uri" },
+        "terms": { "type": "string", "format": "uri" },
+        "openapi": { "description": "Machine-readable OpenAPI/Swagger document. Only set when the URL was confirmed to return a spec.", "type": "string", "format": "uri" },
+        "signup": { "description": "Where to get a free key.", "type": "string", "format": "uri" },
+        "bulk_download": { "description": "Dumps or files for when the whole dataset is wanted.", "type": "string", "format": "uri" },
+        "source": { "description": "Source code of the API or dataset.", "type": "string", "format": "uri" }
+      }
+    },
+    "api": {
+      "type": "object", "additionalProperties": false,
+      "required": ["base_url", "style", "formats", "auth", "cors", "rate_limit", "pagination"],
+      "properties": {
+        "base_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "style": { "description": "Dominant query style.", "enum": ["rest", "graphql", "sparql", "odata", "sdmx", "static-file", "rpc"] },
+        "formats": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "enum": ["json", "geojson", "json-ld", "csv", "xml", "rss", "text", "html", "yaml", "protobuf", "parquet", "image", "other"] }
+        },
+        "auth": {
+          "type": "object", "additionalProperties": false, "required": ["type"],
+          "properties": {
+            "type": { "description": "What is needed for ordinary use. 'none' means the documented endpoints work without any credential.", "enum": ["none", "api_key", "oauth2"] },
+            "key_optional": { "description": "True when auth.type is 'none' but a free key raises limits.", "type": "boolean" },
+            "key_in": { "enum": ["query", "header", "path"] },
+            "key_name": { "description": "Query parameter or header name carrying the key.", "type": "string", "maxLength": 60 },
+            "demo_key": { "description": "Publicly documented shared test key, if any.", "type": "string", "maxLength": 60 },
+            "notes": { "type": "string", "maxLength": 400 }
+          }
+        },
+        "required_headers": {
+          "description": "Headers without which requests fail or get blocked (e.g. a descriptive User-Agent).",
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["name"],
+            "properties": {
+              "name": { "type": "string", "maxLength": 60 },
+              "example": { "type": "string", "maxLength": 200 },
+              "notes": { "type": "string", "maxLength": 300 }
+            }
+          }
+        },
+        "cors": {
+          "description": "Browser usability, from a real response. 'any' = Access-Control-Allow-Origin: *; 'reflect' = echoes the request origin; 'restricted' = only specific origins; 'none' = no CORS header; 'unknown' = not confirmed.",
+          "enum": ["any", "reflect", "restricted", "none", "unknown"]
+        },
+        "rate_limit": {
+          "type": "object", "additionalProperties": false, "required": ["summary"],
+          "properties": {
+            "summary": { "description": "Human-readable limit as documented, or 'Not documented'.", "type": "string", "minLength": 3, "maxLength": 400 },
+            "requests": { "description": "Keyless/free-tier request budget, when a number is documented.", "type": "integer", "minimum": 1 },
+            "per": { "enum": ["second", "minute", "hour", "day", "month"] },
+            "scope": { "enum": ["ip", "key", "user", "global"] }
+          },
+          "dependentRequired": { "requests": ["per"], "per": ["requests"] }
+        },
+        "pagination": { "enum": ["none", "offset", "page", "cursor", "link-header", "other", "unknown"] },
+        "max_page_size": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "endpoints": {
+      "description": "Two to six endpoints that show what the API can do.",
+      "type": "array", "minItems": 1, "maxItems": 6,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["method", "path", "summary"],
+        "properties": {
+          "method": { "enum": ["GET", "POST"] },
+          "path": { "description": "Path relative to api.base_url (starting with /), or an absolute https URL when on another host.", "type": "string", "pattern": "^(/|https://)", "maxLength": 300 },
+          "summary": { "type": "string", "minLength": 3, "maxLength": 200 },
+          "params": { "description": "Names of the most useful parameters.", "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 80 } }
+        }
+      }
+    },
+    "example": {
+      "description": "One request that was actually executed, with a trimmed excerpt of what came back.",
+      "type": "object", "additionalProperties": false, "required": ["method", "url", "response_excerpt"],
+      "properties": {
+        "method": { "enum": ["GET", "POST"] },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "headers": { "type": "object", "additionalProperties": { "type": "string" } },
+        "body": { "type": "string", "maxLength": 1000 },
+        "response_excerpt": { "type": "string", "minLength": 2, "maxLength": 2500 }
+      }
+    },
+    "data": {
+      "type": "object", "additionalProperties": false, "required": ["license", "update_frequency"],
+      "properties": {
+        "license": {
+          "type": "object", "additionalProperties": false, "required": ["name", "commercial_use"],
+          "properties": {
+            "name": { "description": "As stated by the provider, e.g. 'CC BY 4.0', 'Public domain (US Government work)', 'Varies per record'.", "type": "string", "minLength": 2, "maxLength": 200 },
+            "spdx": { "description": "SPDX identifier when one applies, e.g. CC-BY-4.0, CC0-1.0, ODbL-1.0.", "type": "string", "pattern": "^[A-Za-z0-9.+-]+$" },
+            "url": { "type": "string", "format": "uri" },
+            "attribution_required": { "type": "boolean" },
+            "commercial_use": { "enum": ["allowed", "restricted", "prohibited", "unknown"] }
+          }
+        },
+        "coverage": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "geographic": { "description": "e.g. 'Global', 'United States', 'EU member states'.", "type": "string", "maxLength": 200 },
+            "temporal": { "description": "e.g. '1940–present', 'Next 16 days'.", "type": "string", "maxLength": 200 }
+          }
+        },
+        "update_frequency": { "enum": ["realtime", "hourly", "daily", "weekly", "monthly", "quarterly", "annually", "irregular", "static"] }
+      }
+    },
+    "agent_notes": { "description": "Practical advice for an AI agent or developer calling this API: gotchas, units, id systems, coordinate order, when to prefer it.", "type": "string", "maxLength": 1000 },
+    "caveats": { "type": "array", "maxItems": 8, "items": { "type": "string", "minLength": 3, "maxLength": 400 } },
+    "status": { "description": "'unstable' = works but undocumented, unofficial or flaky; 'deprecated' = announced end of life.", "enum": ["active", "unstable", "deprecated"] },
+    "verification": {
+      "type": "object", "additionalProperties": false, "required": ["last_verified", "http_status", "with_key"],
+      "properties": {
+        "last_verified": { "description": "Date example.url was last executed.", "type": "string", "format": "date" },
+        "http_status": { "type": "integer", "minimum": 100, "maximum": 599 },
+        "with_key": { "description": "False when the API needs a key and only the unauthenticated error response was observed.", "type": "boolean" },
+        "notes": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "hn": {
+      "description": "Hacker News discussions about this API.",
+      "type": "array", "maxItems": 5,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["url"],
+        "properties": {
+          "url": { "type": "string", "pattern": "^https://news\\.ycombinator\\.com/item\\?id=[0-9]+$" },
+          "title": { "type": "string", "maxLength": 200 },
+          "points": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "related": { "description": "Slugs of related entries in this library.", "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" } },
+    "added": { "type": "string", "format": "date" }
+  }
+}

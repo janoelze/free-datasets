@@ -1,0 +1,95 @@
+{
+  "slug": "gutendex",
+  "name": "Gutendex (Project Gutenberg)",
+  "provider": {
+    "name": "Gutendex (community) / Project Gutenberg metadata",
+    "url": "https://gutendex.com",
+    "type": "community"
+  },
+  "summary": "JSON API over Project Gutenberg's catalogue of 70,000+ public-domain ebooks.",
+  "description": "Search and filter Project Gutenberg books by title or author, language, topic, author lifespan, copyright status and ID. Each record includes authors, subjects, bookshelves, languages, download counts, summaries and direct download URLs for epub, HTML, plain text and covers.",
+  "category": "books-literature",
+  "tags": [
+    "public-domain",
+    "ebooks",
+    "gutenberg",
+    "literature",
+    "books",
+    "full-text-download"
+  ],
+  "links": {
+    "homepage": "https://gutendex.com",
+    "docs": "https://gutendex.com",
+    "terms": "https://www.gutenberg.org/policy/permission.html"
+  },
+  "api": {
+    "base_url": "https://gutendex.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; responses are cached for 4 hours (cache-control max-age=14400), so be polite."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/books",
+      "summary": "List and search books",
+      "params": [
+        "search",
+        "languages",
+        "topic",
+        "author_year_start",
+        "author_year_end",
+        "copyright",
+        "ids",
+        "sort",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/books/{id}",
+      "summary": "Single book by Gutenberg ID"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://gutendex.com/books/?search=dickens&languages=en",
+    "response_excerpt": "{\"count\":187,\"next\":\"https://gutendex.com/books/?languages=en&page=2&search=dickens\",\"results\":[{\"id\":98,\"title\":\"A Tale of Two Cities\",\"authors\":[{\"name\":\"Dickens, Charles\",\"birth_year\":1812,\"death_year\":1870}],\"languages\":[\"en\"],\"copyright\":false,\"download_count\":50704}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Metadata free to use; books are public domain (US) per Project Gutenberg",
+      "url": "https://www.gutenberg.org/policy/permission.html",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "About 75k books in many languages, mostly English"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Paginate by following the next URL in each response. Filter with languages=en and copyright=false for clearly public-domain English text. Download links in each record point to the actual book files.",
+  "caveats": [
+    "Community-run hosted service, not the official Project Gutenberg.",
+    "The first request in testing timed out once (20 s) before succeeding, so expect occasional slowness."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "open-library",
+    "internet-archive"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,118 @@
+{
+  "slug": "nasa-open-apis",
+  "name": "NASA Open APIs (APOD, NeoWs, EPIC, DONKI)",
+  "provider": {
+    "name": "NASA",
+    "url": "https://api.nasa.gov",
+    "type": "government"
+  },
+  "summary": "Collection of NASA APIs: Astronomy Picture of the Day, near-Earth objects, EPIC Earth imagery, DONKI space weather and more.",
+  "description": "One api.nasa.gov key unlocks many endpoints: APOD (daily astronomy image with explanation), NeoWs (near-Earth asteroid feed and lookup), DONKI (solar flares, CMEs, geomagnetic storms), EPIC (full-disc Earth imagery), Mars rover photos, TechTransfer and more. The shared key DEMO_KEY works without signup at low limits.",
+  "category": "space-astronomy",
+  "tags": [
+    "nasa",
+    "astronomy",
+    "apod",
+    "asteroids",
+    "mars",
+    "space-weather",
+    "earth-imagery"
+  ],
+  "links": {
+    "homepage": "https://api.nasa.gov",
+    "docs": "https://api.nasa.gov/",
+    "terms": "https://api.nasa.gov/",
+    "signup": "https://api.nasa.gov/"
+  },
+  "api": {
+    "base_url": "https://api.nasa.gov",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "demo_key": "DEMO_KEY",
+      "notes": "Free signup at api.nasa.gov; DEMO_KEY works for testing at low limits."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "DEMO_KEY: 30 requests/hour and 50/day per IP (documented); a registered free key: 1,000 requests/hour. x-ratelimit-limit: 10 was observed on DEMO_KEY.",
+      "requests": 1000,
+      "per": "hour",
+      "scope": "key"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/planetary/apod",
+      "summary": "Astronomy Picture of the Day",
+      "params": [
+        "date",
+        "start_date",
+        "end_date",
+        "count",
+        "thumbs"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/neo/rest/v1/feed",
+      "summary": "Near-Earth objects by date range",
+      "params": [
+        "start_date",
+        "end_date"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/DONKI/FLR",
+      "summary": "Solar flare events",
+      "params": [
+        "startDate",
+        "endDate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/EPIC/api/natural",
+      "summary": "Latest EPIC Earth image metadata"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=2026-11-10",
+    "response_excerpt": "{\n  \"date\": \"2026-11-10\",\n  \"title\": \"NASA Science\",\n  \"media_type\": \"image\",\n  \"url\": \"https://science.nasa.gov/wp-content/themes/nasa-child/assets/images/nasa-logo@2x.png\",\n  \"explanation\": \"Don’t judge a galaxy by its size. Our home galaxy, the Milky Way, is about 100,000 light years across...\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Mostly public domain; individual APOD images may carry copyright",
+      "url": "https://api.nasa.gov/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, plus solar and near-Earth space data",
+      "temporal": "APOD from 1995-06-16"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Register a free key for real use; DEMO_KEY is heavily rate limited. Pass an explicit date to APOD to avoid empty or transient errors, and check media_type since APOD can be a video.",
+  "caveats": [
+    "APOD sometimes returns video or placeholder content, and individual images may be copyrighted (see the copyright field).",
+    "A first request without a date returned HTTP 500 once (transient); retry with an explicit date.",
+    "Only APOD was verified directly; other sub-APIs are as per NASA docs.",
+    "CORS echoes the requesting Origin."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Verified with DEMO_KEY."
+  },
+  "added": "2026-11-11"
+}

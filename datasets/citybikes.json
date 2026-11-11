@@ -1,0 +1,88 @@
+{
+  "slug": "citybikes",
+  "name": "CityBikes API",
+  "provider": {
+    "name": "CityBikes",
+    "url": "https://citybik.es",
+    "type": "community"
+  },
+  "summary": "Bike-share networks worldwide with live station availability.",
+  "description": "Normalized JSON for hundreds of bikeshare systems: list of networks, and for each, station coordinates, free bikes and empty slots. Also links the original GBFS feed.",
+  "category": "transport-mobility",
+  "tags": [
+    "bikeshare",
+    "gbfs",
+    "mobility",
+    "stations",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://citybik.es",
+    "docs": "https://api.citybik.es/v2/",
+    "terms": "https://citybik.es/terms"
+  },
+  "api": {
+    "base_url": "https://api.citybik.es/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "300 requests/hour per IP (observed ratelimit-limit: 300)",
+      "requests": 300,
+      "per": "hour",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/networks",
+      "summary": "List networks",
+      "params": [
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/networks/{id}",
+      "summary": "Network with stations",
+      "params": [
+        "fields"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.citybik.es/v2/networks/citi-bike-nyc",
+    "response_excerpt": "{\n \"network\": {\n  \"id\": \"citi-bike-nyc\",\n  \"name\": \"Citi Bike\",\n  \"location\": {\n   \"latitude\": 40.7143528,\n   \"longitude\": -74.00597309999999,\n   \"city\": \"New York, NY\",\n   \"country\": \"US\"\n  }\n },\n \"stations_count\": 2464,\n \"first_station\": {\n  \"id\": \"0007398f39bd26118c9fdfd5197ccada\",\n..."
+  },
+  "data": {
+    "license": {
+      "name": "Data from operators; CityBikes terms",
+      "url": "https://citybik.es/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (~700 networks)",
+      "temporal": "Live"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "List networks first, then fetch one by id for its stations. Use the fields parameter to limit payload. Native GBFS feeds are another keyless option.",
+  "caveats": [
+    "Use ?fields= to limit payload. Native GBFS feeds (e.g. gbfs.citibikenyc.com/gbfs/gbfs.json) are another keyless option."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "added": "2026-11-11"
+}

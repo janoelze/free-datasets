@@ -1,0 +1,106 @@
+{
+  "slug": "us-treasury-fiscaldata",
+  "name": "U.S. Treasury FiscalData API",
+  "provider": {
+    "name": "U.S. Department of the Treasury, Bureau of the Fiscal Service",
+    "url": "https://fiscaldata.treasury.gov/",
+    "type": "government"
+  },
+  "summary": "Keyless US federal finance data: national debt, exchange rates, interest rates, revenue and spending.",
+  "description": "Dozens of datasets from the Bureau of the Fiscal Service: Debt to the Penny, Monthly Treasury Statement, Treasury reporting rates of exchange, average interest rates on securities, savings bonds, gold reserves and federal spending. Uniform REST query syntax with fields, filter, sort and page parameters.",
+  "category": "finance-markets",
+  "tags": [
+    "us-treasury",
+    "national-debt",
+    "federal-budget",
+    "interest-rates",
+    "government-finance",
+    "usa",
+    "exchange-rates"
+  ],
+  "links": {
+    "homepage": "https://fiscaldata.treasury.gov/",
+    "docs": "https://fiscaldata.treasury.gov/api-documentation/",
+    "terms": "https://fiscaldata.treasury.gov/api-documentation/#terms-of-use"
+  },
+  "api": {
+    "base_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented; fair use."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/v2/accounting/od/debt_to_penny",
+      "summary": "Total public debt outstanding",
+      "params": [
+        "fields",
+        "sort",
+        "page[size]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/accounting/od/rates_of_exchange",
+      "summary": "Treasury reporting rates of exchange",
+      "params": [
+        "filter"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v2/accounting/od/avg_interest_rates",
+      "summary": "Average interest rates on securities",
+      "params": [
+        "filter",
+        "sort"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny?page%5Bsize%5D=1&sort=-record_date&fields=record_date,tot_pub_debt_out_amt",
+    "response_excerpt": "{\"data\": [{\"record_date\": \"2026-11-09\", \"tot_pub_debt_out_amt\": \"40559796589243.37\"}], \"meta\": {\"count\": 1, \"total-count\": 8431, \"total-pages\": 8431}}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US government work)",
+      "url": "https://fiscaldata.treasury.gov/api-documentation/#terms-of-use",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "1790s-present depending on dataset"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "All values come back as strings, so parse numbers yourself. Square brackets in page[size] and filter syntax must be URL-encoded (or use curl -g). Sort with a leading minus (sort=-record_date) for newest first.",
+  "caveats": [
+    "All values are strings.",
+    "Update frequency differs per dataset: debt daily (latest 2026-11-09), others monthly or quarterly."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "fred",
+    "frankfurter"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,99 @@
+{
+  "slug": "noaa-coops",
+  "name": "NOAA CO-OPS Tides & Currents API",
+  "provider": {
+    "name": "NOAA Center for Operational Oceanographic Products and Services",
+    "url": "https://tidesandcurrents.noaa.gov",
+    "type": "government"
+  },
+  "summary": "Water levels, tide predictions, currents and meteorological observations from US coastal stations.",
+  "description": "The data getter returns water level, tide predictions (high/low and 6-minute), currents, wind, air and water temperature, pressure, salinity and more for roughly 3,000 stations, with datum and unit options. A separate metadata API lists stations and sensors.",
+  "category": "earth-environment",
+  "tags": [
+    "tides",
+    "ocean",
+    "water-level",
+    "coastal",
+    "noaa",
+    "observations"
+  ],
+  "links": {
+    "homepage": "https://tidesandcurrents.noaa.gov",
+    "docs": "https://api.tidesandcurrents.noaa.gov/api/prod/",
+    "terms": "https://tidesandcurrents.noaa.gov/disclaimers.html"
+  },
+  "api": {
+    "base_url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented; maximum date range per request applies (31 days for 6-minute data)."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/datagetter",
+      "summary": "Fetch product data",
+      "params": [
+        "product",
+        "station",
+        "begin_date",
+        "end_date",
+        "date",
+        "datum",
+        "time_zone",
+        "units",
+        "format",
+        "application"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json",
+      "summary": "Station list",
+      "params": [
+        "type"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=water_level&application=test&station=9414290&date=latest&datum=MLLW&time_zone=gmt&units=metric&format=json",
+    "response_excerpt": "{\n  \"metadata\": {\n    \"id\": \"9414290\",\n    \"name\": \"San Francisco\",\n    \"lat\": \"37.8063\",\n    \"lon\": \"-122.4659\"\n  },\n  \"data\": [\n    {\n      \"t\": \"2026-11-11 14:18\",\n      \"v\": \"1.298\",\n      \"s\": \"0.088\",\n      \"f\": \"1,0,0,0\",\n      \"q\": \"p\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US Government work)",
+      "url": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "US coasts, Great Lakes, some Pacific/Caribbean territories",
+      "temporal": "6-minute observations, near real time"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Set product (water_level, predictions, currents, ...), station id, datum, time_zone and units explicitly. Use date=latest for the newest reading, and always send an application name.",
+  "caveats": [
+    "Errors come back as HTTP 200 with an error object, so check the body.",
+    "The application parameter is requested for identification.",
+    "No OpenAPI spec found; a metadata API is at https://api.tidesandcurrents.noaa.gov/mdapi/prod/."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

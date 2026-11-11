@@ -1,0 +1,83 @@
+{
+  "slug": "sunrise-sunset",
+  "name": "Sunrise-Sunset API",
+  "provider": {
+    "name": "sunrise-sunset.org",
+    "url": "https://sunrise-sunset.org",
+    "type": "individual"
+  },
+  "summary": "Sunrise, sunset, solar noon, twilight times and day length for any coordinate and date.",
+  "description": "Given latitude, longitude and an optional date or timezone it returns sunrise, sunset, solar noon, day length and civil, nautical and astronomical twilight times. Using formatted=0 gives ISO 8601 UTC timestamps.",
+  "category": "time-calendar",
+  "tags": [
+    "sun",
+    "sunrise",
+    "sunset",
+    "twilight",
+    "daylight",
+    "astronomy"
+  ],
+  "links": {
+    "homepage": "https://sunrise-sunset.org",
+    "docs": "https://sunrise-sunset.org/api",
+    "terms": "https://sunrise-sunset.org/api"
+  },
+  "api": {
+    "base_url": "https://api.sunrise-sunset.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not specified; free with attribution requested."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/json",
+      "summary": "Sun times for a coordinate and date",
+      "params": [
+        "lat",
+        "lng",
+        "date",
+        "formatted",
+        "tzid"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.sunrise-sunset.org/json?lat=36.72&lng=-4.42&formatted=0",
+    "response_excerpt": "{\n  \"results\": {\n    \"sunrise\": \"2026-11-11T06:51:32+00:00\",\n    \"sunset\": \"2026-11-11T17:11:51+00:00\",\n    \"solar_noon\": \"2026-11-11T12:01:41+00:00\",\n    \"day_length\": 37219\n  },\n  \"status\": \"OK\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Free; attribution to sunrise-sunset.org required",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Computed for any date"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Use formatted=0 for ISO 8601 timestamps (default output is 12-hour strings in UTC). Parameters are lat and lng; pass date=YYYY-MM-DD or today.",
+  "caveats": [
+    "Polar regions may return 1970-01-01 placeholder values.",
+    "Documented via the website only; no machine-readable spec."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

@@ -1,0 +1,117 @@
+{
+  "slug": "hacker-news-firebase-api",
+  "name": "Hacker News API (Firebase)",
+  "provider": {
+    "name": "Y Combinator / Hacker News",
+    "url": "https://news.ycombinator.com/",
+    "type": "company"
+  },
+  "summary": "Official real-time read-only API for every Hacker News story, comment, job, poll and user.",
+  "description": "Items (stories, comments, jobs, polls, poll options) and users are exposed as JSON documents on Firebase, with list endpoints for top, new, best, ask, show and job stories and a changed-items feed (updates.json) for incremental sync. Item IDs are sequential integers, so the full history can be walked down from maxitem.json. Firebase streaming (Server-Sent Events) is also supported for live updates.",
+  "category": "developer-tools",
+  "tags": [
+    "hacker-news",
+    "tech-news",
+    "comments",
+    "stories",
+    "users",
+    "firebase",
+    "server-sent-events"
+  ],
+  "links": {
+    "homepage": "https://news.ycombinator.com/",
+    "docs": "https://github.com/HackerNews/API",
+    "terms": "https://www.ycombinator.com/legal/",
+    "source": "https://github.com/HackerNews/API"
+  },
+  "api": {
+    "base_url": "https://hacker-news.firebaseio.com/v0",
+    "style": "rest",
+    "formats": [
+      "json",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "No published limit (documented as currently none); be polite."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/item/{id}.json",
+      "summary": "Fetch a story, comment, job or poll",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/user/{username}.json",
+      "summary": "User profile and submitted item ids",
+      "params": [
+        "username"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/topstories.json",
+      "summary": "IDs of up to 500 top stories (also newstories, beststories, askstories, showstories, jobstories)",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/maxitem.json",
+      "summary": "Current largest item id",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/updates.json",
+      "summary": "Recently changed items and profiles",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://hacker-news.firebaseio.com/v0/item/8863.json",
+    "response_excerpt": "{\n \"by\": \"dhouston\",\n \"descendants\": 71,\n \"id\": 8863,\n \"score\": 104,\n \"time\": 1175714200,\n \"title\": \"My YC app: Dropbox - Throw away your USB drive\",\n \"type\": \"story\",\n \"url\": \"http://www.getdropbox.com/u/2/screencast.html\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "No explicit open license; user-generated content under HN/YC terms",
+      "url": "https://www.ycombinator.com/legal/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (English-language community)",
+      "temporal": "2006-present"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Fetching a thread costs one request per item, so budget for N+1 calls. For full-text search use the separate Algolia HN Search API (hn.algolia.com/api/v1). Use maxitem.json and updates.json to sync incrementally.",
+  "caveats": [
+    "No search or filtering in this API.",
+    "Deleted or dead items return null or carry deleted/dead flags.",
+    "No explicit data license."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "item/8863.json, maxitem.json and topstories.json all returned 200."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=32540883",
+      "title": "Hacker News Official API",
+      "points": 500
+    }
+  ],
+  "added": "2026-11-11"
+}

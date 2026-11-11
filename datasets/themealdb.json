@@ -1,0 +1,109 @@
+{
+  "slug": "themealdb",
+  "name": "TheMealDB",
+  "provider": {
+    "name": "TheMealDB",
+    "url": "https://www.themealdb.com",
+    "type": "community"
+  },
+  "summary": "Free recipe database: meals by name, ingredient, category or area, with instructions and images.",
+  "description": "Crowd-sourced recipes with ingredients and measures (strIngredient1..20), instructions, YouTube links, thumbnails, categories and cuisines. Endpoints for search, lookup, random, filter and lists. The test key '1' is free for development and education; a paid Patreon key unlocks extra endpoints.",
+  "category": "food",
+  "tags": [
+    "recipes",
+    "meals",
+    "cuisine",
+    "ingredients",
+    "cooking"
+  ],
+  "links": {
+    "homepage": "https://www.themealdb.com",
+    "docs": "https://www.themealdb.com/api.php",
+    "terms": "https://www.themealdb.com/api.php",
+    "signup": "https://www.themealdb.com/api.php"
+  },
+  "api": {
+    "base_url": "https://www.themealdb.com/api/json/v1/1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "path",
+      "demo_key": "1",
+      "notes": "The key is part of the URL path (/api/json/v1/{key}/). Test key 1 is for dev and education; a personal key is a paid Patreon perk."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not numerically documented; the test key is intended for development and education."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search.php?s=",
+      "summary": "Search meals by name",
+      "params": [
+        "s"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lookup.php?i={id}",
+      "summary": "Meal by ID",
+      "params": [
+        "i"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/filter.php?i=|c=|a=",
+      "summary": "Filter by ingredient, category or area",
+      "params": [
+        "i",
+        "c",
+        "a"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/random.php",
+      "summary": "Random meal"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata",
+    "response_excerpt": "{\"meals\":[{\"idMeal\":\"52771\",\"strMeal\":\"Spicy Arrabiata Penne\",\"strCategory\":\"Vegetarian\",\"strArea\":\"Italian\",\"strIngredient1\":\"penne rigate\",\"strMeasure1\":\"1 pound\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Free for educational and development use with the test key; commercial use needs a paid supporter key; no open data license",
+      "url": "https://www.themealdb.com/api.php",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "About 300 meals across 25+ cuisines"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Ingredients and measures are flat columns (strIngredient1..20, strMeasure1..20) that need normalising. filter.php returns only summary fields, so follow up with lookup.php?i= for full recipes.",
+  "caveats": [
+    "Small dataset.",
+    "Terms restrict commercial use under the free key.",
+    "A sibling API, TheCocktailDB, exists (verified 200)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Executed with the public test key 1."
+  },
+  "related": [
+    "open-food-facts"
+  ],
+  "added": "2026-11-11"
+}

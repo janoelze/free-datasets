@@ -1,0 +1,116 @@
+{
+  "slug": "cern-open-data-portal",
+  "name": "CERN Open Data Portal",
+  "provider": {
+    "name": "CERN",
+    "url": "https://home.cern/",
+    "type": "intergovernmental"
+  },
+  "summary": "REST/JSON access to CERN's open particle-physics datasets, software and documentation.",
+  "description": "The portal publishes released collision and simulated data from the CMS, ATLAS, ALICE, LHCb and OPERA experiments, plus analysis software, VM images and educational content. The records API supports search, facets and file-index metadata with direct download URLs. Roughly 5,500 records were listed at the time of checking.",
+  "category": "knowledge-reference",
+  "tags": [
+    "particle-physics",
+    "cern",
+    "lhc",
+    "cms",
+    "atlas",
+    "open-data",
+    "experiments",
+    "physics"
+  ],
+  "links": {
+    "homepage": "https://opendata.cern.ch/",
+    "docs": "https://opendata.cern.ch/docs/about",
+    "terms": "https://opendata.cern.ch/docs/terms-of-use"
+  },
+  "api": {
+    "base_url": "https://opendata.cern.ch/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "60 requests per minute per IP (observed x-ratelimit-limit: 60, retry-after: 60).",
+      "requests": 60,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/records/",
+      "summary": "Search records",
+      "params": [
+        "q",
+        "type",
+        "experiment",
+        "size",
+        "page",
+        "sort",
+        "file_type"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/records/{id}",
+      "summary": "Single record including files, DOI and abstract",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/records/{id}/files",
+      "summary": "File listing for a record",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://opendata.cern.ch/api/records/?q=higgs&size=1&type=Dataset&sort=mostrecent",
+    "response_excerpt": "{\n \"hits\": {\n  \"total\": 5502,\n  \"hits\": [\n   {\n    \"id\": 300,\n    \"metadata\": {\n     \"title\": \"Higgs candidate events for use in education and outreach\",\n     \"date_published\": \"2014\",\n     \"type\": {\n      \"primary\": \"Dataset\",\n      \"secondary\": [\n       \"Derived\"\n      ]\n     }\n    }\n   }\n  ]\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 for most datasets and metadata; software under open-source licences",
+      "url": "https://opendata.cern.ch/docs/terms-of-use",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global (LHC and other CERN experiments)",
+      "temporal": "Experiment releases"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use the trailing slash on /records/ (without it you get a 308 redirect). Filter with type, experiment and size to keep responses small, since facet aggregations are large. The API gives metadata and file URLs; the raw files themselves are huge.",
+  "caveats": [
+    "Raw datasets are TB-scale; the API returns metadata and file URLs only.",
+    "No CORS header returned in the checked request; call server-side.",
+    "Hit counts varied between calls (5567 vs 5502) depending on facets.",
+    "The docs URL given in the research (/docs/cod-rest-api) returned 404; docs link points to the portal about page instead."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Request without trailing slash after /records gets a 308 redirect."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=20761113",
+      "title": "CERN Open Data Portal: Explore more than 2 PB of open data from particle physics",
+      "points": 125
+    }
+  ],
+  "added": "2026-11-11"
+}

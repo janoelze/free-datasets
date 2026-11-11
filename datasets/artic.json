@@ -1,0 +1,116 @@
+{
+  "slug": "artic",
+  "name": "Art Institute of Chicago API",
+  "provider": {
+    "name": "Art Institute of Chicago",
+    "url": "https://www.artic.edu",
+    "type": "nonprofit"
+  },
+  "summary": "Free REST API for the Art Institute of Chicago's collection, exhibitions, artists and IIIF images.",
+  "description": "Artworks, artists, agents, galleries, exhibitions and events with Elasticsearch-style search, field selection and IIIF image identifiers. Covers 133k+ artworks. Data is CC0 and descriptions are CC BY 4.0.",
+  "category": "art-museums",
+  "tags": [
+    "art",
+    "museum",
+    "iiif",
+    "paintings",
+    "exhibitions",
+    "artists",
+    "cc0"
+  ],
+  "links": {
+    "homepage": "https://www.artic.edu",
+    "docs": "https://api.artic.edu/docs/",
+    "terms": "https://www.artic.edu/terms",
+    "bulk_download": "https://github.com/art-institute-of-chicago/api-data"
+  },
+  "api": {
+    "base_url": "https://api.artic.edu/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "60 requests/minute for anonymous clients (x-ratelimit-limit: 60 header observed).",
+      "requests": 60,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/artworks",
+      "summary": "List artworks",
+      "params": [
+        "page",
+        "limit",
+        "fields",
+        "ids"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/artworks/search",
+      "summary": "Full-text search (Elasticsearch)",
+      "params": [
+        "q",
+        "query[term]",
+        "fields",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/artworks/{id}",
+      "summary": "Single artwork",
+      "params": [
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/artists",
+      "summary": "List artists"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.artic.edu/api/v1/artworks/27992?fields=id,title,artist_display,date_display",
+    "response_excerpt": "{\"data\":{\"id\":27992,\"title\":\"A Sunday on La Grande Jatte — 1884\",\"date_display\":\"1884–86, border added 1888–89\",\"artist_display\":\"Georges Seurat (French, 1859–1891)\"}}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0 (descriptions CC BY 4.0)",
+      "spdx": "CC0-1.0",
+      "url": "https://www.artic.edu/terms",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "About 133k artworks"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use fields= to limit payloads. Images come from IIIF: https://www.artic.edu/iiif/2/{image_id}/full/843,/0/default.jpg, where image_id is a field on the artwork. An AIC-User-Agent header identifying your app is suggested.",
+  "caveats": [
+    "The /api-docs path returns 404; the documentation is at /docs/.",
+    "Nightly data dumps are also published on GitHub."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "met-museum",
+    "rijksmuseum",
+    "smithsonian-open-access"
+  ],
+  "added": "2026-11-11"
+}

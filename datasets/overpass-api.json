@@ -1,0 +1,107 @@
+{
+  "slug": "overpass-api",
+  "name": "Overpass API (OpenStreetMap query)",
+  "provider": {
+    "name": "OpenStreetMap community (overpass-api.de)",
+    "url": "https://overpass-api.de",
+    "type": "community"
+  },
+  "summary": "Read-only query language API to extract any OpenStreetMap features by tag, area or bounding box.",
+  "description": "Run Overpass QL queries to fetch nodes, ways and relations with tags and geometry, for example all cafes in a bounding box, roads, boundaries or amenities. Output as JSON, XML or CSV; supports 'out geom' for full geometry and area filters.",
+  "category": "geography-maps",
+  "tags": [
+    "openstreetmap",
+    "poi",
+    "query-language",
+    "geodata",
+    "amenities",
+    "roads"
+  ],
+  "links": {
+    "homepage": "https://overpass-api.de",
+    "docs": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+    "terms": "https://wiki.openstreetmap.org/wiki/Overpass_API#Introduction"
+  },
+  "api": {
+    "base_url": "https://overpass-api.de/api",
+    "style": "rpc",
+    "formats": [
+      "json",
+      "xml",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key; send a descriptive User-Agent (requests without one returned 406)."
+    },
+    "cors": "unknown",
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app/1.0 (contact@example.com)",
+        "notes": "Requests without a User-Agent returned HTTP 406."
+      }
+    ],
+    "rate_limit": {
+      "summary": "Fair use: about 10,000 queries/day and 1 GB/day per server suggested; slots limit concurrent queries (see /api/status).",
+      "requests": 10000,
+      "per": "day",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/interpreter",
+      "summary": "Run an Overpass QL query (form-encoded data parameter)",
+      "params": [
+        "data"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "summary": "Rate-limit and slot status"
+    }
+  ],
+  "example": {
+    "method": "POST",
+    "url": "https://overpass-api.de/api/interpreter",
+    "body": "data=[out:json];node(52.5,13.4,52.51,13.41)[amenity=cafe];out 2;",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (https://example.com)"
+    },
+    "response_excerpt": "{\n  \"version\": 0.6,\n  \"generator\": \"Overpass API 0.7.62.11\",\n  \"osm3s\": {\n    \"timestamp_osm_base\": \"2026-11-11T14:25:34Z\"\n  },\n  \"elements\": [\n    {\n      \"type\": \"node\",\n      \"id\": 2542846158,\n      \"lat\": 52.5037732,\n      \"lon\": 13.4090016,\n      \"tags\": {\n        \"addr:city\": \"Berlin\",\n        \"amenity\": \"cafe\"\n      }\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "ODbL 1.0",
+      "spdx": "ODbL-1.0",
+      "url": "https://wiki.openstreetmap.org/wiki/Overpass_API#Introduction",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Send the query as form field data=<Overpass QL>. Set [out:json] and [timeout:N], keep bounding boxes small (south,west,north,east order), and send a User-Agent.",
+  "caveats": [
+    "Requests without a User-Agent returned 406.",
+    "Expensive queries time out; set [timeout:N].",
+    "Overpass QL has a learning curve.",
+    "CORS was not re-checked at curation time (status endpoint timed out); research reported it as supported."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "nominatim"
+  ],
+  "added": "2026-11-11"
+}

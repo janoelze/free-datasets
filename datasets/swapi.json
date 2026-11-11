@@ -1,0 +1,99 @@
+{
+  "slug": "swapi",
+  "name": "SWAPI - The Star Wars API",
+  "provider": {
+    "name": "Paul Hallett (swapi.dev community mirror)",
+    "url": "https://swapi.dev",
+    "type": "community"
+  },
+  "summary": "Star Wars films, people, planets, species, starships and vehicles.",
+  "description": "Open dataset covering the six original films: characters, planets, starships, vehicles, species, with cross-resource hyperlinks and search. Static content, ideal for tutorials.",
+  "category": "fun-games",
+  "tags": [
+    "star-wars",
+    "films",
+    "characters",
+    "starships",
+    "sample-data"
+  ],
+  "links": {
+    "homepage": "https://swapi.dev",
+    "docs": "https://swapi.dev/documentation",
+    "terms": "https://swapi.dev/documentation#rate"
+  },
+  "api": {
+    "base_url": "https://swapi.dev/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "10,000 requests/day per IP (per docs)",
+      "requests": 10000,
+      "per": "day",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/people/{id}",
+      "summary": "Character"
+    },
+    {
+      "method": "GET",
+      "path": "/people/?search=",
+      "summary": "Search",
+      "params": [
+        "search",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/films/",
+      "summary": "Films"
+    },
+    {
+      "method": "GET",
+      "path": "/starships/{id}",
+      "summary": "Starship"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://swapi.dev/api/people/1/",
+    "response_excerpt": "{\n \"name\": \"Luke Skywalker\",\n \"height\": \"172\",\n \"mass\": \"77\",\n \"birth_year\": \"19BBY\",\n \"gender\": \"male\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "API: BSD-3-Clause; content is fan-sourced and trademarked",
+      "url": "https://swapi.dev/documentation#rate",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Fictional universe",
+      "temporal": "Original and prequel films"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Resources link to each other by URL; lists are paginated 10 per page with next/previous links. Use ?search= to find by name.",
+  "caveats": [
+    "Data is frozen at the original and prequel films.",
+    "May be slow occasionally."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Host swapi.dev re-checked 2026-11-11 with curl: HTTP 200."
+  },
+  "added": "2026-11-11"
+}

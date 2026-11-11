@@ -1,0 +1,122 @@
+{
+  "slug": "photon-geocoder",
+  "name": "Photon Geocoder (Komoot)",
+  "provider": {
+    "name": "Komoot (open-source Photon project)",
+    "url": "https://photon.komoot.io/",
+    "type": "company"
+  },
+  "summary": "Free search-as-you-type geocoder and reverse geocoder on OpenStreetMap data, returning GeoJSON.",
+  "description": "Photon is an open-source, typo-tolerant geocoder built on OpenStreetMap data and hosted publicly by Komoot. It supports forward search with location bias, language selection, layer and OSM tag filters, bounding-box limits and reverse geocoding. Output is a GeoJSON FeatureCollection.",
+  "category": "geography-maps",
+  "tags": [
+    "geocoding",
+    "reverse-geocoding",
+    "openstreetmap",
+    "autocomplete",
+    "places",
+    "address-search"
+  ],
+  "links": {
+    "homepage": "https://photon.komoot.io/",
+    "docs": "https://github.com/komoot/photon",
+    "source": "https://github.com/komoot/photon"
+  },
+  "api": {
+    "base_url": "https://photon.komoot.io",
+    "style": "rest",
+    "formats": [
+      "geojson"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app/1.0 (contact@example.org)",
+        "notes": "Identify your app; recommended."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Fair use; no hard numbers published; rate-limited per IP (HTTP 429) and heavy use is asked to self-host."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api",
+      "summary": "Forward geocode / autocomplete",
+      "params": [
+        "q",
+        "limit",
+        "lang",
+        "lat",
+        "lon",
+        "bbox",
+        "osm_tag",
+        "layer"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reverse",
+      "summary": "Reverse geocode",
+      "params": [
+        "lat",
+        "lon",
+        "radius",
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://photon.komoot.io/api/?q=Brandenburger+Tor&limit=1",
+    "headers": {
+      "User-Agent": "my-app/1.0 (contact@example.org)"
+    },
+    "response_excerpt": "{\n \"type\": \"FeatureCollection\",\n \"features\": [\n  {\n   \"type\": \"Feature\",\n   \"properties\": {\n    \"osm_type\": \"W\",\n    \"osm_id\": 518071791,\n    \"name\": \"Brandenburger Tor\",\n    \"street\": \"Pariser Platz\",\n    \"city\": \"Berlin\",\n    \"country\": \"Deutschland\",\n    \"postcode\": \"10117\",\n    \"countrycode\": \"DE\"\n   },\n   \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n     13.3777034,\n     52.5162699\n    ]\n   }\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "ODbL 1.0 (OpenStreetMap data); attribution required",
+      "spdx": "ODbL-1.0",
+      "url": "https://photon.komoot.io/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Worldwide",
+      "temporal": "Current OpenStreetMap data"
+    },
+    "update_frequency": "weekly"
+  },
+  "agent_notes": "GeoJSON coordinates are [lon, lat]; lat/lon query params bias results toward a location. Good for autocomplete; do not use for bulk geocoding.",
+  "caveats": [
+    "Best-effort public instance with no SLA.",
+    "Not for bulk geocoding.",
+    "Update cadence (weekly-ish OSM re-import) is approximate."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=8176637",
+      "title": "Photon, Apache-licensed search-as-you-type geocoder based on OpenStreetMap",
+      "points": 4
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=12898496",
+      "title": "Photon: search-as-you-type with OpenStreetMap",
+      "points": 3
+    }
+  ],
+  "added": "2026-11-11"
+}

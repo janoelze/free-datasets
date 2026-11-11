@@ -1,0 +1,106 @@
+{
+  "slug": "osv-dev",
+  "name": "OSV.dev (Open Source Vulnerabilities)",
+  "provider": {
+    "name": "Google / OpenSSF",
+    "url": "https://osv.dev",
+    "type": "company"
+  },
+  "summary": "Aggregated open-source vulnerability database queryable by package/version or commit.",
+  "description": "Distributed vulnerability DB in the OSV schema aggregating GitHub Advisories, PyPI, RustSec, Go, npm, Debian, Alpine, Linux kernel and more. Query by package + version (or purl/commit) to get affected vulnerabilities, with batch query support.",
+  "category": "security",
+  "tags": [
+    "vulnerabilities",
+    "cve",
+    "ghsa",
+    "osv",
+    "supply-chain",
+    "sbom"
+  ],
+  "links": {
+    "homepage": "https://osv.dev",
+    "docs": "https://google.github.io/osv.dev/api/",
+    "terms": "https://google.github.io/osv.dev/data/"
+  },
+  "api": {
+    "base_url": "https://api.osv.dev/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "Content-Type",
+        "example": "application/json",
+        "notes": "Required for POST requests."
+      }
+    ],
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "No documented hard limit; 32 MiB request cap; batch up to 1000 queries"
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/query",
+      "summary": "Vulnerabilities for a package/version",
+      "params": [
+        "package.name",
+        "package.ecosystem",
+        "version | commit"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/querybatch",
+      "summary": "Batch queries"
+    },
+    {
+      "method": "GET",
+      "path": "/vulns/{id}",
+      "summary": "Get one vulnerability record by ID"
+    }
+  ],
+  "example": {
+    "method": "POST",
+    "url": "https://api.osv.dev/v1/query",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"package\":{\"name\":\"lodash\",\"ecosystem\":\"npm\"},\"version\":\"4.17.15\"}",
+    "response_excerpt": "{\n \"vulns\": [\n  {\n   \"id\": \"GHSA-29mw-wpgm-hmr9\",\n   \"summary\": \"Regular Expression Denial of Service (ReDoS) in lodash\",\n   \"modified\": \"2025-09-29T21:12:31.102523Z\"\n  }\n ],\n \"count\": 5\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Mostly CC-BY 4.0 / CC0 depending on source",
+      "url": "https://google.github.io/osv.dev/data/",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Historical to present"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Main entry point is POST /query with package name, ecosystem and version (or a commit). Use /querybatch for many packages and GET /vulns/{id} to fetch a record by ID.",
+  "caveats": [
+    "No official OpenAPI document at a stable URL was found."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "nvd-cve-api",
+    "cisa-kev",
+    "first-epss"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,87 @@
+{
+  "slug": "google-dns-doh",
+  "name": "Google Public DNS JSON API (DNS-over-HTTPS)",
+  "provider": {
+    "name": "Google",
+    "url": "https://dns.google",
+    "type": "company"
+  },
+  "summary": "Resolve any DNS record type via a simple JSON HTTPS GET.",
+  "description": "Query A, AAAA, MX, TXT, NS, CNAME, DNSSEC and other records through Google Public DNS and get JSON answers. Works from browsers and scripts without a DNS library. Cloudflare offers a similar API at cloudflare-dns.com/dns-query with Accept: application/dns-json.",
+  "category": "networking-internet",
+  "tags": [
+    "dns",
+    "doh",
+    "resolver",
+    "mx",
+    "txt",
+    "dnssec"
+  ],
+  "links": {
+    "homepage": "https://dns.google",
+    "docs": "https://developers.google.com/speed/public-dns/docs/doh/json",
+    "terms": "https://developers.google.com/speed/public-dns/terms"
+  },
+  "api": {
+    "base_url": "https://dns.google",
+    "style": "rest",
+    "formats": [
+      "json",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not published; abusive volumes blocked (Google docs mention per-IP QPS limits)"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/resolve",
+      "summary": "Resolve a record",
+      "params": [
+        "name",
+        "type (A|AAAA|MX|TXT|number)",
+        "cd",
+        "do",
+        "edns_client_subnet"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://dns.google/resolve?name=example.com&type=A",
+    "response_excerpt": "{\n \"Status\": 0,\n \"Question\": [\n  {\n   \"name\": \"example.com.\",\n   \"type\": 1\n  }\n ],\n \"Answer\": [\n  {\n   \"name\": \"example.com.\",\n   \"type\": 1,\n   \"TTL\": 300,\n   \"data\": \"172.66.147.243\"\n..."
+  },
+  "data": {
+    "license": {
+      "name": "Service terms; no data license",
+      "url": "https://developers.google.com/speed/public-dns/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Live resolution"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use /resolve?name=...&type=... for JSON answers; type accepts names or numbers. Cloudflare offers a similar endpoint at cloudflare-dns.com/dns-query with Accept: application/dns-json.",
+  "caveats": [
+    "Cloudflare variant needs 'Accept: application/dns-json' header (verified 200 with CORS *)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "ripestat",
+    "rdap-org"
+  ],
+  "added": "2026-11-11"
+}

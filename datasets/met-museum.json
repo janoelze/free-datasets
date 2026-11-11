@@ -1,0 +1,113 @@
+{
+  "slug": "met-museum",
+  "name": "Metropolitan Museum of Art Collection API",
+  "provider": {
+    "name": "The Metropolitan Museum of Art",
+    "url": "https://www.metmuseum.org",
+    "type": "nonprofit"
+  },
+  "summary": "Open-access API for 470,000+ artworks from The Met, including public-domain images.",
+  "description": "Object records with title, artist, culture, period, medium, dimensions, department, tags and image URLs (primary and additional). Public-domain objects (isPublicDomain=true) have CC0 images and data. Search lives under /v1.1 since 2026-10-01; the old /v1/search endpoint now returns 410.",
+  "category": "art-museums",
+  "tags": [
+    "art",
+    "museum",
+    "paintings",
+    "public-domain",
+    "images",
+    "collection",
+    "cc0"
+  ],
+  "links": {
+    "homepage": "https://www.metmuseum.org",
+    "docs": "https://metmuseum.github.io/",
+    "terms": "https://www.metmuseum.org/policies/open-access"
+  },
+  "api": {
+    "base_url": "https://collectionapi.metmuseum.org/public/collection/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Documented limit of 80 requests per second per IP.",
+      "requests": 80,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/objects/{objectID}",
+      "summary": "Object details"
+    },
+    {
+      "method": "GET",
+      "path": "https://collectionapi.metmuseum.org/public/collection/v1.1/search",
+      "summary": "Search (Elastic-backed, paginated); note the v1.1 path",
+      "params": [
+        "q",
+        "hasImages",
+        "departmentId",
+        "offset",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/objects",
+      "summary": "List all object IDs",
+      "params": [
+        "metadataDate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/departments",
+      "summary": "List departments"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://collectionapi.metmuseum.org/public/collection/v1.1/search?q=sunflowers&hasImages=true&limit=3",
+    "response_excerpt": "{\"total\":153,\"objectIDs\":[436524,480725,484935]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 for open-access data and images",
+      "spdx": "CC0-1.0",
+      "url": "https://www.metmuseum.org/policies/open-access",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "About 470k objects spanning 5,000 years of art"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Search returns only object IDs; fetch /objects/{id} for each. Use the v1.1 search path (…/public/collection/v1.1/search) with offset and limit, not /v1/search. Check isPublicDomain before reusing images.",
+  "caveats": [
+    "Re-checked 2026-11-11 with curl: GET /public/collection/v1/search?q=sunflowers returns HTTP 410 (retired 2026-10-01), while /public/collection/v1.1/search?q=sunflowers returns 200 (total 178; 153 with hasImages=true).",
+    "Many tutorials online still show the retired /v1/search path."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "v1.1 search confirmed working and v1 search confirmed 410 on 2026-11-11."
+  },
+  "related": [
+    "artic",
+    "rijksmuseum",
+    "smithsonian-open-access",
+    "europeana"
+  ],
+  "added": "2026-11-11"
+}

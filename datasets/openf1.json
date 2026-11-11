@@ -1,0 +1,116 @@
+{
+  "slug": "openf1",
+  "name": "OpenF1 API",
+  "provider": {
+    "name": "OpenF1 (community)",
+    "url": "https://openf1.org",
+    "type": "community"
+  },
+  "summary": "Detailed Formula 1 telemetry, timing, weather and radio data per session since 2023.",
+  "description": "Free historical data: car telemetry (speed, throttle, gear), lap and sector times, positions, pit stops, tyre stints, weather, team radio, race control messages and driver info, keyed by session_key and meeting_key. Live data needs a paid plan.",
+  "category": "sports",
+  "tags": [
+    "formula1",
+    "f1",
+    "telemetry",
+    "motorsport",
+    "timing",
+    "weather"
+  ],
+  "links": {
+    "homepage": "https://openf1.org",
+    "docs": "https://openf1.org/docs/",
+    "terms": "https://openf1.org/"
+  },
+  "api": {
+    "base_url": "https://api.openf1.org/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Historical free tier: 3 req/s and 30 req/min (per docs); live data paid",
+      "requests": 30,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/sessions",
+      "summary": "Sessions",
+      "params": [
+        "year",
+        "session_name",
+        "country_name"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/drivers",
+      "summary": "Drivers in a session",
+      "params": [
+        "session_key",
+        "driver_number"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/laps",
+      "summary": "Lap times",
+      "params": [
+        "session_key",
+        "driver_number"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/car_data",
+      "summary": "Car telemetry",
+      "params": [
+        "session_key",
+        "driver_number",
+        "speed>="
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.openf1.org/v1/drivers?session_key=9693&driver_number=1",
+    "response_excerpt": "[\n {\n  \"session_key\": 9693,\n  \"driver_number\": 1,\n  \"full_name\": \"Max VERSTAPPEN\",\n  \"name_acronym\": \"VER\",\n  \"team_name\": \"Red Bull Racing\"\n }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "See site terms (unofficial F1 data)",
+      "url": "https://openf1.org/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "2023-present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Look up session_key (and meeting_key) via /sessions first, then filter other endpoints by it. Filters accept operators in the query string, e.g. speed>=300; add csv=true for CSV.",
+  "caveats": [
+    "Unofficial; no OpenAPI spec found. Rate limits come from the docs and were not header-verified.",
+    "Live data requires a paid plan."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "jolpica-f1"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,101 @@
+{
+  "slug": "tfl-unified-api",
+  "name": "TfL Unified API",
+  "provider": {
+    "name": "Transport for London",
+    "url": "https://tfl.gov.uk",
+    "type": "government"
+  },
+  "summary": "London transit: line status, arrivals, journey planner, bike points, road disruptions.",
+  "description": "Live status of tube, bus, DLR, Overground and Elizabeth line; arrival predictions, stop points, journey planning, Santander Cycles BikePoints and road corridors.",
+  "category": "transport-mobility",
+  "tags": [
+    "transit",
+    "london",
+    "tube",
+    "buses",
+    "journey-planner",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://tfl.gov.uk",
+    "docs": "https://api.tfl.gov.uk/",
+    "terms": "https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service",
+    "openapi": "https://api.tfl.gov.uk/swagger/docs/v1"
+  },
+  "api": {
+    "base_url": "https://api.tfl.gov.uk",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "app_key",
+      "notes": "Optional free app_key (register at api-portal.tfl.gov.uk) raises limits."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "~50 req/min without key; higher with free key"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/Line/Mode/{modes}/Status",
+      "summary": "Status of lines"
+    },
+    {
+      "method": "GET",
+      "path": "/StopPoint/Search/{query}",
+      "summary": "Find stops"
+    },
+    {
+      "method": "GET",
+      "path": "/Journey/JourneyResults/{from}/to/{to}",
+      "summary": "Plan a journey",
+      "params": [
+        "time",
+        "mode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/BikePoint",
+      "summary": "All bike docks"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.tfl.gov.uk/Line/Mode/tube/Status",
+    "response_excerpt": "[\n {\n  \"id\": \"bakerloo\",\n  \"name\": \"Bakerloo\",\n  \"status\": \"Good Service\"\n },\n {\n  \"id\": \"central\",\n  \"name\": \"Central\",\n  \"status\": \"Minor Delays\"\n }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Open Government Licence v3 + TfL transport data terms (attribution)",
+      "url": "https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Greater London",
+      "temporal": "Live"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Works anonymously but is throttled; register for a free app_key for sustained use. Mode lists are comma separated (e.g. tube,dlr).",
+  "caveats": [
+    "Rate limit figure is approximate; anonymous calls are throttled."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "added": "2026-11-11"
+}

@@ -1,0 +1,109 @@
+{
+  "slug": "dog-api",
+  "name": "Dog API",
+  "provider": {
+    "name": "Dog API (dogapi.dog community project)",
+    "url": "https://dogapi.dog/",
+    "type": "community"
+  },
+  "summary": "JSON:API of dog breeds with traits, lifespan, weight and origin, plus breed groups and dog facts.",
+  "description": "A free REST API serving 283 dog breeds with structured attributes (life expectancy range, male and female weight, hypoallergenic flag, origin, coat), plus breed groups and random dog facts. Responses follow the JSON:API format with pagination metadata. Useful for demos, tool-use tests and pet apps.",
+  "category": "fun-games",
+  "tags": [
+    "dogs",
+    "breeds",
+    "pets",
+    "animals",
+    "trivia"
+  ],
+  "links": {
+    "homepage": "https://dogapi.dog/",
+    "docs": "https://dogapi.dog/docs/api-v2"
+  },
+  "api": {
+    "base_url": "https://dogapi.dog/api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No published limits; community-run, be gentle."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/breeds",
+      "summary": "List breeds (paginated)",
+      "params": [
+        "page[number]",
+        "page[size]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/breeds/{id}",
+      "summary": "One breed",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/groups",
+      "summary": "Breed groups",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/facts",
+      "summary": "Random dog facts",
+      "params": [
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://dogapi.dog/api/v2/breeds?page[size]=1",
+    "response_excerpt": "{\n \"data\": [\n  {\n   \"id\": \"036feed0-da8a-42c9-ab9a-57449b530b13\",\n   \"type\": \"breed\",\n   \"attributes\": {\n    \"name\": \"Affenpinscher\",\n    \"life\": {\n     \"max\": 16,\n     \"min\": 14\n    },\n    \"male_weight\": {\n     \"max\": 6,\n     \"min\": 4\n    },\n    \"hypoallergenic\": true,\n    \"origin\": {\n     \"country\": \"Germany\"\n    }\n   }\n  }\n ],\n \"meta\": {\n  \"pagination\": {\n   \"current\": 1,\n   \"next\": 2,\n   \"last\": 283,\n   \"records\": 283\n  }\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated (free to use)",
+      "url": "https://dogapi.dog/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Static reference data"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Responses use the application/vnd.api+json content type with data/attributes nesting. Square brackets in page[size] need curl -g or URL encoding. Use /api/v2; v1 is deprecated.",
+  "caveats": [
+    "Small, novelty-scale dataset (283 breeds).",
+    "Volunteer-run with no SLA.",
+    "v1 endpoints are deprecated."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Use curl -g for bracket params."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=34147366",
+      "title": "Show HN: Dog API",
+      "points": 275
+    }
+  ],
+  "added": "2026-11-11"
+}

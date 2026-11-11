@@ -1,0 +1,94 @@
+{
+  "slug": "deps-dev",
+  "name": "deps.dev API",
+  "provider": {
+    "name": "Google Open Source Insights",
+    "url": "https://deps.dev",
+    "type": "company"
+  },
+  "summary": "Dependency graphs, versions, licenses, advisories and scorecards for open-source packages.",
+  "description": "Open Source Insights API over npm, PyPI, Go, Maven, Cargo, NuGet and RubyGems: package versions, resolved dependency graphs, dependents counts, licenses, linked advisories, OpenSSF Scorecard results and project (GitHub) info.",
+  "category": "developer-tools",
+  "tags": [
+    "dependencies",
+    "supply-chain",
+    "licenses",
+    "scorecard",
+    "npm",
+    "maven",
+    "go"
+  ],
+  "links": {
+    "homepage": "https://deps.dev",
+    "docs": "https://docs.deps.dev/api/v3/",
+    "terms": "https://deps.dev/terms"
+  },
+  "api": {
+    "base_url": "https://api.deps.dev/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No documented hard limits; fair use"
+    },
+    "pagination": "unknown"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/systems/{system}/packages/{name}",
+      "summary": "Package and its versions"
+    },
+    {
+      "method": "GET",
+      "path": "/systems/{system}/packages/{name}/versions/{version}:dependencies",
+      "summary": "Resolved dependency graph"
+    },
+    {
+      "method": "GET",
+      "path": "/projects/{project_key}",
+      "summary": "Project info and scorecard"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.deps.dev/v3/systems/npm/packages/react",
+    "response_excerpt": "{\n \"packageKey\": {\n  \"system\": \"NPM\",\n  \"name\": \"react\"\n },\n \"versions\": [\n  {\n   \"versionKey\": {\n    \"system\": \"NPM\",\n    \"name\": \"react\",\n    \"version\": \"0.0.0-00d4f95c2\"\n   },\n   \"publishedAt\": \"2021-03-15T16:12:35Z\",\n   \"isDefault\": false,\n..."
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://deps.dev/terms",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current and historical package versions"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "URL-encode package names that contain slashes, and project keys such as github.com%2Ffacebook%2Freact.",
+  "caveats": [
+    "Names with slashes must be URL-encoded."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "npm-registry",
+    "pypi-json-api",
+    "crates-io-api",
+    "osv-dev"
+  ],
+  "added": "2026-11-11"
+}

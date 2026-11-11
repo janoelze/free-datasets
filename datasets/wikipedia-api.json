@@ -1,0 +1,121 @@
+{
+  "slug": "wikipedia-api",
+  "name": "Wikipedia REST & Action API",
+  "provider": {
+    "name": "Wikimedia Foundation",
+    "url": "https://www.wikimedia.org",
+    "type": "nonprofit"
+  },
+  "summary": "Article summaries, full-text search, page HTML and related content for every Wikipedia language edition.",
+  "description": "Wikipedia content in 300+ languages via the RESTBase-style /api/rest_v1 endpoints (summaries, mobile HTML, random page, On This Day feed, pageviews metrics) and the MediaWiki Action API (query, search, extracts, categories, links, revisions). Summaries include a thumbnail, Wikidata ID and short description, which makes them well suited to entity grounding.",
+  "category": "knowledge-reference",
+  "tags": [
+    "wikipedia",
+    "encyclopedia",
+    "articles",
+    "search",
+    "multilingual",
+    "wikimedia",
+    "pageviews",
+    "on-this-day"
+  ],
+  "links": {
+    "homepage": "https://www.wikipedia.org",
+    "docs": "https://api.wikimedia.org/wiki/Core_REST_API",
+    "terms": "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
+    "openapi": "https://en.wikipedia.org/api/rest_v1/?spec"
+  },
+  "api": {
+    "base_url": "https://en.wikipedia.org/api/rest_v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "html",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Anonymous use works; an optional OAuth2 token gives higher limits."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "MyApp/1.0 (you@example.com)",
+        "notes": "Identify your app and give a contact; generic client strings may be blocked or throttled."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Anonymous REST limits are generous (roughly 200 requests/second per client, from the research, not re-confirmed); Wikimedia asks for serial requests and low concurrency, and unidentified user agents get stricter limits (HTTP 429)."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/page/summary/{title}",
+      "summary": "Short extract, thumbnail and Wikidata ID for an article",
+      "params": [
+        "title"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://en.wikipedia.org/w/api.php?action=query&list=search",
+      "summary": "Full-text search via the Action API",
+      "params": [
+        "srsearch",
+        "srlimit",
+        "origin"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/page/random/summary",
+      "summary": "Summary of a random article"
+    },
+    {
+      "method": "GET",
+      "path": "https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/events/{MM}/{DD}",
+      "summary": "Historical events on a given date"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Alan_Turing",
+    "headers": {
+      "User-Agent": "MyApp/1.0 (you@example.com)"
+    },
+    "response_excerpt": "{\"type\":\"standard\",\"title\":\"Alan Turing\",\"wikibase_item\":\"Q7251\",\"pageid\":1208,\"thumbnail\":{\"source\":\"https://upload.wikimedia.org/.../330px-Alan_turing_header.jpg\"},...}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 4.0 (text, also GFDL); Wikidata IDs and metadata are CC0",
+      "spdx": "CC-BY-SA-4.0",
+      "url": "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "All Wikipedia language editions (about 7M articles in English)",
+      "temporal": "Continuously updated"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Swap the 'en' subdomain for any language code. The summary response carries wikibase_item, which links straight to Wikidata. The Action API needs origin=* for browser calls and returns XML only if asked.",
+  "caveats": [
+    "The older /api/rest_v1 is gradually being migrated to /w/rest.php and the api.wikimedia.org Core REST API, so prefer the newer documented paths for long-lived integrations.",
+    "Pageviews live on a different host: https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{Title}/daily/{start}/{end} (verified 200, CORS *)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "wikidata",
+    "internet-archive"
+  ],
+  "added": "2026-11-11"
+}

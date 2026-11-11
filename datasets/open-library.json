@@ -1,0 +1,114 @@
+{
+  "slug": "open-library",
+  "name": "Open Library",
+  "provider": {
+    "name": "Internet Archive",
+    "url": "https://archive.org",
+    "type": "nonprofit"
+  },
+  "summary": "Open catalogue of 40M+ book editions and works with search, ISBN lookup, subjects, authors and covers.",
+  "description": "Open Library is a wiki-style library catalogue run by the Internet Archive. The APIs cover Solr-based search, works, editions and authors as JSON, ISBN and bibkey lookup, subject listings, cover images and reading-log or lending availability.",
+  "category": "books-literature",
+  "tags": [
+    "books",
+    "isbn",
+    "catalog",
+    "authors",
+    "subjects",
+    "covers",
+    "library"
+  ],
+  "links": {
+    "homepage": "https://openlibrary.org",
+    "docs": "https://openlibrary.org/developers/api",
+    "terms": "https://openlibrary.org/developers/api",
+    "bulk_download": "https://openlibrary.org/developers/dumps"
+  },
+  "api": {
+    "base_url": "https://openlibrary.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "yaml",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Documented as 1 request/second by default, rising to 3 requests/second when you send an identifying User-Agent with contact details; use the data dumps for bulk work.",
+      "requests": 1,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search.json",
+      "summary": "Search works",
+      "params": [
+        "q",
+        "title",
+        "author",
+        "fields",
+        "limit",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/isbn/{isbn}.json",
+      "summary": "Edition by ISBN (302 redirect to the edition)"
+    },
+    {
+      "method": "GET",
+      "path": "/works/{OLID}.json",
+      "summary": "Work record"
+    },
+    {
+      "method": "GET",
+      "path": "/subjects/{subject}.json",
+      "summary": "Works on a subject",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://openlibrary.org/search.json?q=the+hobbit&limit=1&fields=key,title,author_name,first_publish_year",
+    "response_excerpt": "{\"numFound\":461,\"docs\":[{\"author_name\":[\"J.R.R. Tolkien\"],\"first_publish_year\":1937,\"key\":\"/works/OL27482W\",\"title\":\"The Hobbit\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 for bibliographic data; cover images vary",
+      "url": "https://openlibrary.org/developers/api",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, 40M+ editions and 20M+ works",
+      "temporal": "Continuously updated; monthly bulk dumps"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always pass fields= to keep search responses small. /isbn/{isbn}.json answers with a 302, so follow redirects. Send a User-Agent with an app name and contact email to get the higher rate limit.",
+  "caveats": [
+    "The search endpoint can be slow under load.",
+    "Cover image licensing varies per image."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "gutendex",
+    "internet-archive"
+  ],
+  "added": "2026-11-11"
+}

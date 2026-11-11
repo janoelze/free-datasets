@@ -1,0 +1,115 @@
+{
+  "slug": "opensky-network",
+  "name": "OpenSky Network REST API",
+  "provider": {
+    "name": "OpenSky Network",
+    "url": "https://opensky-network.org",
+    "type": "nonprofit"
+  },
+  "summary": "Live ADS-B aircraft state vectors, flights and tracks from a crowd-sourced receiver network.",
+  "description": "Real-time positions, velocity, altitude and callsigns of aircraft worldwide (state vectors), plus flights per aircraft/airport and track data. Anonymous access gives current states only; registered (free) users get more history and credits.",
+  "category": "transport-mobility",
+  "tags": [
+    "flights",
+    "aviation",
+    "adsb",
+    "aircraft",
+    "tracking",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://opensky-network.org",
+    "docs": "https://openskynetwork.github.io/opensky-api/rest.html",
+    "terms": "https://opensky-network.org/about/terms-of-use"
+  },
+  "api": {
+    "base_url": "https://opensky-network.org/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "notes": "Anonymous access works for current states. Registered free accounts use OAuth2 client credentials for more credits and history."
+    },
+    "cors": "restricted",
+    "rate_limit": {
+      "summary": "Anonymous: 400 API credits/day (observed x-rate-limit-remaining: 398 after 2 calls), 10 s time resolution; registered: 4000/day; bounding-box area affects credit cost"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/states/all",
+      "summary": "Current aircraft state vectors",
+      "params": [
+        "lamin",
+        "lomin",
+        "lamax",
+        "lomax",
+        "icao24",
+        "time"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/flights/aircraft",
+      "summary": "Flights of an aircraft",
+      "params": [
+        "icao24",
+        "begin",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/flights/arrival",
+      "summary": "Arrivals at airport",
+      "params": [
+        "airport",
+        "begin",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tracks",
+      "summary": "Track of aircraft",
+      "params": [
+        "icao24",
+        "time"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://opensky-network.org/api/states/all?lamin=45.8&lomin=5.9&lamax=47.8&lomax=10.5",
+    "response_excerpt": "{\n \"time\": 1794407365,\n \"states\": [\n  [\n   \"511170\",\n   \"CFG4HA  \",\n   \"Estonia\",\n   1794407365,\n   1794407365,\n   8.5617,\n   47.446,\n   null,\n   true,\n   5.66,\n..."
+  },
+  "data": {
+    "license": {
+      "name": "Free for research and non-commercial use; commercial use needs agreement",
+      "url": "https://opensky-network.org/about/terms-of-use",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global (receiver coverage varies)",
+      "temporal": "Live; history requires an account"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always pass a bounding box (lamin, lomin, lamax, lomax) to keep credit cost low. Each state vector is a positional array; index meanings are in the docs.",
+  "caveats": [
+    "CORS allows only OpenSky origins, so browser use from other origins may be blocked.",
+    "Historical flights endpoints require authentication."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "added": "2026-11-11"
+}

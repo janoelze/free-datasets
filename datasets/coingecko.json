@@ -1,0 +1,115 @@
+{
+  "slug": "coingecko",
+  "name": "CoinGecko Public API",
+  "provider": {
+    "name": "CoinGecko",
+    "url": "https://www.coingecko.com",
+    "type": "company"
+  },
+  "summary": "Cryptocurrency prices, market caps, volumes and history for thousands of coins; works keyless at a low rate limit.",
+  "description": "Prices, market data, OHLC, exchanges, trending coins and metadata for 15,000+ coins. The legacy public endpoint works without a key at low limits; a free Demo key (signup, no card) gives a more stable 30 calls/minute. Historical depth on the free tier is limited to 365 days.",
+  "category": "finance-markets",
+  "tags": [
+    "crypto",
+    "bitcoin",
+    "prices",
+    "market-cap",
+    "exchanges",
+    "ohlc",
+    "defi",
+    "coins"
+  ],
+  "links": {
+    "homepage": "https://www.coingecko.com/en/api",
+    "docs": "https://docs.coingecko.com/reference/introduction",
+    "terms": "https://www.coingecko.com/en/api_terms",
+    "signup": "https://www.coingecko.com/en/api/pricing"
+  },
+  "api": {
+    "base_url": "https://api.coingecko.com/api/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "x-cg-demo-api-key",
+      "notes": "Keyless works on api.coingecko.com. A free Demo key can be sent as the x-cg-demo-api-key header or the x_cg_demo_api_key query parameter."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Keyless public access is tight and shared (roughly 5-15 calls/minute per the research, subject to change, may return 429). A free Demo key gives 30 calls/minute and 10,000 calls/month."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/simple/price",
+      "summary": "Spot prices",
+      "params": [
+        "ids",
+        "vs_currencies",
+        "include_market_cap",
+        "include_24hr_change"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/coins/markets",
+      "summary": "Ranked market table",
+      "params": [
+        "vs_currency",
+        "per_page",
+        "page",
+        "order"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/coins/{id}/market_chart",
+      "summary": "Price history",
+      "params": [
+        "vs_currency",
+        "days"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search/trending",
+      "summary": "Trending coins"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
+    "response_excerpt": "{\"bitcoin\": {\"usd\": 73565}}"
+  },
+  "data": {
+    "license": {
+      "name": "Free with attribution to CoinGecko required on the public free plan",
+      "url": "https://www.coingecko.com/en/api_terms",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global crypto markets; free history limited to 365 days"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Coins are addressed by CoinGecko ids (for example bitcoin), not tickers; look them up via the /search endpoint. Prefer a free Demo key over keyless access, which is throttled hard. Responses are cached for a minute or few.",
+  "caveats": [
+    "Keyless limits are tight and may change.",
+    "Commercial use and attribution rules apply.",
+    "Free-tier history is capped at 365 days."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

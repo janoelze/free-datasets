@@ -1,0 +1,110 @@
+{
+  "slug": "launch-library-2",
+  "name": "The Space Devs Launch Library 2",
+  "provider": {
+    "name": "The Space Devs",
+    "url": "https://thespacedevs.com",
+    "type": "community"
+  },
+  "summary": "Community-maintained database of rocket launches, agencies, rockets, astronauts and space stations.",
+  "description": "Upcoming and previous orbital launches worldwide with status, window, rocket, pad, mission and agency details, plus astronauts, spacecraft, space stations (including ISS crew) and events. Widely used by launch-tracker apps.",
+  "category": "space-astronomy",
+  "tags": [
+    "launches",
+    "rockets",
+    "spaceflight",
+    "astronauts",
+    "agencies",
+    "iss"
+  ],
+  "links": {
+    "homepage": "https://thespacedevs.com/llapi",
+    "docs": "https://ll.thespacedevs.com/docs/",
+    "terms": "https://thespacedevs.com/llapi",
+    "openapi": "https://ll.thespacedevs.com/2.2.0/schema/"
+  },
+  "api": {
+    "base_url": "https://ll.thespacedevs.com/2.2.0",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "notes": "Higher limits with a paid Patreon key."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Free unauthenticated tier: 15 requests per hour per IP (documented); higher with a paid Patreon key.",
+      "requests": 15,
+      "per": "hour",
+      "scope": "ip"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/launch/upcoming/",
+      "summary": "Upcoming launches",
+      "params": [
+        "limit",
+        "offset",
+        "search",
+        "lsp__name",
+        "ordering"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/launch/previous/",
+      "summary": "Past launches, same parameters"
+    },
+    {
+      "method": "GET",
+      "path": "/astronaut/",
+      "summary": "Astronauts",
+      "params": [
+        "search",
+        "status",
+        "in_space"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/spacestation/",
+      "summary": "Space stations"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=1",
+    "response_excerpt": "{\n  \"count\": 476,\n  \"next\": \"https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=1&offset=1\",\n  \"results\": [\n    {\n      \"name\": \"Long March 2D | CAS Pathfinder-1\",\n      \"net\": \"2026-11-11T11:41:00Z\",\n      \"status\": {\n        \"id\": 3,\n        \"name\": \"Launch Successful\"\n      },\n      \"slug\": \"long-march-2d-cas-pathfinder-1\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 for the database (see terms)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://thespacedevs.com/llapi",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "1957-present plus upcoming launches"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "The 15/hour keyless limit is tight, so cache responses and use limit/offset. Development work can use the lldev sandbox host, which serves stale data.",
+  "caveats": [
+    "Upcoming list includes just-completed launches until their status is refreshed.",
+    "Production use realistically needs a paid key."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

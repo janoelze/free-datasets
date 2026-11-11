@@ -1,0 +1,114 @@
+{
+  "slug": "uniprot",
+  "name": "UniProt REST API",
+  "provider": {
+    "name": "UniProt Consortium (EMBL-EBI, SIB, PIR)",
+    "url": "https://www.uniprot.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Protein sequences and functional annotation for millions of proteins.",
+  "description": "UniProtKB (Swiss-Prot curated and TrEMBL), UniRef, UniParc and proteomes: sequence, function, domains, variants, GO terms, cross-references and literature. Supports search queries, ID mapping, streaming and multiple formats including FASTA.",
+  "category": "life-sciences",
+  "tags": [
+    "proteins",
+    "uniprot",
+    "sequences",
+    "bioinformatics",
+    "genomics",
+    "fasta"
+  ],
+  "links": {
+    "homepage": "https://www.uniprot.org",
+    "docs": "https://www.uniprot.org/help/api",
+    "terms": "https://www.uniprot.org/help/license"
+  },
+  "api": {
+    "base_url": "https://rest.uniprot.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "other",
+      "text",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No strict numeric limits documented; use the streaming endpoint for bulk. Fair use."
+    },
+    "pagination": "link-header"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/uniprotkb/{accession}.json",
+      "summary": "Single entry by accession",
+      "params": [
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/uniprotkb/search",
+      "summary": "Search entries",
+      "params": [
+        "query",
+        "fields",
+        "format",
+        "size"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/idmapping/run",
+      "summary": "Submit an ID mapping job",
+      "params": [
+        "from",
+        "to",
+        "ids"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/uniprotkb/stream",
+      "summary": "Stream all results for a query",
+      "params": [
+        "query",
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://rest.uniprot.org/uniprotkb/P69905.json",
+    "response_excerpt": "{\n  \"entryType\": \"UniProtKB reviewed (Swiss-Prot)\",\n  \"primaryAccession\": \"P69905\",\n  \"uniProtkbId\": \"HBA_HUMAN\",\n  \"entryAudit\": {\n    \"firstPublicDate\": \"1986-07-21\",\n    \"lastAnnotationUpdateDate\": \"2026-11-04\",\n    \"entryVersion\": 220\n  },\n  \"proteinDescription\": {\n    \"recommendedName\": {\n      \"fullName\": {\n        \"value\": \"Hemoglobin subunit alpha\"\n      }\n    }\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://www.uniprot.org/help/license",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "All sequenced species"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Responses are large, so request only the columns you need with the fields parameter. Use /stream for bulk results and /idmapping for converting identifiers between databases.",
+  "caveats": [
+    "Full releases come every 8 weeks, with entries updated in between.",
+    "Swagger UI is at rest.uniprot.org/docs/ but the spec path was not confirmed.",
+    "Pagination uses Link headers (cursor-style)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

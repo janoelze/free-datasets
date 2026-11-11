@@ -1,0 +1,121 @@
+{
+  "slug": "ensembl",
+  "name": "Ensembl REST API",
+  "provider": {
+    "name": "EMBL-EBI / Ensembl",
+    "url": "https://www.ensembl.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Genome annotation: genes, transcripts, variants, sequences, homology and VEP for hundreds of species.",
+  "description": "Look up genes and transcripts by symbol or ID, fetch sequences, genomic regions, variants (including consequence prediction with VEP), cross-references, homologs and phylogenetic trees across vertebrate and other genomes.",
+  "category": "life-sciences",
+  "tags": [
+    "genomics",
+    "genes",
+    "variants",
+    "vep",
+    "sequences",
+    "homology",
+    "bioinformatics"
+  ],
+  "links": {
+    "homepage": "https://www.ensembl.org",
+    "docs": "https://rest.ensembl.org",
+    "terms": "https://www.ensembl.org/info/about/legal/disclaimer.html"
+  },
+  "api": {
+    "base_url": "https://rest.ensembl.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "other",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "required_headers": [
+      {
+        "name": "Content-Type",
+        "example": "application/json",
+        "notes": "Or append ?content-type=application/json to the URL."
+      }
+    ],
+    "rate_limit": {
+      "summary": "15 requests/second per IP (documented); headers show an hourly budget (x-ratelimit-limit 55000 per 3600s observed); HTTP 429 with Retry-After.",
+      "requests": 15,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/lookup/symbol/{species}/{symbol}",
+      "summary": "Gene by symbol",
+      "params": [
+        "expand"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sequence/id/{id}",
+      "summary": "Sequence for an Ensembl id",
+      "params": [
+        "type",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/overlap/region/{species}/{region}",
+      "summary": "Features overlapping a region",
+      "params": [
+        "feature"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vep/{species}/region",
+      "summary": "Variant effect prediction",
+      "params": [
+        "variants"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://rest.ensembl.org/lookup/symbol/homo_sapiens/BRCA2",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "response_excerpt": "{\n  \"id\": \"ENSG00000139618\",\n  \"display_name\": \"BRCA2\",\n  \"biotype\": \"protein_coding\",\n  \"species\": \"homo_sapiens\",\n  \"assembly_name\": \"GRCh38\",\n  \"seq_region_name\": \"13\",\n  \"start\": 32315086,\n  \"end\": 32400268,\n  \"strand\": 1,\n  \"canonical_transcript\": \"ENST00000380152.8\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Open; Ensembl data free to use (see terms)",
+      "url": "https://www.ensembl.org/info/about/legal/disclaimer.html",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Hundreds of species"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Request JSON via a Content-Type: application/json header or ?content-type=application/json, otherwise you may get another format. Respect Retry-After on 429.",
+  "caveats": [
+    "The first two research requests timed out at 15s (transient); later ones succeeded.",
+    "Release cycle is about 3-4 per year.",
+    "No official OpenAPI spec; endpoint docs are at rest.ensembl.org."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

@@ -1,0 +1,118 @@
+{
+  "slug": "open-food-facts",
+  "name": "Open Food Facts API",
+  "provider": {
+    "name": "Open Food Facts",
+    "url": "https://world.openfoodfacts.org",
+    "type": "nonprofit"
+  },
+  "summary": "Crowd-sourced database of 3M+ food products with ingredients, nutrition, Nutri-Score, NOVA and allergens.",
+  "description": "Look up packaged food by barcode or search by category, brand, additive, label or nutrient. Returns ingredients text, nutriments per 100g, Nutri-Score, Eco-Score, NOVA group, allergens and images. An open data dump (JSONL, CSV, Parquet) is also published.",
+  "category": "food",
+  "tags": [
+    "nutrition",
+    "barcodes",
+    "ingredients",
+    "nutri-score",
+    "allergens",
+    "products",
+    "packaged-food"
+  ],
+  "links": {
+    "homepage": "https://world.openfoodfacts.org",
+    "docs": "https://openfoodfacts.github.io/openfoodfacts-server/api/",
+    "terms": "https://world.openfoodfacts.org/terms-of-use",
+    "bulk_download": "https://world.openfoodfacts.org/data"
+  },
+  "api": {
+    "base_url": "https://world.openfoodfacts.org/api/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Reads are anonymous; writes need an account."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "AppName/1.0 (you@example.com)",
+        "notes": "Required, in the form AppName/Version (contact email)."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Documented: 100 requests/minute for product reads, 10 requests/minute for search, 2 requests/minute for facet queries."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/product/{barcode}",
+      "summary": "Product by barcode",
+      "params": [
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search products",
+      "params": [
+        "categories_tags_en",
+        "brands_tags",
+        "fields",
+        "page_size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://world.openfoodfacts.org/cgi/search.pl",
+      "summary": "Legacy search",
+      "params": [
+        "search_terms",
+        "json"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://world.openfoodfacts.org/api/v2/product/3017620422003?fields=product_name,brands,nutriscore_grade,nutriments",
+    "headers": {
+      "User-Agent": "AppName/1.0 (you@example.com)"
+    },
+    "response_excerpt": "{\"code\":\"3017620422003\",\"product\":{\"brands\":\"Ferrero, Nutella\",\"product_name\":\"Nutella\",\"nutriscore_grade\":\"e\",\"nutriments\":{\"energy-kcal_100g\":539,\"carbohydrates_100g\":57.5}}}"
+  },
+  "data": {
+    "license": {
+      "name": "Database ODbL 1.0; contents DbCL; images CC BY-SA",
+      "spdx": "ODbL-1.0",
+      "url": "https://world.openfoodfacts.org/terms-of-use",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, 3M+ products (strongest in France and Europe)",
+      "temporal": "Continuous crowd updates; daily dumps"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always pass fields= to keep payloads small. The barcode (EAN/UPC) is the primary key. Send a User-Agent of the form AppName/Version (contact) and respect the stricter search limits; use the dumps for bulk analysis.",
+  "caveats": [
+    "Crowd-sourced, so data quality varies per product.",
+    "ODbL share-alike applies to derived databases."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "themealdb"
+  ],
+  "added": "2026-11-11"
+}

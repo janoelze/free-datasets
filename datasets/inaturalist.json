@@ -1,0 +1,122 @@
+{
+  "slug": "inaturalist",
+  "name": "iNaturalist API",
+  "provider": {
+    "name": "iNaturalist",
+    "url": "https://www.inaturalist.org",
+    "type": "nonprofit"
+  },
+  "summary": "Crowd-sourced biodiversity observations, taxa and places with photos.",
+  "description": "Millions of research-grade observations of plants, animals and fungi with location, date, photos and community identifications, plus a searchable taxonomy and places. Read-only GET endpoints work without auth; writing needs OAuth.",
+  "category": "life-sciences",
+  "tags": [
+    "biodiversity",
+    "observations",
+    "citizen-science",
+    "species",
+    "photos",
+    "taxonomy"
+  ],
+  "links": {
+    "homepage": "https://www.inaturalist.org",
+    "docs": "https://api.inaturalist.org/v1/docs/",
+    "terms": "https://www.inaturalist.org/pages/api+recommended+practices",
+    "openapi": "https://api.inaturalist.org/v1/swagger.json"
+  },
+  "api": {
+    "base_url": "https://api.inaturalist.org/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Reads need no auth; write endpoints use OAuth/JWT."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Recommended maximum about 1 request/second and 10,000 requests/day; media downloads about 5 GB/hour (documented).",
+      "requests": 10000,
+      "per": "day",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/taxa",
+      "summary": "Search taxa",
+      "params": [
+        "q",
+        "rank",
+        "per_page",
+        "locale"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/observations",
+      "summary": "Search observations",
+      "params": [
+        "taxon_id",
+        "place_id",
+        "lat",
+        "lng",
+        "radius",
+        "d1",
+        "d2",
+        "quality_grade",
+        "per_page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/places/autocomplete",
+      "summary": "Place search",
+      "params": [
+        "q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/observations/species_counts",
+      "summary": "Species counts for an observation query"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.inaturalist.org/v1/taxa?q=monarch&per_page=1",
+    "response_excerpt": "{\n  \"total_results\": 197,\n  \"page\": 1,\n  \"per_page\": 1,\n  \"results\": [\n    {\n      \"id\": 522900,\n      \"rank\": \"subtribe\",\n      \"name\": \"Danaina\",\n      \"iconic_taxon_id\": 47158,\n      \"is_active\": true,\n      \"preferred_common_name\": \"Tiger Butterflies\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per observation (CC0, CC BY, CC BY-NC, etc.); taxa data open",
+      "url": "https://www.inaturalist.org/pages/api+recommended+practices",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Stay near 1 request/second. Filter observations with quality_grade=research for verified records, and use per_page with page for pagination.",
+  "caveats": [
+    "Observation locations may be obscured for threatened taxa.",
+    "License differs per observation."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=47629433",
+      "title": "iNaturalist",
+      "points": 534
+    }
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,99 @@
+{
+  "slug": "zippopotam-us",
+  "name": "Zippopotam.us",
+  "provider": {
+    "name": "Zippopotam.us",
+    "url": "https://www.zippopotam.us/",
+    "type": "individual"
+  },
+  "summary": "Postal code to place and coordinates lookup, and reverse by place, for around 60 countries.",
+  "description": "Given a country code and postal code, returns place names, state or region and latitude/longitude. Postal codes can also be looked up by country, state and city. It is built from GeoNames postal-code data and suits form auto-completion and approximate geocoding.",
+  "category": "geography-maps",
+  "tags": [
+    "postal-codes",
+    "zip-codes",
+    "geocoding",
+    "geonames",
+    "address-autocomplete"
+  ],
+  "links": {
+    "homepage": "https://www.zippopotam.us/",
+    "docs": "https://www.zippopotam.us/",
+    "terms": "https://www.geonames.org/export/"
+  },
+  "api": {
+    "base_url": "https://api.zippopotam.us",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No published limits; fair use."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{country_code}/{postal_code}",
+      "summary": "Places for a postal code",
+      "params": [
+        "country_code",
+        "postal_code"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{country_code}/{state_abbr}/{city}",
+      "summary": "Postal codes for a city",
+      "params": [
+        "country_code",
+        "state_abbr",
+        "city"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.zippopotam.us/de/10115",
+    "response_excerpt": "{\n \"country\": \"Germany\",\n \"country abbreviation\": \"DE\",\n \"post code\": \"10115\",\n \"places\": [\n  {\n   \"place name\": \"Berlin\",\n   \"longitude\": \"13.3922\",\n   \"latitude\": \"52.532\",\n   \"state\": \"Berlin\",\n   \"state abbreviation\": \"BE\"\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (GeoNames postal code data)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://www.geonames.org/export/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "About 60 countries",
+      "temporal": "Follows GeoNames releases"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Country code is the ISO 2-letter code in lowercase. JSON keys contain spaces (for example 'post code', 'place name') and latitude/longitude are strings. Coordinates are postal-area centroids, not addresses.",
+  "caveats": [
+    "Centroid coordinates only.",
+    "Data may be out of date for some countries.",
+    "Run by a single maintainer; no SLA."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=4870542",
+      "title": "Plenty Of Zip Codes For Form Auto-Completion",
+      "points": 46
+    }
+  ],
+  "added": "2026-11-11"
+}

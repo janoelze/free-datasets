@@ -1,0 +1,105 @@
+{
+  "slug": "timeapi-io",
+  "name": "TimeAPI.io",
+  "provider": {
+    "name": "TimeAPI.io",
+    "url": "https://timeapi.io",
+    "type": "company"
+  },
+  "summary": "Current time, time zone conversion and DST info for IANA zones or coordinates.",
+  "description": "Returns current time by IANA zone, coordinate or IP; converts between zones, translates and lists available time zones with DST info.",
+  "category": "time-calendar",
+  "tags": [
+    "time",
+    "timezone",
+    "dst",
+    "conversion",
+    "iana"
+  ],
+  "links": {
+    "homepage": "https://timeapi.io",
+    "docs": "https://timeapi.io/swagger/index.html",
+    "terms": "https://timeapi.io/",
+    "openapi": "https://timeapi.io/swagger/v1/swagger.json"
+  },
+  "api": {
+    "base_url": "https://timeapi.io/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No published numbers; fair use"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/Time/current/zone",
+      "summary": "Current time in zone",
+      "params": [
+        "timeZone"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Time/current/coordinate",
+      "summary": "Current time at coords",
+      "params": [
+        "latitude",
+        "longitude"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/TimeZone/AvailableTimeZones",
+      "summary": "List zones"
+    },
+    {
+      "method": "POST",
+      "path": "/Conversion/ConvertTimeZone",
+      "summary": "Convert zone",
+      "params": [
+        "fromTimeZone",
+        "dateTime",
+        "toTimeZone"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://timeapi.io/api/Time/current/zone?timeZone=Europe/Berlin",
+    "response_excerpt": "{\n \"dateTime\": \"2026-11-11T15:29:34.2790951\",\n \"timeZone\": \"Europe/Berlin\",\n \"dayOfWeek\": \"Wednesday\",\n \"dstActive\": false\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Service terms",
+      "url": "https://timeapi.io/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global IANA zones",
+      "temporal": "Live"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Zone names are IANA identifiers such as Europe/Berlin. Conversion is a POST with a JSON body.",
+  "caveats": [
+    "worldtimeapi.org was unreachable (connection reset) when tested; this is a working alternative."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "nager-date"
+  ],
+  "added": "2026-11-11"
+}

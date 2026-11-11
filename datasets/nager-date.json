@@ -1,0 +1,99 @@
+{
+  "slug": "nager-date",
+  "name": "Nager.Date Public Holidays API",
+  "provider": {
+    "name": "Nager.at",
+    "url": "https://date.nager.at",
+    "type": "community"
+  },
+  "summary": "Public holidays for 100+ countries, with long-weekend calculation.",
+  "description": "Free keyless API returning public holidays by year and country (names in English and local language, global/regional flag, types), next holidays, today-is-holiday checks and long weekends.",
+  "category": "time-calendar",
+  "tags": [
+    "holidays",
+    "calendar",
+    "public-holidays",
+    "countries",
+    "long-weekend"
+  ],
+  "links": {
+    "homepage": "https://date.nager.at",
+    "docs": "https://date.nager.at/Api",
+    "terms": "https://github.com/nager/Nager.Date",
+    "source": "https://github.com/nager/Nager.Date"
+  },
+  "api": {
+    "base_url": "https://date.nager.at/api/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No published limit; fair use"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/PublicHolidays/{year}/{countryCode}",
+      "summary": "Holidays of a year"
+    },
+    {
+      "method": "GET",
+      "path": "/NextPublicHolidays/{countryCode}",
+      "summary": "Upcoming holidays"
+    },
+    {
+      "method": "GET",
+      "path": "/IsTodayPublicHoliday/{countryCode}",
+      "summary": "Today check (204/404)",
+      "params": [
+        "countyCode",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/LongWeekend/{year}/{countryCode}",
+      "summary": "Long weekends"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://date.nager.at/api/v3/PublicHolidays/2026/DE",
+    "response_excerpt": "[\n {\n  \"date\": \"2026-01-01\",\n  \"localName\": \"Neujahr\",\n  \"name\": \"New Year's Day\",\n  \"countryCode\": \"DE\",\n  \"fixed\": false,\n  \"global\": true,\n  \"counties\": null,\n  \"launchYear\": null,\n  \"types\": [\n   \"Public\"\n  ]\n },\n..."
+  },
+  "data": {
+    "license": {
+      "name": "MIT (open source)",
+      "spdx": "MIT",
+      "url": "https://github.com/nager/Nager.Date",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "100+ countries",
+      "temporal": "Past and future years"
+    },
+    "update_frequency": "annually"
+  },
+  "agent_notes": "Use ISO 3166-1 alpha-2 country codes. Regional holidays carry county codes and global=false. IsTodayPublicHoliday signals via status code (200 holiday, 204 not).",
+  "caveats": [
+    "Documentation moved to nagerholidays.com; regional holidays are given via counties codes."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Re-checked 2026-11-11 with curl on /PublicHolidays/2026/DE: HTTP 200 with access-control-allow-origin: *."
+  },
+  "related": [
+    "timeapi-io"
+  ],
+  "added": "2026-11-11"
+}

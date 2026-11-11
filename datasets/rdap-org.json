@@ -1,0 +1,89 @@
+{
+  "slug": "rdap-org",
+  "name": "RDAP (domain registration data via rdap.org bootstrap)",
+  "provider": {
+    "name": "IANA / registries (rdap.org redirector)",
+    "url": "https://rdap.org",
+    "type": "nonprofit"
+  },
+  "summary": "Modern JSON replacement for WHOIS: domain, IP and ASN registration data.",
+  "description": "rdap.org redirects queries to the authoritative RDAP server for the TLD or RIR (IANA bootstrap). Returns status, nameservers, registrar entities, events (registration/expiry) in RFC 9083 JSON. Also /ip/{addr} and /autnum/{n}.",
+  "category": "networking-internet",
+  "tags": [
+    "rdap",
+    "whois",
+    "domains",
+    "registration",
+    "ip",
+    "asn"
+  ],
+  "links": {
+    "homepage": "https://rdap.org",
+    "docs": "https://about.rdap.org/",
+    "terms": "https://www.icann.org/rdap"
+  },
+  "api": {
+    "base_url": "https://rdap.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Varies by registry; rdap.org is best-effort redirect"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/domain/{name}",
+      "summary": "Domain registration record"
+    },
+    {
+      "method": "GET",
+      "path": "/ip/{address}",
+      "summary": "IP network record"
+    },
+    {
+      "method": "GET",
+      "path": "/autnum/{asn}",
+      "summary": "ASN record"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://rdap.org/domain/example.com",
+    "response_excerpt": "{\n \"objectClassName\": \"domain\",\n \"ldhName\": \"EXAMPLE.COM\",\n \"status\": [\n  \"client delete prohibited\",\n  \"client transfer prohibited\",\n  \"client update prohibited\"\n ],\n \"events\": [\n  {\n   \"eventAction\": \"registration\",\n   \"eventDate\": \"1995-08-14T04:00:00Z\"\n  },\n  {\n..."
+  },
+  "data": {
+    "license": {
+      "name": "Registry-specific terms; personal data redacted",
+      "url": "https://www.icann.org/rdap",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Live registry data"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "rdap.org answers with a 302 redirect to the authoritative registry, so follow redirects (curl -L). Rate limits differ per registry and some TLDs have no RDAP service.",
+  "caveats": [
+    "Response is 302 redirect to the registry; use -L. Registries rate limit differently; some TLDs lack RDAP."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "ripestat",
+    "google-dns-doh"
+  ],
+  "added": "2026-11-11"
+}

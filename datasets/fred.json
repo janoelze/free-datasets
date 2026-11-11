@@ -1,0 +1,121 @@
+{
+  "slug": "fred",
+  "name": "FRED API (St. Louis Fed)",
+  "provider": {
+    "name": "Federal Reserve Bank of St. Louis",
+    "url": "https://www.stlouisfed.org",
+    "type": "government"
+  },
+  "summary": "800,000+ US and international economic time series (GDP, CPI, unemployment, rates); free API key required.",
+  "description": "Federal Reserve Economic Data: macro series from 100+ sources including BLS, BEA, Census, OECD and IMF. Endpoints for series metadata, observations, categories, releases, tags and search; ALFRED vintage data is supported. A free key comes with a FRED account.",
+  "category": "economics-statistics",
+  "tags": [
+    "fred",
+    "federal-reserve",
+    "macroeconomics",
+    "cpi",
+    "gdp",
+    "unemployment",
+    "interest-rates",
+    "time-series"
+  ],
+  "links": {
+    "homepage": "https://fred.stlouisfed.org/",
+    "docs": "https://fred.stlouisfed.org/docs/api/fred/",
+    "terms": "https://fred.stlouisfed.org/docs/api/terms_of_use.html",
+    "signup": "https://fred.stlouisfed.org/docs/api/api_key.html"
+  },
+  "api": {
+    "base_url": "https://api.stlouisfed.org/fred",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "Free key (32-character lowercase alphanumeric) from a fred.stlouisfed.org account. Add file_type=json for JSON."
+    },
+    "cors": "unknown",
+    "rate_limit": {
+      "summary": "120 requests/minute per key (documented).",
+      "requests": 120,
+      "per": "minute",
+      "scope": "key"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/series/observations",
+      "summary": "Values for a series",
+      "params": [
+        "series_id",
+        "observation_start",
+        "units",
+        "frequency",
+        "file_type"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/series",
+      "summary": "Series metadata",
+      "params": [
+        "series_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/series/search",
+      "summary": "Full-text series search",
+      "params": [
+        "search_text",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/releases",
+      "summary": "Release calendar"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=GDP&api_key=YOUR_KEY&file_type=json",
+    "response_excerpt": "{\"error_code\": 400, \"error_message\": \"Bad Request.  The value for variable api_key is not a 32 character alpha-numeric lower-case string.\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Terms vary per series; many public domain, some copyrighted by the source; FRED API terms apply",
+      "url": "https://fred.stlouisfed.org/docs/api/terms_of_use.html",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "US-centric plus international",
+      "temporal": "Some series from the 1700s"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Always add file_type=json (default is XML). Find a series_id via /series/search, then call /series/observations; units= and frequency= transform values server-side.",
+  "caveats": [
+    "Only the JSON error response for an invalid key was verified; no authenticated call was made.",
+    "CORS was not confirmed: the error response carried no access-control header.",
+    "Some series carry third-party copyright."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 400,
+    "with_key": false,
+    "notes": "Executed with a placeholder key; HTTP 400 JSON error confirms the endpoint, no real key was used."
+  },
+  "related": [
+    "world-bank-indicators",
+    "us-treasury-fiscaldata"
+  ],
+  "added": "2026-11-11"
+}

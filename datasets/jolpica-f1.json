@@ -1,0 +1,104 @@
+{
+  "slug": "jolpica-f1",
+  "name": "Jolpica F1 API (Ergast successor)",
+  "provider": {
+    "name": "Jolpica project (community)",
+    "url": "https://github.com/jolpica/jolpica-f1",
+    "type": "community"
+  },
+  "summary": "Formula 1 results, standings, drivers, circuits and lap times since 1950, Ergast-compatible.",
+  "description": "Drop-in replacement for the retired Ergast Motor Racing API. Covers seasons, races, qualifying, sprint, results, driver and constructor standings, pit stops and lap times for every championship since 1950, updated after each session.",
+  "category": "sports",
+  "tags": [
+    "formula1",
+    "f1",
+    "motorsport",
+    "ergast",
+    "results",
+    "standings"
+  ],
+  "links": {
+    "homepage": "https://github.com/jolpica/jolpica-f1",
+    "docs": "https://github.com/jolpica/jolpica-f1/tree/main/docs",
+    "terms": "https://github.com/jolpica/jolpica-f1",
+    "source": "https://github.com/jolpica/jolpica-f1"
+  },
+  "api": {
+    "base_url": "https://api.jolpi.ca/ergast/f1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Burst 4 requests/s, sustained 500 requests/hour per IP (per project docs)",
+      "requests": 500,
+      "per": "hour",
+      "scope": "ip"
+    },
+    "pagination": "offset",
+    "max_page_size": 100
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{season}/{round}/results.json",
+      "summary": "Race results (season may be 'current', round 'last')"
+    },
+    {
+      "method": "GET",
+      "path": "/{season}/driverStandings.json",
+      "summary": "Driver championship"
+    },
+    {
+      "method": "GET",
+      "path": "/{season}/constructors.json",
+      "summary": "Constructors"
+    },
+    {
+      "method": "GET",
+      "path": "/{season}/{round}/laps.json",
+      "summary": "Lap times",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.jolpi.ca/ergast/f1/current/last/results.json",
+    "response_excerpt": "{\n \"season\": \"2026\",\n \"round\": \"20\",\n \"raceName\": \"Brazilian Grand Prix\",\n \"winner\": \"Norris\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-NC-SA 4.0 for data (non-commercial)",
+      "spdx": "CC-BY-NC-SA-4.0",
+      "url": "https://github.com/jolpica/jolpica-f1",
+      "attribution_required": true,
+      "commercial_use": "prohibited"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "1950-present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Ergast-compatible: use 'current' for the season and 'last' for the round. Default page size is 30 and the maximum is 100; page with limit and offset.",
+  "caveats": [
+    "Rate limit numbers come from the project README and were not verified via response headers."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "openf1"
+  ],
+  "added": "2026-11-11"
+}

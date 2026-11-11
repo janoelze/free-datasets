@@ -1,0 +1,108 @@
+{
+  "slug": "unpaywall",
+  "name": "Unpaywall",
+  "provider": {
+    "name": "OurResearch (Impactstory)",
+    "url": "https://unpaywall.org/",
+    "type": "nonprofit"
+  },
+  "summary": "Look up the legal open-access full-text location of any DOI.",
+  "description": "Given a DOI, Unpaywall returns whether the article is open access, its OA status (gold, green, hybrid, bronze or closed), license, version, and the best and all known OA locations with PDF and landing-page URLs. It indexes tens of millions of DOIs by harvesting publishers and repositories. A title search endpoint and a data-feed snapshot for bulk use are also offered.",
+  "category": "knowledge-reference",
+  "tags": [
+    "open-access",
+    "doi",
+    "scholarly-papers",
+    "pdf",
+    "metadata",
+    "publishing"
+  ],
+  "links": {
+    "homepage": "https://unpaywall.org/",
+    "docs": "https://unpaywall.org/products/api",
+    "terms": "https://unpaywall.org/products/api",
+    "bulk_download": "https://unpaywall.org/products/snapshot"
+  },
+  "api": {
+    "base_url": "https://api.unpaywall.org/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key, but a mandatory email query parameter must be a real address; placeholder example.com emails are rejected with HTTP 422."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "100,000 calls per day; use the data feed snapshot above that.",
+      "requests": 100000,
+      "per": "day"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{doi}",
+      "summary": "OA status and locations for a DOI",
+      "params": [
+        "email"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Title search over OA records",
+      "params": [
+        "query",
+        "is_oa",
+        "page",
+        "email"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.unpaywall.org/v2/10.1038/nature12373?email=you@yourdomain.org",
+    "response_excerpt": "{\n \"doi\": \"10.1038/nature12373\",\n \"title\": \"Nanometre-scale thermometry in a living cell\",\n \"is_oa\": true,\n \"oa_status\": \"bronze\",\n \"journal_name\": \"Nature\",\n \"year\": 2013,\n \"publisher\": \"Springer Science and Business Media LLC\",\n \"best_oa_location\": {\n  \"host_type\": \"publisher\",\n  \"license\": null,\n  \"url_for_pdf\": \"https://www.nature.com/articles/nature12373.pdf\",\n  \"version\": \"publishedVersion\"\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 (data); service terms apply",
+      "spdx": "CC0-1.0",
+      "url": "https://unpaywall.org/products/api",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Continuously updated"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Always pass email=<real address> (not secret, but fake example.com addresses return 422). DOIs are path segments and should be URL-encoded if they contain special characters. The API returns links only, not full text.",
+  "caveats": [
+    "Only links to open-access copies are returned, never full text.",
+    "Search endpoint may be limited more tightly than DOI lookup (check docs).",
+    "Update cadence is approximate (crawl described as daily-ish)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Succeeded with a plausible real email; an example.com email returned 422."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=31271101",
+      "title": "Unpaywall: An open database of 31,903,705 free scholarly articles",
+      "points": 457
+    }
+  ],
+  "related": [
+    "openalex",
+    "crossref"
+  ],
+  "added": "2026-11-11"
+}

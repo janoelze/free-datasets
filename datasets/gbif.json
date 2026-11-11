@@ -1,0 +1,120 @@
+{
+  "slug": "gbif",
+  "name": "GBIF API",
+  "provider": {
+    "name": "Global Biodiversity Information Facility",
+    "url": "https://www.gbif.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Species taxonomy and over 2 billion biodiversity occurrence records from institutions worldwide.",
+  "description": "Includes the GBIF Backbone Taxonomy (name matching and search), occurrence records (specimens and observations with coordinates and dates), dataset and publisher registries, and download requests. Read endpoints need no authentication.",
+  "category": "life-sciences",
+  "tags": [
+    "biodiversity",
+    "species",
+    "taxonomy",
+    "occurrences",
+    "ecology",
+    "museum-collections"
+  ],
+  "links": {
+    "homepage": "https://www.gbif.org",
+    "docs": "https://techdocs.gbif.org/en/openapi/",
+    "terms": "https://www.gbif.org/terms"
+  },
+  "api": {
+    "base_url": "https://api.gbif.org/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Reads need no auth. Downloads and registry writes need a free GBIF account (HTTP basic)."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No hard limit documented for reads. Occurrence search paginates only to an offset of 100,000; use the download API for more."
+    },
+    "pagination": "offset",
+    "max_page_size": 300
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/species/match",
+      "summary": "Match a name to the backbone taxonomy",
+      "params": [
+        "name",
+        "rank",
+        "kingdom",
+        "strict"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/species/search",
+      "summary": "Search taxa",
+      "params": [
+        "q",
+        "rank",
+        "status",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/occurrence/search",
+      "summary": "Search occurrence records",
+      "params": [
+        "scientificName",
+        "taxonKey",
+        "country",
+        "year",
+        "hasCoordinate",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dataset",
+      "summary": "List datasets",
+      "params": [
+        "q",
+        "type"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.gbif.org/v1/species/match?name=Puma%20concolor",
+    "response_excerpt": "{\n  \"usageKey\": 2435099,\n  \"scientificName\": \"Puma concolor (Linnaeus, 1771)\",\n  \"canonicalName\": \"Puma concolor\",\n  \"rank\": \"SPECIES\",\n  \"status\": \"ACCEPTED\",\n  \"confidence\": 99,\n  \"matchType\": \"EXACT\",\n  \"kingdom\": \"Animalia\",\n  \"family\": \"Felidae\",\n  \"genus\": \"Puma\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per dataset: CC0, CC BY or CC BY-NC; API metadata CC0",
+      "url": "https://www.gbif.org/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Centuries of records"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Resolve a name to a taxonKey with /species/match first, then filter occurrences by taxonKey. Check the per-record license field before reuse; CSV only comes via the download API.",
+  "caveats": [
+    "Occurrence licenses vary per record; some are non-commercial.",
+    "Occurrence search is capped at offset 100,000.",
+    "The OpenAPI spec is hosted at techdocs.gbif.org; a direct spec URL was not confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

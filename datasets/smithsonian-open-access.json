@@ -1,0 +1,116 @@
+{
+  "slug": "smithsonian-open-access",
+  "name": "Smithsonian Open Access API",
+  "provider": {
+    "name": "Smithsonian Institution",
+    "url": "https://www.si.edu",
+    "type": "government"
+  },
+  "summary": "Search 11M+ records and 5M+ CC0 images from 19 Smithsonian museums, libraries and archives.",
+  "description": "Open Access metadata and media from the National Air and Space Museum, American History, Natural History, Cooper Hewitt, the Portrait Gallery and others. Supports search, category search, stats and content lookup by ID. Uses api.data.gov keys.",
+  "category": "art-museums",
+  "tags": [
+    "smithsonian",
+    "museum",
+    "science",
+    "history",
+    "images",
+    "collections",
+    "cc0"
+  ],
+  "links": {
+    "homepage": "https://www.si.edu/openaccess",
+    "docs": "https://edan.si.edu/openaccess/apidocs/",
+    "terms": "https://www.si.edu/termsofuse",
+    "signup": "https://api.data.gov/signup/"
+  },
+  "api": {
+    "base_url": "https://api.si.edu/openaccess/api/v1.0",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "demo_key": "DEMO_KEY",
+      "notes": "Free api.data.gov key; DEMO_KEY works for testing with tight limits."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "api.data.gov: 1,000 requests/hour per key. DEMO_KEY is far lower (research cites 30/hour and 50/day per IP, but also saw an x-ratelimit-limit of 10 on a DEMO_KEY response).",
+      "requests": 1000,
+      "per": "hour",
+      "scope": "key"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search records",
+      "params": [
+        "q",
+        "start",
+        "rows",
+        "sort",
+        "type"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/content/{id}",
+      "summary": "Record by ID"
+    },
+    {
+      "method": "GET",
+      "path": "/category/{cat}/search",
+      "summary": "Search within a category (art_design, history_culture, science_technology)",
+      "params": [
+        "q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/terms/{category}",
+      "summary": "Controlled vocabulary terms"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.si.edu/openaccess/api/v1.0/search?q=apollo&rows=1&api_key=DEMO_KEY",
+    "response_excerpt": "{\"status\":200,\"responseCode\":1,\"response\":{\"rowCount\":4608,\"rows\":[{\"id\":\"ld1-1643399887910-1643399889853-0\",\"title\":\"Thirteen Apollo Subjects for Ceiling\",\"unitCode\":\"CHNDM\",\"type\":\"edanmdm\"}]}}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 for open-access records",
+      "spdx": "CC0-1.0",
+      "url": "https://www.si.edu/termsofuse",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "About 11M metadata records"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Pass api_key as a query parameter. Only some records are CC0, so inspect content.descriptiveNonRepeating.metadata_usage.access before reusing media. Get a personal key for anything beyond testing.",
+  "caveats": [
+    "Not every record is CC0."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Executed with DEMO_KEY."
+  },
+  "related": [
+    "met-museum",
+    "artic",
+    "europeana"
+  ],
+  "added": "2026-11-11"
+}

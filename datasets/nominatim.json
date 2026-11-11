@@ -1,0 +1,132 @@
+{
+  "slug": "nominatim",
+  "name": "Nominatim (OpenStreetMap geocoder)",
+  "provider": {
+    "name": "OpenStreetMap Foundation",
+    "url": "https://nominatim.org",
+    "type": "nonprofit"
+  },
+  "summary": "Free forward and reverse geocoding on OpenStreetMap data.",
+  "description": "Search by free-form or structured address, reverse geocode coordinates, look up OSM objects, with address details, bounding boxes, polygons (GeoJSON) and multilingual names. The public instance is for light use; the software can be self-hosted.",
+  "category": "geography-maps",
+  "tags": [
+    "geocoding",
+    "reverse-geocoding",
+    "openstreetmap",
+    "addresses",
+    "geodata"
+  ],
+  "links": {
+    "homepage": "https://nominatim.org",
+    "docs": "https://nominatim.org/release-docs/latest/api/Overview/",
+    "terms": "https://operations.osmfoundation.org/policies/nominatim/"
+  },
+  "api": {
+    "base_url": "https://nominatim.openstreetmap.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "xml",
+      "html"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key; a valid User-Agent or Referer identifying the app is required."
+    },
+    "cors": "any",
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app/1.0 (contact@example.com)",
+        "notes": "Must identify your application; generic client strings may be blocked."
+      }
+    ],
+    "rate_limit": {
+      "summary": "Absolute maximum 1 request/second; no bulk geocoding and no autocomplete-as-you-type; heavy use may be blocked.",
+      "requests": 1,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Forward geocode",
+      "params": [
+        "q",
+        "format",
+        "limit",
+        "countrycodes",
+        "addressdetails",
+        "polygon_geojson"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reverse",
+      "summary": "Reverse geocode",
+      "params": [
+        "lat",
+        "lon",
+        "format",
+        "zoom"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lookup",
+      "summary": "Look up OSM ids",
+      "params": [
+        "osm_ids"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "summary": "Service status",
+      "params": [
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://nominatim.openstreetmap.org/search?q=Eiffel+Tower&format=json&limit=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (https://example.com)"
+    },
+    "response_excerpt": "[\n  {\n    \"place_id\": 98616190,\n    \"licence\": \"Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright\",\n    \"osm_type\": \"way\",\n    \"osm_id\": 5013364,\n    \"lat\": \"48.8582599\",\n    \"lon\": \"2.2945006\",\n    \"class\": \"man_made\",\n    \"type\": \"tower\",\n    \"name\": \"Tour Eiffel\"\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "ODbL 1.0 (attribution to OpenStreetMap contributors required)",
+      "spdx": "ODbL-1.0",
+      "url": "https://operations.osmfoundation.org/policies/nominatim/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always send an identifying User-Agent and stay at or below 1 request/second. Latitude and longitude are returned as strings. For autocomplete use Photon or a self-hosted instance instead.",
+  "caveats": [
+    "Public instance is for light use only; no bulk geocoding.",
+    "Lat/lon returned as strings.",
+    "Komoot Photon (photon.komoot.io, autocomplete-friendly) was also seen working as an alternative."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "overpass-api"
+  ],
+  "added": "2026-11-11"
+}

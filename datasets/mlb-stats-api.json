@@ -1,0 +1,109 @@
+{
+  "slug": "mlb-stats-api",
+  "name": "MLB Stats API",
+  "provider": {
+    "name": "Major League Baseball Advanced Media",
+    "url": "https://www.mlb.com",
+    "type": "company"
+  },
+  "summary": "MLB schedules, scores, teams, rosters, standings and player stats.",
+  "description": "The public JSON API behind mlb.com covering MLB and affiliated minors: schedule by date, live game feed, teams, rosters, standings, players and season/career stats, draft and awards.",
+  "category": "sports",
+  "tags": [
+    "mlb",
+    "baseball",
+    "schedule",
+    "stats",
+    "players",
+    "standings"
+  ],
+  "links": {
+    "homepage": "https://www.mlb.com",
+    "docs": "https://github.com/toddrob99/MLB-StatsAPI/wiki/Endpoints"
+  },
+  "api": {
+    "base_url": "https://statsapi.mlb.com/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "None published"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/teams",
+      "summary": "Teams",
+      "params": [
+        "sportId=1"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/schedule",
+      "summary": "Games by date",
+      "params": [
+        "sportId",
+        "date",
+        "teamId"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/standings",
+      "summary": "Standings",
+      "params": [
+        "leagueId",
+        "season"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/people/{id}/stats",
+      "summary": "Player stats",
+      "params": [
+        "stats",
+        "group",
+        "season"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://statsapi.mlb.com/api/v1/teams?sportId=1",
+    "response_excerpt": "{\n \"teams\": [\n  {\n   \"id\": 133,\n   \"name\": \"Athletics\",\n   \"teamName\": \"Athletics\"\n  },\n  {\n   \"id\": 134,\n   \"name\": \"Pittsburgh Pirates\",\n   \"teamName\": \"Pirates\"\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Copyright MLB Advanced Media; personal, non-commercial use",
+      "url": "https://gdx.mlb.com/components/copyright.txt",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "MLB and affiliated minor leagues",
+      "temporal": "Current and historical seasons"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Not officially documented; use the community wiki for endpoint lists. Filter /teams and /schedule with sportId (1 = MLB).",
+  "caveats": [
+    "Not officially documented; the copyright notice restricts commercial use."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "nhl-web-api"
+  ],
+  "added": "2026-11-11"
+}

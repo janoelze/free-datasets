@@ -1,0 +1,125 @@
+{
+  "slug": "carbon-intensity-uk",
+  "name": "Carbon Intensity API (Great Britain)",
+  "provider": {
+    "name": "National Energy System Operator (NESO) with University of Oxford, EDF and WWF",
+    "url": "https://carbonintensity.org.uk/",
+    "type": "government"
+  },
+  "summary": "Half-hourly forecast and actual carbon intensity (gCO2/kWh) and generation mix of the Great Britain electricity grid.",
+  "description": "Provides national and regional (queryable by postcode) carbon intensity of electricity with a forecast, actual values, an index (very low to very high) and the fuel generation mix. Supports date ranges, past and future 24h/48h windows and a statistics endpoint, plus a national /generation endpoint. Useful for carbon-aware scheduling.",
+  "category": "earth-environment",
+  "tags": [
+    "carbon-intensity",
+    "electricity-grid",
+    "emissions",
+    "energy-mix",
+    "great-britain",
+    "forecast"
+  ],
+  "links": {
+    "homepage": "https://carbonintensity.org.uk/",
+    "docs": "https://carbon-intensity.github.io/api-definitions/",
+    "terms": "https://github.com/carbon-intensity/methodology/raw/master/Carbon%20Intensity%20API%20Methodology.pdf"
+  },
+  "api": {
+    "base_url": "https://api.carbonintensity.org.uk",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "Accept",
+        "example": "application/json",
+        "notes": "Recommended."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No published limits; date range queries are capped at 14 days (statistics 30 days)."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/intensity",
+      "summary": "Current national intensity",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/intensity/date/{date}",
+      "summary": "All half-hours for a day",
+      "params": [
+        "date"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/regional/postcode/{outcode}",
+      "summary": "Regional intensity and generation mix",
+      "params": [
+        "outcode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/generation",
+      "summary": "National generation mix",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.carbonintensity.org.uk/regional/postcode/RG10",
+    "headers": {
+      "Accept": "application/json"
+    },
+    "response_excerpt": "{\n \"data\": [\n  {\n   \"regionid\": 12,\n   \"dnoregion\": \"SSE South\",\n   \"shortname\": \"South England\",\n   \"postcode\": \"RG10\",\n   \"data\": [\n    {\n     \"from\": \"2026-11-11T13:30Z\",\n     \"to\": \"2026-11-11T14:00Z\",\n     \"intensity\": {\n      \"forecast\": 253,\n      \"index\": \"very high\"\n     },\n     \"generationmix\": [\n      {\n       \"fuel\": \"gas\",\n       \"perc\": 61.2\n      },\n      {\n       \"fuel\": \"solar\",\n       \"perc\": 12.9\n      },\n      {\n       \"fuel\": \"wind\",\n       \"perc\": 4\n      }\n     ]\n    }\n   ]\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://github.com/carbon-intensity/methodology/raw/master/Carbon%20Intensity%20API%20Methodology.pdf",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Great Britain, national plus regions",
+      "temporal": "Past data and forecast up to about 96 hours"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "The postcode endpoint takes only the outcode (first half, e.g. RG10). Values are in gCO2/kWh per half-hour. Keep date-range queries within 14 days.",
+  "caveats": [
+    "Great Britain only.",
+    "Postcode endpoint accepts outcode only.",
+    "Data refreshes every 30 minutes (nearest enum 'hourly' used).",
+    "A swagger.json URL cited in research did not return a spec when fetched, so no openapi link is given."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=24752812",
+      "title": "Carbon Intensity API: Great Britain",
+      "points": 2
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=37062142",
+      "title": "UK Carbon Intensity API",
+      "points": 1
+    }
+  ],
+  "added": "2026-11-11"
+}

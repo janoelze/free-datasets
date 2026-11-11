@@ -1,0 +1,42 @@
+{
+  "slug": "wikidata",
+  "name": "Wikidata Query Service",
+  "provider": { "name": "Wikimedia Foundation", "url": "https://wikimediafoundation.org/", "type": "nonprofit" },
+  "summary": "SPARQL access to the Wikidata knowledge graph of over 100 million items about people, places and things.",
+  "description": "Wikidata is the structured-data sibling of Wikipedia. The query service answers SPARQL queries over all statements, labels and identifiers, which makes it the hub for cross-referencing external databases.",
+  "category": "knowledge-reference",
+  "tags": ["knowledge-graph", "linked-data", "wikipedia"],
+  "links": {
+    "homepage": "https://www.wikidata.org/",
+    "docs": "https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service",
+    "bulk_download": "https://dumps.wikimedia.org/wikidatawiki/entities/"
+  },
+  "api": {
+    "base_url": "https://query.wikidata.org",
+    "style": "sparql",
+    "formats": ["json", "csv", "xml"],
+    "auth": { "type": "none" },
+    "required_headers": [ { "name": "User-Agent", "example": "my-app/1.0 (me@example.org)", "notes": "Generic agents are throttled." } ],
+    "cors": "reflect",
+    "rate_limit": { "summary": "60 seconds of query time per minute", "requests": 1, "per": "minute", "scope": "ip" },
+    "pagination": "other"
+  },
+  "endpoints": [
+    { "method": "GET", "path": "/sparql", "summary": "Run a SPARQL query", "params": ["query", "format"] }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://query.wikidata.org/sparql?query=SELECT%20%3Fx%20WHERE%20%7B%20wd%3AQ42%20wdt%3AP31%20%3Fx%20%7D&format=json",
+    "headers": { "Accept": "application/sparql-results+json" },
+    "response_excerpt": "{\"head\":{\"vars\":[\"x\"]},\"results\":{\"bindings\":[{\"x\":{\"type\":\"uri\",\"value\":\"http://www.wikidata.org/entity/Q5\"}}]}}"
+  },
+  "data": {
+    "license": { "name": "CC0 1.0", "spdx": "CC0-1.0", "commercial_use": "allowed", "attribution_required": false },
+    "coverage": { "geographic": "Global" },
+    "update_frequency": "realtime"
+  },
+  "status": "active",
+  "verification": { "last_verified": "2026-11-02", "http_status": 200, "with_key": true },
+  "related": ["open-meteo"],
+  "added": "2026-10-21"
+}

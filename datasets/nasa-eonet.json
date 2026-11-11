@@ -1,0 +1,97 @@
+{
+  "slug": "nasa-eonet",
+  "name": "NASA EONET (Earth Observatory Natural Event Tracker)",
+  "provider": {
+    "name": "NASA Earth Observatory / GSFC",
+    "url": "https://eonet.gsfc.nasa.gov",
+    "type": "government"
+  },
+  "summary": "Curated feed of ongoing natural events: wildfires, storms, volcanoes, floods, sea and lake ice.",
+  "description": "EONET lists natural events worldwide with category, source links, and geometry (point or polygon) over time, for example tropical cyclone tracks with wind magnitude. It is a good discovery layer pointing to NASA imagery layers (WMS/GIBS) for each event.",
+  "category": "earth-environment",
+  "tags": [
+    "natural-events",
+    "wildfires",
+    "storms",
+    "volcanoes",
+    "hazards",
+    "floods"
+  ],
+  "links": {
+    "homepage": "https://eonet.gsfc.nasa.gov",
+    "docs": "https://eonet.gsfc.nasa.gov/docs/v3",
+    "terms": "https://www.earthdata.nasa.gov/engage/open-data-services-software-policies"
+  },
+  "api": {
+    "base_url": "https://eonet.gsfc.nasa.gov/api/v3",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "rss"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "X-RateLimit-Limit of 60 per minute observed in response headers."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/events",
+      "summary": "List events",
+      "params": [
+        "status",
+        "limit",
+        "days",
+        "category",
+        "source",
+        "bbox",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/events/geojson",
+      "summary": "Events as GeoJSON, same parameters as /events"
+    },
+    {
+      "method": "GET",
+      "path": "/categories",
+      "summary": "List event categories"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://eonet.gsfc.nasa.gov/api/v3/events?limit=1&status=open",
+    "response_excerpt": "{\n  \"title\": \"EONET Events\",\n  \"events\": [\n    {\n      \"id\": \"EONET_26159\",\n      \"title\": \"Tropical Cyclone 03S\",\n      \"categories\": [\n        {\n          \"id\": \"severeStorms\",\n          \"title\": \"Severe Storms\"\n        }\n      ],\n      \"geometry\": [\n        {\n          \"magnitudeValue\": 35.0,\n          \"magnitudeUnit\": \"kts\",\n          \"date\": \"2026-11-07T18:00:00Z\",\n          \"type\": \"Point\",\n          \"coordinates\": [\n            52.6,\n            -13.5\n          ]\n        }\n      ]\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain / NASA open data",
+      "url": "https://www.earthdata.nasa.gov/engage/open-data-services-software-policies",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "2000s-present"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Coordinates are [longitude, latitude]. Filter with status=open|closed|all and days to keep responses small.",
+  "caveats": [
+    "Events are added as detected, so recent events may be sparse."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

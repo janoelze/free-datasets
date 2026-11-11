@@ -1,0 +1,92 @@
+{
+  "slug": "pypi-json-api",
+  "name": "PyPI JSON API",
+  "provider": {
+    "name": "Python Software Foundation",
+    "url": "https://pypi.org",
+    "type": "nonprofit"
+  },
+  "summary": "Metadata, release history and file hashes for Python packages.",
+  "description": "The PyPI JSON API returns project metadata (summary, author, classifiers, requires_dist), all releases with upload dates, file URLs and digests. Also available: a Simple (PEP 503/691) index and a Stats API via pypistats.org for download counts.",
+  "category": "developer-tools",
+  "tags": [
+    "python",
+    "pypi",
+    "packages",
+    "registry",
+    "dependencies"
+  ],
+  "links": {
+    "homepage": "https://pypi.org",
+    "docs": "https://docs.pypi.org/api/json/",
+    "terms": "https://pypi.org/policy/terms-of-use/"
+  },
+  "api": {
+    "base_url": "https://pypi.org/pypi",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No fixed numbers; heavily CDN-cached; be polite"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{project}/json",
+      "summary": "Project metadata and all releases"
+    },
+    {
+      "method": "GET",
+      "path": "/{project}/{version}/json",
+      "summary": "Specific version metadata"
+    },
+    {
+      "method": "GET",
+      "path": "https://pypistats.org/api/packages/{package}/recent",
+      "summary": "Recent download counts (pypistats.org; no CORS header observed)",
+      "params": [
+        "period"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://pypi.org/pypi/requests/json",
+    "response_excerpt": "{\n \"name\": \"requests\",\n \"version\": \"2.34.2\",\n \"summary\": \"Python HTTP for Humans.\",\n \"requires_python\": \">=3.10\",\n \"license\": \"Apache-2.0\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per-package licenses; metadata public",
+      "url": "https://pypi.org/policy/terms-of-use/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "All releases to present"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use /{project}/json for everything about a project, or /{project}/{version}/json for one release. There is no search or reverse-dependency endpoint; use pypistats.org (no CORS) for download counts.",
+  "caveats": [
+    "JSON API lacks reverse-dependency or search endpoints; downloads need pypistats.org or BigQuery."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "npm-registry",
+    "crates-io-api",
+    "deps-dev"
+  ],
+  "added": "2026-11-11"
+}

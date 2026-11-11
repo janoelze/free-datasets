@@ -1,0 +1,127 @@
+{
+  "slug": "internet-archive",
+  "name": "Internet Archive APIs (Search, Metadata, Wayback)",
+  "provider": {
+    "name": "Internet Archive",
+    "url": "https://archive.org",
+    "type": "nonprofit"
+  },
+  "summary": "Search and metadata for 40M+ books, audio, video, web captures and software, plus Wayback Machine lookup.",
+  "description": "AdvancedSearch queries items with Lucene syntax and returns chosen fields; /metadata/{identifier} gives full item metadata and file lists; the Wayback availability API and CDX server find archived snapshots of URLs. Includes public-domain texts, 78rpm records, live music, software and web history.",
+  "category": "knowledge-reference",
+  "tags": [
+    "archive",
+    "wayback-machine",
+    "books",
+    "audio",
+    "video",
+    "web-archive",
+    "public-domain",
+    "history"
+  ],
+  "links": {
+    "homepage": "https://archive.org",
+    "docs": "https://archive.org/developers/",
+    "terms": "https://archive.org/about/terms.php"
+  },
+  "api": {
+    "base_url": "https://archive.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "csv",
+      "rss"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "S3-like keys are only needed for uploads."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not formally numbered; use reasonably. Heavy CDX queries may be throttled (HTTP 429). A User-Agent is recommended."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/advancedsearch.php",
+      "summary": "Search items",
+      "params": [
+        "q",
+        "fl[]",
+        "rows",
+        "page",
+        "sort",
+        "output"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/metadata/{identifier}",
+      "summary": "Item metadata and file list"
+    },
+    {
+      "method": "GET",
+      "path": "/wayback/available?url=",
+      "summary": "Closest Wayback snapshot of a URL",
+      "params": [
+        "url",
+        "timestamp"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://web.archive.org/cdx/search/cdx",
+      "summary": "List captures of a URL",
+      "params": [
+        "url",
+        "output",
+        "limit",
+        "from",
+        "to",
+        "filter"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://archive.org/advancedsearch.php?q=title:moby+dick&fl%5B%5D=identifier,title&rows=2&output=json",
+    "response_excerpt": "{\"responseHeader\":{\"status\":0,\"QTime\":296},\"response\":{\"numFound\":775,\"start\":0,\"docs\":[{\"identifier\":\"moby-dick-tpb-por\",\"title\":\"MOBY DICK [PDF-POR]\"},{\"identifier\":\"bwb_T5-AET-915_18\",\"title\":\"Moby-Dick: A Hindu Avatar...\"}]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per item (many public domain or Creative Commons); service terms apply",
+      "url": "https://archive.org/about/terms.php",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "40M+ items; 900B+ web captures"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use advancedsearch to find an identifier, then /metadata/{identifier} for files and license fields. The Wayback availability endpoint returns the closest snapshot to a timestamp (YYYYMMDDhhmmss). Always check the per-item license in the metadata.",
+  "caveats": [
+    "Licensing is per item and must be read from item metadata.",
+    "The Wayback availability endpoint was also verified (closest snapshot, status 200)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=49716176",
+      "title": "An update on Wayback Machine access",
+      "points": 685
+    }
+  ],
+  "related": [
+    "open-library",
+    "wikipedia-api"
+  ],
+  "added": "2026-11-11"
+}

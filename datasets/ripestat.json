@@ -1,0 +1,107 @@
+{
+  "slug": "ripestat",
+  "name": "RIPEstat Data API",
+  "provider": {
+    "name": "RIPE NCC",
+    "url": "https://stat.ripe.net",
+    "type": "nonprofit"
+  },
+  "summary": "Internet number resource data: ASN, prefix, routing, geolocation, abuse contacts, RPKI.",
+  "description": "Unified API with dozens of data calls about IP prefixes, ASNs and hostnames: AS overview, announced prefixes, routing status, BGP looking glass, geolocation, abuse contact, reverse DNS, RPKI validation and historic routing data.",
+  "category": "networking-internet",
+  "tags": [
+    "asn",
+    "bgp",
+    "ip",
+    "routing",
+    "rpki",
+    "internet-measurement",
+    "whois"
+  ],
+  "links": {
+    "homepage": "https://stat.ripe.net",
+    "docs": "https://stat.ripe.net/docs/02.data-api/",
+    "terms": "https://www.ripe.net/manage-ips-and-asns/db/support/documentation/ripe-database-acceptable-use-policy"
+  },
+  "api": {
+    "base_url": "https://stat.ripe.net/data",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Fair-use; 8 concurrent requests per IP; sourceapp param recommended"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/as-overview/data.json",
+      "summary": "AS holder and announcement status",
+      "params": [
+        "resource=AS3333"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/prefix-overview/data.json",
+      "summary": "Prefix origin ASNs and holder",
+      "params": [
+        "resource=8.8.8.0/24"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/announced-prefixes/data.json",
+      "summary": "Prefixes announced by AS",
+      "params": [
+        "resource"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/abuse-contact-finder/data.json",
+      "summary": "Abuse contact for IP/prefix",
+      "params": [
+        "resource"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://stat.ripe.net/data/as-overview/data.json?resource=AS3333",
+    "response_excerpt": "{\n \"status\": \"ok\",\n \"data_call_name\": \"as-overview\",\n \"data\": {\n  \"resource\": \"3333\",\n  \"holder\": \"RIPE-NCC-AS Reseaux IP Europeens Network Coordination Centre (RIPE NCC)\",\n  \"announced\": true,\n  \"type\": \"as\"\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "RIPE Database terms / free use",
+      "url": "https://www.ripe.net/manage-ips-and-asns/db/support/documentation/ripe-database-acceptable-use-policy",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current and historical routing data"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Add sourceapp=<your-app> to every request and keep to at most 8 concurrent requests. Each data call has its own version and response schema, so check its docs.",
+  "caveats": [
+    "Each data call has its own version and schema."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "rdap-org",
+    "google-dns-doh"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,119 @@
+{
+  "slug": "stack-exchange-api",
+  "name": "Stack Exchange API",
+  "provider": {
+    "name": "Stack Exchange, Inc.",
+    "url": "https://stackexchange.com",
+    "type": "company"
+  },
+  "summary": "Questions, answers, tags and users across Stack Overflow and 170+ Q&A sites.",
+  "description": "Read API for all public content of the Stack Exchange network including Stack Overflow: questions, answers, comments, tags, users, badges, and full-text search. Supports filters to choose returned fields.",
+  "category": "developer-tools",
+  "tags": [
+    "stackoverflow",
+    "q-and-a",
+    "programming",
+    "tags",
+    "community"
+  ],
+  "links": {
+    "homepage": "https://stackexchange.com",
+    "docs": "https://api.stackexchange.com/docs",
+    "terms": "https://stackoverflow.com/legal/api-terms-of-use",
+    "signup": "https://stackapps.com/apps/oauth/register"
+  },
+  "api": {
+    "base_url": "https://api.stackexchange.com/2.3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "key",
+      "notes": "Optional free key from stackapps.com raises the daily quota from 300 to 10,000."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "300 requests/day per IP without key; 10,000/day with a free key; max 30 req/s; response includes quota_remaining",
+      "requests": 300,
+      "per": "day",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/questions",
+      "summary": "List questions",
+      "params": [
+        "site (required)",
+        "sort",
+        "order",
+        "tagged",
+        "pagesize"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search/advanced",
+      "summary": "Advanced search",
+      "params": [
+        "q",
+        "tagged",
+        "accepted",
+        "site"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tags",
+      "summary": "Tags with counts",
+      "params": [
+        "site",
+        "inname"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users/{ids}",
+      "summary": "User profiles",
+      "params": [
+        "site"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.stackexchange.com/2.3/questions?order=desc&sort=votes&site=stackoverflow&pagesize=1",
+    "response_excerpt": "{\n \"items\": [\n  {\n   \"title\": \"Why is conditional processing of a sorted array faster than of an unsorted array?\",\n   \"score\": 27548,\n   \"tags\": [\n    \"java\",\n    \"c++\",\n    \"performance\",\n    \"cpu-architecture\",\n    \"branch-prediction\"\n   ],\n   \"view_count\": 2023462\n  }\n..."
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 4.0 (attribution required)",
+      "spdx": "CC-BY-SA-4.0",
+      "url": "https://stackoverflow.com/legal/api-terms-of-use",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "All content to present"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "The site parameter is required on almost every call (e.g. site=stackoverflow). Responses are always gzip and include quota_remaining; register a free key at stackapps.com to raise the daily limit to 10,000.",
+  "caveats": [
+    "'site' param required on most calls. Attribution required (CC BY-SA)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "added": "2026-11-11"
+}

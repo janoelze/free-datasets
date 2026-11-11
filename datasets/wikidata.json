@@ -1,0 +1,121 @@
+{
+  "slug": "wikidata",
+  "name": "Wikidata",
+  "provider": {
+    "name": "Wikimedia Foundation",
+    "url": "https://www.wikimedia.org",
+    "type": "nonprofit"
+  },
+  "summary": "Free collaborative knowledge graph with 100M+ items queryable via SPARQL, REST and entity JSON.",
+  "description": "Structured, multilingual data about people, places, works, organisations and concepts, linked by properties and to external identifiers (ISBN, IMDb, MusicBrainz and more). Supports entity search (wbsearchentities), per-entity JSON (Special:EntityData/Q42.json), a Wikibase REST API and the Wikidata Query Service for arbitrary SPARQL.",
+  "category": "knowledge-reference",
+  "tags": [
+    "knowledge-graph",
+    "sparql",
+    "linked-data",
+    "entities",
+    "identifiers",
+    "multilingual",
+    "wikimedia"
+  ],
+  "links": {
+    "homepage": "https://www.wikidata.org",
+    "docs": "https://www.wikidata.org/wiki/Wikidata:Data_access",
+    "terms": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+    "openapi": "https://www.wikidata.org/w/rest.php/specs/v0/module/wikibase/v1"
+  },
+  "api": {
+    "base_url": "https://www.wikidata.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "csv",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "MyApp/1.0 (you@example.com)",
+        "notes": "Required in practice, especially for SPARQL."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Query Service: 60 s query timeout, about 5 concurrent queries per IP, HTTP 429 with Retry-After on abuse; the Action API behaves like Wikipedia's."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/w/api.php?action=wbsearchentities",
+      "summary": "Find entity IDs by label",
+      "params": [
+        "search",
+        "language",
+        "limit",
+        "origin"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/wiki/Special:EntityData/{QID}.json",
+      "summary": "Full entity document"
+    },
+    {
+      "method": "GET",
+      "path": "https://query.wikidata.org/sparql",
+      "summary": "Run a SPARQL query",
+      "params": [
+        "query",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/w/rest.php/wikibase/v1/entities/items/{QID}",
+      "summary": "Read an item via the Wikibase REST API"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Douglas%20Adams&language=en&format=json&limit=2&origin=*",
+    "headers": {
+      "User-Agent": "MyApp/1.0 (you@example.com)"
+    },
+    "response_excerpt": "{\"search\":[{\"id\":\"Q28421831\",\"label\":\"Douglas Adams\",\"description\":\"American environmental engineer\",\"concepturi\":\"http://www.wikidata.org/entity/Q28421831\"},...]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0",
+      "spdx": "CC0-1.0",
+      "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, 100M+ items",
+      "temporal": "Continuously updated"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use wbsearchentities to turn a label into a QID, then fetch the item or query it with SPARQL. Search is label-based and ambiguous, so disambiguate by the description field. Send a descriptive User-Agent, especially for SPARQL.",
+  "caveats": [
+    "The Query Service lags the live data by a few minutes.",
+    "A SPARQL request with format=json was also verified (200, CORS *)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "wikipedia-api"
+  ],
+  "added": "2026-11-11"
+}

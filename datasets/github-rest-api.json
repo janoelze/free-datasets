@@ -1,0 +1,125 @@
+{
+  "slug": "github-rest-api",
+  "name": "GitHub REST API (public)",
+  "provider": {
+    "name": "GitHub",
+    "url": "https://github.com",
+    "type": "company"
+  },
+  "summary": "Public repo, user, org, issue, release and advisory data from GitHub.",
+  "description": "Comprehensive REST API; unauthenticated calls can read all public data: repositories, commits, issues, PRs, releases, users, code/repo/user search, the global security advisory database and Markdown rendering. Authenticating with a free personal access token raises limits substantially.",
+  "category": "developer-tools",
+  "tags": [
+    "github",
+    "git",
+    "repositories",
+    "issues",
+    "open-source",
+    "advisories"
+  ],
+  "links": {
+    "homepage": "https://github.com",
+    "docs": "https://docs.github.com/en/rest",
+    "terms": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "openapi": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+    "source": "https://github.com/github/rest-api-description"
+  },
+  "api": {
+    "base_url": "https://api.github.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "Optional personal access token as \"Bearer <token>\" raises the hourly limit to 5,000."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app",
+        "notes": "Required by GitHub."
+      },
+      {
+        "name": "Accept",
+        "example": "application/vnd.github+json",
+        "notes": "Recommended."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "60 req/hour per IP unauthenticated; 5,000/hour with token; search 10/min unauthenticated (observed via /rate_limit)",
+      "requests": 60,
+      "per": "hour",
+      "scope": "ip"
+    },
+    "pagination": "link-header"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}",
+      "summary": "Repository metadata"
+    },
+    {
+      "method": "GET",
+      "path": "/search/repositories",
+      "summary": "Search repos",
+      "params": [
+        "q",
+        "sort",
+        "order"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/releases/latest",
+      "summary": "Latest release"
+    },
+    {
+      "method": "GET",
+      "path": "/advisories",
+      "summary": "Global security advisories",
+      "params": [
+        "ecosystem",
+        "severity",
+        "cve_id"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.github.com/repos/torvalds/linux",
+    "headers": {
+      "User-Agent": "my-app",
+      "Accept": "application/vnd.github+json"
+    },
+    "response_excerpt": "{\n \"full_name\": \"torvalds/linux\",\n \"description\": \"Linux kernel source tree\",\n \"stargazers_count\": 255315,\n \"language\": \"C\",\n \"license\": \"NOASSERTION\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per-repository licenses; API ToS",
+      "url": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "All public GitHub content"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Unauthenticated limit is only 60 requests/hour per IP, so cache aggressively or add a free personal access token (Authorization: Bearer) for 5,000/hour. Always send a User-Agent.",
+  "caveats": [
+    "60 requests/hour unauthenticated is tight."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "added": "2026-11-11"
+}

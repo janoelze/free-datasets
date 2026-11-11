@@ -1,0 +1,96 @@
+{
+  "slug": "ecb-data-api",
+  "name": "ECB Data Portal API",
+  "provider": {
+    "name": "European Central Bank",
+    "url": "https://www.ecb.europa.eu",
+    "type": "intergovernmental"
+  },
+  "summary": "Keyless SDMX REST API for ECB exchange rates, interest rates, monetary and banking statistics.",
+  "description": "Official ECB statistical data: euro foreign exchange reference rates, key interest rates, monetary aggregates, balance of payments, bank lending, inflation (HICP) and securities. Series are addressed by dataflow plus a dot-separated key; supports SDMX-JSON, CSV and SDMX-ML, with lastNObservations and period filters.",
+  "category": "finance-markets",
+  "tags": [
+    "ecb",
+    "central-bank",
+    "exchange-rates",
+    "interest-rates",
+    "sdmx",
+    "monetary-policy",
+    "euro",
+    "hicp"
+  ],
+  "links": {
+    "homepage": "https://data.ecb.europa.eu/",
+    "docs": "https://data.ecb.europa.eu/help/api/overview",
+    "terms": "https://www.ecb.europa.eu/services/disclaimer/html/index.en.html"
+  },
+  "api": {
+    "base_url": "https://data-api.ecb.europa.eu/service",
+    "style": "sdmx",
+    "formats": [
+      "json",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not numerically documented; fair use."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/data/{flow}/{key}",
+      "summary": "Observations for a series",
+      "params": [
+        "format",
+        "startPeriod",
+        "endPeriod",
+        "lastNObservations"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dataflow",
+      "summary": "List dataflows"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?lastNObservations=1&format=jsondata",
+    "response_excerpt": "{\"header\": {\"id\": \"1656feac-...\", \"sender\": {\"id\": \"ECB\"}}, \"dataSets\": [{\"series\": {\"0:0:0:0:0\": {\"observations\": {\"0\": [1.1214, 0, 0, null, null]}}}}], \"structure\": \"(dimensions: currency, denom, type; time period 2026-11-10)\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Free reuse with source acknowledgement (ECB copyright policy)",
+      "url": "https://www.ecb.europa.eu/services/disclaimer/html/index.en.html",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Euro area and EU; FX from 1999"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Series keys like D.USD.EUR.SP00.A (frequency.currency.denominator.type.variation) must be learned from the dataflow structure. Prefer format=csvdata over SDMX-JSON, which is verbose. The EXR flow gives daily euro reference rates around 16:00 CET.",
+  "caveats": [
+    "SDMX-JSON is verbose; csvdata is easier for agents (verified).",
+    "Update frequency differs per dataflow: FX daily, other series monthly or quarterly.",
+    "The response excerpt is abbreviated; the structure section is summarised rather than quoted."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "frankfurter",
+    "eurostat"
+  ],
+  "added": "2026-11-11"
+}

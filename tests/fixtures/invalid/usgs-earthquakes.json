@@ -1,0 +1,39 @@
+{
+  "slug": "usgs-earthquakes",
+  "name": "USGS Earthquake Catalog",
+  "provider": { "name": "U.S. Geological Survey", "url": "https://www.usgs.gov/", "type": "government" },
+  "summary": "Worldwide earthquake events with magnitude, depth and location, queryable by time, area and size.",
+  "description": "The ComCat catalogue holds earthquakes recorded by the USGS and contributing networks worldwide. The FDSN event web service filters by time window, bounding box or radius and magnitude, and returns GeoJSON, CSV or QuakeML.",
+  "category": "earth-environment",
+  "tags": ["earthquakes", "seismology", "natural-hazards"],
+  "links": {
+    "homepage": "https://earthquake.usgs.gov/",
+    "docs": "https://earthquake.usgs.gov/fdsnws/event/1/"
+  },
+  "api": {
+    "base_url": "https://earthquake.usgs.gov/fdsnws/event/1",
+    "style": "rest",
+    "formats": ["geojson", "csv", "xml"],
+    "auth": { "type": "none" },
+    "cors": "any",
+    "rate_limit": { "summary": "Not documented" },
+    "pagination": "offset",
+    "max_page_size": 20000
+  },
+  "endpoints": [
+    { "method": "GET", "path": "/query", "summary": "Search earthquake events", "params": ["starttime", "endtime", "minmagnitude", "format"] },
+    { "method": "GET", "path": "/count", "summary": "Count matching events" }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=1",
+    "response_excerpt": "{\"type\":\"FeatureCollection\",\"metadata\":{\"count\":1},\"features\":[...]}"
+  },
+  "data": {
+    "license": { "name": "Public domain (US Government work)", "commercial_use": "allowed" },
+    "update_frequency": "realtime"
+  },
+  "status": "active",
+  "verification": { "last_verified": "2026-11-05", "http_status": 200, "with_key": true },
+  "added": "2026-10-22"
+}

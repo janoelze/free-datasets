@@ -1,0 +1,128 @@
+{
+  "slug": "congress-gov",
+  "name": "Congress.gov API",
+  "provider": {
+    "name": "Library of Congress",
+    "url": "https://www.loc.gov",
+    "type": "government"
+  },
+  "summary": "US Congress bills, amendments, members, committees, votes and CBO estimates; free api.data.gov key.",
+  "description": "Official legislative data: bills and resolutions with actions, sponsors, summaries, text versions, CBO cost estimates, amendments, members, committees, nominations, treaties and the Congressional Record. Covers from the 93rd Congress, with some earlier data. DEMO_KEY works for tests.",
+  "category": "government-politics",
+  "tags": [
+    "congress",
+    "legislation",
+    "bills",
+    "us-government",
+    "members",
+    "committees",
+    "votes",
+    "law"
+  ],
+  "links": {
+    "homepage": "https://www.congress.gov/",
+    "docs": "https://api.congress.gov/",
+    "terms": "https://www.loc.gov/legal/",
+    "openapi": "https://raw.githubusercontent.com/LibraryOfCongress/api.congress.gov/main/Documentation/openapi.json",
+    "signup": "https://api.congress.gov/sign-up/",
+    "source": "https://github.com/LibraryOfCongress/api.congress.gov"
+  },
+  "api": {
+    "base_url": "https://api.congress.gov/v3",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "demo_key": "DEMO_KEY",
+      "notes": "Free key by signup; can also be sent as an X-Api-Key header. DEMO_KEY is accepted for testing with far lower limits."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "5,000 requests/hour per key; DEMO_KEY is far lower (shared api.data.gov limits).",
+      "requests": 5000,
+      "per": "hour",
+      "scope": "key"
+    },
+    "pagination": "offset",
+    "max_page_size": 250
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/bill/{congress}/{type}/{number}",
+      "summary": "Bill details",
+      "params": [
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/bill",
+      "summary": "List bills",
+      "params": [
+        "fromDateTime",
+        "toDateTime",
+        "limit",
+        "offset",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/member",
+      "summary": "List members",
+      "params": [
+        "currentMember",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/committee",
+      "summary": "Committees",
+      "params": [
+        "chamber"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.congress.gov/v3/bill/119/hr/1?api_key=DEMO_KEY",
+    "response_excerpt": "{\"bill\": {\"actions\": {\"count\": 59, \"url\": \"https://api.congress.gov/v3/bill/119/hr/1/actions?format=json\"}, \"amendments\": {\"count\": 493}, \"cboCostEstimates\": [{\"title\": \"Estimated Budgetary Effects of H.R. 1, the One Big Beautiful Bill Act\", \"pubDate\": \"2025-06-04T14:00:00Z\"}]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US government work)",
+      "url": "https://www.loc.gov/legal/",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Mainly 1973-present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Bills are addressed as /bill/{congress}/{type}/{number} (for example 119/hr/1). Responses link to sub-resources by URL, and you must append your api_key to those URLs yourself. Add format=json to get JSON.",
+  "caveats": [
+    "Responses link to sub-resources via URLs that need api_key appended."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Executed with DEMO_KEY."
+  },
+  "related": [
+    "federal-register",
+    "openfec",
+    "uk-parliament-members"
+  ],
+  "added": "2026-11-11"
+}

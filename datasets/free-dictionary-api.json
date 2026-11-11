@@ -1,0 +1,83 @@
+{
+  "slug": "free-dictionary-api",
+  "name": "Free Dictionary API",
+  "provider": {
+    "name": "dictionaryapi.dev (community open-source, data from Wiktionary)",
+    "url": "https://dictionaryapi.dev",
+    "type": "community"
+  },
+  "summary": "Keyless English dictionary: definitions, phonetics, audio, synonyms and examples.",
+  "description": "Returns parts of speech, definitions, examples, synonyms and antonyms, IPA and pronunciation audio URLs for a word. Supports English plus a handful of other languages (such as es, fr, de, it, ja, ko, ru, ar, hi, tr, pt-BR, zh) at varying coverage.",
+  "category": "language",
+  "tags": [
+    "dictionary",
+    "definitions",
+    "phonetics",
+    "words",
+    "english",
+    "wiktionary"
+  ],
+  "links": {
+    "homepage": "https://dictionaryapi.dev",
+    "docs": "https://dictionaryapi.dev",
+    "terms": "https://dictionaryapi.dev"
+  },
+  "api": {
+    "base_url": "https://api.dictionaryapi.dev/api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "About 450 requests per 5 minutes per IP according to the project README."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/entries/{lang}/{word}",
+      "summary": "Definitions for a word",
+      "params": [
+        "lang"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.dictionaryapi.dev/api/v2/entries/en/hello",
+    "response_excerpt": "[{\"word\":\"hello\",\"phonetics\":[{\"audio\":\"https://api.dictionaryapi.dev/media/pronunciations/en/hello-au.mp3\",\"license\":{\"name\":\"BY-SA 4.0\"}}],\"meanings\":[{\"partOfSpeech\":\"noun\",\"definitions\":[{\"definition\":\"\\\"Hello!\\\" or an equivalent greeting.\"}]}],\"license\":{\"name\":\"CC BY-SA 3.0\"}}]"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 3.0/4.0 (Wiktionary-derived; per-entry license field)",
+      "url": "https://dictionaryapi.dev",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "English strongest; other languages vary"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "The response is an array of entries; each has its own license object to carry through when attributing. English coverage is far better than other languages.",
+  "caveats": [
+    "Single-maintainer community service; reliability is not guaranteed.",
+    "A 502 was seen once on a later retry.",
+    "Attribution (CC BY-SA) is needed."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "datamuse"
+  ],
+  "added": "2026-11-11"
+}

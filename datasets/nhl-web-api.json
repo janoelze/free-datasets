@@ -1,0 +1,93 @@
+{
+  "slug": "nhl-web-api",
+  "name": "NHL Web API (api-web.nhle.com)",
+  "provider": {
+    "name": "National Hockey League (unofficial public endpoints)",
+    "url": "https://www.nhl.com",
+    "type": "company"
+  },
+  "summary": "Standings, schedules, scores, rosters and player stats from the NHL's own web API.",
+  "description": "Undocumented-but-public JSON endpoints powering nhl.com: standings by date, daily/weekly schedules, game boxscores and play-by-play, team rosters and player landing pages with career stats. Community reference maintained on GitHub.",
+  "category": "sports",
+  "tags": [
+    "nhl",
+    "hockey",
+    "standings",
+    "schedule",
+    "players",
+    "scores"
+  ],
+  "links": {
+    "homepage": "https://www.nhl.com",
+    "docs": "https://github.com/Zmalski/NHL-API-Reference",
+    "terms": "https://www.nhl.com/info/terms-of-service"
+  },
+  "api": {
+    "base_url": "https://api-web.nhle.com/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "None published"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/standings/now",
+      "summary": "Current standings (redirects to dated URL)"
+    },
+    {
+      "method": "GET",
+      "path": "/schedule/now",
+      "summary": "This week's schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/player/{id}/landing",
+      "summary": "Player profile and stats"
+    },
+    {
+      "method": "GET",
+      "path": "/gamecenter/{gameId}/boxscore",
+      "summary": "Boxscore"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api-web.nhle.com/v1/standings/now",
+    "response_excerpt": "{\n \"standingsDateTimeUtc\": \"2026-11-11T14:29:30Z\",\n \"first\": {\n  \"teamName\": \"Carolina Hurricanes\",\n  \"points\": 30,\n  \"gamesPlayed\": 19\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "NHL terms of use; personal/non-commercial use",
+      "url": "https://www.nhl.com/info/terms-of-service",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "NHL",
+      "temporal": "Current and historical seasons"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Unofficial endpoints that may change without notice; the community reference on GitHub documents them. The /now endpoints redirect (307), so follow redirects.",
+  "caveats": [
+    "Unofficial/unsupported: may change. /now endpoints 307-redirect (use -L). No CORS."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "mlb-stats-api"
+  ],
+  "added": "2026-11-11"
+}

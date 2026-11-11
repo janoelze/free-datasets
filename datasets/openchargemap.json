@@ -1,0 +1,96 @@
+{
+  "slug": "openchargemap",
+  "name": "Open Charge Map API",
+  "provider": {
+    "name": "Open Charge Map",
+    "url": "https://openchargemap.org",
+    "type": "community"
+  },
+  "summary": "Global crowd-sourced registry of EV charging locations.",
+  "description": "POI endpoint returns charging stations with connectors, power levels, operators, usage cost and status, searchable by location radius, country or bounding box. Reference-data endpoint lists connection types and operators.",
+  "category": "transport-mobility",
+  "tags": [
+    "ev",
+    "charging",
+    "electric-vehicles",
+    "poi",
+    "geospatial"
+  ],
+  "links": {
+    "homepage": "https://openchargemap.org",
+    "docs": "https://openchargemap.org/site/develop/api",
+    "terms": "https://openchargemap.org/site/develop/api#terms",
+    "signup": "https://openchargemap.org/site/profile/applications"
+  },
+  "api": {
+    "base_url": "https://api.openchargemap.io/v3",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "header",
+      "key_name": "X-API-Key",
+      "notes": "Free key; may also be sent as the key query parameter."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "No hard published number; fair use; key identifies app"
+    },
+    "pagination": "unknown"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/poi",
+      "summary": "Search charging stations",
+      "params": [
+        "latitude",
+        "longitude",
+        "distance",
+        "countrycode",
+        "maxresults",
+        "compact"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/referencedata",
+      "summary": "Reference lookup tables"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.openchargemap.io/v3/poi/?output=json&maxresults=1",
+    "response_excerpt": "You must specify an API key using the key query parameter or x-api-key header."
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (attribution required)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://openchargemap.org/site/develop/api#terms",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current registry"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "A free key is required; without one the API returns 403. Search /poi by latitude, longitude and distance, and use compact=true to cut payload size.",
+  "caveats": [
+    "Requires a free key; the unauthenticated endpoint returns 403 with a message asking for one."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 403,
+    "with_key": false,
+    "notes": "Only the unauthenticated 403 response (asking for a key) was observed."
+  },
+  "added": "2026-11-11"
+}

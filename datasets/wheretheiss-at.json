@@ -1,0 +1,104 @@
+{
+  "slug": "wheretheiss-at",
+  "name": "Where the ISS at?",
+  "provider": {
+    "name": "Bill Shupp",
+    "url": "https://wheretheiss.at",
+    "type": "individual"
+  },
+  "summary": "Real-time position, velocity and visibility of the International Space Station plus TLE data and coordinate lookup.",
+  "description": "Returns ISS latitude, longitude, altitude, velocity, solar position and visibility state, supports timestamped batch queries, TLE retrieval, and converting coordinates to timezone, country and map URL.",
+  "category": "space-astronomy",
+  "tags": [
+    "iss",
+    "satellite",
+    "orbit",
+    "tracking",
+    "tle",
+    "space-station"
+  ],
+  "links": {
+    "homepage": "https://wheretheiss.at",
+    "docs": "https://wheretheiss.at/w/developer",
+    "terms": "https://wheretheiss.at/w/developer"
+  },
+  "api": {
+    "base_url": "https://api.wheretheiss.at/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "About 1 request per second documented.",
+      "requests": 1,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/satellites/25544",
+      "summary": "Current ISS position",
+      "params": [
+        "units"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/satellites/25544/positions",
+      "summary": "Positions for a list of timestamps",
+      "params": [
+        "timestamps",
+        "units"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/satellites/25544/tles",
+      "summary": "Two-line element set",
+      "params": [
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/coordinates/{lat},{lon}",
+      "summary": "Timezone and country for coordinates"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.wheretheiss.at/v1/satellites/25544",
+    "response_excerpt": "{\n  \"name\": \"iss\",\n  \"id\": 25544,\n  \"latitude\": 29.773893685247,\n  \"longitude\": 50.238943166203,\n  \"altitude\": 415.71,\n  \"velocity\": 27605.77,\n  \"visibility\": \"daylight\",\n  \"footprint\": 4485.59,\n  \"timestamp\": 1794407133,\n  \"units\": \"kilometers\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Free, no formal license stated; attribution appreciated",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global orbit track",
+      "temporal": "Current plus timestamped lookups"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "ISS NORAD id is 25544. Use units=miles for imperial output; default is kilometers. Keep to about 1 request per second.",
+  "caveats": [
+    "Single-maintainer service with no SLA.",
+    "Open Notify (api.open-notify.org) was tested and dropped because its astronaut list looked stale."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

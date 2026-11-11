@@ -1,0 +1,114 @@
+{
+  "slug": "nws-weather-gov",
+  "name": "National Weather Service API (weather.gov)",
+  "provider": {
+    "name": "NOAA National Weather Service",
+    "url": "https://www.weather.gov",
+    "type": "government"
+  },
+  "summary": "Official US forecasts, hourly forecasts, alerts, observations and station data.",
+  "description": "Gridpoint forecasts (12-hour periods and hourly), active watches, warnings and advisories, latest station observations, zone and office metadata, and radar stations for the United States and territories. Responses are JSON-LD or GeoJSON.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "forecast",
+    "alerts",
+    "united-states",
+    "noaa",
+    "observations"
+  ],
+  "links": {
+    "homepage": "https://www.weather.gov/documentation/services-web-api",
+    "docs": "https://www.weather.gov/documentation/services-web-api",
+    "terms": "https://www.weather.gov/disclaimer",
+    "openapi": "https://api.weather.gov/openapi.json"
+  },
+  "api": {
+    "base_url": "https://api.weather.gov",
+    "style": "rest",
+    "formats": [
+      "geojson",
+      "json-ld",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key; a descriptive User-Agent header is required."
+    },
+    "cors": "any",
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app/1.0 (contact@example.com)",
+        "notes": "Descriptive User-Agent identifying your app; requests without one may be blocked."
+      }
+    ],
+    "rate_limit": {
+      "summary": "Not published numerically; described as generous. Exceeding it returns 429 after a retry window of about 5 seconds."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/points/{lat},{lon}",
+      "summary": "Resolve grid, forecast URLs and zone for a point"
+    },
+    {
+      "method": "GET",
+      "path": "/gridpoints/{office}/{x},{y}/forecast",
+      "summary": "12-hour period forecast",
+      "params": [
+        "units"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/alerts/active",
+      "summary": "Active alerts",
+      "params": [
+        "area",
+        "point",
+        "severity",
+        "event"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stations/{id}/observations/latest",
+      "summary": "Latest station observation"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.weather.gov/gridpoints/BOU/62,60/forecast",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (https://example.com)"
+    },
+    "response_excerpt": "{\n  \"properties\": {\n    \"periods\": [\n      {\n        \"number\": 1,\n        \"name\": \"Veterans Day\",\n        \"startTime\": \"2026-11-11T07:00:00-07:00\",\n        \"isDaytime\": true,\n        \"temperature\": 67,\n        \"temperatureUnit\": \"F\",\n        \"windSpeed\": \"5 mph\",\n        \"shortForecast\": \"Sunny\"\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US Government work)",
+      "url": "https://www.weather.gov/disclaimer",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "United States and territories only"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Two-step flow: call /points/{lat},{lon} first to get the office and grid x,y, then request the forecast for that gridpoint. Always send a descriptive User-Agent. US only.",
+  "caveats": [
+    "Requests without a User-Agent may be blocked.",
+    "Verified /points and /gridpoints forecast; other endpoints per docs.",
+    "Forecasts update roughly hourly, alerts in real time, observations about hourly."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

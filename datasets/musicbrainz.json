@@ -1,0 +1,125 @@
+{
+  "slug": "musicbrainz",
+  "name": "MusicBrainz",
+  "provider": {
+    "name": "MetaBrainz Foundation",
+    "url": "https://metabrainz.org",
+    "type": "nonprofit"
+  },
+  "summary": "Open music encyclopedia: artists, releases, recordings, labels and works with stable IDs and relationships.",
+  "description": "Community-maintained music metadata with stable MBIDs, lookup, browse and Lucene search over artists, release groups, releases, recordings, works, labels, events and places. It is the core data behind Cover Art Archive, ListenBrainz and many tagging tools.",
+  "category": "media-entertainment",
+  "tags": [
+    "music",
+    "metadata",
+    "artists",
+    "albums",
+    "discography",
+    "mbid",
+    "linked-data"
+  ],
+  "links": {
+    "homepage": "https://musicbrainz.org",
+    "docs": "https://musicbrainz.org/doc/MusicBrainz_API",
+    "terms": "https://musicbrainz.org/doc/About/Data_License",
+    "bulk_download": "https://musicbrainz.org/doc/MusicBrainz_Database/Download"
+  },
+  "api": {
+    "base_url": "https://musicbrainz.org/ws/2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "MyApp/1.0 (you@example.com)",
+        "notes": "App name, version and contact are required."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "1 request/second per IP on average (documented); excess requests get HTTP 503.",
+      "requests": 1,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/artist?query=",
+      "summary": "Search artists",
+      "params": [
+        "query",
+        "limit",
+        "offset",
+        "fmt"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/artist/{mbid}",
+      "summary": "Look up an artist",
+      "params": [
+        "inc"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/release?artist={mbid}",
+      "summary": "Browse releases for an artist",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/recording?query=",
+      "summary": "Search recordings",
+      "params": [
+        "query",
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://musicbrainz.org/ws/2/artist/?query=radiohead&fmt=json&limit=1",
+    "headers": {
+      "User-Agent": "MyApp/1.0 (you@example.com)"
+    },
+    "response_excerpt": "{\"created\":\"2026-11-11T14:22:30.242Z\",\"count\":29,\"artists\":[{\"id\":\"a74b1b7f-71a5-4011-9441-d0b5e4122711\",\"type\":\"Group\",\"name\":\"Radiohead\",\"country\":\"GB\",\"score\":100,\"life-span\":{\"begin\":\"1991\",\"ended\":null}}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Core data CC0; supplementary data (tags, ratings) CC BY-NC-SA 3.0",
+      "url": "https://musicbrainz.org/doc/About/Data_License",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Millions of artists and releases worldwide",
+      "temporal": "Real-time edits; weekly data dumps"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Send fmt=json (or Accept: application/json) or you get XML. Keep to 1 request/second and always send a descriptive User-Agent. Use inc= on lookups to pull in releases, tags or URL relations.",
+  "caveats": [
+    "The first attempt returned a transient 503 'server busy'; the retry returned 200.",
+    "Tags and ratings are CC BY-NC-SA, not CC0."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

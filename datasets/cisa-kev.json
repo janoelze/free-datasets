@@ -1,0 +1,86 @@
+{
+  "slug": "cisa-kev",
+  "name": "CISA Known Exploited Vulnerabilities Catalog",
+  "provider": {
+    "name": "CISA (US DHS)",
+    "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+    "type": "government"
+  },
+  "summary": "Authoritative list of CVEs known to be exploited in the wild, as a JSON/CSV feed.",
+  "description": "Static feed of the KEV catalog: CVE ID, vendor/product, vulnerability name, date added, required action and due date, known ransomware use flag and CWE list. Good prioritization signal alongside NVD and EPSS.",
+  "category": "security",
+  "tags": [
+    "kev",
+    "cve",
+    "exploited",
+    "cisa",
+    "threat-intel"
+  ],
+  "links": {
+    "homepage": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+    "docs": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities_schema.json",
+    "terms": "https://www.cisa.gov/news-events/news/attack-surface-reduction-kev-catalog-disclaimer",
+    "bulk_download": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+  },
+  "api": {
+    "base_url": "https://www.cisa.gov/sites/default/files/feeds",
+    "style": "static-file",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "None documented (static file; CDN)"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/known_exploited_vulnerabilities.json",
+      "summary": "Full catalog JSON"
+    },
+    {
+      "method": "GET",
+      "path": "/known_exploited_vulnerabilities.csv",
+      "summary": "Full catalog CSV"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+    "response_excerpt": "{\n \"title\": \"CISA Catalog of Known Exploited Vulnerabilities\",\n \"catalogVersion\": \"2026.11.10\",\n \"count\": 1779,\n \"first\": {\n  \"cveID\": \"CVE-2026-124194\",\n  \"vendorProject\": \"Microsoft\",\n  \"product\": \"Office\",\n  \"dateAdded\": \"2026-11-10\"\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain / CC0 (US Government work)",
+      "url": "https://www.cisa.gov/news-events/news/attack-surface-reduction-kev-catalog-disclaimer",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "2021-present"
+    },
+    "update_frequency": "weekly"
+  },
+  "agent_notes": "This is a static feed, not a query API: download the whole file and filter locally. No CORS header, so browser clients need a proxy.",
+  "caveats": [
+    "Not a query API: download the whole file and filter locally. No CORS, so browser use needs a proxy; some bot filtering of non-browser UAs possible."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "nvd-cve-api",
+    "first-epss",
+    "osv-dev"
+  ],
+  "added": "2026-11-11"
+}

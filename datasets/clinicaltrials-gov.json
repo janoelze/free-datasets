@@ -1,0 +1,108 @@
+{
+  "slug": "clinicaltrials-gov",
+  "name": "ClinicalTrials.gov API v2",
+  "provider": {
+    "name": "U.S. National Library of Medicine (NIH)",
+    "url": "https://www.nlm.nih.gov",
+    "type": "government"
+  },
+  "summary": "Keyless REST API for 500,000+ registered clinical studies worldwide.",
+  "description": "Registry of interventional and observational studies: conditions, interventions, sponsors, eligibility, locations, status, results and outcomes. Search by condition, intervention, term, location and status; select fields; cursor pagination; export as JSON or CSV.",
+  "category": "health-medicine",
+  "tags": [
+    "clinical-trials",
+    "medical-research",
+    "nih",
+    "drugs",
+    "registry",
+    "conditions",
+    "interventions",
+    "studies"
+  ],
+  "links": {
+    "homepage": "https://clinicaltrials.gov/",
+    "docs": "https://clinicaltrials.gov/data-api/api",
+    "terms": "https://clinicaltrials.gov/about-site/terms-conditions"
+  },
+  "api": {
+    "base_url": "https://clinicaltrials.gov/api/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "About 50 requests/minute per IP (documented).",
+      "requests": 50,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "cursor",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/studies",
+      "summary": "Search studies",
+      "params": [
+        "query.cond",
+        "query.intr",
+        "query.term",
+        "filter.overallStatus",
+        "fields",
+        "pageSize",
+        "pageToken",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/studies/{nctId}",
+      "summary": "Single study",
+      "params": [
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stats/size",
+      "summary": "Registry statistics"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://clinicaltrials.gov/api/v2/studies?pageSize=1&query.cond=diabetes&fields=NCTId,BriefTitle,OverallStatus",
+    "response_excerpt": "{\"studies\": [{\"protocolSection\": {\"identificationModule\": {\"nctId\": \"NCT02091336\", \"briefTitle\": \"Oral Antidiabetic Agents in Pregnancy\"}, \"statusModule\": {\"overallStatus\": \"UNKNOWN\"}}}], \"nextPageToken\": \"ZVNj7o2E...\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (NLM terms); some submitter content may carry rights",
+      "url": "https://clinicaltrials.gov/about-site/terms-conditions",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "1999-present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Pass fields= to cut the very large study documents down to what you need. Page with the nextPageToken value as pageToken; default pageSize is 10 and the maximum is 1000. Studies are identified by NCT IDs.",
+  "caveats": [
+    "The docs describe an OpenAPI spec, but no direct URL was confirmed (/api/v2/openapi.yaml returned 404)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "openfda"
+  ],
+  "added": "2026-11-11"
+}

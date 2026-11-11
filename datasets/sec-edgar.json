@@ -1,0 +1,107 @@
+{
+  "slug": "sec-edgar",
+  "name": "SEC EDGAR Data APIs",
+  "provider": {
+    "name": "U.S. Securities and Exchange Commission",
+    "url": "https://www.sec.gov",
+    "type": "government"
+  },
+  "summary": "Keyless JSON APIs for US public-company filings and XBRL financial facts (revenue, assets and more).",
+  "description": "Filing history per company (submissions), XBRL company facts, concepts and cross-company frames for any us-gaap tag and period, covering 10-K, 10-Q and 8-K data for all SEC registrants. Useful for fundamentals without a paid vendor. Requires a descriptive User-Agent.",
+  "category": "finance-markets",
+  "tags": [
+    "sec",
+    "edgar",
+    "filings",
+    "xbrl",
+    "fundamentals",
+    "public-companies",
+    "10-k",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://www.sec.gov/edgar",
+    "docs": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+    "terms": "https://www.sec.gov/about/developer-resources"
+  },
+  "api": {
+    "base_url": "https://data.sec.gov",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "MyApp/1.0 (you@example.com)",
+        "notes": "Requests without a declared User-Agent are rejected (403 seen with the default curl UA)."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "10 requests/second maximum (fair-access policy, documented).",
+      "requests": 10,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/submissions/CIK{10-digit}.json",
+      "summary": "Company profile and filing history"
+    },
+    {
+      "method": "GET",
+      "path": "/api/xbrl/companyfacts/CIK{cik}.json",
+      "summary": "All XBRL facts for a company"
+    },
+    {
+      "method": "GET",
+      "path": "/api/xbrl/companyconcept/CIK{cik}/{taxonomy}/{tag}.json",
+      "summary": "One concept time series for a company"
+    },
+    {
+      "method": "GET",
+      "path": "/api/xbrl/frames/{taxonomy}/{tag}/{unit}/{period}.json",
+      "summary": "One concept across all companies"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.sec.gov/submissions/CIK0000320193.json",
+    "headers": {
+      "User-Agent": "MyApp/1.0 (you@example.com)"
+    },
+    "response_excerpt": "{\"cik\": \"0000320193\", \"entityType\": \"operating\", \"sic\": \"3571\", \"sicDescription\": \"Electronic Computers\", \"name\": \"Apple Inc.\", \"tickers\": [\"AAPL\"], \"exchanges\": [\"Nasdaq\"], \"fiscalYearEnd\": \"0926\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US government work)",
+      "url": "https://www.sec.gov/about/developer-resources",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "US registrants",
+      "temporal": "XBRL era (about 2009) onward; filings from 1993"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "CIKs must be zero-padded to 10 digits in the path. To map a ticker to a CIK use https://www.sec.gov/files/company_tickers.json on www.sec.gov. Always send a User-Agent of the form 'Name email' and stay under 10 requests/second.",
+  "caveats": [
+    "Must identify yourself via User-Agent or be blocked.",
+    "CORS header is present on 200 responses, but browsers cannot set User-Agent, so it may be unusable from browser code."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

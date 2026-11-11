@@ -1,0 +1,106 @@
+{
+  "slug": "pubchem",
+  "name": "PubChem PUG REST",
+  "provider": {
+    "name": "NCBI / National Library of Medicine",
+    "url": "https://pubchem.ncbi.nlm.nih.gov",
+    "type": "government"
+  },
+  "summary": "Chemical compounds, substances and bioassays: structures, properties, synonyms and safety data.",
+  "description": "Lookup by name, CID, SMILES, InChI or formula to get computed properties (formula, weight, IUPAC name, XLogP and more), synonyms, structure images (PNG), SDF/CSV downloads, and links to assays and literature. PUG View gives annotations such as safety and toxicity.",
+  "category": "life-sciences",
+  "tags": [
+    "chemistry",
+    "compounds",
+    "molecules",
+    "smiles",
+    "properties",
+    "drug-discovery"
+  ],
+  "links": {
+    "homepage": "https://pubchem.ncbi.nlm.nih.gov",
+    "docs": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+    "terms": "https://pubchem.ncbi.nlm.nih.gov/docs/downloads"
+  },
+  "api": {
+    "base_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "csv",
+      "other",
+      "image",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Max 5 requests/second, 400/minute and 300 seconds running time per minute (documented); HTTP 503 when throttled.",
+      "requests": 5,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/compound/name/{name}/property/{props}/JSON",
+      "summary": "Properties by compound name",
+      "params": [
+        "props"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/compound/cid/{cid}/synonyms/JSON",
+      "summary": "Synonyms for a CID"
+    },
+    {
+      "method": "GET",
+      "path": "/compound/smiles/{smiles}/cids/JSON",
+      "summary": "Find CIDs by SMILES"
+    },
+    {
+      "method": "GET",
+      "path": "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/JSON",
+      "summary": "Annotations such as safety data",
+      "params": [
+        "heading"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/aspirin/property/MolecularFormula,MolecularWeight,IUPACName/JSON",
+    "response_excerpt": "{\n  \"PropertyTable\": {\n    \"Properties\": [\n      {\n        \"CID\": 2244,\n        \"MolecularFormula\": \"C9H8O4\",\n        \"MolecularWeight\": \"180.16\",\n        \"IUPACName\": \"2-acetyloxybenzoic acid\"\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (NCBI/NLM); some contributed data under source licenses",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/docs/downloads",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global chemistry (over 110 million compounds)"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Path-based API: the requested properties go in the URL (e.g. MolecularFormula,MolecularWeight,IUPACName). Respect 5 requests/second; a 503 means throttled.",
+  "caveats": [
+    "MolecularWeight is returned as a string.",
+    "Some contributed data carries source-specific licenses.",
+    "ChEMBL REST (ebi.ac.uk/chembl/api) was also seen working with CORS *, but is not part of this entry.",
+    "No official OpenAPI spec."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

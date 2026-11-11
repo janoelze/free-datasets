@@ -1,0 +1,102 @@
+{
+  "slug": "usgs-earthquakes",
+  "name": "USGS Earthquake Catalog (FDSN Event)",
+  "provider": {
+    "name": "U.S. Geological Survey",
+    "url": "https://earthquake.usgs.gov",
+    "type": "government"
+  },
+  "summary": "Real-time and historical global earthquake catalog with GeoJSON, CSV and QuakeML output.",
+  "description": "The ANSS Comprehensive Earthquake Catalog queried via the FDSN event web service: origin time, magnitude, depth, location, felt reports, tsunami flag, alert level and more. Also available as pre-built real-time GeoJSON feeds (past hour, day, week, month).",
+  "category": "earth-environment",
+  "tags": [
+    "earthquakes",
+    "seismology",
+    "hazards",
+    "fdsn",
+    "real-time",
+    "geology"
+  ],
+  "links": {
+    "homepage": "https://earthquake.usgs.gov",
+    "docs": "https://earthquake.usgs.gov/fdsnws/event/1/",
+    "terms": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+  },
+  "api": {
+    "base_url": "https://earthquake.usgs.gov/fdsnws/event/1",
+    "style": "rest",
+    "formats": [
+      "geojson",
+      "csv",
+      "xml",
+      "other",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No formal rate limit; max 20,000 events per query. Heavy users should use the static feeds."
+    },
+    "pagination": "offset",
+    "max_page_size": 20000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/query",
+      "summary": "Search events",
+      "params": [
+        "format",
+        "starttime",
+        "endtime",
+        "minmagnitude",
+        "latitude",
+        "longitude",
+        "maxradiuskm",
+        "limit",
+        "orderby"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/count",
+      "summary": "Count events matching the same filters as /query"
+    },
+    {
+      "method": "GET",
+      "path": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
+      "summary": "Static real-time feed of the past day"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=1&minmagnitude=5",
+    "response_excerpt": "{\n  \"type\": \"FeatureCollection\",\n  \"metadata\": {\n    \"title\": \"USGS Earthquakes\",\n    \"status\": 200,\n    \"api\": \"2.8.4\",\n    \"limit\": 1\n  },\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"mag\": 5.1,\n        \"place\": \"27 km WSW of Calama, Chile\",\n        \"time\": 1794397011281,\n        \"status\": \"reviewed\",\n        \"tsunami\": 0,\n        \"sig\": 400,\n        \"net\": \"us\"\n      }\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US Government work)",
+      "url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Catalog reaches back to the 1900s; comprehensive from about 1970"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Timestamps are epoch milliseconds. Without time filters the query returns the last 30 days, so always set starttime/endtime for history. For frequent polling prefer the static summary feeds.",
+  "caveats": [
+    "Maximum 20,000 events per query; page with offset/limit or narrow the time window.",
+    "Output formats also include KML."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

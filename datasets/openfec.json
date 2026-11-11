@@ -1,0 +1,128 @@
+{
+  "slug": "openfec",
+  "name": "OpenFEC API",
+  "provider": {
+    "name": "U.S. Federal Election Commission (via api.data.gov)",
+    "url": "https://www.fec.gov",
+    "type": "government"
+  },
+  "summary": "US federal campaign finance: candidates, committees, contributions, expenditures and filings; free api.data.gov key.",
+  "description": "Machine-readable access to FEC data: candidate and committee registrations, itemized receipts and disbursements, independent expenditures, election result summaries and filings dating back decades. DEMO_KEY works immediately for tests; a free key is instant by email.",
+  "category": "government-politics",
+  "tags": [
+    "elections",
+    "campaign-finance",
+    "fec",
+    "candidates",
+    "committees",
+    "contributions",
+    "usa",
+    "politics"
+  ],
+  "links": {
+    "homepage": "https://www.fec.gov/data/",
+    "docs": "https://api.open.fec.gov/developers/",
+    "terms": "https://www.fec.gov/updates/sale-or-use-contributor-information/",
+    "openapi": "https://api.open.fec.gov/swagger/",
+    "signup": "https://api.data.gov/signup/"
+  },
+  "api": {
+    "base_url": "https://api.open.fec.gov/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "demo_key": "DEMO_KEY",
+      "notes": "api.data.gov key; can also be sent as an X-Api-Key header. DEMO_KEY is accepted for testing."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Registered key: 1,000 calls/hour (higher on request, up to 7,200 per the research). DEMO_KEY is far lower, roughly 30/hour and 50/day per IP.",
+      "requests": 1000,
+      "per": "hour",
+      "scope": "key"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/candidates/search/",
+      "summary": "Find candidates",
+      "params": [
+        "q",
+        "election_year",
+        "office",
+        "party",
+        "per_page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/committees/",
+      "summary": "Committees",
+      "params": [
+        "q",
+        "committee_type"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/schedules/schedule_a/",
+      "summary": "Itemized contributions",
+      "params": [
+        "contributor_name",
+        "min_amount",
+        "two_year_transaction_period"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/elections/",
+      "summary": "Election summaries",
+      "params": [
+        "cycle",
+        "office",
+        "state"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.open.fec.gov/v1/candidates/search/?api_key=DEMO_KEY&q=sanders&per_page=1",
+    "response_excerpt": "{\"api_version\": \"1.0\", \"pagination\": {\"count\": 50, \"page\": 1, \"pages\": 50, \"per_page\": 1}, \"results\": [{\"candidate_id\": \"H6AL02209\", \"name\": \"SAN...\", \"election_years\": [2026], \"incumbent_challenge_full\": \"Challenger\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US government); use of contributor data for solicitation is restricted by 52 U.S.C. 30111(a)(4)",
+      "url": "https://www.fec.gov/updates/sale-or-use-contributor-information/",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "US federal elections",
+      "temporal": "1980-present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Schedule A (itemized contributions) uses keyset pagination, not page numbers. Use candidate_id and committee_id as join keys across endpoints. Do not use contributor data for solicitation or commercial lists.",
+  "caveats": [
+    "Contributor data may not be sold or used for solicitation.",
+    "Schedule A uses keyset pagination, not page numbers."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Executed with DEMO_KEY."
+  },
+  "related": [
+    "congress-gov",
+    "federal-register"
+  ],
+  "added": "2026-11-11"
+}

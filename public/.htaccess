@@ -1,0 +1,52 @@
+# Served at https://endtime-instruments.org/datasets/ (docroot /datasets -> repo public/).
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+AddDefaultCharset utf-8
+
+<IfModule mod_mime.c>
+  AddType text/javascript .js .mjs
+  AddType image/svg+xml .svg
+  AddType font/woff2 .woff2
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# Never serve dotfiles.
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /datasets/
+
+  # The base path is detected from SCRIPT_NAME (/datasets/index.php). To override, uncomment:
+  #   SetEnv APP_BASE_PATH /datasets
+  #   SetEnv APP_PUBLIC_URL https://endtime-instruments.org/datasets
+
+  RewriteRule ^index\.php$ - [L]
+
+  # Everything that is not an existing file goes to the front controller.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Static assets: asset() appends ?v=<mtime>, so they can be cached for a year.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|mjs|svg|png|jpe?g|gif|webp|avif|ico|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+    Header set X-Content-Type-Options "nosniff"
+  </FilesMatch>
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/json application/problem+json application/schema+json image/svg+xml
+</IfModule>

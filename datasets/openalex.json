@@ -1,0 +1,130 @@
+{
+  "slug": "openalex",
+  "name": "OpenAlex",
+  "provider": {
+    "name": "OurResearch (OpenAlex)",
+    "url": "https://openalex.org/",
+    "type": "nonprofit"
+  },
+  "summary": "Open catalog of the world's scholarly works, authors, institutions, venues, topics and funders.",
+  "description": "OpenAlex indexes scholarly works with citations, authorships, affiliations, open-access status, topics and funders, as a free replacement for Microsoft Academic Graph. The API supports rich filtering, grouping, search, sampling and cursor paging. As of 2026 usage is metered in a daily dollar budget rather than fixed request counts.",
+  "category": "knowledge-reference",
+  "tags": [
+    "scholarly-works",
+    "citations",
+    "authors",
+    "institutions",
+    "bibliometrics",
+    "open-access",
+    "topics"
+  ],
+  "links": {
+    "homepage": "https://openalex.org/",
+    "docs": "https://docs.openalex.org/",
+    "terms": "https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication",
+    "signup": "https://openalex.org/settings/api"
+  },
+  "api": {
+    "base_url": "https://api.openalex.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "Works keyless within a small shared per-IP daily budget; a free key gives your own budget. A key can also be requested via POST /api-keys with an email."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Keyless: shared budget of about $0.10/day per IP (~1000 credits, x-ratelimit-limit-usd: 0.1). Free key: $1/day. A list query costs about $0.001; singleton lookups cost less.",
+      "scope": "ip"
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/works",
+      "summary": "Search and filter works",
+      "params": [
+        "search",
+        "filter",
+        "sort",
+        "per-page",
+        "cursor",
+        "select",
+        "group_by"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/authors",
+      "summary": "Search authors",
+      "params": [
+        "search",
+        "filter"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/institutions",
+      "summary": "Search institutions",
+      "params": [
+        "search",
+        "filter"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/topics",
+      "summary": "Topic taxonomy",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.openalex.org/works?filter=title.search:attention%20is%20all%20you%20need&per-page=1&select=id,title,publication_year,cited_by_count",
+    "response_excerpt": "{\n \"meta\": {\n  \"count\": 183,\n  \"page\": 1,\n  \"per_page\": 1\n },\n \"results\": [\n  {\n   \"id\": \"https://openalex.org/W2626778328\",\n   \"title\": \"Attention Is All You Need\",\n   \"publication_year\": 2017,\n   \"cited_by_count\": 136165\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 (data)",
+      "spdx": "CC0-1.0",
+      "url": "https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Continuously updated; hundreds of millions of works"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Use select= to trim large responses and cursor paging for deep result sets. Get a free key early because the keyless budget is tiny and shared per IP; check response headers for remaining credit. Use the S3 snapshot for bulk needs.",
+  "caveats": [
+    "Limits changed to a USD-credit model; keyless use is small and shared per IP.",
+    "Behavior of the old mailto polite pool is unverified.",
+    "Update frequency approximated (continuous, monthly snapshots)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Keyless call succeeded; response meta carries a notice describing the budget-based keying."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=30036243",
+      "title": "OpenAlex: A free and open catalog of the world's scholarly papers",
+      "points": 4
+    }
+  ],
+  "related": [
+    "unpaywall",
+    "crossref"
+  ],
+  "added": "2026-11-11"
+}

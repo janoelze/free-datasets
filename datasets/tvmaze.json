@@ -1,0 +1,110 @@
+{
+  "slug": "tvmaze",
+  "name": "TVmaze API",
+  "provider": {
+    "name": "TVmaze",
+    "url": "https://www.tvmaze.com",
+    "type": "company"
+  },
+  "summary": "Keyless TV database: shows, episodes, cast, schedules and people.",
+  "description": "Search and lookup of TV shows with genres, status, runtime, network, ratings, episodes, seasons, cast and crew, and daily schedules by country. Cross-references to IMDb, TheTVDB and TV Rage IDs via lookup. An updates endpoint supports syncing.",
+  "category": "media-entertainment",
+  "tags": [
+    "tv",
+    "shows",
+    "episodes",
+    "schedule",
+    "cast",
+    "imdb-ids",
+    "entertainment"
+  ],
+  "links": {
+    "homepage": "https://www.tvmaze.com",
+    "docs": "https://www.tvmaze.com/api",
+    "terms": "https://www.tvmaze.com/api#licensing"
+  },
+  "api": {
+    "base_url": "https://api.tvmaze.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "A premium plan exists, but only for user-specific endpoints."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "At least 20 calls per 10 seconds per IP (documented); HTTP 429 if exceeded."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search/shows?q=",
+      "summary": "Search shows",
+      "params": [
+        "q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/shows/{id}",
+      "summary": "Show details; embed=episodes or cast",
+      "params": [
+        "embed"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/schedule?country=US&date=YYYY-MM-DD",
+      "summary": "Daily schedule",
+      "params": [
+        "country",
+        "date"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lookup/shows?imdb=tt...",
+      "summary": "Look up a show by external ID",
+      "params": [
+        "imdb",
+        "thetvdb",
+        "tvrage"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.tvmaze.com/search/shows?q=girls",
+    "response_excerpt": "[{\"score\":0.8883702,\"show\":{\"id\":139,\"name\":\"Girls\",\"type\":\"Scripted\",\"language\":\"English\",\"genres\":[\"Drama\",\"Romance\"],\"status\":\"Running\",\"premiered\":\"2012-04-15\",\"network\":{\"name\":\"HBO\"}}}]"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 4.0",
+      "spdx": "CC-BY-SA-4.0",
+      "url": "https://www.tvmaze.com/api#licensing",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, 300k+ shows",
+      "temporal": "Community edits in real time; schedules daily"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use /lookup/shows with imdb, thetvdb or tvrage to map external IDs to TVmaze IDs, then /shows/{id}?embed=episodes to fetch episodes in one call. Attribute TVmaze for text and images.",
+  "caveats": [
+    "Attribution to TVmaze is required for images and text.",
+    "The tested show 139 still reported status 'Running', which may be stale upstream."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

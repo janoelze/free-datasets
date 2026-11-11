@@ -1,0 +1,41 @@
+{
+  "slug": "nasa-apod",
+  "name": "NASA Astronomy Picture of the Day",
+  "provider": { "name": "NASA", "url": "https://www.nasa.gov/", "type": "government" },
+  "summary": "Daily astronomy image or video with a title and an explanation written by a professional astronomer.",
+  "description": "The APOD API returns the picture of the day for any date since 1995, with title, explanation, media type and image URLs. Date ranges and random samples are supported.",
+  "category": "space-astronomy",
+  "tags": ["astronomy", "images", "nasa"],
+  "links": {
+    "homepage": "https://apod.nasa.gov/",
+    "docs": "https://api.nasa.gov/",
+    "signup": "https://api.nasa.gov/#signUp"
+  },
+  "api": {
+    "base_url": "https://api.nasa.gov/planetary",
+    "style": "rest",
+    "formats": ["json"],
+    "auth": { "type": "api_key", "key_in": "query", "key_name": "api_key", "demo_key": "DEMO_KEY" },
+    "required_headers": [],
+    "cors": "any",
+    "rate_limit": { "summary": "1,000 requests per hour per key; DEMO_KEY: 30 per hour", "requests": 1000, "per": "hour", "scope": "key" },
+    "pagination": "none"
+  },
+  "endpoints": [
+    { "method": "GET", "path": "/apod", "summary": "Picture of the day for a date or date range", "params": ["date", "start_date", "end_date", "count", "api_key"] }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=2026-01-01",
+    "response_excerpt": "{\"date\":\"2026-01-01\",\"media_type\":\"image\",\"title\":\"…\"}"
+  },
+  "data": {
+    "license": { "name": "Public domain (mostly; some images are copyrighted)", "commercial_use": "restricted" },
+    "coverage": { "temporal": "1995-06-16–present" },
+    "update_frequency": "daily"
+  },
+  "caveats": ["Some images carry third-party copyright; check the copyright field."],
+  "status": "active",
+  "verification": { "last_verified": "2026-10-30", "http_status": 200, "with_key": true },
+  "added": "2026-10-25"
+}

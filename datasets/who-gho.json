@@ -1,0 +1,102 @@
+{
+  "slug": "who-gho",
+  "name": "WHO Global Health Observatory (GHO) OData API",
+  "provider": {
+    "name": "World Health Organization",
+    "url": "https://www.who.int",
+    "type": "intergovernmental"
+  },
+  "summary": "Keyless OData API for 2,000+ WHO health indicators across countries (life expectancy, mortality, risk factors).",
+  "description": "WHO's Global Health Observatory holds indicators on mortality, life expectancy, disease burden, immunization, nutrition, tobacco, alcohol, health workforce and SDG health targets, broken down by country, year, sex and other dimensions. It uses OData v4, so results can be filtered with $filter, $select, $top and $orderby.",
+  "category": "health-medicine",
+  "tags": [
+    "who",
+    "health",
+    "life-expectancy",
+    "mortality",
+    "odata",
+    "global-health",
+    "sdg",
+    "indicators"
+  ],
+  "links": {
+    "homepage": "https://www.who.int/data/gho",
+    "docs": "https://www.who.int/data/gho/info/gho-odata-api",
+    "terms": "https://www.who.int/about/policies/publishing/copyright"
+  },
+  "api": {
+    "base_url": "https://ghoapi.azureedge.net/api",
+    "style": "odata",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/Indicator",
+      "summary": "List all indicators",
+      "params": [
+        "$filter"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{IndicatorCode}",
+      "summary": "Values for an indicator",
+      "params": [
+        "$filter",
+        "$top",
+        "$select"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/DIMENSION/COUNTRY/DimensionValues",
+      "summary": "Country codes"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://ghoapi.azureedge.net/api/WHOSIS_000001?$top=2",
+    "response_excerpt": "{\"@odata.context\": \"https://ghoapi.azureedge.net/api/$metadata#WHOSIS_000001\", \"value\": [{\"IndicatorCode\": \"WHOSIS_000001\", \"SpatialDim\": \"SOM\", \"TimeDim\": 2008, \"Dim1\": \"SEX_MLE\", \"Value\": \"48.1 [45.4-50.8]\", \"NumericValue\": 48.1, \"Low\": 45.4, \"High\": 50.8}]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-NC-SA 3.0 IGO (WHO data policy)",
+      "spdx": "CC-BY-NC-SA-3.0-IGO",
+      "url": "https://www.who.int/about/policies/publishing/copyright",
+      "attribution_required": true,
+      "commercial_use": "prohibited"
+    },
+    "coverage": {
+      "geographic": "194 WHO member states",
+      "temporal": "1950s-present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Find an indicator code with /Indicator?$filter=contains(IndicatorName,'life'), then query /{IndicatorCode} with $filter=SpatialDim eq 'DEU'. Country codes are ISO3 in SpatialDim. Dim1..Dim3 mean different things per indicator (sex, age group and so on).",
+  "caveats": [
+    "No CORS header: browser apps need a proxy.",
+    "License is non-commercial (CC BY-NC-SA).",
+    "Dimension columns (Dim1..Dim3) vary by indicator."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "disease-sh"
+  ],
+  "added": "2026-11-11"
+}

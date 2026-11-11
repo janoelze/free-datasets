@@ -1,0 +1,92 @@
+{
+  "slug": "noaa-swpc",
+  "name": "NOAA SWPC Space Weather JSON",
+  "provider": {
+    "name": "NOAA Space Weather Prediction Center",
+    "url": "https://www.swpc.noaa.gov",
+    "type": "government"
+  },
+  "summary": "Real-time and recent space weather data: Kp index, solar wind, X-ray flux, aurora forecast, alerts.",
+  "description": "Static JSON products under /products and /json update every minute to a few hours: planetary K-index, solar wind plasma and magnetic field, GOES X-ray and proton flux, sunspot numbers, aurora oval (OVATION) grids, and alerts, watches and warnings.",
+  "category": "space-astronomy",
+  "tags": [
+    "space-weather",
+    "kp-index",
+    "aurora",
+    "solar-wind",
+    "geomagnetic",
+    "noaa"
+  ],
+  "links": {
+    "homepage": "https://www.swpc.noaa.gov",
+    "docs": "https://services.swpc.noaa.gov/",
+    "terms": "https://www.weather.gov/disclaimer"
+  },
+  "api": {
+    "base_url": "https://services.swpc.noaa.gov",
+    "style": "static-file",
+    "formats": [
+      "json",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No documented numeric limit; static files are cached. Poll no faster than the product cadence."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/products/noaa-planetary-k-index.json",
+      "summary": "3-hourly planetary Kp index"
+    },
+    {
+      "method": "GET",
+      "path": "/products/solar-wind/plasma-1-day.json",
+      "summary": "Solar wind plasma, past day"
+    },
+    {
+      "method": "GET",
+      "path": "/json/ovation_aurora_latest.json",
+      "summary": "Aurora forecast grid"
+    },
+    {
+      "method": "GET",
+      "path": "/products/alerts.json",
+      "summary": "Active alerts, watches and warnings"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
+    "response_excerpt": "[\n  {\n    \"time_tag\": \"2026-11-04T00:00:00\",\n    \"Kp\": 2.33,\n    \"a_running\": 9,\n    \"station_count\": 6\n  },\n  {\n    \"time_tag\": \"2026-11-04T03:00:00\",\n    \"Kp\": 2.67,\n    \"a_running\": 12,\n    \"station_count\": 6\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US Government work)",
+      "url": "https://www.weather.gov/disclaimer",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global / near-Earth space",
+      "temporal": "Rolling windows from hours to 30 days"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "These are static files, so poll no faster than each product updates. Some products are arrays of arrays whose first row is a header.",
+  "caveats": [
+    "Only the Kp endpoint was verified directly; others are per docs.",
+    "Update cadence ranges from 1 minute to 3 hours depending on product."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

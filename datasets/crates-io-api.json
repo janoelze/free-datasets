@@ -1,0 +1,113 @@
+{
+  "slug": "crates-io-api",
+  "name": "crates.io API",
+  "provider": {
+    "name": "Rust Foundation / crates.io team",
+    "url": "https://crates.io",
+    "type": "nonprofit"
+  },
+  "summary": "Metadata, versions, dependencies and download stats for Rust crates.",
+  "description": "Read-only JSON API over the Rust package registry: crate metadata, versions, reverse dependencies, owners, categories, keywords and download counts. A full database dump is also available for bulk use.",
+  "category": "developer-tools",
+  "tags": [
+    "rust",
+    "cargo",
+    "crates",
+    "packages",
+    "registry"
+  ],
+  "links": {
+    "homepage": "https://crates.io",
+    "docs": "https://crates.io/data-access",
+    "terms": "https://crates.io/policies",
+    "bulk_download": "https://crates.io/data-access"
+  },
+  "api": {
+    "base_url": "https://crates.io/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app (contact@example.com)",
+        "notes": "Requests without a User-Agent identifying your app are rejected."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Crawlers limited to 1 request/second; User-Agent required",
+      "requests": 1,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/crates/{name}",
+      "summary": "Crate info with versions"
+    },
+    {
+      "method": "GET",
+      "path": "/crates",
+      "summary": "Search crates",
+      "params": [
+        "q",
+        "per_page",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/crates/{name}/reverse_dependencies",
+      "summary": "Dependents"
+    },
+    {
+      "method": "GET",
+      "path": "/crates/{name}/{version}/dependencies",
+      "summary": "Dependencies"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://crates.io/api/v1/crates/serde",
+    "headers": {
+      "User-Agent": "my-app (contact@example.com)"
+    },
+    "response_excerpt": "{\n \"id\": \"serde\",\n \"max_version\": \"1.0.229\",\n \"downloads\": 1687148355,\n \"repository\": \"https://github.com/serde-rs/serde\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Metadata public; crate code under each crate's license",
+      "url": "https://crates.io/policies",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "All published crates to present"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always send a descriptive User-Agent with contact details and stay at or below 1 request per second. For bulk analysis download the database dump instead of crawling the API.",
+  "caveats": [
+    "Requests without a User-Agent are rejected. For bulk data use the DB dump, not the API."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "npm-registry",
+    "pypi-json-api",
+    "deps-dev"
+  ],
+  "added": "2026-11-11"
+}

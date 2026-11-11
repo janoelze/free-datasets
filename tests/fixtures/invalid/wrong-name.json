@@ -1,0 +1,97 @@
+{
+  "slug": "open-meteo",
+  "name": "Open-Meteo",
+  "provider": {
+    "name": "Open-Meteo",
+    "url": "https://open-meteo.com/",
+    "type": "company"
+  },
+  "summary": "Global weather forecasts, historical reanalysis and air-quality data from national weather models.",
+  "description": "Open-Meteo serves hourly and daily forecasts from national weather services (DWD, NOAA, Météo-France and others), an 80-year historical archive, marine, flood and air-quality data. Requests take latitude and longitude and return JSON time series.",
+  "category": "weather",
+  "tags": [
+    "weather",
+    "weather"
+  ],
+  "links": {
+    "homepage": "https://open-meteo.com/",
+    "docs": "http://open-meteo.com/en/docs",
+    "terms": "https://open-meteo.com/en/terms",
+    "openapi": "https://raw.githubusercontent.com/open-meteo/open-meteo/main/openapi.yml",
+    "source": "https://github.com/open-meteo/open-meteo"
+  },
+  "api": {
+    "base_url": "https://api.open-meteo.com/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "10,000 calls per day for non-commercial use",
+      "requests": 10000,
+      "per": "day",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/forecast",
+      "summary": "Hourly and daily weather forecast for a coordinate",
+      "params": [
+        "latitude",
+        "longitude",
+        "hourly",
+        "daily"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://archive-api.open-meteo.com/v1/archive",
+      "summary": "Historical weather since 1940",
+      "params": [
+        "latitude",
+        "longitude",
+        "start_date",
+        "end_date"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m",
+    "headers": {},
+    "response_excerpt": "{\"latitude\":52.52,\"longitude\":13.419998,\"current\":{\"time\":\"2026-11-01T12:00\",\"temperature_2m\":9.3}}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://open-meteo.com/en/license",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "1940–present plus 16-day forecast"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Coordinates are latitude then longitude in decimal degrees. Ask only for the variables you need.",
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-01",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "usgs-earthquakes"
+  ],
+  "added": "2026-10-20"
+}

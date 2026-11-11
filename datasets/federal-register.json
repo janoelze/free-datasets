@@ -1,0 +1,110 @@
+{
+  "slug": "federal-register",
+  "name": "Federal Register API",
+  "provider": {
+    "name": "Office of the Federal Register (NARA/GPO)",
+    "url": "https://www.federalregister.gov/",
+    "type": "government"
+  },
+  "summary": "Keyless search of all US Federal Register documents: rules, proposed rules, notices and presidential documents.",
+  "description": "Daily journal of US executive branch regulation since 1994: final rules, proposed rules, agency notices, executive orders and proclamations, with full-text links, agencies, CFR references, effective dates and public inspection documents. Rich filter conditions and faceted counts.",
+  "category": "government-politics",
+  "tags": [
+    "regulations",
+    "federal-register",
+    "executive-orders",
+    "rulemaking",
+    "us-government",
+    "agencies",
+    "law",
+    "notices"
+  ],
+  "links": {
+    "homepage": "https://www.federalregister.gov/",
+    "docs": "https://www.federalregister.gov/developers/documentation/api/v1",
+    "terms": "https://www.federalregister.gov/reader-aids/policy"
+  },
+  "api": {
+    "base_url": "https://www.federalregister.gov/api/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No key; fair use (no numeric limit documented)."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/documents.json",
+      "summary": "Search documents",
+      "params": [
+        "conditions[term]",
+        "conditions[type][]",
+        "conditions[agencies][]",
+        "fields[]",
+        "per_page",
+        "order"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/documents/{document_number}.json",
+      "summary": "Single document"
+    },
+    {
+      "method": "GET",
+      "path": "/agencies.json",
+      "summary": "List agencies"
+    },
+    {
+      "method": "GET",
+      "path": "/documents/facets/{facet}",
+      "summary": "Counts by facet",
+      "params": [
+        "conditions[...]"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.federalregister.gov/api/v1/documents.json?per_page=1&conditions%5Bterm%5D=inflation&fields%5B%5D=title&fields%5B%5D=publication_date&fields%5B%5D=type",
+    "response_excerpt": "{\"description\": \"Documents matching 'inflation'\", \"count\": 10000, \"total_pages\": 50, \"results\": [{\"title\": \"2026 Civil Monetary Penalty Inflation Adjustments\", \"publication_date\": \"2026-07-22\", \"type\": \"Notice\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain (US government work)",
+      "url": "https://www.federalregister.gov/reader-aids/policy",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "1994-present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Request only the fields you need with repeated fields[]= parameters. Bracketed parameters must be URL-encoded (or use curl -g). Result counts are capped at 10,000, so slice large pulls by publication date.",
+  "caveats": [
+    "Search result count is capped at 10,000; use date slicing.",
+    "Bracket parameters need URL-encoding."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "congress-gov",
+    "openfec"
+  ],
+  "added": "2026-11-11"
+}

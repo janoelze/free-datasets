@@ -1,0 +1,110 @@
+{
+  "slug": "rijksmuseum",
+  "name": "Rijksmuseum Data Services",
+  "provider": {
+    "name": "Rijksmuseum (Amsterdam)",
+    "url": "https://www.rijksmuseum.nl",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless Linked Art / Linked Data API for the Rijksmuseum collection, including Rembrandt and Vermeer.",
+  "description": "New data services (replacing the old key-based API) provide a Search API returning Linked Art collections, a Linked Data resolver per object (JSON-LD via content negotiation), OAI-PMH, LDES, IIIF images and full data dumps. Searches filter by creator, type, material, date and more.",
+  "category": "art-museums",
+  "tags": [
+    "art",
+    "museum",
+    "linked-art",
+    "json-ld",
+    "iiif",
+    "oai-pmh",
+    "dutch-golden-age"
+  ],
+  "links": {
+    "homepage": "https://data.rijksmuseum.nl",
+    "docs": "https://data.rijksmuseum.nl/docs/",
+    "terms": "https://data.rijksmuseum.nl/docs/policy/"
+  },
+  "api": {
+    "base_url": "https://data.rijksmuseum.nl",
+    "style": "rest",
+    "formats": [
+      "json-ld",
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The older apiKey-based www.rijksmuseum.nl/api is legacy and deprecated."
+    },
+    "required_headers": [
+      {
+        "name": "Accept",
+        "example": "application/ld+json",
+        "notes": "Needed on the id.rijksmuseum.nl resolver to get Linked Art JSON-LD; search returns JSON by default."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not numerically documented; be polite."
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search/collection",
+      "summary": "Search; returns a list of object IDs",
+      "params": [
+        "creator",
+        "type",
+        "title",
+        "material",
+        "imageAvailable",
+        "pageToken"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://id.rijksmuseum.nl/{id}",
+      "summary": "Object as Linked Art JSON-LD (send Accept: application/ld+json)"
+    },
+    {
+      "method": "GET",
+      "path": "/oai",
+      "summary": "OAI-PMH harvesting"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.rijksmuseum.nl/search/collection?creator=Rembrandt&type=painting",
+    "response_excerpt": "{\"@context\":\"https://linked.art/ns/v1/search.json\",\"type\":\"OrderedCollectionPage\",\"partOf\":{\"totalItems\":25},\"orderedItems\":[{\"id\":\"https://id.rijksmuseum.nl/200106038\",\"type\":\"HumanMadeObject\"},...]}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain / CC0 for data and images of public-domain works",
+      "spdx": "CC0-1.0",
+      "url": "https://data.rijksmuseum.nl/docs/policy/",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "About 800k objects"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Two-step lookup: the search returns only object IDs, then request each ID from https://id.rijksmuseum.nl/{id} with Accept: application/ld+json. The Linked Art model is verbose, so plan to extract only the fields you need. Page through results with pageToken.",
+  "caveats": [
+    "Search returns only IDs; every object needs a second request.",
+    "Old www.rijksmuseum.nl/api with a key is legacy."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "met-museum",
+    "artic",
+    "europeana"
+  ],
+  "added": "2026-11-11"
+}

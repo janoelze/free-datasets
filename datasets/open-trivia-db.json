@@ -1,0 +1,95 @@
+{
+  "slug": "open-trivia-db",
+  "name": "Open Trivia Database",
+  "provider": {
+    "name": "Pixeltail Games",
+    "url": "https://opentdb.com",
+    "type": "company"
+  },
+  "summary": "Free community-contributed trivia questions across 24 categories.",
+  "description": "Returns multiple-choice or true/false questions filterable by category, difficulty and type, with optional session tokens to avoid repeats and a category question count endpoint.",
+  "category": "fun-games",
+  "tags": [
+    "trivia",
+    "quiz",
+    "questions",
+    "games",
+    "education"
+  ],
+  "links": {
+    "homepage": "https://opentdb.com",
+    "docs": "https://opentdb.com/api_config.php",
+    "terms": "https://opentdb.com/api_config.php"
+  },
+  "api": {
+    "base_url": "https://opentdb.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "1 request per 5 seconds per IP (response_code 5 when exceeded); max 50 questions/call"
+    },
+    "pagination": "none",
+    "max_page_size": 50
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api.php",
+      "summary": "Get questions",
+      "params": [
+        "amount (1-50)",
+        "category",
+        "difficulty",
+        "type",
+        "token",
+        "encode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api_category.php",
+      "summary": "List categories"
+    },
+    {
+      "method": "GET",
+      "path": "/api_token.php?command=request",
+      "summary": "Session token"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://opentdb.com/api.php?amount=1",
+    "response_excerpt": "{\n \"response_code\": 0,\n \"results\": [\n  {\n   \"category\": \"Entertainment: Board Games\",\n   \"difficulty\": \"easy\",\n   \"question\": \"The top human players can easily beat the top computers at chess\",\n   \"correct_answer\": \"False\"\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 4.0",
+      "spdx": "CC-BY-SA-4.0",
+      "url": "https://opentdb.com/api_config.php",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Community-contributed"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Request at most 50 questions per call and wait 5 seconds between calls (response_code 5 means rate limited). Add encode=url3986 or base64 to avoid HTML entities; use a session token to avoid repeats.",
+  "caveats": [
+    "HTML entities in text unless encode set. Attribution required."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "added": "2026-11-11"
+}

@@ -1,0 +1,108 @@
+{
+  "slug": "datamuse",
+  "name": "Datamuse API",
+  "provider": {
+    "name": "Datamuse",
+    "url": "https://www.datamuse.com",
+    "type": "company"
+  },
+  "summary": "Word-finding API: synonyms, rhymes, meaning-like, sounds-like, autocomplete and word frequency.",
+  "description": "Query by meaning (ml), sounds like (sl), spelled like (sp), rhyme (rel_rhy), related words and more, with frequency and part-of-speech tags. Also offers /sug for autocomplete. Built on language corpora and word vectors.",
+  "category": "language",
+  "tags": [
+    "words",
+    "synonyms",
+    "rhymes",
+    "thesaurus",
+    "autocomplete",
+    "nlp",
+    "english"
+  ],
+  "links": {
+    "homepage": "https://www.datamuse.com/api/",
+    "docs": "https://www.datamuse.com/api/",
+    "terms": "https://www.datamuse.com/api/"
+  },
+  "api": {
+    "base_url": "https://api.datamuse.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "100,000 requests/day per IP without a key (documented).",
+      "requests": 100000,
+      "per": "day",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/words",
+      "summary": "Find words by meaning, sound, spelling or relation",
+      "params": [
+        "ml",
+        "sl",
+        "sp",
+        "rel_rhy",
+        "rel_syn",
+        "topics",
+        "max",
+        "md"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sug",
+      "summary": "Autocomplete suggestions",
+      "params": [
+        "s",
+        "max"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.datamuse.com/words?ml=ringing+in+the+ears&max=3",
+    "response_excerpt": "[{\"word\":\"tinnitus\",\"score\":10141200,\"tags\":[\"syn\",\"n\"]},{\"word\":\"acouasm\",\"score\":10018400,\"tags\":[\"n\"]}]"
+  },
+  "data": {
+    "license": {
+      "name": "Free for commercial and noncommercial use; attribution requested, no formal open license",
+      "url": "https://www.datamuse.com/api/",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "English (Spanish via v=es)"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Constraints such as ml, sp and rel_rhy can be combined in one call. Add md=dpf to get definitions, parts of speech and frequency. Spanish results need the v=es parameter.",
+  "caveats": [
+    "High-volume commercial use requires contacting Datamuse.",
+    "No OpenAPI spec is published."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=34726602",
+      "title": "Datamuse API: a word-finding query engine for developers",
+      "points": 2
+    }
+  ],
+  "related": [
+    "free-dictionary-api"
+  ],
+  "added": "2026-11-11"
+}

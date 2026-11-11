@@ -1,0 +1,136 @@
+{
+  "slug": "crossref",
+  "name": "Crossref REST API",
+  "provider": {
+    "name": "Crossref",
+    "url": "https://www.crossref.org/",
+    "type": "nonprofit"
+  },
+  "summary": "Bibliographic metadata for scholarly works registered with Crossref DOIs: titles, authors, references, funders, licenses and citation counts.",
+  "description": "Crossref is the DOI registration agency for most journals, books and conference papers, and exposes deposited metadata via a keyless REST API. You can search and filter works, journals, funders, members, prefixes and licenses, with cursor-based deep paging. Adding a mailto parameter or a contact in the User-Agent routes requests to a faster polite pool.",
+  "category": "knowledge-reference",
+  "tags": [
+    "doi",
+    "scholarly-works",
+    "citations",
+    "references",
+    "publishers",
+    "funders",
+    "bibliographic-metadata"
+  ],
+  "links": {
+    "homepage": "https://www.crossref.org/",
+    "docs": "https://api.crossref.org/swagger-ui/index.html",
+    "terms": "https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-metadata-license-information/",
+    "openapi": "https://api.crossref.org/swagger-docs"
+  },
+  "api": {
+    "base_url": "https://api.crossref.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "notes": "No key needed. Optionally pass mailto=<email> or put a mailto in the User-Agent to use the polite pool; paid Metadata Plus is not required."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app/1.0 (mailto:you@example.org)",
+        "notes": "Recommended for the polite pool."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Public pool about 5 req/s; polite pool about 10 req/s plus concurrency caps; see x-rate-limit headers. Numbers have changed recently, verify in docs."
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/works",
+      "summary": "Search and filter works",
+      "params": [
+        "query",
+        "query.bibliographic",
+        "filter",
+        "rows",
+        "cursor",
+        "select",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/works/{doi}",
+      "summary": "Single work by DOI",
+      "params": [
+        "doi"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/journals/{issn}/works",
+      "summary": "Works in a journal",
+      "params": [
+        "issn"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/funders",
+      "summary": "Funder registry",
+      "params": [
+        "query"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.crossref.org/works?query.bibliographic=attention+is+all+you+need&rows=1&select=DOI,title,publisher,is-referenced-by-count",
+    "headers": {
+      "User-Agent": "my-app/1.0 (mailto:you@example.org)"
+    },
+    "response_excerpt": "{\n \"status\": \"ok\",\n \"message-type\": \"work-list\",\n \"message\": {\n  \"total-results\": 1255774,\n  \"items\": [\n   {\n    \"DOI\": \"10.1007/978-3-031-84300-6_13\",\n    \"title\": [\n     \"Is Attention All You Need?\"\n    ],\n    \"publisher\": \"Springer Nature Switzerland\",\n    \"is-referenced-by-count\": 55\n   }\n  ],\n  \"items-per-page\": 1\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Metadata is freely reusable (CC0 intent); some fields such as abstracts and license links vary",
+      "url": "https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-metadata-license-information/",
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Continuously updated; about 188.7M works at check"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Include a mailto in the User-Agent or query to get the polite pool. select= works only on list routes (400 on /works/{doi}). Use cursor=* for deep paging.",
+  "caveats": [
+    "Relevance ranking for bibliographic queries is fuzzy; verify the DOI by title.",
+    "Rate numbers should be re-checked against the docs; they changed in 2025-26.",
+    "The HN reference is a Show HN story where Crossref staff recommended the API in comments, not a dedicated story."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example URL verified (200)."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=7674449",
+      "title": "Show HN: One-click citations for your essays",
+      "points": 65
+    }
+  ],
+  "related": [
+    "openalex",
+    "unpaywall"
+  ],
+  "added": "2026-11-11"
+}

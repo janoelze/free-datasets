@@ -1,0 +1,133 @@
+{
+  "slug": "met-norway-locationforecast",
+  "name": "MET Norway Locationforecast",
+  "provider": {
+    "name": "Norwegian Meteorological Institute (MET Norway)",
+    "url": "https://api.met.no/",
+    "type": "government"
+  },
+  "summary": "Global point weather forecasts, hourly out to about 10 days, from the Norwegian Meteorological Institute.",
+  "description": "Locationforecast returns a GeoJSON timeseries forecast for any latitude/longitude on Earth, based on the ECMWF model blended with the high-resolution MEPS model over the Nordic region. The compact variant gives instant variables (temperature, wind, humidity, pressure, cloud cover) plus next 1/6/12 hour precipitation and symbol codes. It is the same service that powers yr.no.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "forecast",
+    "norway",
+    "yr-no",
+    "temperature",
+    "wind",
+    "precipitation"
+  ],
+  "links": {
+    "homepage": "https://api.met.no/",
+    "docs": "https://api.met.no/weatherapi/locationforecast/2.0/documentation",
+    "terms": "https://developer.yr.no/doc/TermsOfService/",
+    "openapi": "https://api.met.no/weatherapi/locationforecast/2.0/swagger"
+  },
+  "api": {
+    "base_url": "https://api.met.no/weatherapi/locationforecast/2.0",
+    "style": "rest",
+    "formats": [
+      "geojson",
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key, but the terms of service require an identifying User-Agent (app name plus contact)."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "my-app/1.0 https://example.org/contact",
+        "notes": "App name/version plus contact URL or email; anonymous or default UAs may be blocked."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Max 20 requests/second per application; cache responses and honor Expires / If-Modified-Since; coordinates limited to 4 decimals.",
+      "requests": 20,
+      "per": "second"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/compact",
+      "summary": "Compact forecast timeseries for a point",
+      "params": [
+        "lat",
+        "lon",
+        "altitude"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/complete",
+      "summary": "Full variable set including percentiles and extra levels",
+      "params": [
+        "lat",
+        "lon",
+        "altitude"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "summary": "Service and model run status",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/classic",
+      "summary": "Legacy XML forecast",
+      "params": [
+        "lat",
+        "lon"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=52.52&lon=13.41",
+    "headers": {
+      "User-Agent": "my-app/1.0 https://example.org/contact"
+    },
+    "response_excerpt": "{\n \"type\": \"Feature\",\n \"geometry\": {\n  \"type\": \"Point\",\n  \"coordinates\": [\n   13.41,\n   52.52,\n   37\n  ]\n },\n \"properties\": {\n  \"meta\": {\n   \"updated_at\": \"2026-11-11T13:17:21Z\",\n   \"units\": {\n    \"air_temperature\": \"celsius\",\n    \"wind_speed\": \"m/s\"\n   }\n  },\n  \"timeseries\": [\n   {\n    \"time\": \"2026-11-11T14:00:00Z\",\n    \"data\": {\n     \"instant\": {\n      \"details\": {\n       \"air_pressure_at_sea_level\": 1004.6,\n       \"air_temperature\": 4.8,\n       \"cloud_area_fraction\": 90.6,\n       \"relative_humidity\": 80.2,\n       \"wind_from_direction\": 113.1,\n       \"wind_speed\": 2.5\n      }\n     }\n    }\n   }\n  ]\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 and Norwegian Licence for Open Government Data (NLOD)",
+      "url": "https://api.met.no/doc/License",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global; best resolution in the Nordic region",
+      "temporal": "About 10 days ahead"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Always send a descriptive User-Agent and round coordinates to 4 decimals. Note the GeoJSON coordinate order is [lon, lat, altitude]. Respect the Expires header rather than re-polling the same point.",
+  "caveats": [
+    "Missing or generic User-Agent risks 403 responses or bans.",
+    "Coordinates with more than 4 decimals may be rejected or redirected.",
+    "Do not poll the same point faster than the Expires header allows."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Called with an identifying User-Agent; a default curl UA also returned 200 but the terms require an ID."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=31965812",
+      "title": "Norwegian Meteorological Institute has an excellent free weather API",
+      "points": 169
+    }
+  ],
+  "added": "2026-11-11"
+}

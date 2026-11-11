@@ -1,0 +1,106 @@
+{
+  "slug": "nasa-power",
+  "name": "NASA POWER",
+  "provider": {
+    "name": "NASA Langley Research Center",
+    "url": "https://power.larc.nasa.gov",
+    "type": "government"
+  },
+  "summary": "Solar radiation, meteorology and agroclimatology time series from NASA satellites and models for any point on Earth.",
+  "description": "Prediction Of Worldwide Energy Resources provides MERRA-2 and CERES-derived parameters (temperature, solar irradiance, humidity, wind, precipitation) hourly, daily, monthly and climatological for any lat/lon or region, tailored for renewable energy, buildings and agriculture. No key needed.",
+  "category": "weather-climate",
+  "tags": [
+    "solar",
+    "climate",
+    "agroclimatology",
+    "renewable-energy",
+    "reanalysis",
+    "time-series"
+  ],
+  "links": {
+    "homepage": "https://power.larc.nasa.gov",
+    "docs": "https://power.larc.nasa.gov/docs/services/api/",
+    "terms": "https://power.larc.nasa.gov/docs/referencing/"
+  },
+  "api": {
+    "base_url": "https://power.larc.nasa.gov/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "csv",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Fair-use throttling with concurrent request limits per the docs; no fixed numbers verified."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/temporal/daily/point",
+      "summary": "Daily point time series",
+      "params": [
+        "parameters",
+        "community",
+        "latitude",
+        "longitude",
+        "start",
+        "end",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/temporal/hourly/point",
+      "summary": "Hourly point time series, same parameters"
+    },
+    {
+      "method": "GET",
+      "path": "/temporal/climatology/point",
+      "summary": "Climatology for a point",
+      "params": [
+        "parameters",
+        "community",
+        "latitude",
+        "longitude"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M&community=RE&longitude=13.4&latitude=52.5&start=20260101&end=20260103&format=JSON",
+    "response_excerpt": "{\n  \"type\": \"Feature\",\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      13.4,\n      52.5,\n      48.98\n    ]\n  },\n  \"properties\": {\n    \"parameter\": {\n      \"T2M\": {\n        \"20260101\": 1.36,\n        \"20260102\": 0.74,\n        \"20260103\": -0.68\n      }\n    }\n  },\n  \"header\": {\n    \"title\": \"NASA/POWER Source Native Resolution Daily Data\",\n    \"api\": {\n      \"version\": \"v2.10.3\"\n    }\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain / NASA open data (acknowledge POWER project)",
+      "url": "https://power.larc.nasa.gov/docs/referencing/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "1981 to near present (hourly from 2001), about 2-7 day latency"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Choose community (RE, AG or SB) to match the parameter set you need, and use YYYYMMDD dates. The value -999 means missing data.",
+  "caveats": [
+    "-999 marks missing values.",
+    "No OpenAPI spec was found at tried paths.",
+    "Additional output formats include NetCDF and ASCII."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

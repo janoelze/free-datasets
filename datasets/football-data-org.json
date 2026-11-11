@@ -1,0 +1,110 @@
+{
+  "slug": "football-data-org",
+  "name": "football-data.org v4",
+  "provider": {
+    "name": "football-data.org",
+    "url": "https://www.football-data.org",
+    "type": "company"
+  },
+  "summary": "European football fixtures, results, tables and scorers for top competitions.",
+  "description": "REST API with competitions, matches, teams, standings and top scorers. Free tier covers 12 competitions (Premier League, Bundesliga, La Liga, Serie A, Ligue 1, Champions League, World Cup, etc.) with scores and fixtures; more detail is paid.",
+  "category": "sports",
+  "tags": [
+    "football",
+    "soccer",
+    "fixtures",
+    "standings",
+    "premier-league",
+    "champions-league"
+  ],
+  "links": {
+    "homepage": "https://www.football-data.org",
+    "docs": "https://www.football-data.org/documentation/quickstart",
+    "terms": "https://www.football-data.org/terms",
+    "signup": "https://www.football-data.org/client/register"
+  },
+  "api": {
+    "base_url": "https://api.football-data.org/v4",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "header",
+      "key_name": "X-Auth-Token",
+      "notes": "Free registration gives a token for the free tier (12 competitions)."
+    },
+    "cors": "unknown",
+    "rate_limit": {
+      "summary": "Free tier: 10 requests/minute (X-Requests-Available header counts anonymous quota: 48 of 50 observed)",
+      "requests": 10,
+      "per": "minute",
+      "scope": "key"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/competitions",
+      "summary": "List competitions"
+    },
+    {
+      "method": "GET",
+      "path": "/competitions/{code}/matches",
+      "summary": "Matches",
+      "params": [
+        "dateFrom",
+        "dateTo",
+        "status",
+        "matchday",
+        "season"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/competitions/{code}/standings",
+      "summary": "League table"
+    },
+    {
+      "method": "GET",
+      "path": "/competitions/{code}/scorers",
+      "summary": "Top scorers",
+      "params": [
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.football-data.org/v4/competitions",
+    "response_excerpt": "{\n \"count\": 192,\n \"first\": {\n  \"id\": 2193,\n  \"name\": \"Africa Cup Of Nations - Qualification\",\n  \"code\": \"ACQ\",\n  \"plan\": \"TIER_FOUR\"\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Free tier for non-commercial use; attribution",
+      "url": "https://www.football-data.org/terms",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Top European leagues and cups",
+      "temporal": "Current and recent seasons"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Send X-Auth-Token on every request. Free tier has 12 competitions, delayed scores and 10 requests/minute; competition codes like PL are used in paths.",
+  "caveats": [
+    "Anonymous /competitions works (200) but /competitions/PL returned 403; a key is needed for real use.",
+    "CORS not confirmed: no Access-Control-Allow-Origin header seen on the anonymous response."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Anonymous /competitions returned 200; /competitions/PL returned 403 without a key. Key-authenticated responses were not observed."
+  },
+  "added": "2026-11-11"
+}

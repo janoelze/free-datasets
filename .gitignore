@@ -1,0 +1,8 @@
+/var/
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+/tests/tmp/

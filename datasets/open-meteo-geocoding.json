@@ -1,0 +1,98 @@
+{
+  "slug": "open-meteo-geocoding",
+  "name": "Open-Meteo Geocoding API",
+  "provider": {
+    "name": "Open-Meteo",
+    "url": "https://open-meteo.com",
+    "type": "company"
+  },
+  "summary": "Free place-name search returning coordinates, timezone, population and admin hierarchy.",
+  "description": "Searches GeoNames-derived data by place name or postal code and returns coordinates, elevation, timezone, country, admin levels, population and postcodes in multiple languages. Designed as the companion of the Open-Meteo weather APIs but useful standalone for autocomplete or place resolution.",
+  "category": "geography-maps",
+  "tags": [
+    "geocoding",
+    "places",
+    "geonames",
+    "timezone",
+    "autocomplete",
+    "postal-codes"
+  ],
+  "links": {
+    "homepage": "https://open-meteo.com/en/docs/geocoding-api",
+    "docs": "https://open-meteo.com/en/docs/geocoding-api",
+    "terms": "https://open-meteo.com/en/terms"
+  },
+  "api": {
+    "base_url": "https://geocoding-api.open-meteo.com/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Shared Open-Meteo limits for non-commercial use: 600/minute, 5,000/hour, 10,000/day.",
+      "requests": 600,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search places by name",
+      "params": [
+        "name",
+        "count",
+        "language",
+        "format",
+        "countryCode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/get",
+      "summary": "Get a place by GeoNames id",
+      "params": [
+        "id"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://geocoding-api.open-meteo.com/v1/search?name=Berlin&count=1",
+    "response_excerpt": "{\n  \"results\": [\n    {\n      \"id\": 2950159,\n      \"name\": \"Berlin\",\n      \"latitude\": 52.52437,\n      \"longitude\": 13.41053,\n      \"elevation\": 74.0,\n      \"feature_code\": \"PPLC\",\n      \"country_code\": \"DE\",\n      \"timezone\": \"Europe/Berlin\",\n      \"population\": 3426354,\n      \"country\": \"Germany\",\n      \"admin1\": \"State of Berlin\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (GeoNames-based data)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://open-meteo.com/en/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use the returned latitude/longitude directly as inputs to the Open-Meteo forecast API. Pass a language code to get localized names, and countryCode to disambiguate common place names.",
+  "caveats": [
+    "Forward geocoding only (no reverse geocoding).",
+    "Name search, not full street-address search.",
+    "Update cadence follows periodic GeoNames updates."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "open-meteo-forecast"
+  ],
+  "added": "2026-11-11"
+}

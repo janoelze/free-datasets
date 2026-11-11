@@ -1,0 +1,117 @@
+{
+  "slug": "macrostrat",
+  "name": "Macrostrat API",
+  "provider": {
+    "name": "UW-Madison Macrostrat",
+    "url": "https://macrostrat.org",
+    "type": "academic"
+  },
+  "summary": "Geologic map units, stratigraphic columns, lithologies, fossils and geologic time interval definitions.",
+  "description": "Open geoscience database linking geologic map polygons, stratigraphic columns, units, lithologies, minerals, fossil occurrences (via PBDB) and time scales. Supports geologic lookups at a lat/lng and column/unit queries.",
+  "category": "earth-environment",
+  "tags": [
+    "geology",
+    "stratigraphy",
+    "lithology",
+    "geologic-map",
+    "fossils",
+    "time-scale"
+  ],
+  "links": {
+    "homepage": "https://macrostrat.org",
+    "docs": "https://macrostrat.org/api/v2",
+    "terms": "https://macrostrat.org/about"
+  },
+  "api": {
+    "base_url": "https://macrostrat.org/api/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "geojson",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; be considerate."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/defs/lithologies",
+      "summary": "Lithology definitions",
+      "params": [
+        "lith_id",
+        "lith",
+        "lith_class",
+        "all"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/geologic_units/map",
+      "summary": "Geologic map units at a point",
+      "params": [
+        "lat",
+        "lng",
+        "scale",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/columns",
+      "summary": "Stratigraphic columns",
+      "params": [
+        "lat",
+        "lng",
+        "project_id",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/defs/intervals",
+      "summary": "Geologic time intervals",
+      "params": [
+        "timescale",
+        "name"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://macrostrat.org/api/v2/defs/lithologies?lith_id=1",
+    "response_excerpt": "{\n  \"success\": {\n    \"v\": 2,\n    \"license\": \"CC-BY 4.0\",\n    \"data\": [\n      {\n        \"lith_id\": 1,\n        \"name\": \"siliciclastic\",\n        \"type\": \"siliciclastic\",\n        \"class\": \"sedimentary\",\n        \"color\": \"#FFF400\",\n        \"t_units\": 347\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (stated in API response)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://macrostrat.org/about",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, strongest in North America"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use v2 (base URL .../api/v2). Responses are wrapped as {success:{data:[...]}}. Geologic lookups take lat and lng.",
+  "caveats": [
+    "Several API versions (v1/v2) exist; use v2.",
+    "No machine-readable OpenAPI spec found."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "added": "2026-11-11"
+}

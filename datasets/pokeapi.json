@@ -1,0 +1,96 @@
+{
+  "slug": "pokeapi",
+  "name": "PokeAPI",
+  "provider": {
+    "name": "PokeAPI (community)",
+    "url": "https://pokeapi.co",
+    "type": "community"
+  },
+  "summary": "Comprehensive RESTful Pokemon database: species, moves, types, abilities, items.",
+  "description": "Fully open API with 1,300+ Pokemon and all related resources: moves, abilities, types, items, berries, evolution chains, games, locations, with sprites. Responses are hyperlinked and paginated.",
+  "category": "fun-games",
+  "tags": [
+    "pokemon",
+    "games",
+    "creatures",
+    "moves",
+    "sprites"
+  ],
+  "links": {
+    "homepage": "https://pokeapi.co",
+    "docs": "https://pokeapi.co/docs/v2",
+    "terms": "https://pokeapi.co/docs/v2#fairuse",
+    "openapi": "https://raw.githubusercontent.com/PokeAPI/pokeapi/master/openapi.yml",
+    "source": "https://github.com/PokeAPI/pokeapi"
+  },
+  "api": {
+    "base_url": "https://pokeapi.co/api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No enforced limit; fair use (earlier 100 req/IP/min policy removed); cache locally"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/pokemon/{id-or-name}",
+      "summary": "Pokemon details"
+    },
+    {
+      "method": "GET",
+      "path": "/pokemon",
+      "summary": "Paginated list",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/type/{name}",
+      "summary": "Type relations"
+    },
+    {
+      "method": "GET",
+      "path": "/move/{name}",
+      "summary": "Move info"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://pokeapi.co/api/v2/pokemon?limit=2",
+    "response_excerpt": "{\n \"count\": 1351,\n \"results\": [\n  {\n   \"name\": \"bulbasaur\",\n   \"url\": \"https://pokeapi.co/api/v2/pokemon/1/\"\n  },\n  {\n   \"name\": \"ivysaur\",\n   \"url\": \"https://pokeapi.co/api/v2/pokemon/2/\"\n  }\n ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "API: BSD-3-Clause; game data and assets belong to Nintendo/Game Freak",
+      "url": "https://pokeapi.co/docs/v2#fairuse",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Pokemon generations to date"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Responses are hyperlinked; follow the url fields. Paginate lists with limit and offset and cache locally since the data rarely changes.",
+  "caveats": [
+    "Pokemon assets belong to Nintendo.",
+    "Heavily cached via Cloudflare."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "added": "2026-11-11"
+}

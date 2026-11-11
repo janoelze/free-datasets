@@ -1,0 +1,108 @@
+{
+  "slug": "uk-parliament-members",
+  "name": "UK Parliament Members API",
+  "provider": {
+    "name": "UK Parliament",
+    "url": "https://www.parliament.uk",
+    "type": "government"
+  },
+  "summary": "Keyless API for MPs and Lords: profiles, parties, constituencies, memberships, voting and interests.",
+  "description": "Current and historical members of the House of Commons and House of Lords with party, constituency, gender, house membership dates, contact details, biography, registered interests, voting records and election results. Part of a wider family of UK Parliament APIs (Bills, Petitions, Commons Votes, Hansard).",
+  "category": "government-politics",
+  "tags": [
+    "parliament",
+    "uk",
+    "mps",
+    "legislation",
+    "politics",
+    "constituencies",
+    "voting",
+    "lords"
+  ],
+  "links": {
+    "homepage": "https://developer.parliament.uk/",
+    "docs": "https://members-api.parliament.uk/index.html",
+    "terms": "https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/",
+    "openapi": "https://members-api.parliament.uk/swagger/v1/swagger.json"
+  },
+  "api": {
+    "base_url": "https://members-api.parliament.uk/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; fair use."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/Members/Search",
+      "summary": "Search members",
+      "params": [
+        "Name",
+        "House",
+        "IsCurrentMember",
+        "PartyId",
+        "skip",
+        "take"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Members/{id}",
+      "summary": "Member detail"
+    },
+    {
+      "method": "GET",
+      "path": "/Location/Constituency/Search",
+      "summary": "Search constituencies",
+      "params": [
+        "searchText"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Parties/GetActive/{house}",
+      "summary": "Active parties in a house"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://members-api.parliament.uk/api/Members/Search?Name=johnson&take=1",
+    "response_excerpt": "{\"items\": [{\"value\": {\"id\": 376, \"nameDisplayAs\": \"Alan Johnson\", \"nameListAs\": \"Johnson, Alan\", \"latestParty\": {\"id\": 15, \"name\": \"Labour\", \"abbreviation\": \"Lab\"}, \"gender\": \"M\"}}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Open Parliament Licence v3.0",
+      "url": "https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "United Kingdom",
+      "temporal": "Historical to present"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use /Members/Search to get a numeric member id, then /Members/{id} and its sub-resources. Page with skip and take. Bills, petitions and Commons votes are separate APIs on other hosts.",
+  "caveats": [
+    "Sibling APIs (bills-api, petition.parliament.uk, commonsvotes-api) are on separate hosts."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "congress-gov"
+  ],
+  "added": "2026-11-11"
+}

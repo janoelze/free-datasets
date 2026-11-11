@@ -1,0 +1,114 @@
+{
+  "slug": "eurostat",
+  "name": "Eurostat Dissemination API",
+  "provider": {
+    "name": "Eurostat (European Commission)",
+    "url": "https://ec.europa.eu/eurostat",
+    "type": "intergovernmental"
+  },
+  "summary": "Official EU statistics (GDP, inflation, employment, population, energy, trade) via a keyless JSON-stat/SDMX API.",
+  "description": "Thousands of harmonised datasets covering the EU, euro area, member states and candidate and EFTA countries across economy, demography, labour, environment, energy, health and trade. The Statistics API returns JSON-stat 2.0 (or TSV); SDMX 2.1/3.0 endpoints expose structure and data. Filter datasets by dimension codes such as geo, time and unit.",
+  "category": "economics-statistics",
+  "tags": [
+    "eu",
+    "eurostat",
+    "gdp",
+    "inflation",
+    "demographics",
+    "sdmx",
+    "json-stat",
+    "europe"
+  ],
+  "links": {
+    "homepage": "https://ec.europa.eu/eurostat",
+    "docs": "https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-getting-started",
+    "terms": "https://ec.europa.eu/eurostat/about-us/policies/copyright"
+  },
+  "api": {
+    "base_url": "https://ec.europa.eu/eurostat/api/dissemination",
+    "style": "sdmx",
+    "formats": [
+      "json",
+      "csv",
+      "xml",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented; large requests are asynchronous or size-limited (about 50 sub-indicators per synchronous request)."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/statistics/1.0/data/{datasetCode}",
+      "summary": "Fetch data in JSON-stat 2.0",
+      "params": [
+        "format",
+        "lang",
+        "geo",
+        "time",
+        "unit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sdmx/2.1/data/{datasetCode}",
+      "summary": "SDMX data",
+      "params": [
+        "format",
+        "startPeriod",
+        "endPeriod"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sdmx/2.1/dataflow/ESTAT/all",
+      "summary": "Catalogue of dataflows",
+      "params": [
+        "detail"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_gdp?format=JSON&geo=DE&unit=CLV10_MEUR&na_item=B1GQ&time=2023",
+    "response_excerpt": "{\"version\": \"2.0\", \"class\": \"dataset\", \"label\": \"Gross domestic product (GDP) and main components (output, expenditure and income) - annual data\", \"source\": \"ESTAT\", \"updated\": \"2026-11-05T23:00:00+0100\", \"value\": {\"0\": 3089797.2}, \"status\": {\"0\": \"p\"}, \"id\": [\"freq\", \"unit\", \"na_item\", \"geo\", \"time\"], \"size\": [1, 1, 1, 1, 1]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (European Commission reuse policy)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://ec.europa.eu/eurostat/about-us/policies/copyright",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "EU27, euro area, EFTA and candidate countries",
+      "temporal": "Mostly 1990s-present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "JSON-stat returns a flat value array indexed by dimension strides (id and size lists), so decode it rather than reading positions by eye. Dataset codes such as nama_10_gdp must be discovered via the data browser or the dataflow catalogue. Pin every dimension (geo, time, unit) to keep responses small.",
+  "caveats": [
+    "The JSON-stat value array needs a decoder.",
+    "Dataset codes are not guessable; use the dataflow catalogue.",
+    "Update timing is per dataset (example updated 2026-11-05)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "The research run needed curl -k for a redirect/cert quirk in its sandbox; not an API issue."
+  },
+  "related": [
+    "world-bank-indicators",
+    "ecb-data-api"
+  ],
+  "added": "2026-11-11"
+}

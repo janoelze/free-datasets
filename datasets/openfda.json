@@ -1,0 +1,125 @@
+{
+  "slug": "openfda",
+  "name": "openFDA",
+  "provider": {
+    "name": "U.S. Food and Drug Administration",
+    "url": "https://www.fda.gov",
+    "type": "government"
+  },
+  "summary": "FDA drug, device, food and tobacco data: adverse events, recalls, labels and NDC codes.",
+  "description": "Elasticsearch-style JSON API over public FDA datasets: FAERS drug adverse event reports, drug labeling (SPL), the NDC directory, drug, device and food recalls and enforcement, device 510(k), PMA and MAUDE records, and tobacco problem reports. Supports search, count (aggregations), sort and skip/limit pagination.",
+  "category": "health-medicine",
+  "tags": [
+    "fda",
+    "drugs",
+    "adverse-events",
+    "recalls",
+    "medical-devices",
+    "labels",
+    "pharmacovigilance",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://open.fda.gov/",
+    "docs": "https://open.fda.gov/apis/",
+    "terms": "https://open.fda.gov/terms/",
+    "signup": "https://open.fda.gov/apis/authentication/"
+  },
+  "api": {
+    "base_url": "https://api.fda.gov",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "Works without a key; a free key raises the daily limit."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Without a key: 240 requests/minute and 1,000/day per IP. With a free key: 240/minute and 120,000/day.",
+      "requests": 240,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "offset",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/drug/event.json",
+      "summary": "Adverse event reports",
+      "params": [
+        "search",
+        "count",
+        "limit",
+        "skip"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/drug/label.json",
+      "summary": "Drug labeling",
+      "params": [
+        "search",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/drug/enforcement.json",
+      "summary": "Drug recalls",
+      "params": [
+        "search",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/device/event.json",
+      "summary": "Device adverse events (MAUDE)",
+      "params": [
+        "search",
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:aspirin&count=patient.reaction.reactionmeddrapt.exact&limit=3",
+    "response_excerpt": "{\"meta\": {\"last_updated\": \"2026-10-28\", \"license\": \"https://open.fda.gov/license/\"}, \"results\": [{\"term\": \"FATIGUE\", \"count\": 34657}, {\"term\": \"NAUSEA\", \"count\": 29231}, {\"term\": \"DYSPNOEA\", \"count\": 29211}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Public domain / CC0 (see openFDA license page)",
+      "spdx": "CC0-1.0",
+      "url": "https://open.fda.gov/terms/",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "United States; FAERS from 2004"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use count=<field>.exact for aggregations instead of paging through raw reports. limit maxes out at 1000 and skip at 25,000, so slice bulk pulls by date windows. Adverse event reports are unvalidated and not incidence data.",
+  "caveats": [
+    "Reports are unvalidated, not incidence data; not for clinical decisions.",
+    "Maximum skip is 25,000.",
+    "Updates range from weekly to quarterly per endpoint (meta.last_updated 2026-10-28)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "clinicaltrials-gov"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,131 @@
+{
+  "slug": "open-meteo-forecast",
+  "name": "Open-Meteo Weather Forecast API",
+  "provider": {
+    "name": "Open-Meteo",
+    "url": "https://open-meteo.com",
+    "type": "company"
+  },
+  "summary": "Free global weather forecasts, current conditions and historical reanalysis, no API key needed.",
+  "description": "Hourly, daily and 15-minute weather variables (temperature, precipitation, wind, radiation, cloud cover, soil and more) from national weather service models such as ICON, GFS, ECMWF and Meteo-France, for any coordinate. Sibling hosts cover historical archive (1940-present), marine, air quality, flood, climate projections and elevation.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "forecast",
+    "historical-weather",
+    "reanalysis",
+    "hourly",
+    "global",
+    "air-quality"
+  ],
+  "links": {
+    "homepage": "https://open-meteo.com",
+    "docs": "https://open-meteo.com/en/docs",
+    "terms": "https://open-meteo.com/en/terms"
+  },
+  "api": {
+    "base_url": "https://api.open-meteo.com/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "other",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Free tier for non-commercial use: 600 calls/minute, 5,000/hour, 10,000/day. Commercial use requires a paid plan.",
+      "requests": 600,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/forecast",
+      "summary": "Forecast and current conditions for a latitude/longitude",
+      "params": [
+        "latitude",
+        "longitude",
+        "hourly",
+        "daily",
+        "current",
+        "timezone",
+        "forecast_days",
+        "models"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://archive-api.open-meteo.com/v1/archive",
+      "summary": "Historical weather (ERA5 and others)",
+      "params": [
+        "latitude",
+        "longitude",
+        "start_date",
+        "end_date",
+        "hourly",
+        "daily"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://air-quality-api.open-meteo.com/v1/air-quality",
+      "summary": "Air quality forecast (PM2.5, AQI, pollen)",
+      "params": [
+        "latitude",
+        "longitude",
+        "current",
+        "hourly"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/elevation",
+      "summary": "Elevation lookup",
+      "params": [
+        "latitude",
+        "longitude"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m",
+    "response_excerpt": "{\n  \"latitude\": 52.512604,\n  \"longitude\": 13.419517,\n  \"timezone\": \"GMT\",\n  \"elevation\": 38.0,\n  \"current_units\": {\n    \"temperature_2m\": \"°C\",\n    \"wind_speed_10m\": \"km/h\"\n  },\n  \"current\": {\n    \"time\": \"2026-11-11T14:15\",\n    \"interval\": 900,\n    \"temperature_2m\": 5.2,\n    \"wind_speed_10m\": 9.7\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (data); API free for non-commercial use",
+      "spdx": "CC-BY-4.0",
+      "url": "https://open-meteo.com/en/terms",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Forecast up to 16 days (more for some models); archive from 1940"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Best first-choice weather API: no key, simple parameters, and units are echoed in the response. Coordinates are snapped to the model grid; request only the variables you need via hourly/daily/current.",
+  "caveats": [
+    "Free tier is non-commercial only; attribution to Open-Meteo is required.",
+    "Responses default to GMT unless the timezone parameter is set.",
+    "Archive, air-quality, marine and other endpoints live on sibling hostnames, not api.open-meteo.com."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "open-meteo-geocoding"
+  ],
+  "added": "2026-11-11"
+}

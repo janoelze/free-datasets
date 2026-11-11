@@ -1,0 +1,107 @@
+{
+  "slug": "frankfurter",
+  "name": "Frankfurter Exchange Rates",
+  "provider": {
+    "name": "Frankfurter (open source, data from ECB and other central banks)",
+    "url": "https://frankfurter.dev/",
+    "type": "community"
+  },
+  "summary": "Free, keyless currency exchange rates (latest, historical, time series) from central-bank reference rates.",
+  "description": "Open-source API serving foreign exchange reference rates published by the European Central Bank and other central banks, for about 30 major currencies. Supports latest rates, any historical date back to 1999, and date-range time series with base currency and symbol filters. Updated on working days around 16:00 CET.",
+  "category": "finance-markets",
+  "tags": [
+    "currency",
+    "exchange-rates",
+    "forex",
+    "ecb",
+    "historical",
+    "time-series",
+    "conversion"
+  ],
+  "links": {
+    "homepage": "https://frankfurter.dev/",
+    "docs": "https://frankfurter.dev/"
+  },
+  "api": {
+    "base_url": "https://api.frankfurter.dev/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No API key and no hard limit documented; fair use. The service is self-hostable."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/latest",
+      "summary": "Latest rates",
+      "params": [
+        "base",
+        "symbols"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{date}",
+      "summary": "Rates on a historical date",
+      "params": [
+        "base",
+        "symbols"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{start}..{end}",
+      "summary": "Time series over a date range",
+      "params": [
+        "base",
+        "symbols"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/currencies",
+      "summary": "List supported currencies"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,GBP",
+    "response_excerpt": "{\"amount\": 1.0, \"base\": \"EUR\", \"date\": \"2026-11-10\", \"rates\": {\"GBP\": 0.83545, \"USD\": 1.1214}}"
+  },
+  "data": {
+    "license": {
+      "name": "Data from central banks (ECB reference rates are free to reuse with source attribution); software MIT",
+      "url": "https://frankfurter.dev/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "About 30 currencies",
+      "temporal": "1999-present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Rates are daily reference rates published on business days. Use symbols= to limit currencies and base= to change the base. Not suitable for real-time trading.",
+  "caveats": [
+    "Only currencies with central-bank reference rates; no crypto.",
+    "Only JSON output was verified."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "ecb-data-api"
+  ],
+  "added": "2026-11-11"
+}

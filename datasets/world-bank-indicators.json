@@ -1,0 +1,122 @@
+{
+  "slug": "world-bank-indicators",
+  "name": "World Bank Indicators API",
+  "provider": {
+    "name": "The World Bank Group",
+    "url": "https://www.worldbank.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Keyless API for ~29,500 development indicators (GDP, population, poverty, health, education) across 200+ countries since 1960.",
+  "description": "Time series from the World Development Indicators and about 70 other World Bank databases (poverty, doing business, climate, debt, gender). Query by country or aggregate code and indicator code; also exposes country metadata, regions, income levels, topics and sources. Data is typically annual and updated as sources revise.",
+  "category": "economics-statistics",
+  "tags": [
+    "economics",
+    "gdp",
+    "development",
+    "population",
+    "poverty",
+    "indicators",
+    "time-series",
+    "countries"
+  ],
+  "links": {
+    "homepage": "https://data.worldbank.org/",
+    "docs": "https://datahelpdesk.worldbank.org/knowledgebase/topics/125589-developer-information",
+    "terms": "https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets"
+  },
+  "api": {
+    "base_url": "https://api.worldbank.org/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented; fair use."
+    },
+    "pagination": "page",
+    "max_page_size": 32500
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/country/{iso3|all}/indicator/{code}",
+      "summary": "Time series for an indicator",
+      "params": [
+        "format",
+        "date",
+        "per_page",
+        "mrv"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/country",
+      "summary": "List countries and regions with income level and capital",
+      "params": [
+        "format",
+        "per_page",
+        "region",
+        "incomeLevel"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/indicator",
+      "summary": "Search or browse the indicator catalogue",
+      "params": [
+        "format",
+        "per_page",
+        "source",
+        "topic"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sources",
+      "summary": "List underlying databases",
+      "params": [
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.worldbank.org/v2/country/DEU/indicator/NY.GDP.MKTP.CD?format=json&per_page=2&date=2022:2023",
+    "response_excerpt": "{\"meta\": {\"page\": 1, \"pages\": 1, \"per_page\": 2, \"total\": 2, \"sourceid\": \"2\", \"lastupdated\": \"2026-10-08\"}, \"data\": [{\"indicator\": {\"id\": \"NY.GDP.MKTP.CD\", \"value\": \"GDP (current US$)\"}, \"country\": {\"id\": \"DE\", \"value\": \"Germany\"}, \"countryiso3code\": \"DEU\", \"date\": \"2023\", \"value\": 4562207532490.28}, {\"date\": \"2022\", \"value\": 4201021706478.62}]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (World Bank Open Data terms)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "About 296 countries and aggregates",
+      "temporal": "1960-2025"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Always pass format=json, because the default is XML. The JSON response is a two-element array [meta, rows], and missing years come back as null values. Use mrv=N for the most recent N values and date=2020:2023 for ranges.",
+  "caveats": [
+    "Occasionally slow: one request timed out at 15 s then succeeded on retry.",
+    "Update timing varies per indicator (WDI lastupdated 2026-10-08)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "eurostat",
+    "fred"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,108 @@
+{
+  "slug": "geojs",
+  "name": "GeoJS",
+  "provider": {
+    "name": "GeoJS",
+    "url": "https://www.geojs.io/",
+    "type": "community"
+  },
+  "summary": "Free, keyless, CORS-friendly IP geolocation returning country, city, coordinates, ASN and timezone.",
+  "description": "GeoJS provides IP-to-location lookups for the caller or any specified IP, in JSON, JSONP, CSV or plain-text variants. Endpoints exist for country only, full geo, ASN, DNS PTR and a browser JS snippet. It is designed to be called directly from web pages (backendless GeoIP), and bulk lookup is supported via POST.",
+  "category": "networking-internet",
+  "tags": [
+    "ip-geolocation",
+    "geoip",
+    "asn",
+    "timezone",
+    "ip-address"
+  ],
+  "links": {
+    "homepage": "https://www.geojs.io/",
+    "docs": "https://www.geojs.io/docs/v1/"
+  },
+  "api": {
+    "base_url": "https://get.geojs.io/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No published hard limits; described as free for any use."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/ip/geo/{ip}.json",
+      "summary": "Full geolocation for an IP",
+      "params": [
+        "ip"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ip/country/{ip}.json",
+      "summary": "Country only",
+      "params": [
+        "ip"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ip.json",
+      "summary": "The caller's IP",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/ip/asn/{ip}.json",
+      "summary": "ASN for an IP",
+      "params": [
+        "ip"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://get.geojs.io/v1/ip/geo/8.8.8.8.json",
+    "response_excerpt": "{\n \"accuracy\": 1000,\n \"asn\": 15169,\n \"continent_code\": \"NA\",\n \"country\": \"United States\",\n \"country_code\": \"US\",\n \"ip\": \"8.8.8.8\",\n \"latitude\": \"37.751\",\n \"longitude\": \"-97.822\",\n \"organization_name\": \"Google LLC\",\n \"timezone\": \"America/Chicago\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Free service; terms on the GeoJS site (underlying database provenance not documented here)",
+      "url": "https://www.geojs.io/docs/v1/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global IPv4 and IPv6"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Omit the IP to geolocate the caller. Latitude and longitude are returned as strings, and accuracy is a radius in km. Expect country-level reliability rather than street-level.",
+  "caveats": [
+    "IP-level accuracy only; city-level precision is not guaranteed.",
+    "Latitude and longitude are returned as strings.",
+    "Research also lists JSONP output, which is not in the schema format enum."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=15414241",
+      "title": "Show HN: GeoJS - Backendless GeoIP Lookup",
+      "points": 5
+    }
+  ],
+  "added": "2026-11-11"
+}

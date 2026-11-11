@@ -1,0 +1,107 @@
+{
+  "slug": "disease-sh",
+  "name": "disease.sh (Open Disease Data)",
+  "provider": {
+    "name": "disease.sh community (aggregates JHU CSSE, Worldometers, Apple, Google)",
+    "url": "https://disease.sh/",
+    "type": "community"
+  },
+  "summary": "Keyless COVID-19 and influenza statistics by country, state and vaccine coverage.",
+  "description": "Aggregated COVID-19 cases, deaths, recoveries, tests and vaccination coverage for countries, continents and US states and counties, plus historical time series and influenza-like illness data (CDC). Convenient normalised JSON with per-million figures.",
+  "category": "health-medicine",
+  "tags": [
+    "covid-19",
+    "epidemiology",
+    "vaccines",
+    "pandemic",
+    "time-series",
+    "countries",
+    "influenza"
+  ],
+  "links": {
+    "homepage": "https://disease.sh/",
+    "docs": "https://disease.sh/docs/",
+    "terms": "https://disease.sh/docs/",
+    "openapi": "https://disease.sh/apidocs/swagger_v3.json"
+  },
+  "api": {
+    "base_url": "https://disease.sh/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not published; fair use (community-hosted)."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/covid-19/all",
+      "summary": "Global totals"
+    },
+    {
+      "method": "GET",
+      "path": "/covid-19/countries/{country}",
+      "summary": "Per-country statistics",
+      "params": [
+        "strict",
+        "yesterday"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/covid-19/historical/{country}",
+      "summary": "Historical time series",
+      "params": [
+        "lastdays"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/covid-19/vaccine/coverage",
+      "summary": "Vaccine coverage timeline",
+      "params": [
+        "lastdays",
+        "fullData"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://disease.sh/v3/covid-19/countries/germany",
+    "response_excerpt": "{\"updated\": 1794406765822, \"country\": \"Germany\", \"countryInfo\": {\"iso2\": \"DE\", \"iso3\": \"DEU\"}, \"cases\": 38828995, \"todayCases\": 0, \"deaths\": 183027, \"recovered\": 38240600, \"tests\": 122332384, \"population\": 83883596, \"continent\": \"Europe\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Underlying sources: JHU CSSE (CC BY 4.0), Worldometers (scraped); no explicit API license",
+      "url": "https://disease.sh/docs/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "2020-present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Pandemic figures are now largely static (todayCases is 0), so treat this as a historical dataset. Use lastdays=all for the full history. Check which upstream source a field comes from before citing it.",
+  "caveats": [
+    "Pandemic data is mostly static now; some sources stopped daily updates after 2023.",
+    "Community-maintained; upstream sources may be stale."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "who-gho"
+  ],
+  "added": "2026-11-11"
+}

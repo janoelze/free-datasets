@@ -1,0 +1,100 @@
+{
+  "slug": "npm-registry",
+  "name": "npm Registry & Downloads API",
+  "provider": {
+    "name": "npm, Inc. (GitHub/Microsoft)",
+    "url": "https://www.npmjs.com",
+    "type": "company"
+  },
+  "summary": "Package metadata, versions, dist-tags and search for every package on npm.",
+  "description": "Public read-only CouchDB-style registry exposing package manifests (versions, dependencies, maintainers, tarball URLs, integrity hashes) and a search endpoint that also returns weekly/monthly download counts. A companion host api.npmjs.org returns download statistics by package and date range.",
+  "category": "developer-tools",
+  "tags": [
+    "npm",
+    "javascript",
+    "packages",
+    "registry",
+    "dependencies",
+    "downloads"
+  ],
+  "links": {
+    "homepage": "https://www.npmjs.com",
+    "docs": "https://github.com/npm/registry/blob/main/docs/REGISTRY-API.md",
+    "terms": "https://docs.npmjs.com/policies/terms"
+  },
+  "api": {
+    "base_url": "https://registry.npmjs.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No published hard numbers; fair-use throttling (HTTP 429). Downloads API has range limits (18 months per query)."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{package}/latest",
+      "summary": "Latest manifest of a package"
+    },
+    {
+      "method": "GET",
+      "path": "/{package}",
+      "summary": "Full packument with all versions"
+    },
+    {
+      "method": "GET",
+      "path": "/-/v1/search",
+      "summary": "Search packages",
+      "params": [
+        "text",
+        "size",
+        "from"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://api.npmjs.org/downloads/point/{period}/{package}",
+      "summary": "Download counts"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://registry.npmjs.org/-/v1/search?text=react&size=1",
+    "response_excerpt": "{\n \"total\": 560429,\n \"name\": \"react\",\n \"version\": \"19.3.1\",\n \"downloads\": {\n  \"monthly\": 904894578,\n  \"weekly\": 253162799\n }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Package metadata varies per package; registry ToS",
+      "url": "https://docs.npmjs.com/policies/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "All published versions to present"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Fetch /{package}/latest for a small manifest instead of the full packument. For download counts use the separate api.npmjs.org host, and send a User-Agent.",
+  "caveats": [
+    "Full packuments can be many MB; use /{pkg}/latest or abbreviated header 'Accept: application/vnd.npm.install-v1+json'."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false
+  },
+  "related": [
+    "pypi-json-api",
+    "crates-io-api",
+    "deps-dev"
+  ],
+  "added": "2026-11-11"
+}
