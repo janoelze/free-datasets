@@ -15,6 +15,7 @@ $browser = View::browserUsable($d);
 $excerpt = View::excerpt((string) $d['example']['response_excerpt']);
 $pageUrl = abs_url('/d/' . $d['slug']);
 $categoryName = $category['name'] ?? $d['category'];
+$categoryNames = array_column($catalog->categories(), 'name', 'id');
 $formats = implode(', ', array_map(static fn ($f) => View::label('format', $f), $api['formats']));
 
 $explorer = new Policy($d);
@@ -77,17 +78,18 @@ include __DIR__ . '/partials/header.php';
         <p class="kicker micro"><a href="<?= e(url('/', ['category' => $d['category']])) ?>"><?= e($categoryName) ?></a><?php if ($d['status'] !== 'active'): ?> <span class="flag"><?= e($d['status']) ?></span><?php endif ?></p>
         <h1><?= e($d['name']) ?></h1>
         <p class="d-provider">by <?php if (isset($d['provider']['url'])): ?><a href="<?= e($d['provider']['url']) ?>" rel="noopener"><?= e($d['provider']['name']) ?></a><?php else: ?><?= e($d['provider']['name']) ?><?php endif ?>
-          <span class="muted">(<?= e($d['provider']['type']) ?>)</span></p>
+          <span class="muted">· <?= e($d['provider']['type']) ?></span></p>
         <p class="lede"><?= e($d['summary']) ?></p>
       </header>
 
       <dl class="glance" aria-label="At a glance">
         <div><dt>Auth</dt><dd class="<?= $auth['type'] === 'none' ? 'ok' : 'warn' ?>"><?= e($auth['type'] === 'none' ? 'No key' : View::label('auth', $auth['type'])) ?></dd></div>
         <div><dt>Browser</dt><dd class="<?= $browser ? 'ok' : 'off' ?>"><?= e($browser ? 'CORS ' . ($api['cors'] === 'any' ? '*' : 'reflect') : View::label('cors', $api['cors'])) ?></dd></div>
-        <div><dt>Rate limit</dt><dd><?= e(View::rateBudget($api['rate_limit']) ?? (stripos($api['rate_limit']['summary'], 'not documented') !== false ? 'Not documented' : 'See notes')) ?></dd></div>
-        <div><dt>License</dt><dd><?= e($license['spdx'] ?? $license['name']) ?></dd></div>
+        <div><dt>Rate limit</dt><dd><?php if (($budget = View::rateBudget($api['rate_limit'])) !== null): ?><?= e($budget) ?><?php elseif (stripos($api['rate_limit']['summary'], 'not documented') !== false): ?>Not documented<?php else: ?><a href="#access">See details</a><?php endif ?></dd></div>
+        <div class="g-lic"><dt>License</dt><dd title="<?= e($license['name']) ?>"><?= e($license['spdx'] ?? $license['name']) ?></dd></div>
         <div><dt>Commercial use</dt><dd class="<?= $license['commercial_use'] === 'allowed' ? 'ok' : ($license['commercial_use'] === 'prohibited' ? 'warn' : '') ?>"><?= e(View::label('commercial_use', $license['commercial_use'])) ?></dd></div>
         <div><dt>Formats</dt><dd><?= View::formatBadges($api['formats']) ?></dd></div>
+        <div class="g-url"><dt>Base URL</dt><dd><code class="url"><?= e($api['base_url']) ?></code></dd></div>
       </dl>
 
       <div class="prose">
@@ -252,7 +254,7 @@ include __DIR__ . '/partials/header.php';
           <h2 id="h-discussion">Discussion</h2>
           <ul class="hn">
             <?php foreach ($d['hn'] as $item): ?>
-              <li><a href="<?= e($item['url']) ?>" rel="noopener"><?= e($item['title'] ?? 'Hacker News thread') ?></a><?php if (isset($item['points'])): ?> <span class="num muted"><?= e($item['points']) ?> <?= $item['points'] === 1 ? 'point' : 'points' ?></span><?php endif ?> <span class="host">Hacker News</span></li>
+              <li><a href="<?= e($item['url']) ?>" rel="noopener"><?= e($item['title'] ?? 'Hacker News thread') ?></a> <span class="host">Hacker News<?php if (isset($item['points'])): ?> · <span class="num"><?= e($item['points']) ?> <?= $item['points'] === 1 ? 'point' : 'points' ?></span><?php endif ?></span></li>
             <?php endforeach ?>
           </ul>
         </section>
@@ -261,9 +263,18 @@ include __DIR__ . '/partials/header.php';
       <?php if ($related !== []): ?>
         <section class="section" id="related" aria-labelledby="h-related">
           <h2 id="h-related">Related</h2>
-          <ul class="related">
-            <?php foreach ($related as $r): ?>
-              <li><a href="<?= e(url('/d/' . $r['slug'])) ?>"><?= e($r['name']) ?></a> <span class="muted"><?= e($r['summary']) ?></span></li>
+          <ul class="cards">
+            <?php foreach ($related as $r): $rAuth = $r['api']['auth']['type']; $rBrowser = View::browserUsable($r); ?>
+              <li class="card">
+                <h3 class="card-title"><a href="<?= e(url('/d/' . $r['slug'])) ?>"><?= e($r['name']) ?></a><?php if ($r['status'] !== 'active'): ?> <span class="flag"><?= e($r['status']) ?></span><?php endif ?></h3>
+                <p class="card-summary"><?= e($r['summary']) ?></p>
+                <p class="card-cat"><?= e($categoryNames[$r['category']] ?? $r['category']) ?></p>
+                <dl class="card-facts">
+                  <div><dt class="sr">Auth</dt><dd class="<?= $rAuth === 'none' ? 'ok' : 'warn' ?>"><?= e($rAuth === 'none' ? 'No key' : ($rAuth === 'api_key' ? 'Free key' : 'OAuth')) ?></dd></div>
+                  <div><dt class="sr">Browser</dt><dd class="<?= $rBrowser ? 'ok' : 'off' ?>" title="CORS: <?= e(View::label('cors', $r['api']['cors'])) ?>"><?= e($rBrowser ? 'CORS' : ($r['api']['cors'] === 'unknown' ? 'CORS ?' : 'No CORS')) ?></dd></div>
+                  <div><dt class="sr">Formats</dt><dd><?= View::formatBadges($r['api']['formats'], 2) ?></dd></div>
+                </dl>
+              </li>
             <?php endforeach ?>
           </ul>
         </section>
@@ -271,9 +282,10 @@ include __DIR__ . '/partials/header.php';
 
       <section class="section" id="record" aria-labelledby="h-record">
         <h2 id="h-record">Record</h2>
-        <p class="tags"><span class="micro">Tags</span>
-          <?php foreach ($d['tags'] as $t): ?><a href="<?= e(url('/', ['tag' => $t])) ?>"><?= e($t) ?></a> <?php endforeach ?></p>
-        <p class="record-json"><span class="micro">This record as JSON</span> <a href="<?= e($apiUrl) ?>"><code><span class="verb">GET</span> <?= e($apiUrl) ?></code></a></p>
+        <dl class="record-meta">
+          <div><dt>Tags</dt><dd class="tags"><?php foreach ($d['tags'] as $t): ?><a href="<?= e(url('/', ['tag' => $t])) ?>"><?= e($t) ?></a> <?php endforeach ?></dd></div>
+          <div><dt>This record as JSON</dt><dd class="record-json"><a href="<?= e($apiUrl) ?>"><code><span class="verb">GET</span> <?= e($apiUrl) ?></code></a></dd></div>
+        </dl>
         <p class="aside">Added <?= e($d['added']) ?>. Source file <a href="https://github.com/janoelze/datasets/blob/main/datasets/<?= e(rawurlencode($d['slug'])) ?>.json"><code>datasets/<?= e($d['slug']) ?>.json</code></a> — corrections welcome.</p>
       </section>
     </article>
