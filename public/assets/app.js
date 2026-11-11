@@ -177,11 +177,12 @@
       });
     }
 
-    // Category links in the rail, chips and row category links filter in place.
+    // Category links in the rail, chips and row category links filter in place. Links whose href
+    // is a crawlable landing page (/c/x) carry the in-place filter URL in data-filter-href.
     document.addEventListener('click', function (ev) {
       var a = ev.target.closest && ev.target.closest('a[data-filter-link]');
       if (!a || ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
-      var href = a.getAttribute('href');
+      var href = a.getAttribute('data-filter-href') || a.getAttribute('href');
       if (!href || !href.startsWith(form.getAttribute('action'))) return;
       ev.preventDefault();
       clearTimeout(timer);

@@ -12,7 +12,7 @@ $browser = View::browserUsable($d);
   <div class="row-main">
     <h3 class="row-title"><a href="<?= e(url('/d/' . $d['slug'])) ?>"><?= e($d['name']) ?></a><?php if ($d['status'] !== 'active'): ?> <span class="flag"><?= e($d['status']) ?></span><?php endif ?></h3>
     <p class="row-summary"><?= e($d['summary']) ?></p>
-    <p class="row-by"><?= e($d['provider']['name']) ?> <span class="cat"><span class="sep">·</span> <a href="<?= e(url('/', ['category' => $d['category']])) ?>" data-filter-link><?= e($categoryNames[$d['category']] ?? $d['category']) ?></a></span></p>
+    <p class="row-by"><?= e($d['provider']['name']) ?> <span class="cat"><span class="sep">·</span> <a href="<?= e(url('/c/' . $d['category'])) ?>" data-filter-link data-filter-href="<?= e(url('/', ['category' => $d['category']])) ?>"><?= e($categoryNames[$d['category']] ?? $d['category']) ?></a></span></p>
   </div>
   <dl class="row-facts">
     <div class="f-auth"><dt>Auth</dt><dd class="<?= $auth['type'] === 'none' ? 'ok' : 'warn' ?>"><?= e($auth['type'] === 'none' ? 'No key' : ($auth['type'] === 'api_key' ? 'Free key' : 'OAuth')) ?></dd></div>

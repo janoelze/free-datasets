@@ -11,11 +11,16 @@ use Datasets\Http\Http;
 use Datasets\Http\Request;
 use Datasets\Http\Response;
 use Datasets\Http\Router;
+use Datasets\Seo\Feed;
+use Datasets\Seo\Sitemap;
 use Datasets\Web\PageController;
 
 /** Application kernel: routing, dispatch and the cross-cutting response headers. */
 final class App
 {
+    /** Machine-readable files that crawlers should read but not list as search results. */
+    private const NOINDEX_FILES = ['/llms.txt', '/sitemap.xml', '/feed.xml'];
+
     private ?Catalog $catalog = null;
 
     public function __construct(public readonly Config $config)
@@ -63,7 +68,12 @@ final class App
 
         if ($isApi) {
             Http::withApiHeaders($response);
+            // The JSON mirrors the HTML pages; keep it out of search results (the HTML is canonical).
+            $response->withHeader('X-Robots-Tag', 'noindex');
         } else {
+            if (in_array($req->path, self::NOINDEX_FILES, true) && $response->header('X-Robots-Tag') === null) {
+                $response->withHeader('X-Robots-Tag', 'noindex');
+            }
             $response->withHeader('X-Content-Type-Options', 'nosniff');
             if ($response->header('Cache-Control') === null) {
                 $response->withHeader('Cache-Control', $response->status >= 500 ? 'no-store' : Http::CACHE_CONTROL);
@@ -102,10 +112,34 @@ final class App
 
             return $isApi
                 ? Http::problem(404, sprintf('No API resource at %s. Start at %s', $req->basePath . $req->path, $req->url()->absolute('/api/v1')), $req->target())
-                : $this->pages($req)->notFound();
+                : ($this->caseRedirect($req, $isApi) ?? $this->pages($req)->notFound());
         }
 
-        return ($match['handler'])(...array_values($match['params']));
+        $response = ($match['handler'])(...array_values($match['params']));
+        if ($response->status === 404) {
+            return $this->caseRedirect($req, $isApi) ?? $response;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Case variants of page URLs (/About, /d/Open-Meteo, /C/Energy) 301 to the lower-case URL when
+     * that one exists; slugs, ids and tags are lower-case by schema. API paths are left alone.
+     */
+    private function caseRedirect(Request $req, bool $isApi): ?Response
+    {
+        $lower = strtolower($req->path);
+        if ($isApi || $lower === $req->path || !in_array($req->method, ['GET', 'HEAD'], true)
+            || $lower === '/api/v1' || str_starts_with($lower, '/api/v1/')) {
+            return null;
+        }
+        $probe = new Request('GET', $lower, $req->query, $req->headers, $req->basePath, $req->publicUrl, $req->rawQuery, $req->remoteAddr);
+        if ($this->dispatch($probe, false)->status !== 200) {
+            return null;
+        }
+
+        return Http::redirect($req->basePath . $lower . ($req->rawQuery !== '' ? '?' . $req->rawQuery : ''), 301);
     }
 
     private function router(Request $req): Router
@@ -124,9 +158,14 @@ final class App
             ->get('/api/v1/schema', fn () => $api()->schema())
             ->get('/api/v1/openapi.json', fn () => $api()->openapi())
             ->get('/llms.txt', fn () => Http::text((new LlmsTxt($this->catalog(), Url::current()))->render(), 200, 'text/plain; charset=utf-8'))
-            ->get('/robots.txt', fn () => Http::text(LlmsTxt::robots(Url::current()->path('/explore'))))
+            ->get('/robots.txt', fn () => Http::text(LlmsTxt::robots(Url::current()->path('/explore'), Url::current()->absolute('/sitemap.xml'))))
+            ->get('/sitemap.xml', fn () => Http::text((new Sitemap($this->catalog(), Url::current()))->render(), 200, 'application/xml; charset=utf-8'))
+            ->get('/feed.xml', fn () => Http::text((new Feed($this->catalog(), Url::current()))->render(), 200, 'application/atom+xml; charset=utf-8'))
             ->get('/', fn () => $pages()->home())
             ->get('/d/{slug}', fn (string $slug) => $pages()->dataset($slug))
+            ->get('/c/{id}', fn (string $id) => $pages()->category($id))
+            ->get('/t', fn () => $pages()->tags())
+            ->get('/t/{tag}', fn (string $tag) => $pages()->tag($tag))
             ->get('/api', fn () => $pages()->api())
             ->get('/about', fn () => $pages()->about());
     }

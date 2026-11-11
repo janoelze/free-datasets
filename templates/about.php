@@ -8,6 +8,7 @@ $fields = View::schemaFields($schema);
 $repo = 'https://github.com/janoelze/datasets';
 
 $title = 'About';
+$metaTitle = \Datasets\Seo\Meta::withSite('About: what qualifies and how records are verified');
 $description = 'What qualifies for this library of free datasets with open REST APIs, how each record is verified, and how to contribute one.';
 $canonical = abs_url('/about');
 $current = 'about';

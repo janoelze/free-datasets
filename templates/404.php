@@ -3,7 +3,7 @@ declare(strict_types=1);
 /** Not found. Vars: $catalog, $request, $urls, $path */
 $title = 'Not found';
 $description = 'This page does not exist.';
-$canonical = abs_url('/');
+$canonical = null; // a 404 has no canonical URL
 $current = '';
 $headExtra = '<meta name="robots" content="noindex">' . "\n";
 $guess = null;

@@ -82,10 +82,18 @@ final class LlmsTxt
         return implode("\n", $out) . "\n";
     }
 
-    /** @param string|null $explorePath root-relative path of the explorer proxy, kept out of crawlers */
-    public static function robots(?string $explorePath = null): string
+    /**
+     * robots.txt for the app's own path. Crawlers only read /robots.txt at the host root, so on a
+     * prefixed install this file is advisory (it documents intent and is what tools fetch when
+     * pointed at the app); the real controls are the noindex headers and meta tags.
+     *
+     * @param string|null $explorePath root-relative path of the explorer proxy, kept out of crawlers
+     * @param string|null $sitemapUrl  absolute URL of the sitemap
+     */
+    public static function robots(?string $explorePath = null, ?string $sitemapUrl = null): string
     {
-        return "User-agent: *\nAllow: /\n" . ($explorePath !== null ? "Disallow: $explorePath\n" : '');
+        return "User-agent: *\nAllow: /\n" . ($explorePath !== null ? "Disallow: $explorePath\n" : '')
+            . ($sitemapUrl !== null ? "\nSitemap: $sitemapUrl\n" : '');
     }
 
     private static function md(string $s): string

@@ -86,6 +86,7 @@ $problem = <<<JSON
 JSON;
 
 $title = 'REST API';
+$metaTitle = \Datasets\Seo\Meta::withSite('Catalogue REST API — no key, CORS, OpenAPI 3.1');
 $description = 'This catalogue as a free, open, read-only REST API: no key, CORS enabled, OpenAPI 3.1, filters for auth, CORS, license and format.';
 $canonical = abs_url('/api');
 $current = 'api';

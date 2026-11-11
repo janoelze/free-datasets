@@ -2,6 +2,9 @@
 declare(strict_types=1);
 /** Dataset detail. Vars: $catalog, $request, $urls, $dataset, $category, $related, $apiUrl */
 use Datasets\Explore\Policy;
+use Datasets\Seo\IndexPolicy;
+use Datasets\Seo\Meta;
+use Datasets\Seo\StructuredData;
 use Datasets\Web\View;
 
 $d = $dataset;
@@ -24,13 +27,18 @@ $xConfig = $explorer->clientConfig(url('/explore')) + [
 ];
 
 $title = $d['name'];
-$description = $d['summary'];
+$metaTitle = Meta::datasetTitle($d, $category);
+$ogTitle = Meta::datasetShareTitle($d, $category);
+$description = Meta::datasetDescription($d);
 $canonical = $pageUrl;
 $current = '';
 $ogType = 'article';
+$jsonLd = (new StructuredData($urls))->dataset($d, $category, $description);
 $headExtra = '<link rel="alternate" type="application/json" href="' . e($apiUrl) . '" title="This record as JSON">' . "\n"
-    . '<script type="application/ld+json">' . View::jsonLd($d, $pageUrl, $apiUrl) . '</script>' . "\n"
     . ($xMode !== 'off' ? '<script src="' . e(asset('assets/explorer.js')) . '" defer></script>' . "\n" : '');
+// Crawlable landing pages for the category and for tags that have one (Seo\IndexPolicy).
+$categoryUrl = url('/c/' . $d['category']);
+$tagUrl = static fn (string $t): string => IndexPolicy::tagHasPage($catalog, $t) ? url('/t/' . $t) : url('/', ['tag' => $t]);
 
 $authText = match ($auth['type']) {
     'none' => !empty($auth['key_optional']) ? 'None required (a free key raises limits)' : 'None — no key, no signup',
@@ -53,7 +61,7 @@ if ($related !== []) {
 }
 $sections['record'] = 'Record';
 
-$rail = static function () use ($sections, $d, $categoryName): void { ?>
+$rail = static function () use ($sections, $categoryUrl, $categoryName): void { ?>
     <div class="rail-section">
       <h2 class="micro">On this page</h2>
       <ol>
@@ -61,7 +69,7 @@ $rail = static function () use ($sections, $d, $categoryName): void { ?>
           <li><a href="#<?= e($id) ?>"><?= e($label) ?></a></li>
         <?php endforeach ?>
       </ol>
-      <p class="rail-back"><a href="<?= e(url('/', ['category' => $d['category']])) ?>">More in <?= e($categoryName) ?></a></p>
+      <p class="rail-back"><a href="<?= e($categoryUrl) ?>">More in <?= e($categoryName) ?></a></p>
     </div>
 <?php };
 
@@ -74,7 +82,7 @@ include __DIR__ . '/partials/header.php';
 ?>
     <article class="dataset">
       <header class="d-head">
-        <p class="kicker micro"><a href="<?= e(url('/', ['category' => $d['category']])) ?>"><?= e($categoryName) ?></a><?php if ($d['status'] !== 'active'): ?> <span class="flag"><?= e($d['status']) ?></span><?php endif ?></p>
+        <p class="kicker micro"><a href="<?= e($categoryUrl) ?>"><?= e($categoryName) ?></a><?php if ($d['status'] !== 'active'): ?> <span class="flag"><?= e($d['status']) ?></span><?php endif ?></p>
         <h1><?= e($d['name']) ?></h1>
         <p class="d-provider">by <?php if (isset($d['provider']['url'])): ?><a href="<?= e($d['provider']['url']) ?>" rel="noopener"><?= e($d['provider']['name']) ?></a><?php else: ?><?= e($d['provider']['name']) ?><?php endif ?>
           <span class="muted">(<?= e($d['provider']['type']) ?>)</span></p>
@@ -272,7 +280,7 @@ include __DIR__ . '/partials/header.php';
       <section class="section" id="record" aria-labelledby="h-record">
         <h2 id="h-record">Record</h2>
         <p class="tags"><span class="micro">Tags</span>
-          <?php foreach ($d['tags'] as $t): ?><a href="<?= e(url('/', ['tag' => $t])) ?>"><?= e($t) ?></a> <?php endforeach ?></p>
+          <?php foreach ($d['tags'] as $t): ?><a href="<?= e($tagUrl($t)) ?>"><?= e($t) ?></a> <?php endforeach ?></p>
         <p class="record-json"><span class="micro">This record as JSON</span> <a href="<?= e($apiUrl) ?>"><code><span class="verb">GET</span> <?= e($apiUrl) ?></code></a></p>
         <p class="aside">Added <?= e($d['added']) ?>. Source file <a href="https://github.com/janoelze/datasets/blob/main/datasets/<?= e(rawurlencode($d['slug'])) ?>.json"><code>datasets/<?= e($d['slug']) ?>.json</code></a> — corrections welcome.</p>
       </section>
