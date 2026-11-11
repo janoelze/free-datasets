@@ -7,6 +7,8 @@ description: >-
   refresh records (bin/verify.php failures, stale examples, dead hosts), to fix
   bin/validate.php errors in dataset files, to change the dataset schema, or to run or adjust
   the scheduled curation (scheduled-run.md, bin/curate-select.php, bin/curate-guard.php).
+metadata:
+  internal: "true"
 ---
 
 # Adding and maintaining datasets

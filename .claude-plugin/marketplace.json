@@ -1,0 +1,17 @@
+{
+  "name": "free-datasets",
+  "description": "Free Datasets API Library: a skill that lets your agent search a live catalogue of free datasets with free REST APIs.",
+  "owner": {
+    "name": "Jan Oelze",
+    "url": "https://github.com/janoelze"
+  },
+  "plugins": [
+    {
+      "name": "free-datasets",
+      "source": "./plugins/free-datasets",
+      "description": "Search the live Free Datasets API Library and call the APIs it lists correctly.",
+      "category": "data",
+      "homepage": "https://endtime-instruments.org/free-datasets/"
+    }
+  ]
+}

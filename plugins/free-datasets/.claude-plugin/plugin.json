@@ -1,0 +1,20 @@
+{
+  "name": "free-datasets",
+  "displayName": "Free Datasets API Library",
+  "version": "1.0.0",
+  "description": "Find free public REST APIs and datasets and learn how to call them: auth, CORS, rate limits, licence and a verified example request. Queries the live catalogue at endtime-instruments.org; no key needed.",
+  "author": {
+    "name": "Jan Oelze",
+    "url": "https://github.com/janoelze"
+  },
+  "homepage": "https://endtime-instruments.org/free-datasets/",
+  "repository": "https://github.com/janoelze/free-datasets",
+  "license": "MIT",
+  "keywords": [
+    "datasets",
+    "public-apis",
+    "open-data",
+    "rest-api",
+    "catalogue"
+  ]
+}
