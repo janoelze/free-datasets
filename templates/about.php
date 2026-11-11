@@ -5,7 +5,7 @@ use Datasets\Web\View;
 
 $schema = $catalog->schema();
 $fields = View::schemaFields($schema);
-$repo = 'https://github.com/janoelze/datasets';
+$repo = 'https://github.com/janoelze/free-datasets';
 
 $title = 'About';
 $metaTitle = \Datasets\Seo\Meta::withSite('About: what qualifies and how records are verified');
@@ -57,7 +57,7 @@ include __DIR__ . '/partials/header.php';
 
       <section class="section" id="contributing" aria-labelledby="h-contributing">
         <h2 id="h-contributing">Contributing</h2>
-        <p>Open a pull request on <a href="<?= e($repo) ?>">github.com/janoelze/datasets</a> that adds <code>datasets/&lt;slug&gt;.json</code>. Copy an existing record as a template, run the example request yourself and paste a trimmed excerpt of the response, then check it locally:</p>
+        <p>Open a pull request on <a href="<?= e($repo) ?>">github.com/janoelze/free-datasets</a> that adds <code>datasets/&lt;slug&gt;.json</code>. Copy an existing record as a template, run the example request yourself and paste a trimmed excerpt of the response, then check it locally:</p>
         <div class="code">
           <div class="code-head"><span class="micro">Validate</span><button type="button" class="copy" data-copy="#validate" hidden>Copy</button></div>
           <pre id="validate"><code>php bin/validate.php datasets/&lt;slug&gt;.json

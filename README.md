@@ -5,11 +5,11 @@ agent what the API serves, whether it needs a key, whether it works from a brows
 rate limits, licence and pagination, a few representative endpoints, and one request that was
 actually executed, with a trimmed excerpt of the response.
 
-- Site: https://endtime-instruments.org/datasets/
-- API root: https://endtime-instruments.org/datasets/api/v1
-- OpenAPI 3.1: https://endtime-instruments.org/datasets/api/v1/openapi.json
-- llms.txt: https://endtime-instruments.org/datasets/llms.txt
-- Source: https://github.com/janoelze/datasets
+- Site: https://endtime-instruments.org/free-datasets/
+- API root: https://endtime-instruments.org/free-datasets/api/v1
+- OpenAPI 3.1: https://endtime-instruments.org/free-datasets/api/v1/openapi.json
+- llms.txt: https://endtime-instruments.org/free-datasets/llms.txt
+- Source: https://github.com/janoelze/free-datasets
 
 ## Using the API
 
@@ -18,13 +18,13 @@ Read-only, no key, `Access-Control-Allow-Origin: *`, JSON responses shaped
 
 ```sh
 # Weather APIs that need no key (sparse fields keep the response small)
-curl 'https://endtime-instruments.org/datasets/api/v1/datasets?category=weather-climate&keyless=true&fields=slug,name,summary'
+curl 'https://endtime-instruments.org/free-datasets/api/v1/datasets?category=weather-climate&keyless=true&fields=slug,name,summary'
 
 # One full record
-curl 'https://endtime-instruments.org/datasets/api/v1/datasets/open-meteo-forecast'
+curl 'https://endtime-instruments.org/free-datasets/api/v1/datasets/open-meteo-forecast'
 
 # Counts per category, auth type, CORS mode, format, licence terms, status...
-curl 'https://endtime-instruments.org/datasets/api/v1/facets'
+curl 'https://endtime-instruments.org/free-datasets/api/v1/facets'
 ```
 
 `/datasets` also takes `q` (full text, all terms must match), `tag`, `auth`, `cors`,
@@ -111,12 +111,12 @@ Setup (once; the run is a no-op with a notice until a credential exists):
 ```sh
 # Agent credential: either a Claude subscription token ...
 claude setup-token                                   # prints the token
-gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo janoelze/datasets   # paste it
+gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo janoelze/free-datasets   # paste it
 # ... or an API key
-gh secret set ANTHROPIC_API_KEY --repo janoelze/datasets
+gh secret set ANTHROPIC_API_KEY --repo janoelze/free-datasets
 
 # Let workflows open pull requests (Settings > Actions > General > Workflow permissions)
-gh api -X PUT repos/janoelze/datasets/actions/permissions/workflow \
+gh api -X PUT repos/janoelze/free-datasets/actions/permissions/workflow \
   -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true
 ```
 
@@ -125,9 +125,9 @@ Operating it:
 ```sh
 gh workflow run curate.yml -f dry_run=true           # everything except PR and merge; see the artifacts
 gh workflow run curate.yml -f add_count=0 -f verify_count=60
-gh variable set CURATE_AUTOMERGE --body false --repo janoelze/datasets  # review mode: open PRs, merge by hand
-gh variable delete CURATE_AUTOMERGE --repo janoelze/datasets           # back to auto-merge
-gh variable set CURATE_MODEL --body opus --repo janoelze/datasets      # default: sonnet
+gh variable set CURATE_AUTOMERGE --body false --repo janoelze/free-datasets  # review mode: open PRs, merge by hand
+gh variable delete CURATE_AUTOMERGE --repo janoelze/free-datasets           # back to auto-merge
+gh variable set CURATE_MODEL --body opus --repo janoelze/free-datasets      # default: sonnet
 gh workflow disable curate.yml                       # pause entirely (gh workflow enable curate.yml)
 ```
 

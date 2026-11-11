@@ -9,7 +9,7 @@ declare(strict_types=1);
  *
  * - Requests are sent by Datasets\\Verify\\Verifier: 15 s timeout, up to 8 in parallel,
  *   example.headers + api.required_headers + User-Agent: datasets-library-verify/1.0
- *   (+https://endtime-instruments.org/datasets/) (an explicit User-Agent in example.headers wins).
+ *   (+https://endtime-instruments.org/free-datasets/) (an explicit User-Agent in example.headers wins).
  * - 2xx = OK. Non-2xx counts as a failure, except for entries recorded with
  *   verification.with_key = false whose observed status equals verification.http_status
  *   (keyed APIs checked without a key: the expected 401/403 is reported as "expected").

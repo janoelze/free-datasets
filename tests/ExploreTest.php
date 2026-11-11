@@ -534,8 +534,8 @@ test('explore http: rate limit per client returns 429 with Retry-After', functio
 
 test('explore http: robots.txt, prefixed mount, dataset page', function () {
     assert_contains("Disallow: /explore\n", get('/robots.txt')['body']);
-    assert_contains("Disallow: /datasets/explore\n", http('GET', prefixed_server()->base . '/datasets/robots.txt')['body']);
-    $r = http('POST', prefixed_server()->base . '/datasets/explore', ['Content-Type: application/json'], '{"slug":"nope","method":"GET","url":"https://x/"}');
+    assert_contains("Disallow: /free-datasets/explore\n", http('GET', prefixed_server()->base . '/free-datasets/robots.txt')['body']);
+    $r = http('POST', prefixed_server()->base . '/free-datasets/explore', ['Content-Type: application/json'], '{"slug":"nope","method":"GET","url":"https://x/"}');
     assert_problem($r, 404, 'Unknown dataset');
 
     // One merged section (#example, "Try it"): explorer mount + no-JS curl + recorded excerpt.
@@ -569,5 +569,5 @@ test('explore http: robots.txt, prefixed mount, dataset page', function () {
     assert_contains('<pre id="curl"><code>curl ', $off, 'static curl');
     assert_contains('<pre id="response" class="response">', $off, 'static recorded excerpt');
     assert_same(1, substr_count($off, '<li><a href="#example">Try it</a></li>'));
-    assert_contains('"proxy":"/datasets/explore"', http('GET', prefixed_server()->base . '/datasets/d/open-meteo')['body']);
+    assert_contains('"proxy":"/free-datasets/explore"', http('GET', prefixed_server()->base . '/free-datasets/d/open-meteo')['body']);
 });

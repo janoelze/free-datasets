@@ -34,15 +34,15 @@ tests/run.php     tests/*Test.php  tests/fixtures/
 
 ```sh
 php -S localhost:8000 -t public public/index.php     # dev server (serves public/ files too)
-APP_BASE_PATH=/datasets php -S localhost:8000 -t public public/index.php   # mimic production prefix
+APP_BASE_PATH=/free-datasets php -S localhost:8000 -t public public/index.php   # mimic production prefix
 php bin/validate.php [--quiet] [--dir=PATH] [FILE...] # "file: /pointer: message"; exit 1 on errors
 php bin/build.php                                     # validate, then write var/catalog.json
 php bin/verify.php [slug...] [--write]                # execute each example request
 php tests/run.php [filter]                            # all tests (starts php -S on free ports)
 ```
 
-Production: Apache with docroot path `/datasets` symlinked to `public/`. The base path is
-detected from `SCRIPT_NAME` (`/datasets/index.php` -> `/datasets`); under `php -S` it is `""`.
+Production: Apache with docroot path `/free-datasets` symlinked to `public/`. The base path is
+detected from `SCRIPT_NAME` (`/free-datasets/index.php` -> `/free-datasets`); under `php -S` it is `""`.
 `APP_BASE_PATH` overrides detection, `APP_PUBLIC_URL` overrides the absolute URL used in links,
 OpenAPI `servers` and the schema `$id` (default: request scheme + host + base path).
 Run `php bin/build.php` after deploying data changes; without a fresh `var/catalog.json` the
@@ -90,10 +90,10 @@ dropped silently, which is what the home page uses.
 
 ## URL helpers (global functions, `src/helpers.php`)
 
-- `url('/d/open-meteo', ['tab' => 'x'])` -> `/datasets/d/open-meteo?tab=x` (root-relative, base-path aware;
+- `url('/d/open-meteo', ['tab' => 'x'])` -> `/free-datasets/d/open-meteo?tab=x` (root-relative, base-path aware;
   list values are joined with commas, `null`/`''` dropped, booleans become `true`/`false`)
-- `abs_url('/d/open-meteo')` -> `https://endtime-instruments.org/datasets/d/open-meteo`
-- `asset('assets/style.css')` -> `/datasets/assets/style.css?v=<mtime>` (file in `public/`;
+- `abs_url('/d/open-meteo')` -> `https://endtime-instruments.org/free-datasets/d/open-meteo`
+- `asset('assets/style.css')` -> `/free-datasets/assets/style.css?v=<mtime>` (file in `public/`;
   `.htaccess` caches these for a year)
 - `e($value)` -> HTML-escaped string
 - The underlying object is `Datasets\Url::current()` (also passed to templates as `$urls`).
@@ -124,7 +124,7 @@ Head variables a template may set before including `partials/header.php`: `$titl
 
 ## SEO
 
-The app is one URL-prefix site (`https://endtime-instruments.org/datasets/`) on a shared host; the
+The app is one URL-prefix site (`https://endtime-instruments.org/free-datasets/`) on a shared host; the
 host-root `/robots.txt` is not ours (it currently 404s, which crawlers treat as "allow all"). Our
 `{base}/robots.txt` is therefore advisory; the real controls are per-page.
 
@@ -256,7 +256,7 @@ Controls, in order (each has a test in `tests/ExploreTest.php`):
    resolve and pin); a redirect elsewhere is returned as the final 3xx with its `location` and a
    `note`. Connect timeout 5 s, 12 s total across hops. Body capped at 512 KB (decoded; the write
    callback aborts the transfer, `truncated: true`); response headers capped at 64 KB.
-9. **Sent upstream:** `User-Agent: datasets-library-explorer/1.0 (+https://endtime-instruments.org/datasets/)`,
+9. **Sent upstream:** `User-Agent: datasets-library-explorer/1.0 (+https://endtime-instruments.org/free-datasets/)`,
    `Accept: application/json, */*;q=0.5` (unless the record sets Accept), the record's own
    `example.headers` / `required_headers` examples (never User-Agent, Host, Cookie, Authorization,
    hop-by-hop or forwarding headers; values must be printable), `Content-Type` for POST. Nothing
@@ -284,18 +284,32 @@ unit-tested directly without relaxation.
 ## Deployment
 
 `bin/deploy.sh` is the only deploy path, used by hand and by CI. It runs `php bin/validate.php`
-(fail fast), rsyncs `public src templates datasets schema bin docs` to
-`janoelze@aquila.uberspace.de:/var/www/virtual/janoelze/datasets/` (`--delete` inside those
+(fail fast), rsyncs `public src templates datasets schema bin docs deploy` to
+`janoelze@aquila.uberspace.de:/var/www/virtual/janoelze/free-datasets/` (`--delete` inside those
 directories; `var/` is never sent or deleted), runs `php bin/build.php` on the server (the cache
 records the directory it was built from, so it must be built there), creates the docroot symlink
-`/var/www/virtual/janoelze/endtime-instruments.org/datasets -> /var/www/virtual/janoelze/datasets/public`
+`/var/www/virtual/janoelze/endtime-instruments.org/free-datasets -> /var/www/virtual/janoelze/free-datasets/public`
 if it is missing (only after checking the target exists and Apache can traverse it; it refuses to
-replace anything else at that path), then smoke-tests the public URL and exits non-zero if any
+replace anything else at that path), then (re)installs the redirect at the former path (below), then
+smoke-tests the public URL and exits non-zero if any
 check fails (including `POST /explore` with the open-meteo example → 200, and a foreign host →
 4xx problem). Host, user, paths and URL are overridable: `DEPLOY_HOST`, `DEPLOY_USER`,
 `DEPLOY_APP_DIR`, `DEPLOY_DOCROOT`, `DEPLOY_MOUNT`, `DEPLOY_PUBLIC_URL`, `DEPLOY_SSH_OPTS`,
-`DEPLOY_SKIP_SMOKE=1`. The app lives under `/var/www/virtual/janoelze/`, not `~/`, because the
+`DEPLOY_LEGACY_MOUNT` (empty = skip the redirect), `DEPLOY_SKIP_SMOKE=1`. The app lives under `/var/www/virtual/janoelze/`, not `~/`, because the
 home directory is `0700` and Apache cannot follow a symlink into it (403, `AH00037`).
+
+Former path: until 2026-11-11 the app was served at `/datasets/` (repo `janoelze/datasets`).
+`<docroot>/datasets` is now a real directory holding only `deploy/legacy-redirect/.htaccess`:
+GET/HEAD to `/datasets[/<path>][?<query>]` answers 301 to `/free-datasets/<path>?<query>` (path taken
+from the raw request line, so percent-encoding survives), other methods 308 (method and body kept),
+a CORS preflight 204; every response carries `Access-Control-Allow-Origin: *` so cross-origin
+`fetch()` follows the redirect. `bin/deploy.sh` installs it idempotently: it rewrites the file only
+in a directory that holds exactly that file with its marker first line, replaces only a symlink
+ending in `/datasets/public` (the old mount), creates it if absent, and refuses anything else. The
+smoke test checks three redirects. Rolling back to a commit from before the rename would target the
+old paths: its deploy script would rsync into a recreated `/var/www/virtual/janoelze/datasets/` and
+then stop at the symlink check (`/datasets` is now a directory), leaving the live site untouched;
+roll back by reverting commits on `main` instead.
 
 CI (`.github/workflows/ci.yml`): every push and pull request runs `php -l`, `php bin/validate.php`
 and `php tests/run.php` on PHP 8.3. A push to `main` (or a manual `workflow_dispatch` on `main`)
@@ -309,6 +323,6 @@ pinned host key for aquila.uberspace.de, and runs `bin/deploy.sh`.
 - Roll back: check out (or re-run the workflow on) an older commit and deploy again; the rsync
   makes the server match that tree and the catalogue is rebuilt from it.
 - Rotate the key: generate a new pair, replace the `github-actions-datasets-deploy` line in
-  `~/.ssh/authorized_keys`, `gh secret set DEPLOY_SSH_KEY --repo janoelze/datasets < key`.
-- Direct requests to `/datasets/index.php` return 404 on this host (same for other symlinked
+  `~/.ssh/authorized_keys`, `gh secret set DEPLOY_SSH_KEY --repo janoelze/free-datasets < key`.
+- Direct requests to `/free-datasets/index.php` return 404 on this host (same for other symlinked
   apps); use the clean URLs.

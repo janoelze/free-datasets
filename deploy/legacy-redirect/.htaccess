@@ -1,0 +1,46 @@
+# free-datasets legacy redirect -- managed by bin/deploy.sh, do not edit on the server.
+# Installed as the only file of the real directory <docroot>/datasets: the app moved from
+# https://endtime-instruments.org/datasets/ to https://endtime-instruments.org/free-datasets/.
+#
+#   GET/HEAD  /datasets[/<path>][?<query>]  -> 301 /free-datasets/<path>?<query>
+#   other methods (POST /explore, ...)       -> 308 (keeps method and body)
+#   CORS preflight (OPTIONS + Access-Control-Request-Method) -> 204 here; the browser follows
+#   the redirect of the real request and the app answers the preflight at the new URL itself.
+# Every response carries Access-Control-Allow-Origin: * so cross-origin fetch() follows it.
+Options -Indexes -MultiViews
+DirectoryIndex disabled
+# /datasets (no slash) must redirect in one hop, not 301 to /datasets/ first.
+DirectorySlash Off
+
+<IfModule mod_headers.c>
+  Header always set Access-Control-Allow-Origin "*"
+  Header always set Access-Control-Allow-Methods "GET, HEAD, POST, OPTIONS" "expr=%{REQUEST_METHOD} == 'OPTIONS'"
+  Header always set Access-Control-Allow-Headers "*" "expr=%{REQUEST_METHOD} == 'OPTIONS'"
+  Header always set Access-Control-Max-Age "600" "expr=%{REQUEST_METHOD} == 'OPTIONS'"
+</IfModule>
+
+RewriteEngine On
+# With DirectorySlash Off, mod_rewrite ignores the slashless directory URL unless told otherwise.
+RewriteOptions AllowNoSlash
+
+RewriteCond %{REQUEST_METHOD} =OPTIONS
+RewriteCond %{HTTP:Access-Control-Request-Method} .
+RewriteRule ^ - [R=204,L]
+
+# The path is taken from the raw request line, so percent-encoding reaches the new URL unchanged;
+# the query string is appended by mod_rewrite as is.
+RewriteCond %{THE_REQUEST} ^[A-Z]+\s/datasets(?:[?\s]|$)
+RewriteRule ^ - [E=LEGACY_PATH:/]
+RewriteCond %{THE_REQUEST} ^[A-Z]+\s/datasets(/[^?\s]*)
+RewriteRule ^ - [E=LEGACY_PATH:%1]
+
+RewriteCond %{ENV:LEGACY_PATH} .
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
+RewriteRule ^ https://endtime-instruments.org/free-datasets%{ENV:LEGACY_PATH} [R=301,NE,L]
+RewriteCond %{ENV:LEGACY_PATH} .
+RewriteRule ^ https://endtime-instruments.org/free-datasets%{ENV:LEGACY_PATH} [R=308,NE,L]
+
+# Request line in an unexpected form: fall back to the decoded path.
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
+RewriteRule ^(.*)$ https://endtime-instruments.org/free-datasets/$1 [R=301,L]
+RewriteRule ^(.*)$ https://endtime-instruments.org/free-datasets/$1 [R=308,L]

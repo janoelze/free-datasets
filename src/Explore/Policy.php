@@ -13,7 +13,7 @@ use Datasets\Web\View;
  */
 final class Policy
 {
-    public const USER_AGENT = 'datasets-library-explorer/1.0 (+https://endtime-instruments.org/datasets/)';
+    public const USER_AGENT = 'datasets-library-explorer/1.0 (+https://endtime-instruments.org/free-datasets/)';
 
     public const DEFAULT_ACCEPT = 'application/json, */*;q=0.5';
 

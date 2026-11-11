@@ -15,7 +15,7 @@ final class Request
      * @param string                     $path    app path ("/", "/api/v1/datasets"), percent-encoded as received
      * @param array<string, list<string>> $query  parsed query string; repeated keys keep every value
      * @param array<string, string>      $headers lower-case names
-     * @param string                     $basePath "" or "/datasets"
+     * @param string                     $basePath "" or "/free-datasets"
      * @param string                     $publicUrl absolute app root URL without trailing slash
      */
     public function __construct(
@@ -102,7 +102,7 @@ final class Request
 
     /**
      * Base path: APP_BASE_PATH if set, "" under the built-in dev server, otherwise the
-     * directory of SCRIPT_NAME (Apache: "/datasets/index.php" -> "/datasets").
+     * directory of SCRIPT_NAME (Apache: "/free-datasets/index.php" -> "/free-datasets").
      *
      * @param array<string, mixed> $server
      */

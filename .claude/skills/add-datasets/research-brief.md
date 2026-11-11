@@ -34,7 +34,7 @@ Leads: {{LEADS}}
   CORS, rate-limit numbers, formats, pagination, OpenAPI URL, license, counts) must come from a
   response you saw or a docs page you fetched. If you only "know" something, leave the field
   out or hedge it in `summary`/`caveats` ("not re-confirmed").
-- Always send `-A 'datasets-library/1.0 (+https://endtime-instruments.org/datasets/)'`. Never
+- Always send `-A 'datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)'`. Never
   use `example.com` contacts in User-Agent values you test or record; some servers block them.
 - Retry once after 10-30 s on a timeout or 5xx before dropping a candidate; note the flakiness.
 - A sandbox TLS or DNS failure on one host is not proof the API is dead. Retry, and try

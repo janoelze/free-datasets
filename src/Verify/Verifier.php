@@ -19,7 +19,7 @@ use Datasets\Json;
  */
 final class Verifier
 {
-    public const USER_AGENT = 'datasets-library-verify/1.0 (+https://endtime-instruments.org/datasets/)';
+    public const USER_AGENT = 'datasets-library-verify/1.0 (+https://endtime-instruments.org/free-datasets/)';
 
     public const TIMEOUT = 15;
 

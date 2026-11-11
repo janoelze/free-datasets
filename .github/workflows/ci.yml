@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 10
     environment:
       name: production
-      url: https://endtime-instruments.org/datasets/
+      url: https://endtime-instruments.org/free-datasets/
     concurrency:
       group: deploy
       cancel-in-progress: false

@@ -43,7 +43,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "Requests without an identifying User-Agent returned 403."
       }
     ],
@@ -92,7 +92,7 @@
     "method": "POST",
     "url": "https://query.example.org/v1/sql",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
       "Content-Type": "application/x-www-form-urlencoded"
     },
     "body": "q=SELECT%20station%2C%20temp%20FROM%20latest%20LIMIT%201",

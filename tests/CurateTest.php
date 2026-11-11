@@ -430,7 +430,7 @@ test('curate-guard: removal must clean up related and log the slug in backlog.md
 
 test('curate-guard: hosts of new records must be public https hosts other than this site', function () {
     $cases = [
-        'https://endtime-instruments.org/datasets/api/v1/datasets' => "this catalogue's own site",
+        'https://endtime-instruments.org/free-datasets/api/v1/datasets' => "this catalogue's own site",
         'https://127.0.0.1/ok' => 'not an IP address',
         'https://metadata.internal/ok' => 'reserved or internal name',
         'https://localhost/ok' => 'not a public DNS name',

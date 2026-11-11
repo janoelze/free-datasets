@@ -294,7 +294,7 @@ include __DIR__ . '/partials/header.php';
           <div><dt>Tags</dt><dd class="tags"><?php foreach ($d['tags'] as $t): ?><a href="<?= e($tagUrl($t)) ?>"><?= e($t) ?></a> <?php endforeach ?></dd></div>
           <div><dt>This record as JSON</dt><dd class="record-json"><a href="<?= e($apiUrl) ?>"><code><span class="verb">GET</span> <?= e($apiUrl) ?></code></a></dd></div>
         </dl>
-        <p class="aside">Added <?= e($d['added']) ?>. Source file <a href="https://github.com/janoelze/datasets/blob/main/datasets/<?= e(rawurlencode($d['slug'])) ?>.json"><code>datasets/<?= e($d['slug']) ?>.json</code></a> — corrections welcome.</p>
+        <p class="aside">Added <?= e($d['added']) ?>. Source file <a href="https://github.com/janoelze/free-datasets/blob/main/datasets/<?= e(rawurlencode($d['slug'])) ?>.json"><code>datasets/<?= e($d['slug']) ?>.json</code></a> — corrections welcome.</p>
       </section>
     </article>
 <?php include __DIR__ . '/partials/footer.php';

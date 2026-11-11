@@ -10,8 +10,8 @@ namespace Datasets;
  * Environment variables (read from getenv(), $_SERVER and Apache's REDIRECT_ copies):
  *   APP_DATASETS_DIR  directory holding <slug>.json files (default: <root>/datasets)
  *   APP_CACHE_FILE    compiled catalogue (default: <root>/var/catalog.json)
- *   APP_BASE_PATH     URL path prefix the app is mounted under, e.g. "/datasets" (default: detected from SCRIPT_NAME)
- *   APP_PUBLIC_URL    absolute public URL of the app root, e.g. "https://endtime-instruments.org/datasets"
+ *   APP_BASE_PATH     URL path prefix the app is mounted under, e.g. "/free-datasets" (default: detected from SCRIPT_NAME)
+ *   APP_PUBLIC_URL    absolute public URL of the app root, e.g. "https://endtime-instruments.org/free-datasets"
  *                     (default: request scheme + host + base path)
  *   APP_VAR_DIR       writable runtime state: explorer rate-limit counters and response cache
  *                     (default: <root>/var; outside the web root)

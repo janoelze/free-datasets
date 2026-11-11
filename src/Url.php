@@ -7,10 +7,10 @@ namespace Datasets;
 /**
  * Base-path-aware URL builder.
  *
- *   $u = new Url('/datasets', 'https://endtime-instruments.org/datasets', '/path/to/public');
- *   $u->path('/d/open-meteo')           // "/datasets/d/open-meteo"
- *   $u->absolute('/api/v1/datasets')    // "https://endtime-instruments.org/datasets/api/v1/datasets"
- *   $u->asset('assets/style.css')       // "/datasets/assets/style.css?v=1731337200"
+ *   $u = new Url('/free-datasets', 'https://endtime-instruments.org/free-datasets', '/path/to/public');
+ *   $u->path('/d/open-meteo')           // "/free-datasets/d/open-meteo"
+ *   $u->absolute('/api/v1/datasets')    // "https://endtime-instruments.org/free-datasets/api/v1/datasets"
+ *   $u->asset('assets/style.css')       // "/free-datasets/assets/style.css?v=1731337200"
  *
  * The global helpers url(), abs_url() and asset() (src/helpers.php) delegate to Url::current().
  */

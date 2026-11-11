@@ -78,7 +78,7 @@ These use `jq` because the scheduled run may not call `php -r`:
 curl -s 'https://hn.algolia.com/api/v1/search_by_date?query=free%20API&tags=story&hitsPerPage=40' \
   | jq -r '.hits[] | select((.title // "") | test("\\bapi\\b|dataset|open data"; "i")) | [.objectID, (.points // 0), .title, (.url // "")] | @tsv'
 # Reddit via the Arctic Shift archive API (keyless): newest posts of one subreddit
-curl -s -A 'datasets-library/1.0 (+https://endtime-instruments.org/datasets/)' \
+curl -s -A 'datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)' \
   'https://arctic-shift.photon-reddit.com/api/posts/search?subreddit=datasets&after=7d&limit=25&fields=title,url,score,id' \
   | jq -r 'if .error then "error: \(.error)" else (.data[] | [.id, .score, .title, .url] | @tsv) end'
 ```
@@ -115,13 +115,13 @@ php -S localhost:8765 -t public public/index.php
 curl -s 'http://localhost:8765/api/v1/datasets?q=museum&fields=slug,name'
 ```
 
-The same query works on the live site at `https://endtime-instruments.org/datasets/api/v1/datasets?q=museum`
+The same query works on the live site at `https://endtime-instruments.org/free-datasets/api/v1/datasets?q=museum`
 once it is deployed. Same API under another name or host counts as a duplicate.
 
 ## 5. Per-candidate verification checklist
 
 ```sh
-UA='datasets-library/1.0 (+https://endtime-instruments.org/datasets/)'
+UA='datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)'
 URL='https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json?recent=2'
 T=$(mktemp -d)
 # a. alive, status, type, time, CORS and rate-limit headers

@@ -22,7 +22,7 @@ function real_server(): TestServer
     return $s ??= new TestServer([
         'APP_DATASETS_DIR' => dirname(__DIR__) . '/datasets',
         'APP_CACHE_FILE' => sys_get_temp_dir() . '/datasets-test-nocache.json',
-        'APP_BASE_PATH' => '/datasets',
+        'APP_BASE_PATH' => '/free-datasets',
         'APP_PUBLIC_URL' => '',
     ]);
 }
@@ -117,17 +117,17 @@ test('seo: canonical and robots policy per query-parameter combination', functio
     // Real data: a single tag with a landing page canonicalises to it.
     $tag = (string) array_key_first(IndexPolicy::landingTags(real_catalog()));
     $rb = real_server()->base;
-    $h = seo_head(http('GET', "$rb/datasets/?tag=$tag")['body']);
-    assert_same("$rb/datasets/t/$tag", $h['canonical']);
+    $h = seo_head(http('GET', "$rb/free-datasets/?tag=$tag")['body']);
+    assert_same("$rb/free-datasets/t/$tag", $h['canonical']);
     assert_same(null, $h['robots']);
 });
 
 test('seo: home page shows the whole catalogue (no pager) and links categories by clean URL', function () {
-    $r = http('GET', real_server()->base . '/datasets/');
+    $r = http('GET', real_server()->base . '/free-datasets/');
     assert_same(real_catalog()->count(), substr_count($r['body'], '<li class="row">'), 'every dataset on one page');
     assert_false(str_contains($r['body'], 'class="pager"'), 'no pager');
-    assert_contains('href="/datasets/c/weather-climate" data-filter-link data-filter-href="/datasets/?category=weather-climate"', $r['body']);
-    assert_contains('href="/datasets/t"', $r['body']);
+    assert_contains('href="/free-datasets/c/weather-climate" data-filter-link data-filter-href="/free-datasets/?category=weather-climate"', $r['body']);
+    assert_contains('href="/free-datasets/t"', $r['body']);
     assert_contains('<h2 id="results-count" class="count" aria-live="polite">', $r['body'], 'heading keeps its role');
 });
 
@@ -159,10 +159,10 @@ test('seo: category landing pages', function () {
     assert_same('/c/weather-climate', $r['headers']['location']);
 
     $p = prefixed_server()->base;
-    $r = http('GET', "$p/datasets/c/weather-climate");
+    $r = http('GET', "$p/free-datasets/c/weather-climate");
     assert_same(200, $r['status']);
-    assert_same("$p/datasets/c/weather-climate", seo_head($r['body'])['canonical']);
-    assert_contains('href="/datasets/d/open-meteo"', $r['body']);
+    assert_same("$p/free-datasets/c/weather-climate", seo_head($r['body'])['canonical']);
+    assert_contains('href="/free-datasets/d/open-meteo"', $r['body']);
 });
 
 test('seo: tag landing pages and the tag index', function () {
@@ -176,10 +176,10 @@ test('seo: tag landing pages and the tag index', function () {
     $tags = IndexPolicy::landingTags(real_catalog());
     assert_true(count($tags) > 10, 'real catalogue has tag pages');
     foreach (array_slice(array_keys($tags), 0, 3) as $tag) {
-        $r = http('GET', "$rb/datasets/t/$tag");
+        $r = http('GET', "$rb/free-datasets/t/$tag");
         assert_same(200, $r['status'], $tag);
         $h = seo_head($r['body']);
-        assert_same("$rb/datasets/t/$tag", $h['canonical']);
+        assert_same("$rb/free-datasets/t/$tag", $h['canonical']);
         assert_same(null, $h['robots']);
         assert_same(1, $h['h1']);
         assert_same($tags[$tag], substr_count($r['body'], '<li class="row">'), "rows for $tag");
@@ -187,11 +187,11 @@ test('seo: tag landing pages and the tag index', function () {
         assert_same($tags[$tag], $ld['CollectionPage']['mainEntity']['numberOfItems']);
         assert_breadcrumbs($ld['BreadcrumbList'], 3);
     }
-    $r = http('GET', "$rb/datasets/t");
+    $r = http('GET', "$rb/free-datasets/t");
     assert_same(200, $r['status']);
-    assert_same(count($tags), substr_count($r['body'], 'href="/datasets/t/'), 'tag index links every tag page');
+    assert_same(count($tags), substr_count($r['body'], 'href="/free-datasets/t/'), 'tag index links every tag page');
     $thin = array_key_last(array_filter(real_catalog()->tags(), static fn ($n) => $n < IndexPolicy::MIN_TAG_DATASETS));
-    assert_same(302, http('GET', "$rb/datasets/t/$thin")['status']);
+    assert_same(302, http('GET', "$rb/free-datasets/t/$thin")['status']);
 });
 
 test('seo: dataset pages link landing pages and carry valid Dataset JSON-LD', function () {
@@ -218,7 +218,7 @@ test('seo: dataset pages link landing pages and carry valid Dataset JSON-LD', fu
     assert_same("$base/c/weather-climate", $ld['BreadcrumbList']['itemListElement'][1]['item']);
 
     // Real data: every record yields the required properties.
-    $sd = new StructuredData(new Datasets\Url('/datasets', 'https://example.org/datasets'));
+    $sd = new StructuredData(new Datasets\Url('/free-datasets', 'https://example.org/free-datasets'));
     foreach (real_catalog()->all() as $d) {
         $t = ld_types($sd->dataset($d, real_catalog()->category($d['category']), Meta::datasetDescription($d)));
         assert_true(mb_strlen((string) $t['Dataset']['description']) >= 50, $d['slug'] . ' description length');
@@ -276,13 +276,13 @@ test('seo: sitemap.xml is valid and lists exactly the indexable URLs', function 
     // Real data, prefixed: counts add up, and every URL is 200, self-canonical and indexable.
     $rb = real_server()->base;
     $c = real_catalog();
-    $r = http('GET', "$rb/datasets/sitemap.xml");
+    $r = http('GET', "$rb/free-datasets/sitemap.xml");
     $locs = array_map('strval', iterator_to_array((new SimpleXMLElement($r['body']))->xpath('//*[local-name()="loc"]'), false));
     $cats = count(array_filter($c->categories(), static fn ($x) => $x['count'] > 0));
     assert_same(3 + $cats + 1 + count(IndexPolicy::landingTags($c)) + $c->count(), count($locs));
     assert_same(count($locs), count(array_unique($locs)));
     foreach ($locs as $i => $loc) {
-        assert_true(str_starts_with($loc, "$rb/datasets/"), 'absolute, prefixed');
+        assert_true(str_starts_with($loc, "$rb/free-datasets/"), 'absolute, prefixed');
         if ($i % 7 !== 0 && !str_contains($loc, '/c/')) {
             continue; // sample: all categories plus every 7th URL
         }
@@ -351,7 +351,7 @@ test('seo: HTTP rules — case redirects, X-Robots-Tag on machine endpoints, API
     $r = get('/API/V1');
     assert_same(404, $r['status'], 'API paths are case-sensitive, no redirect');
     $p = prefixed_server()->base;
-    assert_same('/datasets/about', http('GET', "$p/datasets/ABOUT")['headers']['location']);
+    assert_same('/free-datasets/about', http('GET', "$p/free-datasets/ABOUT")['headers']['location']);
 
     $r = get('/api/v1/datasets/open-meteo');
     assert_same(200, $r['status']);

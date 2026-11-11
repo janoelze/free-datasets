@@ -23,7 +23,7 @@ function prefixed_server(): TestServer
     return $s ??= new TestServer([
         'APP_DATASETS_DIR' => fixtures() . '/datasets',
         'APP_CACHE_FILE' => sys_get_temp_dir() . '/datasets-test-nocache.json',
-        'APP_BASE_PATH' => '/datasets',
+        'APP_BASE_PATH' => '/free-datasets',
         'APP_PUBLIC_URL' => '',
     ]);
 }
@@ -370,7 +370,7 @@ test('http: built-in server serves static files from public/', function () use (
         $r = get('/__test-static.txt');
         assert_same(200, $r['status']);
         assert_same("static ok\n", $r['body']);
-        $r = http('GET', prefixed_server()->base . '/datasets/__test-static.txt');
+        $r = http('GET', prefixed_server()->base . '/free-datasets/__test-static.txt');
         assert_same(200, $r['status'], 'under base path');
         assert_same("static ok\n", $r['body']);
     } finally {
@@ -379,43 +379,43 @@ test('http: built-in server serves static files from public/', function () use (
     assert_same(404, get('/.htaccess')['status'], 'dotfiles are not served');
 });
 
-test('http: APP_BASE_PATH=/datasets prefixes every link', function () {
+test('http: APP_BASE_PATH=/free-datasets prefixes every link', function () {
     $base = prefixed_server()->base;
-    $r = http('GET', "$base/datasets/api/v1");
+    $r = http('GET', "$base/free-datasets/api/v1");
     assert_same(200, $r['status']);
-    assert_same("$base/datasets/api/v1/datasets", $r['json']['links']['datasets']);
-    assert_same("$base/datasets/", $r['json']['links']['html']);
+    assert_same("$base/free-datasets/api/v1/datasets", $r['json']['links']['datasets']);
+    assert_same("$base/free-datasets/", $r['json']['links']['html']);
 
-    $r = http('GET', "$base/datasets/api/v1/datasets?limit=1");
-    assert_same("$base/datasets/api/v1/datasets/nasa-apod", $r['json']['data'][0]['url']);
-    assert_same("$base/datasets/d/nasa-apod", $r['json']['data'][0]['html_url']);
-    assert_same("$base/datasets/api/v1/datasets?limit=1&offset=1", $r['json']['links']['next']);
-    assert_contains("<$base/datasets/api/v1/datasets?limit=1&offset=1>; rel=\"next\"", $r['headers']['link']);
+    $r = http('GET', "$base/free-datasets/api/v1/datasets?limit=1");
+    assert_same("$base/free-datasets/api/v1/datasets/nasa-apod", $r['json']['data'][0]['url']);
+    assert_same("$base/free-datasets/d/nasa-apod", $r['json']['data'][0]['html_url']);
+    assert_same("$base/free-datasets/api/v1/datasets?limit=1&offset=1", $r['json']['links']['next']);
+    assert_contains("<$base/free-datasets/api/v1/datasets?limit=1&offset=1>; rel=\"next\"", $r['headers']['link']);
 
-    $r = http('GET', "$base/datasets/api/v1/nope");
-    assert_same('/datasets/api/v1/nope', $r['json']['instance']);
+    $r = http('GET', "$base/free-datasets/api/v1/nope");
+    assert_same('/free-datasets/api/v1/nope', $r['json']['instance']);
 
-    $r = http('GET', "$base/datasets/api/v1/openapi.json");
-    assert_same("$base/datasets", $r['json']['servers'][0]['url']);
-    assert_same("$base/datasets/api/v1/schema", http('GET', "$base/datasets/api/v1/schema")['json']['$id']);
+    $r = http('GET', "$base/free-datasets/api/v1/openapi.json");
+    assert_same("$base/free-datasets", $r['json']['servers'][0]['url']);
+    assert_same("$base/free-datasets/api/v1/schema", http('GET', "$base/free-datasets/api/v1/schema")['json']['$id']);
 
-    $r = http('GET', "$base/datasets/");
+    $r = http('GET', "$base/free-datasets/");
     assert_same(200, $r['status']);
-    assert_contains('href="/datasets/d/open-meteo"', $r['body']);
-    assert_contains("($base/datasets/api/v1/datasets/open-meteo)", http('GET', "$base/datasets/llms.txt")['body']);
-    $r = http('GET', "$base/datasets/api/v1/datasets/");
-    assert_same('/datasets/api/v1/datasets', $r['headers']['location']);
+    assert_contains('href="/free-datasets/d/open-meteo"', $r['body']);
+    assert_contains("($base/free-datasets/api/v1/datasets/open-meteo)", http('GET', "$base/free-datasets/llms.txt")['body']);
+    $r = http('GET', "$base/free-datasets/api/v1/datasets/");
+    assert_same('/free-datasets/api/v1/datasets', $r['headers']['location']);
 });
 
 test('http: APP_PUBLIC_URL overrides absolute links', function () {
     $s = new TestServer([
         'APP_DATASETS_DIR' => fixtures() . '/datasets',
         'APP_BASE_PATH' => '',
-        'APP_PUBLIC_URL' => 'https://endtime-instruments.org/datasets/',
+        'APP_PUBLIC_URL' => 'https://endtime-instruments.org/free-datasets/',
     ]);
     $r = http('GET', $s->base . '/api/v1');
-    assert_same('https://endtime-instruments.org/datasets/api/v1/datasets', $r['json']['links']['datasets']);
-    assert_same('https://endtime-instruments.org/datasets', http('GET', $s->base . '/api/v1/openapi.json')['json']['servers'][0]['url']);
+    assert_same('https://endtime-instruments.org/free-datasets/api/v1/datasets', $r['json']['links']['datasets']);
+    assert_same('https://endtime-instruments.org/free-datasets', http('GET', $s->base . '/api/v1/openapi.json')['json']['servers'][0]['url']);
     $s->stop();
 });
 
@@ -424,8 +424,8 @@ test('base path detection from SCRIPT_NAME (Apache)', function () {
     $code = <<<'PHP'
         require $argv[1] . '/src/bootstrap.php';
         $r = Datasets\Http\Request::fromGlobals([
-            'REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/datasets/api/v1/datasets?limit=1',
-            'QUERY_STRING' => 'limit=1', 'SCRIPT_NAME' => '/datasets/index.php',
+            'REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/free-datasets/api/v1/datasets?limit=1',
+            'QUERY_STRING' => 'limit=1', 'SCRIPT_NAME' => '/free-datasets/index.php',
             'HTTP_HOST' => 'endtime-instruments.org', 'HTTPS' => 'on',
         ]);
         echo json_encode([$r->basePath, $r->path, $r->publicUrl, $r->query]);
@@ -434,7 +434,7 @@ test('base path detection from SCRIPT_NAME (Apache)', function () {
     file_put_contents("$dir/detect.php", "<?php\n" . $code);
     [$exit, $out, $err] = run_php("$dir/detect.php", [dirname(__DIR__)], ['APP_BASE_PATH' => '', 'APP_PUBLIC_URL' => '']);
     assert_same(0, $exit, $err);
-    assert_same(['/datasets', '/api/v1/datasets', 'https://endtime-instruments.org/datasets', ['limit' => ['1']]], json_decode($out, true));
+    assert_same(['/free-datasets', '/api/v1/datasets', 'https://endtime-instruments.org/free-datasets', ['limit' => ['1']]], json_decode($out, true));
 });
 
 test('cli: verify.php executes examples and --write preserves formatting', function () use ($root) {

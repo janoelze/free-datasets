@@ -5,27 +5,32 @@
 #   bin/deploy.sh
 #
 # Steps: validate datasets locally (fail fast) -> rsync the app tree -> on the server
-# build var/catalog.json and create the docroot symlink if missing -> smoke test.
+# build var/catalog.json, create the docroot symlink if missing and (re)install the redirect
+# directory at the app's former path -> smoke test.
 # Rollback = check out an older commit and run this script again.
 #
 # Overridable via environment (defaults in brackets):
 #   DEPLOY_HOST        [aquila.uberspace.de]
 #   DEPLOY_USER        [janoelze]
-#   DEPLOY_APP_DIR     [/var/www/virtual/janoelze/datasets]    rsync target (app root; must be
+#   DEPLOY_APP_DIR     [/var/www/virtual/janoelze/free-datasets]    rsync target (app root; must be
 #                      reachable by Apache -- not under the 0700 home directory)
 #   DEPLOY_DOCROOT     [/var/www/virtual/janoelze/endtime-instruments.org]
-#   DEPLOY_MOUNT       [datasets]                              docroot entry -> $DEPLOY_APP_DIR/public
-#   DEPLOY_PUBLIC_URL  [https://endtime-instruments.org/datasets]
+#   DEPLOY_MOUNT       [free-datasets]                         docroot entry -> $DEPLOY_APP_DIR/public
+#   DEPLOY_PUBLIC_URL  [https://endtime-instruments.org/free-datasets]
+#   DEPLOY_LEGACY_MOUNT [datasets]                             former docroot entry; becomes a real
+#                      directory holding only deploy/legacy-redirect/.htaccess (301/308 to the new
+#                      path). Empty = leave it alone.
 #   DEPLOY_SSH_OPTS    []                                      extra ssh options
 #   DEPLOY_SKIP_SMOKE  [0]                                     1 = skip the smoke test
 set -euo pipefail
 
 DEPLOY_HOST="${DEPLOY_HOST:-aquila.uberspace.de}"
 DEPLOY_USER="${DEPLOY_USER:-janoelze}"
-DEPLOY_APP_DIR="${DEPLOY_APP_DIR:-/var/www/virtual/janoelze/datasets}"
+DEPLOY_APP_DIR="${DEPLOY_APP_DIR:-/var/www/virtual/janoelze/free-datasets}"
 DEPLOY_DOCROOT="${DEPLOY_DOCROOT:-/var/www/virtual/janoelze/endtime-instruments.org}"
-DEPLOY_MOUNT="${DEPLOY_MOUNT:-datasets}"
-DEPLOY_PUBLIC_URL="${DEPLOY_PUBLIC_URL:-https://endtime-instruments.org/datasets}"
+DEPLOY_MOUNT="${DEPLOY_MOUNT:-free-datasets}"
+DEPLOY_PUBLIC_URL="${DEPLOY_PUBLIC_URL:-https://endtime-instruments.org/free-datasets}"
+DEPLOY_LEGACY_MOUNT="${DEPLOY_LEGACY_MOUNT-datasets}"
 DEPLOY_SSH_OPTS="${DEPLOY_SSH_OPTS:-}"
 DEPLOY_SKIP_SMOKE="${DEPLOY_SKIP_SMOKE:-0}"
 
@@ -52,14 +57,14 @@ rsync -rlptz --delete --omit-dir-times \
   -e "${SSH_CMD[*]}" \
   --exclude='.git' --exclude='.github' --exclude='.claude' --exclude='tests' \
   --exclude='var' --exclude='.DS_Store' --exclude='node_modules' \
-  public src templates datasets schema bin docs \
+  public src templates datasets schema bin docs deploy \
   "${TARGET}:${DEPLOY_APP_DIR}/"
 
 log "Building catalogue and linking docroot on the server"
-"${SSH_CMD[@]}" "$TARGET" bash -s -- "$DEPLOY_APP_DIR" "$DEPLOY_DOCROOT" "$DEPLOY_MOUNT" <<'REMOTE'
+"${SSH_CMD[@]}" "$TARGET" bash -s -- "$DEPLOY_APP_DIR" "$DEPLOY_DOCROOT" "$DEPLOY_MOUNT" "$DEPLOY_LEGACY_MOUNT" <<'REMOTE'
 set -euo pipefail
 export PATH="$HOME/bin:/usr/local/bin:/usr/bin:/bin"
-app="$1"; docroot="$2"; mount="$3"
+app="$1"; docroot="$2"; mount="$3"; legacy="${4:-}"
 link="$docroot/$mount"
 target="$app/public"
 
@@ -98,6 +103,55 @@ elif [ -e "$link" ]; then
 else
   ln -sfn "$target" "$link"
   echo "symlink created: $link -> $target"
+fi
+
+# Former path: a real directory whose only file is our redirect .htaccess. Installed only once
+# the new path is linked. Never overwrites anything that is not its own file; the one other state
+# it accepts is the app's old symlink (<docroot>/$legacy -> .../$legacy/public), which it replaces.
+[ -n "$legacy" ] || exit 0
+[ "$legacy" != "$mount" ] || { echo "error: legacy mount equals mount ($mount)" >&2; exit 1; }
+src="$app/deploy/legacy-redirect/.htaccess"
+dest="$docroot/$legacy"
+marker="$(head -n 1 "$src")"
+case "$marker" in "# free-datasets legacy redirect"*) ;; *) echo "error: $src lacks its marker line" >&2; exit 1 ;; esac
+owned_dir() { # $1: directory -> true if it holds exactly our .htaccess and nothing else
+  [ -d "$1" ] && [ ! -L "$1" ] && [ "$(ls -A "$1")" = .htaccess ] && [ -f "$1/.htaccess" ] && [ ! -L "$1/.htaccess" ] \
+    && [ "$(head -n 1 "$1/.htaccess")" = "$marker" ]
+}
+build_tmp() { # -> prints a fresh directory next to $dest holding the redirect
+  local tmp="$docroot/.$legacy.redirect-tmp.$$"
+  rm -rf -- "$tmp"
+  mkdir -m 0755 "$tmp"
+  cp "$src" "$tmp/.htaccess"
+  chmod 0644 "$tmp/.htaccess"
+  echo "$tmp"
+}
+if owned_dir "$dest"; then
+  if cmp -s "$src" "$dest/.htaccess"; then
+    echo "legacy redirect ok: $dest"
+  else
+    cp "$src" "$dest/.htaccess.new.$$" && chmod 0644 "$dest/.htaccess.new.$$" && mv -f "$dest/.htaccess.new.$$" "$dest/.htaccess"
+    echo "legacy redirect updated: $dest"
+  fi
+elif [ -L "$dest" ]; then
+  current="$(readlink "$dest")"
+  case "$current" in
+    */"$legacy"/public)
+      tmp="$(build_tmp)"
+      # A directory cannot be renamed over a symlink, so this is unlink + rename back to back:
+      # the path is absent for microseconds (a plain 404), never dangling, never the wrong app.
+      rm -f -- "$dest" && mv -T -- "$tmp" "$dest"
+      echo "legacy redirect installed: $dest (replaced symlink -> $current)"
+      ;;
+    *) echo "error: $dest -> $current is not the app's old symlink; refusing to touch it" >&2; exit 1 ;;
+  esac
+elif [ -e "$dest" ]; then
+  echo "error: $dest exists and is not our redirect directory; refusing to touch it" >&2
+  exit 1
+else
+  tmp="$(build_tmp)"
+  mv -T -- "$tmp" "$dest"
+  echo "legacy redirect installed: $dest"
 fi
 REMOTE
 
@@ -175,6 +229,28 @@ fi
 explore '{"slug":"open-meteo-forecast","method":"GET","url":"https://example.com/"}'
 if [[ "$status" == 4* ]] && [[ "$ctype" == application/problem+json* ]]; then r=pass; else r=fail; fi
 $r "POST /explore (foreign host refused)" "$status $ctype"
+
+# Former path: permanent redirect to the same path + query, with CORS for cross-origin fetch().
+if [ -n "$DEPLOY_LEGACY_MOUNT" ]; then
+  origin="$(printf '%s' "$DEPLOY_PUBLIC_URL" | sed -E 's#^(https?://[^/]+).*#\1#')"
+  legacy_url="${origin}/${DEPLOY_LEGACY_MOUNT}"
+  redirect() { # METHOD PATH -> sets $status, $location, $acao
+    local hdr
+    hdr="$(curl -sS -o /dev/null -D - --max-time 20 -X "$1" "${legacy_url}$2" 2>"$tmp/err" | tr -d '\r')" || hdr=""
+    status="$(printf '%s\n' "$hdr" | awk 'NR==1{print $2}')"
+    location="$(printf '%s\n' "$hdr" | awk 'tolower($1)=="location:"{print $2}')"
+    acao="$(printf '%s\n' "$hdr" | awk 'tolower($1)=="access-control-allow-origin:"{print $2}')"
+  }
+  redirect GET "/api/v1/datasets?keyless=true&limit=1"
+  if [ "$status" = 301 ] && [ "$location" = "${DEPLOY_PUBLIC_URL}/api/v1/datasets?keyless=true&limit=1" ] && [ "$acao" = "*" ]; then r=pass; else r=fail; fi
+  $r "GET /${DEPLOY_LEGACY_MOUNT}/api/v1/datasets?… (301 + CORS)" "$status $location acao=$acao"
+  redirect GET ""
+  if [ "$status" = 301 ] && [ "$location" = "${DEPLOY_PUBLIC_URL}/" ]; then r=pass; else r=fail; fi
+  $r "GET /${DEPLOY_LEGACY_MOUNT} (301)" "$status $location"
+  redirect POST "/explore"
+  if [ "$status" = 308 ] && [ "$location" = "${DEPLOY_PUBLIC_URL}/explore" ]; then r=pass; else r=fail; fi
+  $r "POST /${DEPLOY_LEGACY_MOUNT}/explore (308)" "$status $location"
+fi
 
 if [ "$failures" -gt 0 ]; then
   echo

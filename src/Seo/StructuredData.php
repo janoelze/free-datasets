@@ -14,7 +14,7 @@ use Datasets\Url;
  */
 final class StructuredData
 {
-    public const REPO = 'https://github.com/janoelze/datasets';
+    public const REPO = 'https://github.com/janoelze/free-datasets';
 
     public function __construct(private readonly Url $url)
     {

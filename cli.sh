@@ -8,7 +8,7 @@ usage() {
 Usage: ./cli.sh <command> [args]
 
   dev [port]          Start the local dev server (default port 8000)
-  dev:prefix [port]   Same, but served under /datasets like production
+  dev:prefix [port]   Same, but served under /free-datasets like production
   validate [args]     Validate every datasets/*.json against the schema
   build               Validate, then write var/catalog.json
   verify [slug…]      Execute each record's example request (--write to update records)
@@ -37,7 +37,7 @@ lint() {
 cmd="${1:-help}"; shift || true
 case "$cmd" in
   dev)        serve "$@" ;;
-  dev:prefix) APP_BASE_PATH=/datasets serve "$@" ;;
+  dev:prefix) APP_BASE_PATH=/free-datasets serve "$@" ;;
   validate)   php bin/validate.php "$@" ;;
   build)      php bin/build.php "$@" ;;
   verify)     php bin/verify.php "$@" ;;

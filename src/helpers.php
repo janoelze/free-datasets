@@ -11,7 +11,7 @@ use Datasets\Url;
 
 if (!function_exists('url')) {
     /**
-     * Root-relative URL for an app path: url('/d/open-meteo') -> "/datasets/d/open-meteo".
+     * Root-relative URL for an app path: url('/d/open-meteo') -> "/free-datasets/d/open-meteo".
      *
      * @param array<string, scalar|list<scalar>|null> $query
      */
@@ -23,7 +23,7 @@ if (!function_exists('url')) {
 
 if (!function_exists('abs_url')) {
     /**
-     * Absolute public URL: abs_url('/d/x') -> "https://endtime-instruments.org/datasets/d/x".
+     * Absolute public URL: abs_url('/d/x') -> "https://endtime-instruments.org/free-datasets/d/x".
      *
      * @param array<string, scalar|list<scalar>|null> $query
      */

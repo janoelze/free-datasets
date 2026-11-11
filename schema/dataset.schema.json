@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://endtime-instruments.org/datasets/api/v1/schema",
+  "$id": "https://endtime-instruments.org/free-datasets/api/v1/schema",
   "title": "Dataset",
   "description": "One free dataset with a free, open REST API. Every file in datasets/ must validate against this schema. Unknown properties are rejected.",
   "type": "object",

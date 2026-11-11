@@ -1,4 +1,4 @@
-# Served at https://endtime-instruments.org/datasets/ (docroot /datasets -> repo public/).
+# Served at https://endtime-instruments.org/free-datasets/ (docroot /free-datasets -> repo public/).
 Options -Indexes -MultiViews
 DirectoryIndex index.php
 AddDefaultCharset utf-8
@@ -17,11 +17,11 @@ AddDefaultCharset utf-8
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /datasets/
+  RewriteBase /free-datasets/
 
-  # The base path is detected from SCRIPT_NAME (/datasets/index.php). To override, uncomment:
-  #   SetEnv APP_BASE_PATH /datasets
-  #   SetEnv APP_PUBLIC_URL https://endtime-instruments.org/datasets
+  # The base path is detected from SCRIPT_NAME (/free-datasets/index.php). To override, uncomment:
+  #   SetEnv APP_BASE_PATH /free-datasets
+  #   SetEnv APP_PUBLIC_URL https://endtime-instruments.org/free-datasets
 
   # One host for search engines: www.endtime-instruments.org serves the same app (and would be
   # self-canonical there), so send it to the bare domain. Scheme is https: nginx terminates TLS

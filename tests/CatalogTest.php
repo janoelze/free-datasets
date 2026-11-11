@@ -187,17 +187,17 @@ test('json: objectify restores empty objects from the schema', function () {
 });
 
 test('url: base-path aware helpers', function () {
-    $u = new Url('/datasets', 'https://endtime-instruments.org/datasets', dirname(__DIR__) . '/public');
-    assert_same('/datasets/d/open-meteo', $u->path('/d/open-meteo'));
-    assert_same('/datasets/', $u->path('/'));
-    assert_same('/datasets/?category=a,b&keyless=true', $u->path('/', ['category' => ['a', 'b'], 'keyless' => true, 'x' => null]));
-    assert_same('https://endtime-instruments.org/datasets/api/v1', $u->absolute('/api/v1'));
-    assert_same('https://endtime-instruments.org/datasets/', $u->absolute('/'));
-    assert_same('/datasets/assets/missing.css', $u->asset('assets/missing.css'));
-    assert_same('/datasets/.htaccess?v=' . filemtime(dirname(__DIR__) . '/public/.htaccess'), $u->asset('.htaccess'));
+    $u = new Url('/free-datasets', 'https://endtime-instruments.org/free-datasets', dirname(__DIR__) . '/public');
+    assert_same('/free-datasets/d/open-meteo', $u->path('/d/open-meteo'));
+    assert_same('/free-datasets/', $u->path('/'));
+    assert_same('/free-datasets/?category=a,b&keyless=true', $u->path('/', ['category' => ['a', 'b'], 'keyless' => true, 'x' => null]));
+    assert_same('https://endtime-instruments.org/free-datasets/api/v1', $u->absolute('/api/v1'));
+    assert_same('https://endtime-instruments.org/free-datasets/', $u->absolute('/'));
+    assert_same('/free-datasets/assets/missing.css', $u->asset('assets/missing.css'));
+    assert_same('/free-datasets/.htaccess?v=' . filemtime(dirname(__DIR__) . '/public/.htaccess'), $u->asset('.htaccess'));
     Url::setCurrent($u);
-    assert_same('/datasets/about', url('/about'));
-    assert_same('https://endtime-instruments.org/datasets/d/x', abs_url('/d/x'));
+    assert_same('/free-datasets/about', url('/about'));
+    assert_same('https://endtime-instruments.org/free-datasets/d/x', abs_url('/d/x'));
     assert_same('&lt;a href=&quot;x&quot;&gt;', e('<a href="x">'));
     assert_same('', Url::normaliseBasePath('/'));
     assert_same('/a/b', Url::normaliseBasePath('a/b/'));
