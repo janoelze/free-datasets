@@ -68,7 +68,7 @@
     "method": "GET",
     "url": "https://archive.ics.uci.edu/api/dataset?id=53",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"status\": 200,\n  \"statusText\": \"OK\",\n  \"data\": {\n    \"uci_id\": 53,\n    \"name\": \"Iris\",\n    \"repository_url\": \"https://archive.ics.uci.edu/dataset/53/iris\",\n    \"data_url\": \"https://archive.ics.uci.edu/static/public/53/data.csv\",\n    \"area\": \"Biology\",\n    \"tasks\": [\"Classification\"],\n    \"num_instances\": 150,\n    \"num_features\": 4,\n    \"year_of_dataset_creation\": 1936,\n    \"dataset_doi\": \"10.24432/C56C76\",\n    \"creators\": [\"R. A. Fisher\"],\n    \"variables\": [{\"name\": \"sepal length\", \"role\": \"Feature\", \"type\": \"Continuous\", \"units\": \"cm\", ...}, ...],\n    ...\n  }\n}"
   },

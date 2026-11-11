@@ -57,7 +57,7 @@
     "method": "GET",
     "url": "https://api.gdeltproject.org/api/v2/doc/doc?query=%22climate%20change%22%20sourcelang:eng&mode=artlist&maxrecords=2&format=json&timespan=1d",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"articles\": [\n    {\n      \"url\": \"https://townhall.com/news/amy-curtis/2026/11/10/john-kerry-midterms-climate-change-n2686194\",\n      \"url_mobile\": \"\",\n      \"title\": \"John Kerry Is Another Democrat Taking All the Wrong Lessons From the Midterms\",\n      \"seendate\": \"20261110T220000Z\",\n      \"socialimage\": \"https://media.townhall.com/cdn/hodl/2023/347/46780421-d2cc-4134-9f62-07b21442471a-1200x630.jpg\",\n      \"domain\": \"townhall.com\",\n      \"language\": \"English\",\n      \"sourcecountry\": \"United States\"\n    },\n    \"...\"\n  ]\n}"
   },

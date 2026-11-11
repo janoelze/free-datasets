@@ -68,7 +68,7 @@
     "method": "GET",
     "url": "https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=json",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[{\"OBJECT_NAME\":\"ISS (ZARYA)\",\"OBJECT_ID\":\"1998-067A\",\"EPOCH\":\"2026-11-11T04:58:11.303328\",\"MEAN_MOTION\":15.49310717,\"ECCENTRICITY\":0.00073162,\"INCLINATION\":51.6322,\"RA_OF_ASC_NODE\":292.5559,\"ARG_OF_PERICENTER\":12.7435,\"MEAN_ANOMALY\":347.3737,\"NORAD_CAT_ID\":25544,\"BSTAR\":0.00017362007,...}]"
   },

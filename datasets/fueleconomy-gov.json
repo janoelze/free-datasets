@@ -92,7 +92,7 @@
     "method": "GET",
     "url": "https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=2024&make=Toyota&model=Camry",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
       "Accept": "application/json"
     },
     "response_excerpt": "{\"menuItem\": {\"text\": \"Auto (S8), 6 cyl, 3.5 L\", \"value\": \"47085\"}}"

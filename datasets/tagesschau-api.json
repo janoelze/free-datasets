@@ -68,7 +68,7 @@
     "method": "GET",
     "url": "https://www.tagesschau.de/api2u/news/?pageSize=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"news\": [\n    {\n      \"sophoraId\": \"rbb-weniger-einschulungen-in-deutschland-vor-allem-auch-in-brandenburg-100\",\n      \"title\": \"Weniger Einschulungen in Deutschland, vor allem auch in Brandenburg\",\n      \"date\": \"2026-11-11T16:50:27.000+01:00\",\n      \"type\": \"story\",\n      \"tags\": [\n        {\n          \"tag\": \"rbb\"\n        },\n        {\n          \"tag\": \"Brandenburg\"\n        }\n      ],\n      \"detailsweb\": \"https://www.tagesschau.de/inland/regional/brandenburg/rbb-weniger-einschulungen-in-deutschland-vor-allem-auch-in-brandenburg-100.html\",\n      \"topline\": \"Brandenburg\",\n      \"firstSentence\": \"Die Zahl der Kinder, die neu eingeschult werden, geht in den meisten Bundeslaendern zurueck\",\n      \"...\": \"...\"\n    }\n  ],\n  \"regional\": [],\n  \"newStoriesCountLink\": \"\",\n  \"type\": \"news page\",\n  \"nextPage\": \"https://www.tagesschau.de/api2u/news?date=261110\"\n}"
   },

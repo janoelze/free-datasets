@@ -59,7 +59,7 @@
     "method": "GET",
     "url": "https://urlscan.io/api/v1/search/?q=domain:example.org&size=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"results\": [\n    {\n      \"task\": {\n        \"visibility\": \"public\",\n        \"method\": \"manual\",\n        \"domain\": \"example.org\",\n        \"time\": \"2026-11-11T10:11:48.863Z\",\n        \"uuid\": \"01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f\",\n        \"url\": \"https://example.org/\"\n      },\n      \"stats\": {\n        \"uniqIPs\": 1,\n        \"dataLength\": 2540\n      },\n      \"page\": {\n        \"server\": \"cloudflare\",\n        \"ip\": \"172.66.157.237\",\n        \"domain\": \"example.org\",\n        \"url\": \"https://example.org/\",\n        \"status\": \"200\"\n      },\n      \"_id\": \"01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f\",\n      \"result\": \"https://urlscan.io/api/v1/result/01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f/\",\n      \"screenshot\": \"https://urlscan.io/screenshots/01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f.png\"\n    }\n  ],\n  \"total\": 266,\n  \"took\": 20,\n  \"has_more\": false\n}"
   },

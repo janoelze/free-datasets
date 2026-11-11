@@ -103,7 +103,7 @@
     "method": "GET",
     "url": "https://lemmy.world/api/v3/post/list?limit=1&sort=Hot",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"posts\": [\n    {\n      \"post\": {\n        \"id\": 54282676,\n        \"name\": \"Big Soup does not want you to know this\",\n        \"url\": \"https://lemmy.ml/pictrs/image/47390a04-c647-4be1-b1c4-723c6f8e1c09.jpeg\",\n        \"published\": \"2026-11-11T15:10:22.076135Z\"\n      },\n      \"creator\": {\n        \"name\": \"ComradePenguin\"\n      },\n      \"community\": {\n        \"name\": \"lemmyshitpost\"\n      },\n      \"counts\": {\n        \"score\": 36,\n        \"comments\": 14\n      }\n    }\n  ],\n  \"next_page\": \"P33c49b4\"\n}"
   },

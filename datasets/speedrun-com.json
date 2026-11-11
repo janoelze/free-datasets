@@ -36,7 +36,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "Docs ask for a descriptive User-Agent; requests without one still returned 200 today."
       }
     ],

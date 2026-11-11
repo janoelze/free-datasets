@@ -82,7 +82,7 @@
     "method": "GET",
     "url": "https://db.satnogs.org/api/satellites/?format=json&norad_cat_id=25544",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[{\"sat_id\":\"XSKZ-5603-1870-9019-3066\",\"norad_cat_id\":25544,\"name\":\"ISS\",\"names\":\"ZARYA, RS0ISS, NA1SS\",\"status\":\"in orbit\",\"launched\":\"1998-11-20T00:00:00Z\",\"operator\":\"None\",\"countries\":\"RU,US\",\"telemetries\":[{\"decoder\":\"iss\"}],...}]"
   },

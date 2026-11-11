@@ -35,7 +35,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "Docs require an accurate User-Agent and an Accept header; an empty User-Agent returned 400 today."
       },
       {
@@ -92,7 +92,7 @@
     "method": "GET",
     "url": "https://api.scryfall.com/cards/named?exact=Lightning+Bolt",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
       "Accept": "application/json"
     },
     "response_excerpt": "{\n  \"object\": \"card\",\n  \"id\": \"7673784e-db4b-43a1-8d55-1bb9fc1e284f\",\n  \"name\": \"Lightning Bolt\",\n  \"mana_cost\": \"{R}\",\n  \"type_line\": \"Instant\",\n  \"oracle_text\": \"Lightning Bolt deals 3 damage to any target.\",\n  \"set\": \"msc\",\n  \"rarity\": \"uncommon\",\n  \"released_at\": \"2026-06-26\",\n  \"cmc\": 1.0,\n  \"colors\": [\n    \"R\"\n  ],\n  \"legalities\": {\n    \"standard\": \"not_legal\",\n    \"future\": \"not_legal\",\n    \"historic\": \"banned\"\n  },\n  \"prices\": {\n    \"usd\": \"1.14\",\n    \"usd_foil\": \"2.80\"\n  }\n}"

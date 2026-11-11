@@ -85,7 +85,7 @@
     "method": "GET",
     "url": "https://data.cityofnewyork.us/resource/h9gi-nx95.json?$select=crash_date,borough,number_of_persons_injured&$order=crash_date%20DESC&$limit=2",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[\n  {\"crash_date\": \"2026-11-08T00:00:00.000\", \"borough\": \"MANHATTAN\", \"number_of_persons_injured\": \"0\"},\n  {\"crash_date\": \"2026-11-08T00:00:00.000\", \"borough\": \"BRONX\", \"number_of_persons_injured\": \"0\"}\n]"
   },

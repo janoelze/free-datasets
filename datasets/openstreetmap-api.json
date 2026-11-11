@@ -39,7 +39,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "The usage policy requires a valid User-Agent identifying the application; fake agents get blocked. Plain curl worked in my tests."
       }
     ],
@@ -93,7 +93,7 @@
     "method": "GET",
     "url": "https://api.openstreetmap.org/api/0.6/node/1.json",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"version\": \"0.6\",\n  \"generator\": \"openstreetmap-cgimap 2.1.1\",\n  \"license\": \"http://opendatacommons.org/licenses/odbl/1-0/\",\n  \"elements\": [\n    {\"type\": \"node\", \"id\": 1, \"lat\": 42.7957187, \"lon\": 13.5690032, \"version\": 47, \"tags\": {...}}\n  ]\n}"
   },

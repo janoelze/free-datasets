@@ -99,7 +99,7 @@
     "method": "GET",
     "url": "https://api.openverse.org/v1/images/?q=cat&page_size=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"result_count\": 240,\n  \"page_count\": 240,\n  \"page_size\": 1,\n  \"page\": 1,\n  \"results\": [\n    {\n      \"id\": \"1c5442f6-6bb6-4ab7-b603-f598e7579dd2\",\n      \"title\": \"Cat Fish 2\",\n      \"foreign_landing_url\": \"https://www.flickr.com/photos/32426194@N00/3481540500\",\n      \"url\": \"https://live.staticflickr.com/3313/3481540500_c846c62863_b.jpg\",\n      \"creator\": \"admiller\",\n      \"license\": \"by\",\n      \"license_version\": \"2.0\",\n      \"license_url\": \"https://creativecommons.org/licenses/by/2.0/\",\n      \"provider\": \"flickr\",\n      \"source\": \"flickr\",\n      \"attribution\": \"\\\"Cat Fish 2\\\" by admiller is licensed under CC BY 2.0. ...\",\n      \"width\": 716,\n      \"height\": 1024,\n      \"thumbnail\": \"https://api.openverse.org/v1/images/1c5442f6-6bb6-4ab7-b603-f598e7579dd2/thumb/\",\n      \"detail_url\": \"https://api.openverse.org/v1/images/1c5442f6-6bb6-4ab7-b603-f598e7579dd2/\"\n    }\n  ]\n}"
   },

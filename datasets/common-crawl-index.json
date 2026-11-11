@@ -63,7 +63,7 @@
     "method": "GET",
     "url": "https://index.commoncrawl.org/CC-MAIN-2026-43-index?url=example.org&output=json&limit=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\"urlkey\": \"org,example)/\", \"timestamp\": \"20261005214924\", \"url\": \"https://example.org/\", \"mime\": \"text/html\", \"mime-detected\": \"text/html\", \"status\": \"200\", \"digest\": \"7R2CIN6GF6Q6ESDIBYADLOX3YVMSGQR3\", \"length\": \"1012\", \"offset\": \"198817100\", \"filename\": \"crawl-data/CC-MAIN-2026-43/segments/.../warc/CC-MAIN-20261005200620-20261005230620-00351.warc.gz\", \"languages\": \"eng\", \"recordid\": \"...\", \"encoding\": \"UTF-8\"}\n..."
   },

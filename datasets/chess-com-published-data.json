@@ -34,7 +34,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "Requests with an empty or default curl User-Agent returned 403; docs ask for a User-Agent containing contact information."
       }
     ],
@@ -75,7 +75,7 @@
     "method": "GET",
     "url": "https://api.chess.com/pub/player/hikaru",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"avatar\": \"https://images.chesscomfiles.com/uploads/v1/user/15448422.88c010c1.200...\",\n  \"player_id\": 15448422,\n  \"@id\": \"https://api.chess.com/pub/player/hikaru\",\n  \"url\": \"https://www.chess.com/member/Hikaru\",\n  \"name\": \"Hikaru Nakamura\",\n  \"username\": \"hikaru\",\n  \"title\": \"GM\",\n  \"followers\": 1428209,\n  \"country\": \"https://api.chess.com/pub/country/US\",\n  \"location\": \"Florida\",\n  \"last_online\": 1794402410,\n  \"joined\": 1389043258,\n  \"status\": \"premium\",\n  \"is_streamer\": true,\n  \"twitch_url\": \"https://twitch.tv/gmhikaru\",\n  \"verified\": false,\n  \"league\": \"Legend\",\n  \"streaming_platforms\": [\n    {\n      \"type\": \"twitch\",\n      \"channel_url\": \"https://twitch.tv/gmhikaru\"\n    }\n  ]\n}"
   },

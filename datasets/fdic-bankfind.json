@@ -122,7 +122,7 @@
     "method": "GET",
     "url": "https://api.fdic.gov/banks/institutions?filters=STALP%3ADC%20AND%20ACTIVE%3A1&fields=NAME%2CCITY%2CASSET%2CCERT&limit=2&sort_by=ASSET&sort_order=DESC",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"meta\": {\"total\": 4, \"parameters\": {...}},\n  \"data\": [\n    {\"data\": {\"CITY\": \"Washington\", \"ASSET\": 1562007, \"CERT\": 34352, \"NAME\": \"City First Bank, National Association\", \"ID\": \"34352\"}, \"score\": 0},\n    {\"data\": {\"CITY\": \"Washington\", \"ASSET\": 774247, \"CERT\": 14679, \"NAME\": \"Industrial Bank\", \"ID\": \"14679\"}, \"score\": 0}\n  ],\n  \"totals\": {\"count\": 4}\n}"
   },

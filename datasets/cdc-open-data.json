@@ -86,7 +86,7 @@
     "method": "GET",
     "url": "https://data.cdc.gov/resource/hksd-2xuw.json?$select=yearstart,locationabbr,topic,datavalue&$limit=2",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[\n  {\"yearstart\": \"2020\", \"locationabbr\": \"AR\", \"topic\": \"Asthma\", \"datavalue\": \"20.0\"},\n  {\"yearstart\": \"2019\", \"locationabbr\": \"IA\", \"topic\": \"Asthma\", \"datavalue\": \"32.0\"}\n]"
   },

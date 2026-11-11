@@ -84,7 +84,7 @@
     "method": "GET",
     "url": "https://api.ratings.food.gov.uk/Establishments?name=Greggs&pageSize=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
       "x-api-version": "2"
     },
     "response_excerpt": "{\"establishments\": [{\"FHRSID\": 39449, \"BusinessName\": \"Greggs\", \"BusinessType\": \"Retailers - other\", \"PostCode\": \"SS8 7AE\", \"RatingValue\": \"5\", \"RatingDate\": \"2025-08-07T00:00:00\", \"LocalAuthorityName\": \"Castle Point\", \"SchemeType\": \"FHRS\", \"geocode\": {\"longitude\": \"0.592032\", \"latitude\": \"51.52236\"}, \"scores\": {\"Hygiene\": 0, \"Structural\": 0, \"ConfidenceInManagement\": 0}}], \"meta\": {\"dataSource\": \"ElasticSearch\", \"itemCount\": 1}}"

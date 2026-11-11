@@ -98,7 +98,7 @@
     "method": "GET",
     "url": "https://echodata.epa.gov/echo/echo_rest_services.get_facilities?output=JSON&p_zip=20001&p_act=Y",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"Results\": {\n    \"Message\": \"Success\",\n    \"Version\": \"ALL DATA v2017-06-16 0923\",\n    \"QueryRows\": \"164\",\n    \"SVRows\": \"2\",\n    \"CVRows\": \"16\",\n    \"INSPRows\": \"71\",\n    \"TotalPenalties\": \"$0\",\n    \"CAARows\": \"21\",\n    \"CWARows\": \"47\",\n    \"RCRRows\": \"100\",\n    \"QueryID\": \"488\"\n  }\n}"
   },

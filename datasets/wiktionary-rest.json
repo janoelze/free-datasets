@@ -36,7 +36,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "A request with an empty User-Agent returned 403; the Wikimedia User-Agent policy asks for a descriptive agent with contact details."
       }
     ],
@@ -76,7 +76,7 @@
     "method": "GET",
     "url": "https://en.wiktionary.org/api/rest_v1/page/definition/test",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"en\": [\n    {\n      \"partOfSpeech\": \"Noun\",\n      \"language\": \"English\",\n      \"definitions\": [\n        {\"definition\": \"\"},\n        {\"definition\": \"A <a rel=\\\"mw:WikiLink\\\" href=\\\"/wiki/challenge#Noun\\\" title=\\\"challenge\\\">challenge</a>, <a ...>trial</a>.\\n\\n<ol>...</ol>\"}\n      ]\n    },\n    ...\n  ],\n  ...\n}"
   },

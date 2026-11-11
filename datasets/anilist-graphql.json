@@ -75,7 +75,7 @@
     "url": "https://graphql.anilist.co",
     "headers": {
       "Content-Type": "application/json",
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "body": "{\"query\":\"{ Media(id: 1, type: ANIME) { id title { romaji english } episodes seasonYear averageScore } }\"}",
     "response_excerpt": "{\"data\":{\"Media\":{\"id\":1,\"title\":{\"romaji\":\"Cowboy Bebop\",\"english\":\"Cowboy Bebop\"},\"episodes\":26,\"seasonYear\":1998,\"averageScore\":86}}}"

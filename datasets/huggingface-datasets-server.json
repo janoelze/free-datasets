@@ -116,7 +116,7 @@
     "method": "GET",
     "url": "https://datasets-server.huggingface.co/rows?dataset=stanfordnlp/imdb&config=plain_text&split=train&offset=0&length=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\"features\":[{\"feature_idx\":0,\"name\":\"text\",\"type\":{\"dtype\":\"string\",\"_type\":\"Value\"}},{\"feature_idx\":1,\"name\":\"label\",\"type\":{\"names\":[\"neg\",\"pos\"],\"_type\":\"ClassLabel\"}}],\"rows\":[{\"row_idx\":0,\"row\":{\"text\":\"I rented I AM CURIOUS-YELLOW from my video store ...\",\"label\":0},\"truncated_cells\":[]}],\"num_rows_total\":25000,\"num_rows_per_page\":100,\"partial\":false}"
   },

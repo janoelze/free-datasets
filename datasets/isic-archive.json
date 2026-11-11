@@ -90,7 +90,7 @@
     "method": "GET",
     "url": "https://api.isic-archive.com/api/v2/images/search/?limit=1&query=diagnosis_1%3A%22Malignant%22",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"results\": [\n    {\n      \"public\": true,\n      \"isic_id\": \"ISIC_0000002\",\n      \"copyright_license\": \"CC-0\",\n      \"attribution\": \"Anonymous\",\n      \"files\": {\"full\": {\"url\": \"https://isic-archive.s3.amazonaws.com/images/ISIC_0000002.jpg\", \"size\": 59201}, ...},\n      \"metadata\": {\"clinical\": {\"sex\": \"female\", \"diagnosis_1\": \"Malignant\", \"diagnosis_2\": \"Malignant melanocytic proliferations (Melanoma)\", \"age_approx\": 60, ...}}\n    }\n  ],\n  \"count\": 27295,\n  \"next\": \"https://api.isic-archive.com/api/v2/images/search/?cursor=...&limit=1&query=...\",\n  \"previous\": null\n}"
   },

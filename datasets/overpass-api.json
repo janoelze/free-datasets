@@ -37,7 +37,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "Name your app and give a real URL or e-mail. Generic or placeholder values (curl/x.y, Mozilla/5.0, anything containing example.com) returned HTTP 406 on 2026-11-11."
       }
     ],
@@ -69,7 +69,7 @@
     "method": "POST",
     "url": "https://overpass-api.de/api/interpreter",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "body": "data=[out:json];node(52.5,13.4,52.51,13.41)[amenity=cafe];out 2;",
     "response_excerpt": "{\n  \"version\": 0.6,\n  \"generator\": \"Overpass API 0.7.62.11\",\n  \"osm3s\": {\n    \"timestamp_osm_base\": \"2026-11-11T14:25:34Z\"\n  },\n  \"elements\": [\n    {\n      \"type\": \"node\",\n      \"id\": 2542846158,\n      \"lat\": 52.5037732,\n      \"lon\": 13.4090016,\n      \"tags\": {\n        \"addr:city\": \"Berlin\",\n        \"amenity\": \"cafe\"\n      }\n    }\n  ]\n}"

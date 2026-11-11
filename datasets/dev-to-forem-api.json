@@ -40,7 +40,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "A request with an empty User-Agent returned 403."
       }
     ],
@@ -115,7 +115,7 @@
     "method": "GET",
     "url": "https://dev.to/api/articles?per_page=1&tag=python&top=7",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[\n  {\n    \"type_of\": \"article\",\n    \"id\": 4992435,\n    \"title\": \"Building RailPulse AI: Deploying an Open-Source Railway Dispatch Agent with Gemma and Google Cloud Run\",\n    \"url\": \"https://dev.to/gde/building-railpulse-ai-deploying-an-open-source-railway-dispatch-agent-with-gemma-and-google-cloud-2b9g\",\n    \"published_at\": \"2026-11-07T07:35:33Z\",\n    \"tag_list\": [\n      \"ai\",\n      \"googlecloud\",\n      \"opensource\",\n      \"python\"\n    ],\n    \"positive_reactions_count\": 32,\n    \"comments_count\": 32,\n    \"reading_time_minutes\": 5,\n    \"user\": {\n      \"username\": \"robinamirbahar\",\n      \"...\": \"...\"\n    },\n    \"organization\": {\n      \"username\": \"gde\",\n      \"...\": \"...\"\n    },\n    \"...\": \"...\"\n  }\n]"
   },

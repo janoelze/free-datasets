@@ -72,7 +72,7 @@
     "method": "GET",
     "url": "https://dbpedia.org/sparql?query=SELECT%20%3Flabel%20WHERE%20%7B%20%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FBerlin%3E%20rdfs%3Alabel%20%3Flabel%20.%20FILTER(lang(%3Flabel)%3D%22en%22)%20%7D&format=application%2Fsparql-results%2Bjson",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{ \"head\": { \"link\": [], \"vars\": [\"label\"] },\n  \"results\": { \"distinct\": false, \"ordered\": true, \"bindings\": [\n    { \"label\": { \"type\": \"literal\", \"xml:lang\": \"en\", \"value\": \"Berlin\" }} ] } }"
   },

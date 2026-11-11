@@ -35,7 +35,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "Requests with an empty User-Agent returned 403."
       }
     ],
@@ -102,7 +102,7 @@
     "method": "GET",
     "url": "https://api.peeringdb.com/api/ix?limit=1&depth=0",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\"data\": [{\"id\": 1, \"org_id\": 2, \"name\": \"Equinix Ashburn\", \"aka\": \"\", \"name_long\": \"Equinix Internet Exchange Ashburn\", \"city\": \"Ashburn\", \"country\": \"US\", \"region_continent\": \"North America\", \"media\": \"Ethernet\", \"proto_unicast\": true, \"proto_ipv6\": true, ...}], \"meta\": {}}"
   },

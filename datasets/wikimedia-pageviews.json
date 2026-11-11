@@ -36,7 +36,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "The docs require an identifying User-Agent; a request with an empty User-Agent returned 403."
       }
     ],
@@ -103,7 +103,7 @@
     "method": "GET",
     "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Albert_Einstein/daily/20260101/20260103",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"items\": [\n    {\n      \"project\": \"en.wikipedia\",\n      \"article\": \"Albert_Einstein\",\n      \"granularity\": \"daily\",\n      \"timestamp\": \"2026010100\",\n      \"access\": \"all-access\",\n      \"agent\": \"user\",\n      \"views\": 15356\n    },\n    {\n      \"project\": \"en.wikipedia\",\n      \"article\": \"Albert_Einstein\",\n      \"granularity\": \"daily\",\n      \"timestamp\": \"2026010200\",\n      \"access\": \"all-access\",\n      \"agent\": \"user\",\n      \"views\": 15945\n    },\n    \"...\"\n  ]\n}"
   },

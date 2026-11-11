@@ -76,7 +76,7 @@
     "method": "GET",
     "url": "https://www.openml.org/api/v1/json/data/list/data_name/iris/limit/1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\"data\":{\"dataset\":[{\"did\":61,\"name\":\"iris\",\"version\":1,\"status\":\"active\",\"format\":\"ARFF\",\"md5_checksum\":\"\",\"file_id\":61,\"quality\":[{\"name\":\"MajorityClassSize\",\"value\":\"50.0\"},{\"name\":\"NumberOfClasses\",\"value\":\"3.0\"},{\"name\":\"NumberOfFeatures\",\"value\":\"5.0\"},{\"name\":\"NumberOfInstances\",\"value\":\"150.0\"},...]}]}}"
   },

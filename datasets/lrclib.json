@@ -37,7 +37,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "Requests without it still returned 200, but the docs require client identification and give identified clients a higher limit (about 90 versus 45 requests per minute)."
       }
     ],
@@ -94,7 +94,7 @@
     "method": "GET",
     "url": "https://lrclib.net/api/get?artist_name=Queen&track_name=Bohemian%20Rhapsody&duration=355",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\"id\":19079,\"name\":\"Bohemian Rhapsody\",\"trackName\":\"Bohemian Rhapsody\",\"artistName\":\"Queen\",\"albumName\":\"Stone Cold Classics\",\"duration\":355,\"instrumental\":false,\"hasWordSync\":false,\"plainLyrics\":\"Is this the real life? Is this just fantasy?...\",\"syncedLyrics\":\"[00:00.15] Is this the real life? Is this just fantasy?...\",\"lyricsfile\":\"version: '1.0'\\nmetadata:\\n  title: Bohemian Rhapsody...\"}"
   },

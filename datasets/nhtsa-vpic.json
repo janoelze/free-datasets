@@ -79,7 +79,7 @@
     "method": "GET",
     "url": "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/1HGCM82633A004352?format=json",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"Count\": 1,\n  \"Message\": \"Results returned successfully. NOTE: ...\",\n  \"SearchCriteria\": \"VIN(s): 1HGCM82633A004352\",\n  \"Results\": [\n    {\n      \"Make\": \"HONDA\",\n      \"Model\": \"Accord\",\n      \"ModelYear\": \"2003\",\n      \"BodyClass\": \"Coupe\",\n      \"VehicleType\": \"PASSENGER CAR\",\n      \"PlantCountry\": \"UNITED STATES (USA)\",\n      \"ErrorCode\": \"0\",\n      \"...\": \"...\"\n    }\n  ]\n}"
   },

@@ -59,7 +59,7 @@
     "method": "GET",
     "url": "https://export.arxiv.org/api/query?search_query=all:electron&max_results=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:opensearch=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:arxiv=\"http://arxiv.org/schemas/atom\">\n  <opensearch:totalResults>188762</opensearch:totalResults>\n  <opensearch:startIndex>0</opensearch:startIndex>\n  <opensearch:itemsPerPage>1</opensearch:itemsPerPage>\n  <entry>\n    <id>http://arxiv.org/abs/cond-mat/0011267v1</id>\n    <title>The electronic structure of cuprates from high energy spectroscopy</title>\n    <published>2000-11-15T16:19:15Z</published>\n    <summary>  We report studies of the electronic structure and elementary excitations ...</summary>\n    <arxiv:primary_category term=\"cond-mat.supr-con\"/>\n    <author><name>Mark S. Golden</name></author>\n    ...\n  </entry>\n</feed>"
   },

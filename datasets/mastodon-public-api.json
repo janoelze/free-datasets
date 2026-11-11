@@ -98,7 +98,7 @@
     "method": "GET",
     "url": "https://mastodon.social/api/v1/trends/tags?limit=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[\n  {\n    \"id\": \"21990286\",\n    \"name\": \"FallFoliageASong\",\n    \"url\": \"https://mastodon.social/tags/fallfoliageasong\",\n    \"history\": [\n      {\n        \"day\": \"1794355200\",\n        \"accounts\": \"69\",\n        \"uses\": \"235\"\n      },\n      \"...\"\n    ]\n  }\n]"
   },

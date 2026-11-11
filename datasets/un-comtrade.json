@@ -84,7 +84,7 @@
     "method": "GET",
     "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2022&cmdCode=TOTAL&flowCode=X&partnerCode=0",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"elapsedTime\": \"0.03 secs\",\n  \"count\": 1,\n  \"data\": [\n    {\n      \"typeCode\": \"C\",\n      \"freqCode\": \"A\",\n      \"refPeriodId\": 20220101,\n      \"refYear\": 2022,\n      \"period\": \"2022\",\n      \"reporterCode\": 842,\n      \"flowCode\": \"X\",\n      \"partnerCode\": 0,\n      \"classificationCode\": \"H6\",\n      \"cmdCode\": \"TOTAL\",\n      \"fobvalue\": 2062089832731.0,\n      \"primaryValue\": 2062089832731.0,\n      \"isAggregate\": true\n    }\n  ],\n  \"error\": \"\"\n}"
   },

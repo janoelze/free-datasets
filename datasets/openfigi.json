@@ -89,7 +89,7 @@
     "method": "POST",
     "url": "https://api.openfigi.com/v3/mapping",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
       "Content-Type": "application/json"
     },
     "body": "[{\"idType\":\"TICKER\",\"idValue\":\"AAPL\",\"exchCode\":\"US\"}]",

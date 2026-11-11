@@ -73,7 +73,7 @@
     "method": "GET",
     "url": "https://tranco-list.eu/api/ranks/domain/google.com",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"ranks\": [\n    {\n      \"date\": \"2026-11-10\",\n      \"rank\": 1\n    },\n    {\n      \"date\": \"2026-11-09\",\n      \"rank\": 1\n    },\n    \"...\"\n  ]\n}"
   },

@@ -33,7 +33,7 @@
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)",
         "notes": "An empty User-Agent returned 400 asking for a descriptive one; the default curl User-Agent returned 400 on /games too."
       }
     ],
@@ -87,7 +87,7 @@
     "method": "GET",
     "url": "https://www.cheapshark.com/api/1.0/games?title=batman&limit=2",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[\n  {\n    \"gameID\": \"612\",\n    \"steamAppID\": null,\n    \"cheapest\": \"2.59\",\n    \"cheapestDealID\": \"0f%2B4gT2VVUn4UcmFzPxXnuqoXKAOYoJ5mpFZRWNyohc%3D\",\n    \"external\": \"LEGO Batman\",\n    \"internalName\": \"LEGOBATMAN\",\n    \"thumb\": \"https://cdn.fanatical.com/production/product/400x225/105f34ca-7757-47a...\"\n  },\n  {\n    \"gameID\": \"167613\",\n    \"steamAppID\": null,\n    \"cheapest\": \"3.29\",\n    \"cheapestDealID\": \"2XSMlnYtPjLoKI9g2vhZch9deHZ%2BE%2BpL7IoBprkWtgM%3D\",\n    \"external\": \"LEGO Batman 2\",\n    \"internalName\": \"LEGOBATMAN2\",\n    \"thumb\": \"https://cdn.fanatical.com/production/product/400x225/4cf0701e-77bf-453...\"\n  }\n]"
   },

@@ -84,7 +84,7 @@
     "method": "GET",
     "url": "https://data.transportation.gov/resource/6axg-epim.json?$select=manufacturer,subject,report_received_date&$order=report_received_date%20DESC&$limit=2",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[\n  {\"manufacturer\": \"Daimler Trucks North America, LLC\", \"subject\": \"Driveline May Separate\", \"report_received_date\": \"2026-11-06T00:00:00.000\"},\n  {\"manufacturer\": \"Daimler Trucks North America, LLC\", \"subject\": \"Incorrect GAWR on Certification Label/Part 567\", \"report_received_date\": \"2026-11-06T00:00:00.000\"}\n]"
   },

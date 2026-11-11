@@ -87,7 +87,7 @@
     "method": "GET",
     "url": "https://cmr.earthdata.nasa.gov/search/collections.json?keyword=sea%20surface%20temperature&page_size=1",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"feed\": {\n    \"updated\": \"2026-11-11T16:28:09.242Z\",\n    \"title\": \"ECHO dataset metadata\",\n    \"entry\": [\n      {\n        \"id\": \"C2586786218-POCLOUD\",\n        \"short_name\": \"OSTIA-UKMO-L4-GLOB-REP-v2.0\",\n        \"version_id\": \"2.0\",\n        \"time_start\": \"1982-01-01T00:00:00.000Z\",\n        \"time_end\": \"2024-01-01T00:00:00.000Z\",\n        \"data_center\": \"POCLOUD\",\n        \"cloud_hosted\": true,\n        \"links\": [...]\n      }\n    ]\n  }\n}"
   },

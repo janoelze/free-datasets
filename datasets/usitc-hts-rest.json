@@ -76,7 +76,7 @@
     "method": "GET",
     "url": "https://hts.usitc.gov/reststop/search?keyword=horse",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "[\n  {\"htsno\": \"0101\", \"indent\": \"0\", \"description\": \"Live horses, asses, mules and hinnies:\", \"general\": null, \"special\": null, \"other\": null, \"units\": null, \"footnotes\": [], ...},\n  {\"htsno\": \"0101.21.00\", \"description\": \"Purebred breeding animals\", \"general\": \"Free\", ...}\n]"
   },

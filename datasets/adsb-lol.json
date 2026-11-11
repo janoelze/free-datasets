@@ -64,7 +64,7 @@
     "method": "GET",
     "url": "https://api.adsb.lol/v2/lat/51.47/lon/-0.45/dist/25",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\"ac\":[\n{\"hex\":\"402988\",\"type\":\"adsb_icao_nt\",\"flight\":\"GECRM   \",\"r\":\"G-ECRM\",\"t\":\"RF6\",\"alt_baro\":2700,\"alt_geom\":2575,\"gs\":93.2,\"track\":260.74,\"squawk\":\"0430\",\"lat\":51.466245,\"lon\":-1.044312,...},\n...\n],\"msg\":\"No error\",\"now\":...,\"total\":...}"
   },

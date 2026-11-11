@@ -87,7 +87,7 @@
     "method": "GET",
     "url": "https://api.nhtsa.gov/recalls/recallsByVehicle?make=honda&model=accord&modelYear=2018",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"Count\": 6,\n  \"Message\": \"Results returned successfully\",\n  \"results\": [\n    {\n      \"Manufacturer\": \"Honda (American Honda Motor Co.)\",\n      \"NHTSACampaignNumber\": \"20V314000\",\n      \"ReportReceivedDate\": \"28/05/2020\",\n      \"Component\": \"FUEL SYSTEM, GASOLINE:DELIVERY:FUEL PUMP\",\n      \"Summary\": \"Honda (American Honda Motor Co.) is recalling certain 2018-2019 ...\",\n      \"ModelYear\": \"2018\",\n      \"Make\": \"HONDA\",\n      \"Model\": \"ACCORD\"\n    }\n  ]\n}"
   },

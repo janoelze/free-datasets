@@ -84,7 +84,7 @@
     "method": "GET",
     "url": "https://api.eia.gov/v2/electricity/retail-sales/data/?api_key=DEMO_KEY&frequency=monthly&data%5B0%5D=price&facets%5Bstateid%5D%5B%5D=CA&facets%5Bsectorid%5D%5B%5D=RES&length=2&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=desc",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"response\": {\n    \"total\": \"308\",\n    \"dateFormat\": \"YYYY-MM\",\n    \"frequency\": \"monthly\",\n    \"data\": [\n      {\"period\": \"2026-08\", \"stateid\": \"CA\", \"stateDescription\": \"California\", \"sectorid\": \"RES\", \"sectorName\": \"residential\", \"price\": \"29.75\", \"price-units\": \"cents per kilowatt-hour\"}\n    ]\n  }\n}"
   },

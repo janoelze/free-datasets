@@ -81,7 +81,7 @@
     "method": "GET",
     "url": "https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=bsky.app",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/free-datasets/)"
     },
     "response_excerpt": "{\n  \"did\": \"did:plc:z72i7hdynmk6r22z27h6tvur\",\n  \"handle\": \"bsky.app\",\n  \"displayName\": \"Bluesky\",\n  \"createdAt\": \"2023-04-12T04:53:57.057Z\",\n  \"description\": \"official Bluesky account (check username...)\",\n  \"followersCount\": 35618489,\n  \"followsCount\": 41,\n  \"postsCount\": 919\n}"
   },
