@@ -40,6 +40,63 @@ final class View
 
     public const KEY_IN = ['query' => 'query parameter', 'header' => 'header', 'path' => 'URL path'];
 
+    /** Glyph paths for the format badges, drawn in an 18x18 box. 'd' is stroked, 'dots' are filled circles [cx, cy, r]. */
+    private const FORMAT_GLYPHS = [
+        'json' => ['d' => 'M7.5 4.5c-1.2 0-1.5.6-1.5 1.5v1.5c0 .8-.4 1.2-1.2 1.5.8.3 1.2.7 1.2 1.5V12c0 .9.3 1.5 1.5 1.5M10.5 4.5c1.2 0 1.5.6 1.5 1.5v1.5c0 .8.4 1.2 1.2 1.5-.8.3-1.2.7-1.2 1.5V12c0 .9-.3 1.5-1.5 1.5'],
+        'geojson' => ['d' => 'M9 14.2s3.6-3.4 3.6-6.1a3.6 3.6 0 0 0-7.2 0c0 2.7 3.6 6.1 3.6 6.1z', 'dots' => [[9, 8, 1.1]]],
+        'json-ld' => ['d' => 'M9 5.5 5.5 12h7z', 'dots' => [[9, 5.5, 1.6], [5.5, 12, 1.6], [12.5, 12, 1.6]]],
+        'csv' => ['d' => 'M4.5 5h9v8h-9zM4.5 9h9M9 5v8'],
+        'xml' => ['d' => 'M6.5 6 3.5 9l3 3M11.5 6l3 3-3 3M10 5 8 13'],
+        'html' => ['d' => 'M7.5 5.5 4 9l3.5 3.5M10.5 5.5 14 9l-3.5 3.5'],
+        'rss' => ['d' => 'M4.8 8.6a4.6 4.6 0 0 1 4.6 4.6M4.8 5a8.2 8.2 0 0 1 8.2 8.2', 'dots' => [[5.6, 12.4, 1.1]]],
+        'text' => ['d' => 'M5 6h8M5 9h8M5 12h5'],
+        'yaml' => ['d' => 'M5 6h1.5M8 6h5M5 9h1.5M8 9h5M5 12h1.5M8 12h3'],
+        'protobuf' => ['d' => 'M9 4.5l4 2.25v4.5L9 13.5l-4-2.25v-4.5z'],
+        'parquet' => ['d' => 'M6 5v8M9 5v8M12 5v8'],
+        'image' => ['d' => 'M4.5 5.5h9v7h-9zM5 11.5l2.5-2.5 2 2 1.5-1.5 2 2'],
+        'other' => ['dots' => [[5.5, 9, 1.1], [9, 9, 1.1], [12.5, 9, 1.1]]],
+    ];
+
+    /**
+     * A response format as a small self-contained inline SVG badge: a tinted cap with a glyph, then the
+     * format name. Colours come from CSS (.fmt-<format> sets --fmt), so badges follow the theme.
+     */
+    public static function formatBadge(string $format): string
+    {
+        $label = self::label('format', $format);
+        $glyph = self::FORMAT_GLYPHS[$format] ?? self::FORMAT_GLYPHS['other'];
+        $textWidth = round(mb_strlen($label) * 6.3, 1);
+        $width = 18 + 6 + $textWidth + 6;
+        $class = preg_replace('/[^a-z0-9-]/', '', $format);
+
+        $svg = '<svg class="fmt fmt-' . $class . '" width="' . $width . '" height="18" viewBox="0 0 ' . $width . ' 18" role="img" aria-label="' . e($label) . '">'
+            . '<title>' . e($label) . '</title>'
+            . '<rect class="fmt-frame" x=".5" y=".5" width="' . ($width - 1) . '" height="17" rx="3"/>'
+            . '<path class="fmt-cap" d="M3.5 0H18v18H3.5A3.5 3.5 0 0 1 0 14.5v-11A3.5 3.5 0 0 1 3.5 0z"/>';
+        if (isset($glyph['d'])) {
+            $svg .= '<path class="fmt-glyph" d="' . $glyph['d'] . '"/>';
+        }
+        foreach ($glyph['dots'] ?? [] as [$cx, $cy, $r]) {
+            $svg .= '<circle class="fmt-dot" cx="' . $cx . '" cy="' . $cy . '" r="' . $r . '"/>';
+        }
+
+        return $svg . '<text class="fmt-text" x="24" y="12.6" textLength="' . $textWidth . '" lengthAdjust="spacingAndGlyphs">'
+            . e(mb_strtoupper($label)) . '</text></svg>';
+    }
+
+    /** Badges for a list of formats, wrapped for layout. */
+    public static function formatBadges(array $formats, ?int $max = null): string
+    {
+        $shown = $max === null ? $formats : array_slice($formats, 0, $max);
+        $html = '<span class="fmts">' . implode('', array_map(self::formatBadge(...), $shown));
+        if (count($formats) > count($shown)) {
+            $rest = array_slice($formats, count($shown));
+            $html .= '<span class="fmt-more" title="' . e(implode(', ', array_map(static fn ($f) => self::label('format', $f), $rest))) . '">+' . count($rest) . '</span>';
+        }
+
+        return $html . '</span>';
+    }
+
     /** Label for an enum value of a facet, falling back to a readable form of the raw value. */
     public static function label(string $facet, string $value): string
     {

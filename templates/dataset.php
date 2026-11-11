@@ -78,7 +78,7 @@ include __DIR__ . '/partials/header.php';
         <div><dt>Rate limit</dt><dd><?= e(View::rateBudget($api['rate_limit']) ?? (stripos($api['rate_limit']['summary'], 'not documented') !== false ? 'Not documented' : 'See notes')) ?></dd></div>
         <div><dt>License</dt><dd><?= e($license['spdx'] ?? $license['name']) ?></dd></div>
         <div><dt>Commercial use</dt><dd class="<?= $license['commercial_use'] === 'allowed' ? 'ok' : ($license['commercial_use'] === 'prohibited' ? 'warn' : '') ?>"><?= e(View::label('commercial_use', $license['commercial_use'])) ?></dd></div>
-        <div><dt>Formats</dt><dd><?= e($formats) ?></dd></div>
+        <div><dt>Formats</dt><dd><?= View::formatBadges($api['formats']) ?></dd></div>
       </dl>
 
       <div class="prose">
@@ -114,7 +114,7 @@ include __DIR__ . '/partials/header.php';
             <tr><th scope="row">CORS</th><td><?= e(View::label('cors', $api['cors'])) ?> <span class="muted">— <?= $browser ? 'callable from browser JavaScript' : ($api['cors'] === 'unknown' ? 'browser use not confirmed' : 'use a server or proxy') ?></span></td></tr>
             <tr><th scope="row">Rate limit</th><td><?= e($api['rate_limit']['summary']) ?><?php if (($b = View::rateBudget($api['rate_limit'])) !== null): ?><br><span class="muted">Budget</span> <span class="num"><?= e($b) ?></span><?php endif ?></td></tr>
             <tr><th scope="row">Pagination</th><td><?= e(View::label('pagination', $api['pagination'])) ?><?php if (isset($api['max_page_size'])): ?> <span class="muted">· max page size</span> <span class="num"><?= e(number_format((int) $api['max_page_size'])) ?></span><?php endif ?></td></tr>
-            <tr><th scope="row">Formats</th><td><?= e($formats) ?></td></tr>
+            <tr><th scope="row">Formats</th><td><?= View::formatBadges($api['formats']) ?></td></tr>
             <tr><th scope="row">License</th><td>
               <?php if (isset($license['url'])): ?><a href="<?= e($license['url']) ?>" rel="noopener license"><?= e($license['name']) ?></a><?php else: ?><?= e($license['name']) ?><?php endif ?>
               <?php if (isset($license['spdx'])): ?> <code class="spdx"><?= e($license['spdx']) ?></code><?php endif ?>

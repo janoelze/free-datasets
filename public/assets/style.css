@@ -161,7 +161,38 @@ html:not(.js) .search-key { right: 86px; }
 .chip-k { color: var(--ink-2); }
 .chips a.clear { border-color: transparent; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--context); }
 
-.rows-head, .row { display: grid; grid-template-columns: minmax(0, 1fr) 72px 72px 104px 132px; column-gap: 18px; }
+/* format badges: inline SVGs (View::formatBadge); each format sets its own cap colour */
+.fmts { display: inline-flex; flex-wrap: wrap; gap: 4px; vertical-align: middle; }
+.fmt { display: block; flex: none; --fmt: #6f6c64; }
+.fmt-frame { fill: none; stroke: var(--fmt); stroke-opacity: .55; }
+.fmt-cap { fill: var(--fmt); }
+.fmt-glyph { fill: none; stroke: var(--bg); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.fmt-dot { fill: var(--bg); }
+.fmt-text { font: 600 9.5px var(--sans); fill: var(--ink); }
+.row-facts .f-fmt { align-self: start; padding-top: 3px; }
+.fmt-more { font: 500 11px/18px var(--sans); color: var(--ink-2); padding-left: 2px; }
+.fmt-json { --fmt: #9a6a14; } .fmt-geojson { --fmt: #2f6b4f; } .fmt-json-ld { --fmt: #2a6f78; }
+.fmt-csv { --fmt: #4d6b1f; } .fmt-xml { --fmt: #3d5a8c; } .fmt-html { --fmt: #a8482d; }
+.fmt-rss { --fmt: #b5601a; } .fmt-yaml { --fmt: #6d4f8f; } .fmt-protobuf { --fmt: #7a4a6a; }
+.fmt-parquet { --fmt: #2f6f8f; } .fmt-image { --fmt: #8a5a7a; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .fmt { --fmt: #8f8c84; }
+  :root:not([data-theme="light"]) .fmt-json { --fmt: #d0a04a; } :root:not([data-theme="light"]) .fmt-geojson { --fmt: #6fb08f; }
+  :root:not([data-theme="light"]) .fmt-json-ld { --fmt: #62aab4; } :root:not([data-theme="light"]) .fmt-csv { --fmt: #9ab860; }
+  :root:not([data-theme="light"]) .fmt-xml { --fmt: #7f9fd0; } :root:not([data-theme="light"]) .fmt-html { --fmt: #e08a6c; }
+  :root:not([data-theme="light"]) .fmt-rss { --fmt: #e09a55; } :root:not([data-theme="light"]) .fmt-yaml { --fmt: #a98fd0; }
+  :root:not([data-theme="light"]) .fmt-protobuf { --fmt: #c08fb0; } :root:not([data-theme="light"]) .fmt-parquet { --fmt: #6fb0d0; }
+  :root:not([data-theme="light"]) .fmt-image { --fmt: #c89ab8; }
+}
+:root[data-theme="dark"] .fmt { --fmt: #8f8c84; }
+:root[data-theme="dark"] .fmt-json { --fmt: #d0a04a; } :root[data-theme="dark"] .fmt-geojson { --fmt: #6fb08f; }
+:root[data-theme="dark"] .fmt-json-ld { --fmt: #62aab4; } :root[data-theme="dark"] .fmt-csv { --fmt: #9ab860; }
+:root[data-theme="dark"] .fmt-xml { --fmt: #7f9fd0; } :root[data-theme="dark"] .fmt-html { --fmt: #e08a6c; }
+:root[data-theme="dark"] .fmt-rss { --fmt: #e09a55; } :root[data-theme="dark"] .fmt-yaml { --fmt: #a98fd0; }
+:root[data-theme="dark"] .fmt-protobuf { --fmt: #c08fb0; } :root[data-theme="dark"] .fmt-parquet { --fmt: #6fb0d0; }
+:root[data-theme="dark"] .fmt-image { --fmt: #c89ab8; }
+
+.rows-head, .row { display: grid; grid-template-columns: minmax(0, 1fr) 72px 72px 128px 132px; column-gap: 18px; }
 .rows-head { font: 500 10.5px/1.3 var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); padding: 0 0 6px; border-bottom: 1px solid var(--ink); }
 .rows { list-style: none; margin: 0; padding: 0; }
 .row { padding: 13px 0 14px; border-bottom: 1px solid var(--rule); align-items: baseline; }
@@ -292,7 +323,7 @@ pre.response { max-height: 460px; }
 /* ---------- narrow screens: the rail becomes a top bar ---------- */
 @media (max-width: 960px) {
   .shell { grid-template-columns: 160px minmax(0, 1fr); gap: 32px; padding: 0 24px; }
-  .rows-head, .row { grid-template-columns: minmax(0, 1fr) 64px 64px 96px; }
+  .rows-head, .row { grid-template-columns: minmax(0, 1fr) 64px 64px 128px; }
   .rows-head span:nth-child(5), .row-facts .f-lic { display: none; }
   .glance { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .glance > div:nth-child(4) { border-left: 0; padding-left: 0; }
@@ -336,6 +367,8 @@ pre.response { max-height: 460px; }
   .row-facts dd { font-size: 11.5px; border: 1px solid var(--rule); border-radius: 2px; padding: 2px 5px; }
   .row-facts .lic, .row-facts .nc { display: inline; font-size: inherit; -webkit-line-clamp: none; }
   .row-facts .f-lic dd { max-width: 100%; }
+  .row-facts .f-fmt dd { border: 0; padding: 0; }
+  .row-facts .f-fmt { padding-top: 0; }
   .search-key { display: none; }
   .row-facts .nc::before { content: "· "; }
   .glance { grid-template-columns: repeat(2, minmax(0, 1fr)); }

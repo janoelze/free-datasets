@@ -7,7 +7,6 @@ $auth = $d['api']['auth'];
 $license = $d['data']['license'];
 $licenseShort = $license['spdx'] ?? $license['name'];
 $browser = View::browserUsable($d);
-$formats = array_map(static fn ($f) => View::label('format', $f), $d['api']['formats']);
 ?>
 <li class="row">
   <div class="row-main">
@@ -18,7 +17,7 @@ $formats = array_map(static fn ($f) => View::label('format', $f), $d['api']['for
   <dl class="row-facts">
     <div class="f-auth"><dt>Auth</dt><dd class="<?= $auth['type'] === 'none' ? 'ok' : 'warn' ?>"><?= e($auth['type'] === 'none' ? 'No key' : ($auth['type'] === 'api_key' ? 'Free key' : 'OAuth')) ?></dd></div>
     <div class="f-cors"><dt>Browser</dt><dd class="<?= $browser ? 'ok' : 'off' ?>" title="CORS: <?= e(View::label('cors', $d['api']['cors'])) ?>"><?= e($browser ? 'CORS' : ($d['api']['cors'] === 'unknown' ? 'CORS ?' : 'No CORS')) ?></dd></div>
-    <div class="f-fmt"><dt>Formats</dt><dd><?= e(implode(' ', array_slice($formats, 0, 3))) ?><?= count($formats) > 3 ? ' +' . (count($formats) - 3) : '' ?></dd></div>
+    <div class="f-fmt"><dt>Formats</dt><dd><?= View::formatBadges($d['api']['formats'], 4) ?></dd></div>
     <div class="f-lic"><dt>License</dt><dd title="<?= e($license['name'] . ' — commercial use: ' . $license['commercial_use']) ?>"><span class="lic"><?= e($licenseShort) ?></span><?php if ($license['commercial_use'] !== 'allowed'): ?> <span class="nc" title="Commercial use: <?= e($license['commercial_use']) ?>"><?= e(['restricted' => 'comm. restricted', 'prohibited' => 'non-comm.', 'unknown' => 'comm. ?'][$license['commercial_use']] ?? $license['commercial_use']) ?></span><?php endif ?></dd></div>
   </dl>
 </li>
