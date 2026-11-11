@@ -1,0 +1,141 @@
+{
+  "slug": "aviation-weather-center",
+  "name": "Aviation Weather Center Data API",
+  "provider": {
+    "name": "NOAA National Weather Service, Aviation Weather Center",
+    "url": "https://aviationweather.gov",
+    "type": "government"
+  },
+  "summary": "Official US aviation weather: METAR, TAF, PIREP, SIGMET, AIRMET and airport and station metadata, free without a key.",
+  "description": "The AWC data API serves decoded and raw aviation weather products worldwide, including METAR observations, TAF forecasts, pilot reports, SIGMETs and AIRMETs, plus airport and station information. Most endpoints take ICAO identifiers or a bounding box and return JSON, GeoJSON, XML or raw text.",
+  "category": "weather-climate",
+  "tags": [
+    "aviation",
+    "metar",
+    "taf",
+    "weather",
+    "airports",
+    "aviation-weather"
+  ],
+  "links": {
+    "homepage": "https://aviationweather.gov",
+    "docs": "https://aviationweather.gov/data/api/",
+    "openapi": "https://aviationweather.gov/data/schema/openapi.yaml"
+  },
+  "api": {
+    "base_url": "https://aviationweather.gov/api/data",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "xml",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented on the pages I fetched."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/metar",
+      "summary": "Current METARs by station or bounding box",
+      "params": [
+        "ids",
+        "bbox",
+        "format",
+        "hours"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/taf",
+      "summary": "Terminal aerodrome forecasts",
+      "params": [
+        "ids",
+        "bbox",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/airsigmet",
+      "summary": "Current SIGMETs and AIRMETs",
+      "params": [
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/pirep",
+      "summary": "Pilot reports (needs ids with distance, or bbox)",
+      "params": [
+        "id",
+        "distance",
+        "bbox",
+        "age",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/airport",
+      "summary": "Airport information by ICAO id",
+      "params": [
+        "ids",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stationinfo",
+      "summary": "Weather station metadata",
+      "params": [
+        "ids",
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://aviationweather.gov/api/data/metar?ids=KJFK&format=json",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[{\"icaoId\":\"KJFK\",\"receiptTime\":\"2026-11-11T14:54:17.326Z\",\"obsTime\":1794408660,\"temp\":15,\"dewp\":3.9,\"wdir\":250,\"wspd\":6,\"visib\":\"10+\",\"altim\":1015.3,\"metarType\":\"METAR\",\"rawOb\":\"METAR KJFK 111451Z 25006KT 10SM SCT250 15/04 A2998 ...\",\"lat\":40.6392,\"lon\":-73.7639,\"elev\":3,\"name\":\"New York/JF Kennedy Intl, NY, US\"}]"
+  },
+  "data": {
+    "license": {
+      "name": "US Government (NOAA/NWS) data; no licence statement on the API pages I fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global METAR/TAF, US-centred for other products",
+      "temporal": "Current and recent hours; archive not served here"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Pass format=json. ids takes comma-separated ICAO codes. Temperatures are Celsius, altimeter in hPa, elevation in metres in the sample. Empty results return 204 or an empty list, and some endpoints answer 400 when neither stations nor a bbox is given.",
+  "caveats": [
+    "No CORS header was sent.",
+    "The first METAR call took about 4 s; later calls were faster.",
+    "Rate limits and licence terms were not found in the docs I fetched, so check the site before heavy use."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key; taf, airport, stationinfo and airsigmet also answered 200."
+  },
+  "hn": [],
+  "related": [
+    "nws-weather-gov"
+  ],
+  "added": "2026-11-11"
+}

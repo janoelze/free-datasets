@@ -50,7 +50,7 @@ test('http: API root', function () {
     assert_true((bool) preg_match('/^"[0-9a-f]{32}"$/', $r['headers']['etag'] ?? ''), 'strong ETag');
     $j = $r['json'];
     assert_same(4, $j['counts']['datasets']);
-    assert_same(22, $j['counts']['categories']);
+    assert_same(count(json_decode((string) file_get_contents(dirname(__DIR__) . '/schema/categories.json'), true)), $j['counts']['categories']);
     $base = server()->base;
     foreach (['datasets', 'categories', 'tags', 'facets', 'schema', 'openapi'] as $k) {
         assert_true(str_starts_with($j['links'][$k], "$base/api/v1"), "link $k");
@@ -181,7 +181,7 @@ test('http: categories, tags, facets', function () {
     $base = server()->base;
     $r = get('/api/v1/categories');
     assert_same(200, $r['status']);
-    assert_same(22, count($r['json']['data']));
+    assert_same(count(json_decode((string) file_get_contents(dirname(__DIR__) . '/schema/categories.json'), true)), count($r['json']['data']));
     $first = $r['json']['data'][0];
     assert_same(['id', 'name', 'description', 'count', 'links'], array_keys($first));
     assert_same('weather-climate', $first['id']);
@@ -268,7 +268,7 @@ test('http: schema and openapi', function () {
     $walk($o);
     // enums are generated from the schema files
     assert_same(['none', 'api_key', 'oauth2'], $o['components']['parameters']['auth']['schema']['items']['enum']);
-    assert_same(22, count($o['components']['parameters']['category']['schema']['items']['enum']));
+    assert_same(count(json_decode((string) file_get_contents(dirname(__DIR__) . '/schema/categories.json'), true)), count($o['components']['parameters']['category']['schema']['items']['enum']));
     assert_same('Dataset', $o['components']['schemas']['Dataset']['title']);
     assert_true(isset($o['components']['schemas']['Problem']));
     $params = array_map(static fn ($p) => basename($p['$ref']), $o['paths']['/api/v1/datasets']['get']['parameters']);

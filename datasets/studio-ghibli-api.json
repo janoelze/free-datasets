@@ -1,0 +1,124 @@
+{
+  "slug": "studio-ghibli-api",
+  "name": "Studio Ghibli API",
+  "provider": {
+    "name": "Studio Ghibli API community project",
+    "url": "https://github.com/janaipakos/ghibliapi",
+    "type": "community"
+  },
+  "summary": "Small keyless JSON API of Studio Ghibli films, characters, locations, species and vehicles.",
+  "description": "Five collections: films (22 at check, with director, producer, release year, running time, Rotten Tomatoes score, poster and banner), people (57), locations (25), species (7) and vehicles (3), cross-linked by URL. Handy as a demo dataset for REST clients and for anime film lookups.",
+  "category": "media-entertainment",
+  "tags": [
+    "anime",
+    "films",
+    "ghibli",
+    "characters",
+    "animation"
+  ],
+  "links": {
+    "homepage": "https://ghibliapi.vercel.app/",
+    "docs": "https://ghibliapi.vercel.app/",
+    "openapi": "https://ghibliapi.vercel.app/swagger.yaml",
+    "source": "https://github.com/janaipakos/ghibliapi"
+  },
+  "api": {
+    "base_url": "https://ghibliapi.vercel.app",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/films",
+      "summary": "All films",
+      "params": [
+        "limit",
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/films/{id}",
+      "summary": "One film",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/people",
+      "summary": "Characters with films and species links",
+      "params": [
+        "limit",
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/locations",
+      "summary": "Places in the films",
+      "params": [
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/species",
+      "summary": "Species",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/vehicles",
+      "summary": "Vehicles",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://ghibliapi.vercel.app/films/2baf70d1-42bb-4437-b551-e5fed5a87abe",
+    "response_excerpt": "{\n  \"id\": \"2baf70d1-42bb-4437-b551-e5fed5a87abe\",\n  \"title\": \"Castle in the Sky\",\n  \"original_title\": \"天空の城ラピュタ\",\n  \"original_title_romanised\": \"Tenkū no shiro Rapyuta\",\n  \"image\": \"https://image.tmdb.org/t/p/w600_and_h900_bestv2/...jpg\",\n  \"description\": \"The orphan Sheeta inherited a mysterious crystal that links her to the mythical sky ...\",\n  \"director\": \"Hayao Miyazaki\",\n  \"producer\": \"Isao Takahata\",\n  \"release_date\": \"1986\",\n  \"running_time\": \"124\",\n  \"rt_score\": \"95\",\n  \"people\": [\"https://ghibliapi.vercel.app/people/598f7048-74ff-41e0-92ef-87dc1ad980a9\", \"...\"],\n  \"url\": \"https://ghibliapi.vercel.app/films/2baf70d1-42bb-4437-b551-e5fed5a87abe\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated for the data (the source repository is MIT licensed)",
+      "url": "https://github.com/janaipakos/ghibliapi",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Not applicable",
+      "temporal": "22 Studio Ghibli films at check"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Fetch the collection endpoints once and cache; the data is tiny and static. Numeric values (release_date, running_time, rt_score) are strings. Cross references are full URLs, so follow them or take the id from the last path segment. limit and fields (comma-separated) work on collections.",
+  "caveats": [
+    "The original project was archived on 2022-12-01 after Heroku ended its free tier; this Vercel deployment is a community-hosted continuation whose operator is not documented, so treat it as unstable.",
+    "The data license was not found; film posters link to TMDB images.",
+    "A film's locations array can contain a bare collection URL (\"/locations/\") instead of an id."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials; swagger.yaml returned a Swagger 2.0 document."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=13995869",
+      "title": "Studio Ghibli API",
+      "points": 163
+    }
+  ],
+  "added": "2026-11-11"
+}

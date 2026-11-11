@@ -1,0 +1,111 @@
+{
+  "slug": "languagetool",
+  "name": "LanguageTool Public API",
+  "provider": {
+    "name": "LanguageTooler GmbH",
+    "url": "https://languagetool.org",
+    "type": "company"
+  },
+  "summary": "Grammar, spelling and style checking for 30+ languages through a free public HTTP endpoint with strict limits.",
+  "description": "POST text to /v2/check with a language code (or auto) and get a list of matches with the problem offset and length, a message, rule id and category and replacement suggestions. /v2/languages lists supported language variants. The server is the free public instance of the open-source LanguageTool; heavier use should self-host or buy Premium.",
+  "category": "language",
+  "tags": [
+    "grammar",
+    "spellcheck",
+    "proofreading",
+    "nlp",
+    "multilingual",
+    "writing"
+  ],
+  "links": {
+    "homepage": "https://languagetool.org",
+    "docs": "https://dev.languagetool.org/public-http-api",
+    "terms": "https://dev.languagetool.org/public-http-api",
+    "openapi": "https://languagetool.org/http-api/languagetool-swagger.json",
+    "source": "https://github.com/languagetool-org/languagetool"
+  },
+  "api": {
+    "base_url": "https://api.languagetool.org/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Public API: 20 requests per IP per minute, 75 KB of text per IP per minute, 20 KB per request, suggestions for at most 30 misspelled words (docs).",
+      "requests": 20,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/check",
+      "summary": "Check text; form-encoded text and language",
+      "params": [
+        "text",
+        "language",
+        "motherTongue",
+        "enabledRules",
+        "disabledRules",
+        "level"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/languages",
+      "summary": "Supported languages and codes",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "POST",
+    "url": "https://api.languagetool.org/v2/check",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "body": "language=en-US&text=This%20are%20a%20test.",
+    "response_excerpt": "{\n  \"software\": {\"name\": \"LanguageTool\", \"version\": \"6.9-SNAPSHOT\", \"premium\": true, ...},\n  \"language\": {\"name\": \"English (US)\", \"code\": \"en-US\", ...},\n  \"matches\": [\n    {\n      \"message\": \"The singular demonstrative pronoun \\u2018this\\u2019 does not agree with the plural verb \\u2018are\\u2019. Did you mean \\u201cthese\\u201d?\",\n      \"shortMessage\": \"Grammatical problem: use \\u2018these\\u2019\",\n      \"offset\": 0,\n      \"length\": 4,\n      \"replacements\": [{\"value\": \"These\"}],\n      \"rule\": {\"id\": \"THIS_NNS\", \"category\": {\"id\": \"GRAMMAR\", \"name\": \"Grammar\"}}\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Service terms; LanguageTool software is LGPL 2.1",
+      "url": "https://dev.languagetool.org/public-http-api",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Text in 30+ languages",
+      "temporal": "Live service"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use POST with application/x-www-form-urlencoded; GET is not allowed per the docs. language is a code like en-US or auto. offset and length are character positions in the submitted text. The docs ask that you link back to languagetool.org and say you are responsible for informing users how their text is handled.",
+  "caveats": [
+    "The docs forbid automated request streams on the public endpoint; they point heavy users to self-hosting or an Enterprise account.",
+    "The response says premium: true / premiumHint, but the public endpoint only runs the free rule set.",
+    "Free service with no performance guarantees."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example POST executed without a key. Spec URL verified to start with swagger 2.0."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=32236608",
+      "title": "Language Tool – Open-source Grammarly alternative",
+      "points": 370
+    }
+  ],
+  "related": [
+    "datamuse"
+  ],
+  "added": "2026-11-11"
+}

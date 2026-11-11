@@ -1,0 +1,119 @@
+{
+  "slug": "pegel-online",
+  "name": "PEGELONLINE REST API (German waterways)",
+  "provider": {
+    "name": "Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV)",
+    "url": "https://www.pegelonline.wsv.de/",
+    "type": "government"
+  },
+  "summary": "Keyless REST API of German federal waterways with near-real-time water level, discharge and related measurements from around 800 gauges.",
+  "description": "PEGELONLINE publishes raw measurements from the federal gauge network on rivers, canals and coasts: water level (W), discharge (Q), temperature and others, usually every 15 minutes, with station metadata, kilometre position, gauge zero and characteristic values. Stations can be filtered by water body, and each timeseries offers current measurement and measurement history (ISO 8601 durations). There were 787 stations at check, including a few foreign gauges.",
+  "category": "earth-environment",
+  "tags": [
+    "germany",
+    "rivers",
+    "water-levels",
+    "hydrology",
+    "gauges",
+    "waterways",
+    "floods"
+  ],
+  "links": {
+    "homepage": "https://www.pegelonline.wsv.de/",
+    "docs": "https://www.pegelonline.wsv.de/webservice/dokuRestapi",
+    "terms": "https://www.govdata.de/dl-de/zero-2-0"
+  },
+  "api": {
+    "base_url": "https://www.pegelonline.wsv.de/webservices/rest-api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; responses carry ETags and Cache-Control max-age=24 for conditional requests."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/stations.json",
+      "summary": "List stations with optional timeseries and current values",
+      "params": [
+        "waters",
+        "includeTimeseries",
+        "includeCurrentMeasurement",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stations/{id}.json",
+      "summary": "One station by name, number or uuid",
+      "params": [
+        "includeTimeseries",
+        "includeCurrentMeasurement"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stations/{id}/W/currentmeasurement.json",
+      "summary": "Latest water level for a station"
+    },
+    {
+      "method": "GET",
+      "path": "/stations/{id}/W/measurements.json",
+      "summary": "Measurement history (ISO 8601 duration or time range)",
+      "params": [
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/waters.json",
+      "summary": "List of water bodies"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/KONSTANZ-RHEIN/W/currentmeasurement.json",
+    "response_excerpt": "{\n  \"timestamp\": \"2026-11-11T16:30:00+01:00\",\n  \"value\": 248.0,\n  \"stateMnwMhw\": \"unknown\",\n  \"stateNswHsw\": \"unknown\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Data licence Germany - Zero - Version 2.0 (DL-DE->Zero-2.0)",
+      "url": "https://www.govdata.de/dl-de/zero-2-0",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "German federal waterways, plus a few border gauges",
+      "temporal": "Recent history (measurements.json start=P1D tested) to now"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Docs are in German. Use the station shortname (e.g. KONSTANZ-RHEIN), number or uuid as {id}. Water level W is in cm relative to gauge zero (see gaugeZero in the timeseries). Use includeTimeseries=true&includeCurrentMeasurement=true to get everything in one list call, filtered with waters=RHEIN. Data are raw and unchecked.",
+  "caveats": [
+    "Values are raw measurements (the docs page mentions raw data); the quality and plausibility of individual readings were not checked.",
+    "?geojson and ?csv suffixes (stations.geojson, stations.csv) answered 400; only .json was confirmed.",
+    "Some stations belong to foreign agencies (e.g. Basel-Rheinhalle, BAFU CH)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; the list endpoint with waters=RHEIN&limit=1 and measurements.json?start=P1D also answered 200."
+  },
+  "related": [
+    "noaa-coops",
+    "usgs-water-data"
+  ],
+  "added": "2026-11-11"
+}

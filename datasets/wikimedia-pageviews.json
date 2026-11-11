@@ -1,0 +1,143 @@
+{
+  "slug": "wikimedia-pageviews",
+  "name": "Wikimedia Analytics API (Pageviews and Unique Devices)",
+  "provider": {
+    "name": "Wikimedia Foundation",
+    "url": "https://wikimediafoundation.org",
+    "type": "nonprofit"
+  },
+  "summary": "Free page-view, top-article and unique-device statistics for Wikipedia and sibling Wikimedia projects.",
+  "description": "The Analytics Query Service serves per-article page views (daily or monthly), project-wide aggregates, most-viewed article rankings per day or month, and unique-device counts for every Wikimedia project. It is a separate host and API from the content REST API in wikipedia-api (wikimedia.org/api/rest_v1/metrics versus en.wikipedia.org/api/rest_v1). The docs also cover edits, editors, bytes changed and media-file metrics. At check, daily data for 2026-10 was available.",
+  "category": "knowledge-reference",
+  "tags": [
+    "wikimedia",
+    "pageviews",
+    "statistics",
+    "time-series",
+    "wikipedia",
+    "analytics"
+  ],
+  "links": {
+    "homepage": "https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/",
+    "docs": "https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/documentation/getting-started.html",
+    "terms": "https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/documentation/access-policy.html",
+    "bulk_download": "https://dumps.wikimedia.org/other/pageviews/"
+  },
+  "api": {
+    "base_url": "https://wikimedia.org/api/rest_v1/metrics",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key or signup."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "The docs require an identifying User-Agent; a request with an empty User-Agent returned 403."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numbers on the Analytics API pages; limits depend on client identity (see the Wikimedia API rate-limit policy). Wait for each request to finish before sending the next."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/pageviews/per-article/{project}/{access}/{agent}/{article}/{granularity}/{start}/{end}",
+      "summary": "Views of one article, daily or monthly",
+      "params": [
+        "project",
+        "access",
+        "agent",
+        "article",
+        "granularity",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/pageviews/aggregate/{project}/{access}/{agent}/{granularity}/{start}/{end}",
+      "summary": "Total views for a whole project",
+      "params": [
+        "project",
+        "access",
+        "agent",
+        "granularity",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/pageviews/top/{project}/{access}/{year}/{month}/{day}",
+      "summary": "Most-viewed articles for a month or day (day=all-days for a month)",
+      "params": [
+        "project",
+        "access",
+        "year",
+        "month",
+        "day"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/unique-devices/{project}/{access-site}/{granularity}/{start}/{end}",
+      "summary": "Unique devices visiting a project",
+      "params": [
+        "project",
+        "access-site",
+        "granularity",
+        "start",
+        "end"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Albert_Einstein/daily/20260101/20260103",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"items\": [\n    {\n      \"project\": \"en.wikipedia\",\n      \"article\": \"Albert_Einstein\",\n      \"granularity\": \"daily\",\n      \"timestamp\": \"2026010100\",\n      \"access\": \"all-access\",\n      \"agent\": \"user\",\n      \"views\": 15356\n    },\n    {\n      \"project\": \"en.wikipedia\",\n      \"article\": \"Albert_Einstein\",\n      \"granularity\": \"daily\",\n      \"timestamp\": \"2026010200\",\n      \"access\": \"all-access\",\n      \"agent\": \"user\",\n      \"views\": 15945\n    },\n    \"...\"\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0",
+      "spdx": "CC0-1.0",
+      "url": "https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/documentation/access-policy.html",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "All Wikimedia projects (for example en.wikipedia, de.wikipedia, commons.wikimedia)",
+      "temporal": "Daily and monthly series up to the previous day or month; 2026-10 daily data present at check"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Project is the hostname without the scheme (en.wikipedia, not en.wikipedia.org, for per-article; the docs example for aggregate uses en.wikipedia.org). Article titles use underscores and must be URL-encoded. Timestamps are YYYYMMDD or YYYYMMDDHH. Use agent=user to exclude spiders and automated traffic; the access and agent values used in the docs and checks were all-access and user. Top lists include Main_Page and Special:Search, so filter them out.",
+  "caveats": [
+    "A valid but unknown article or a date range with no data returns 404 with a JSON error body, not an empty list.",
+    "Rate limits are not numbered in the API docs; Wikimedia may block clients that ignore its User-Agent policy.",
+    "The spec at wikimedia.org/api/rest_v1/?spec is a generic one and was not checked for the metrics endpoints, so no OpenAPI link is given."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials; per-article, aggregate, top and unique-devices endpoints all returned 200."
+  },
+  "related": [
+    "wikidata",
+    "wikimedia-commons-api",
+    "wikipedia-api"
+  ],
+  "added": "2026-11-11"
+}

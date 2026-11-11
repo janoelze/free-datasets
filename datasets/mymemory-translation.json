@@ -1,0 +1,89 @@
+{
+  "slug": "mymemory-translation",
+  "name": "MyMemory Translation API",
+  "provider": {
+    "name": "Translated",
+    "url": "https://translated.net",
+    "type": "company"
+  },
+  "summary": "Free translation-memory lookup and machine translation for a segment, with a daily character quota.",
+  "description": "MyMemory matches a text segment against a large translation memory of human and machine translations and returns the best translation plus ranked matches with quality and usage counts. Language pairs use langpair=src|target codes. Anonymous use is capped per day; passing an email raises the cap.",
+  "category": "language",
+  "tags": [
+    "translation",
+    "translation-memory",
+    "machine-translation",
+    "multilingual",
+    "localization",
+    "nlp"
+  ],
+  "links": {
+    "homepage": "https://mymemory.translated.net",
+    "docs": "https://mymemory.translated.net/doc/spec.php",
+    "terms": "https://mymemory.translated.net/doc/usagelimits.php"
+  },
+  "api": {
+    "base_url": "https://api.mymemory.translated.net",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key needed. An optional valid email in the de parameter raises the daily quota."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Anonymous: 5,000 characters per day; with a valid email in the de parameter: 50,000 characters per day (usage-limits page). Counted in characters, not requests."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/get",
+      "summary": "Translate or look up a segment",
+      "params": [
+        "q",
+        "langpair",
+        "de",
+        "mt",
+        "onlyprivate"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.mymemory.translated.net/get?q=Hello%20World&langpair=en%7Cit",
+    "response_excerpt": "{\n  \"responseData\": {\"translatedText\": \"Ciao Mondo\", \"match\": 1},\n  \"quotaFinished\": false,\n  \"responseStatus\": 200,\n  \"matches\": [\n    {\"id\": \"740569862\", \"segment\": \"Hello World\", \"translation\": \"Ciao Mondo\", \"source\": \"en-GB\", \"target\": \"it-IT\", \"quality\": 74, \"usage-count\": 83, ...}\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Translation memory under the MyMemory terms of service",
+      "url": "https://mymemory.translated.net/doc/usagelimits.php",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Language pairs worldwide",
+      "temporal": "Continuously contributed"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "langpair is source|target; percent-encode the pipe as %7C. Check responseStatus inside the body, and quotaFinished for the daily cap (a quota failure can come back as HTTP 200 with an error message in translatedText). matches[] lists alternatives with a quality score.",
+  "caveats": [
+    "The HTTP status can be 200 while responseStatus signals an error or exhausted quota.",
+    "A 500 was seen once on the specification page during checks; the API itself answered 200.",
+    "Match quality varies: human memory entries mix with machine output."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key or email."
+  },
+  "related": [
+    "tatoeba"
+  ],
+  "added": "2026-11-11"
+}

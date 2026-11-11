@@ -1,0 +1,126 @@
+{
+  "slug": "obis",
+  "name": "OBIS API",
+  "provider": {
+    "name": "Ocean Biodiversity Information System (IOC-UNESCO)",
+    "url": "https://obis.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Marine species occurrence records, taxonomy, datasets and statistics from the Ocean Biodiversity Information System.",
+  "description": "OBIS integrates marine biodiversity observations from thousands of datasets worldwide. The v3 API serves occurrence records (filterable by taxon, area, date and depth), taxon lookups, checklists, dataset metadata, and quality-control statistics. Occurrence queries use after-id paging for deep results.",
+  "category": "life-sciences",
+  "tags": [
+    "biodiversity",
+    "marine",
+    "species",
+    "occurrences",
+    "taxonomy",
+    "ocean"
+  ],
+  "links": {
+    "homepage": "https://obis.org",
+    "docs": "https://api.obis.org/",
+    "terms": "https://obis.org/data/datapolicy",
+    "openapi": "https://api.obis.org/obis_v3.yml",
+    "bulk_download": "https://obis.org/data/access/"
+  },
+  "api": {
+    "base_url": "https://api.obis.org/v3",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "other",
+    "max_page_size": 10000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/occurrence",
+      "summary": "Occurrence records (flattened event and occurrence fields)",
+      "params": [
+        "scientificname",
+        "taxonid",
+        "geometry",
+        "startdate",
+        "enddate",
+        "size",
+        "after",
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/taxon/{id or name}",
+      "summary": "Taxon records by AphiaID or name"
+    },
+    {
+      "method": "GET",
+      "path": "/checklist",
+      "summary": "Species checklist for an area or taxon",
+      "params": [
+        "scientificname",
+        "geometry",
+        "size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dataset",
+      "summary": "Published datasets with citations and licences",
+      "params": [
+        "size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/qc",
+      "summary": "Data quality statistics"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.obis.org/v3/occurrence?scientificname=Delphinus%20delphis&size=1&fields=scientificName,decimalLatitude,decimalLongitude,eventDate,datasetName",
+    "response_excerpt": "{\"total\":126378,\"results\":[{\"datasetName\":\"Observatoire Pelagis - Reseau National Echouage (French stranding network) strandings 1934-2020\",\"decimalLatitude\":49.18,\"decimalLongitude\":-1.601,\"eventDate\":\"2000-02-19\",\"scientificName\":\"Delphinus delphis\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Mostly CC BY 4.0; some datasets CC BY-NC, CC BY-NC-ND or CC BY-SA",
+      "url": "https://obis.org/data/datapolicy",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global ocean",
+      "temporal": "Historical to present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Request only the columns you need with fields; whole records are large. Page deep results with after (the id of the last record) rather than offset. Taxon ids are WoRMS AphiaIDs. Check each dataset's licence before commercial use.",
+  "caveats": [
+    "Licences differ per dataset (CC BY-NC appears), so commercial use depends on the dataset.",
+    "The occurrence endpoint reports totals above 258 million records at check time but caps size per request."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key; taxon, checklist, dataset and statistics endpoints also answered 200."
+  },
+  "hn": [],
+  "related": [
+    "gbif",
+    "inaturalist",
+    "worms-rest"
+  ],
+  "added": "2026-11-11"
+}

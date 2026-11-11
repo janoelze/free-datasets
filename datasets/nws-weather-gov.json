@@ -110,5 +110,9 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "aviation-weather-center",
+    "pirate-weather"
+  ],
   "added": "2026-11-11"
 }

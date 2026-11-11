@@ -1,0 +1,124 @@
+{
+  "slug": "theaudiodb",
+  "name": "TheAudioDB",
+  "provider": {
+    "name": "TheAudioDB",
+    "url": "https://www.theaudiodb.com",
+    "type": "community"
+  },
+  "summary": "Crowd-sourced music database with artist, album, track and music-video metadata and artwork; a shared test key gives free access.",
+  "description": "Artists with biography fields, genre, style, mood, formed year and MusicBrainz IDs, albums, tracks, music videos and artwork images. The free tier uses the public shared key 123 in the URL path; premium keys unlock larger limits and the v2 API. Some methods are restricted on the free key (for example the top-tracks list returned a single track).",
+  "category": "media-entertainment",
+  "tags": [
+    "music",
+    "artists",
+    "albums",
+    "tracks",
+    "music-videos",
+    "artwork",
+    "mbid"
+  ],
+  "links": {
+    "homepage": "https://www.theaudiodb.com",
+    "docs": "https://www.theaudiodb.com/free_music_api",
+    "signup": "https://www.theaudiodb.com/free_music_api"
+  },
+  "api": {
+    "base_url": "https://www.theaudiodb.com/api/v1/json/123",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "path",
+      "key_name": "apikey",
+      "demo_key": "123",
+      "notes": "The documented free test key 123 sits in the URL path (/api/v1/json/123/...). Premium keys replace it. The old key 2 now returns 404 'Not found'."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Free users: 30 requests per minute (documented); a 429 follows and you must wait a minute. Premium 100/min, business 120/min.",
+      "requests": 30,
+      "per": "minute",
+      "scope": "key"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search.php",
+      "summary": "Search an artist by name",
+      "params": [
+        "s"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/searchalbum.php",
+      "summary": "Albums of an artist, or one album by name",
+      "params": [
+        "s",
+        "a"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/track-top10.php",
+      "summary": "Top tracks of an artist (limited on the free key)",
+      "params": [
+        "s"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/mvid.php",
+      "summary": "Music videos for an artist id",
+      "params": [
+        "i"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/artist.php",
+      "summary": "Artist by TheAudioDB id",
+      "params": [
+        "i"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.theaudiodb.com/api/v1/json/123/search.php?s=coldplay",
+    "response_excerpt": "{\"artists\":[{\"idArtist\":\"111239\",\"strArtist\":\"Coldplay\",\"strGenre\":\"Alternative Rock\",\"strStyle\":\"Rock/Pop\",\"strCountry\":\"London, England\",\"intFormedYear\":\"1996\",\"strMusicBrainzID\":\"cc197bad-dc9c-440d-a5b5-d52ba2e14234\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the docs page fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Community contributed"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Every field is a string prefixed str/int/id (strArtist, intFormedYear, idAlbum); missing data is null and an unmatched search returns null for the array rather than an error. strMusicBrainzID joins to the musicbrainz record. Stay under 30 requests per minute on the free key and cache results.",
+  "caveats": [
+    "The free key is shared by everyone, so limits are enforced per IP in practice and some methods are cut down: track-top10 and searchalbum returned a single item for Coldplay.",
+    "V2 API is premium only and is the only version being developed going forward, per the docs.",
+    "A sibling service (TheSportsDB) disabled its old shared key 3 in favour of 123; keys can change, check the docs page."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Verified with the documented shared test key 123."
+  },
+  "related": [
+    "musicbrainz"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,134 @@
+{
+  "slug": "harvard-art-museums",
+  "name": "Harvard Art Museums API",
+  "provider": {
+    "name": "Harvard Art Museums",
+    "url": "https://harvardartmuseums.org",
+    "type": "academic"
+  },
+  "summary": "Collections of the Harvard Art Museums: objects, people, exhibitions, galleries and images, via a free-key REST API.",
+  "description": "A REST API over the data behind the museums' website. Resources include objects (with classifications, cultures, centuries, colours and image rendition URLs), people, exhibitions, publications, galleries and more, queried with Elasticsearch query-string syntax and field filters. A separate IIIF service exposes image manifests. A free key is required and use is limited to non-commercial purposes.",
+  "category": "art-museums",
+  "tags": [
+    "museum",
+    "art",
+    "collections",
+    "objects",
+    "images",
+    "iiif",
+    "artists"
+  ],
+  "links": {
+    "homepage": "https://harvardartmuseums.org/collections/api",
+    "docs": "https://github.com/harvardartmuseums/api-docs",
+    "terms": "https://harvardartmuseums.org/collections/api",
+    "signup": "https://harvardartmuseums.org/collections/api"
+  },
+  "api": {
+    "base_url": "https://api.harvardartmuseums.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "apikey",
+      "notes": "Every request needs the apikey parameter; bad or missing keys return 401 Unauthorized."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not given in the docs pages fetched."
+    },
+    "pagination": "page",
+    "max_page_size": 100
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/object",
+      "summary": "Search and list objects",
+      "params": [
+        "apikey",
+        "q",
+        "classification",
+        "century",
+        "culture",
+        "hasimage",
+        "size",
+        "page",
+        "sort",
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/person",
+      "summary": "People (artists and others)",
+      "params": [
+        "apikey",
+        "q",
+        "size",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/exhibition",
+      "summary": "Exhibitions",
+      "params": [
+        "apikey",
+        "q",
+        "size",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/gallery",
+      "summary": "Galleries",
+      "params": [
+        "apikey",
+        "size",
+        "page"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.harvardartmuseums.org/object?size=1",
+    "response_excerpt": "Unauthorized"
+  },
+  "data": {
+    "license": {
+      "name": "Harvard Art Museums API terms: non-commercial use only; individual objects have their own image rights",
+      "url": "https://harvardartmuseums.org/collections/api",
+      "attribution_required": true,
+      "commercial_use": "prohibited"
+    },
+    "coverage": {
+      "geographic": "Harvard Art Museums collections",
+      "temporal": "Antiquity to contemporary"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Per the docs, a keyed response has info (totalrecords, pages, page, next, prev), records and optional aggregations; the default page size is 10, up to 100 via size. Filter fields accept ids or names, and q takes Elasticsearch query-string syntax. Always include apikey.",
+  "caveats": [
+    "Only the unauthenticated 401 (text/plain 'Unauthorized') was observed; parameters and response shape come from the public GitHub docs.",
+    "The docs say the API is for non-commercial use only and require a link back to the museum page for content shown on your site.",
+    "Rate limits were not found on the pages fetched."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 401,
+    "with_key": false,
+    "notes": "Unauthenticated request; 401 observed, no key was available."
+  },
+  "related": [
+    "artic",
+    "cleveland-museum-of-art",
+    "met-museum"
+  ],
+  "added": "2026-11-11"
+}

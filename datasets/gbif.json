@@ -116,5 +116,9 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "obis",
+    "worms-rest"
+  ],
   "added": "2026-11-11"
 }

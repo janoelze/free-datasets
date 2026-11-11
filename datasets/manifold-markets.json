@@ -1,0 +1,137 @@
+{
+  "slug": "manifold-markets",
+  "name": "Manifold Markets API",
+  "provider": {
+    "name": "Manifold Markets",
+    "url": "https://manifold.markets",
+    "type": "company"
+  },
+  "summary": "Free REST API for Manifold, a play-money prediction market: questions, probabilities, bets, comments, users and topics.",
+  "description": "Public GET endpoints list and search markets (binary, multiple choice, numeric and perpetual markets), return probabilities, bets, comments, positions, users and topics (groups). Reads need no key; placing bets or creating markets needs an API key from the user profile. Times are Unix milliseconds.",
+  "category": "finance-markets",
+  "tags": [
+    "prediction-markets",
+    "forecasting",
+    "manifold",
+    "markets",
+    "bets",
+    "play-money"
+  ],
+  "links": {
+    "homepage": "https://manifold.markets",
+    "docs": "https://docs.manifold.markets/api",
+    "terms": "https://manifold.markets/terms"
+  },
+  "api": {
+    "base_url": "https://api.manifold.markets/v0",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "Reads need no auth. Writes use 'Authorization: Key {api_key}' as the docs describe (not tested here)."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "500 requests per minute per IP, per the docs.",
+      "requests": 500,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/markets",
+      "summary": "List markets, newest first",
+      "params": [
+        "limit",
+        "before",
+        "userId",
+        "groupId"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search-markets",
+      "summary": "Search markets",
+      "params": [
+        "term",
+        "sort",
+        "filter",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/market/{id}",
+      "summary": "One market with its details"
+    },
+    {
+      "method": "GET",
+      "path": "/market/{id}/prob",
+      "summary": "Current probability"
+    },
+    {
+      "method": "GET",
+      "path": "/bets",
+      "summary": "Recent bets",
+      "params": [
+        "limit",
+        "contractId",
+        "username",
+        "before",
+        "after"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users",
+      "summary": "List users",
+      "params": [
+        "limit",
+        "before"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.manifold.markets/v0/markets?limit=2",
+    "response_excerpt": "[\n  {\n    \"id\": \"zz6u5LQhhg\",\n    \"creatorUsername\": \"TR6g9s\",\n    \"createdTime\": 1794411661356,\n    \"closeTime\": 1794959940000,\n    \"question\": \"German Gref will mention AI more than twenty times at the Investor Day\",\n    \"slug\": \"german-gref-will-mention-ai-more-th\",\n    \"url\": \"https://manifold.markets/TR6g9s/german-gref-will-mention-ai-more-th\",\n    \"probability\": 0.84,\n    \"outcomeType\": \"BINARY\",\n    \"mechanism\": \"cpmm-1\",\n    \"volume\": 12.98,\n    \"isResolved\": false\n  },\n  ...\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Manifold Terms of Service (API licensing section)",
+      "url": "https://manifold.markets/terms",
+      "attribution_required": false,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global, play-money (mana) markets"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Page /markets backwards with before=<last id>. Use /search-markets for topic search and /market/{id} for the full object (answers, pool). outcomeType varies (BINARY, MULTIPLE_CHOICE, PERP and others), so check it before reading probability. Currency is play-money mana, not dollars.",
+  "caveats": [
+    "The docs state that using API data to train AI/ML models for commercial purposes requires a data license from Manifold; research and non-commercial use are permitted.",
+    "Scraping outside the API and circumventing the rate limit are prohibited by the terms summary in the docs.",
+    "The old host manifold.markets/api is being retired in favour of api.manifold.markets."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key. /search-markets, /slug/{slug} and /market/{id} also returned 200; CORS * seen on /markets."
+  },
+  "related": [
+    "kalshi",
+    "polymarket"
+  ],
+  "added": "2026-11-11"
+}

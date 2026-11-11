@@ -1,0 +1,134 @@
+{
+  "slug": "mastodon-public-api",
+  "name": "Mastodon Public API (mastodon.social)",
+  "provider": {
+    "name": "Mastodon",
+    "url": "https://joinmastodon.org",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless read endpoints for trends, hashtag timelines, directory and search on a Mastodon server, tested on mastodon.social.",
+  "description": "Every Mastodon server exposes the same REST API under /api/v1 and /api/v2. On mastodon.social, trending hashtags and links, hashtag timelines, the profile directory, hashtag search and server info work without a token. Each server decides which endpoints are public: the global public timeline on mastodon.social now demands authentication. Because Mastodon is federated, the base URL can be swapped for any other instance, whose settings may differ.",
+  "category": "news-social",
+  "tags": [
+    "social",
+    "mastodon",
+    "fediverse",
+    "hashtags",
+    "trends",
+    "timelines"
+  ],
+  "links": {
+    "homepage": "https://joinmastodon.org/",
+    "docs": "https://docs.joinmastodon.org/api/",
+    "terms": "https://docs.joinmastodon.org/api/guidelines/",
+    "source": "https://github.com/mastodon/mastodon"
+  },
+  "api": {
+    "base_url": "https://mastodon.social/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Trends, hashtag timelines, directory, hashtag search and instance info worked without a token on mastodon.social. Posting, home timelines and the public timeline need an OAuth token there."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Documented: all endpoints can be called 300 times within 5 minutes per IP. The x-ratelimit-limit header showed 300 on the example."
+    },
+    "pagination": "link-header"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/v1/trends/tags",
+      "summary": "Trending hashtags with 7-day usage history",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/trends/links",
+      "summary": "Trending links",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/timelines/tag/{hashtag}",
+      "summary": "Public posts carrying a hashtag",
+      "params": [
+        "limit",
+        "max_id",
+        "min_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v2/search",
+      "summary": "Search; type=hashtags worked without a token",
+      "params": [
+        "q",
+        "type",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/directory",
+      "summary": "Profile directory of discoverable accounts",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/instance",
+      "summary": "Server metadata and rules",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://mastodon.social/api/v1/trends/tags?limit=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\n    \"id\": \"21990286\",\n    \"name\": \"FallFoliageASong\",\n    \"url\": \"https://mastodon.social/tags/fallfoliageasong\",\n    \"history\": [\n      {\n        \"day\": \"1794355200\",\n        \"accounts\": \"69\",\n        \"uses\": \"235\"\n      },\n      \"...\"\n    ]\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated; posts are user-generated content, per-instance terms apply",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, federated",
+      "temporal": "Recent posts and trends on the queried server"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Follow the next link in the Link response header (max_id based) to page timelines. Counts in history entries are strings and day is a Unix timestamp. To query another instance, change the host and retest, since admins can restrict endpoints. The tag timeline includes posts federated from other servers.",
+  "caveats": [
+    "GET /v1/timelines/public returned 422 'This method requires an authenticated user' on mastodon.social.",
+    "Behaviour differs per server (auth requirements, limits, enabled trends); this record only covers what was seen on mastodon.social.",
+    "No OpenAPI spec was checked."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials on mastodon.social; tag timeline, trends/links, v2 search, directory and instance also returned 200."
+  },
+  "related": [
+    "bluesky-appview",
+    "lemmy-api"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,126 @@
+{
+  "slug": "kalshi",
+  "name": "Kalshi Trade API (public market data)",
+  "provider": {
+    "name": "Kalshi",
+    "url": "https://kalshi.com",
+    "type": "company"
+  },
+  "summary": "Keyless read access to Kalshi, a CFTC-regulated prediction market: events, series, markets, trades and order books.",
+  "description": "The public part of the Kalshi Trade API v2 exposes exchange status, series, events, markets, recent trades and order books for event contracts on economics, politics, weather, sports and more. Market data endpoints answered without authentication from a server-side client; trading and portfolio endpoints need signed API keys. Prices are quoted in dollars between 0 and 1.",
+  "category": "finance-markets",
+  "tags": [
+    "prediction-markets",
+    "kalshi",
+    "order-book",
+    "events",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://kalshi.com",
+    "docs": "https://docs.kalshi.com/",
+    "openapi": "https://docs.kalshi.com/openapi.yaml"
+  },
+  "api": {
+    "base_url": "https://api.elections.kalshi.com/trade-api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Market data GETs answered 200 without credentials. Authenticated endpoints (portfolio, orders) use signed key headers; not tested."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Token-bucket limits per account tier are documented for authenticated requests; the keyless limit is not stated. 429 responses carry no Retry-After or X-RateLimit headers, so back off exponentially."
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/exchange/status",
+      "summary": "Exchange and trading status"
+    },
+    {
+      "method": "GET",
+      "path": "/events",
+      "summary": "List events",
+      "params": [
+        "limit",
+        "cursor",
+        "status",
+        "series_ticker"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/markets",
+      "summary": "List markets",
+      "params": [
+        "limit",
+        "cursor",
+        "status",
+        "event_ticker",
+        "series_ticker"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/markets/trades",
+      "summary": "Recent trades",
+      "params": [
+        "limit",
+        "cursor",
+        "ticker"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/markets/{ticker}/orderbook",
+      "summary": "Order book for one market"
+    },
+    {
+      "method": "GET",
+      "path": "/series",
+      "summary": "List series (large, see caveats)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.elections.kalshi.com/trade-api/v2/events?limit=1&status=open",
+    "response_excerpt": "{\n  \"cursor\": \"CgYI8Oj1nQ8SDUtYRUxPTk1BUlMtOTk\",\n  \"events\": [\n    {\n      \"category\": \"Science and Technology\",\n      \"event_ticker\": \"KXELONMARS-99\",\n      \"series_ticker\": \"KXELONMARS\",\n      \"mutually_exclusive\": false,\n      \"sub_title\": \"Before 2099\",\n      \"title\": \"Will Elon Musk visit Mars in his lifetime?\",\n      \"settlement_sources\": [ ... ]\n    }\n  ],\n  \"milestones\": []\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Kalshi developer terms (not re-confirmed; the terms page returned 429 during the check)",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "US-regulated exchange; global read access",
+      "temporal": "Open and historical markets"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Hierarchy is series, then event, then market; tickers like KXELONMARS-99 are the keys. Page with the returned cursor. Dollar prices are strings such as \"0.4100\"; *_fp fields are fixed-point quantities. Default /markets listings are dominated by auto-generated combo (KXMVE...) markets, so filter by series_ticker or event_ticker when looking for a specific topic.",
+  "caveats": [
+    "Any request carrying an Origin header was answered 403 by CloudFront, so browser JavaScript cannot call the API directly (CORS unusable); server-side calls work.",
+    "/series ignored limit=1 and returned about 20 MB; avoid unfiltered calls.",
+    "Responses to requests without an Origin header were 200 with the identifying User-Agent, a missing User-Agent, and curl's default.",
+    "The docs also describe a separate demo environment; this record covers only the production host api.elections.kalshi.com."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed with no credentials and no Origin header: 200. With an Origin header the same URL returned 403 (hence cors none). /exchange/status, /markets, /markets/trades and /orderbook also returned 200 keyless."
+  },
+  "related": [
+    "manifold-markets",
+    "polymarket"
+  ],
+  "added": "2026-11-11"
+}

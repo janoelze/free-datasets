@@ -1,0 +1,97 @@
+{
+  "slug": "urlscan-search",
+  "name": "urlscan.io Search API",
+  "provider": {
+    "name": "urlscan GmbH",
+    "url": "https://urlscan.io",
+    "type": "company"
+  },
+  "summary": "Search the public archive of urlscan.io website scans by domain, IP, hash and other fields; keyless at low volume.",
+  "description": "urlscan.io scans web pages in a sandbox browser and publishes the results of public scans. The Search API queries that archive with a Lucene-like syntax (domain:, page.domain:, ip:, hash and others) and returns per-scan summaries with the page URL, server, IP, status, screenshot URL and a link to the full result. It is used for phishing and brand-abuse research and for mapping what a site loads.",
+  "category": "security",
+  "tags": [
+    "url-scanning",
+    "web-security",
+    "threat-intel",
+    "domains",
+    "phishing",
+    "screenshots"
+  ],
+  "links": {
+    "homepage": "https://urlscan.io/",
+    "docs": "https://urlscan.io/docs/api/",
+    "terms": "https://urlscan.io/terms/",
+    "signup": "https://urlscan.io/user/signup"
+  },
+  "api": {
+    "base_url": "https://urlscan.io/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "notes": "The search endpoint answered without a key. An account and API key exist for submitting scans and higher quotas (see the docs; not tested here). Result, DOM and pro endpoints returned 403 'not logged in' without credentials."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Response headers on the keyless example showed a search limit of 30 requests per minute per IP (x-rate-limit-limit 30, scope ip-address, window minute), with remaining count and reset time.",
+      "requests": 30,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search/",
+      "summary": "Search public scans",
+      "params": [
+        "q",
+        "size",
+        "search_after"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://urlscan.io/api/v1/search/?q=domain:example.org&size=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"results\": [\n    {\n      \"task\": {\n        \"visibility\": \"public\",\n        \"method\": \"manual\",\n        \"domain\": \"example.org\",\n        \"time\": \"2026-11-11T10:11:48.863Z\",\n        \"uuid\": \"01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f\",\n        \"url\": \"https://example.org/\"\n      },\n      \"stats\": {\n        \"uniqIPs\": 1,\n        \"dataLength\": 2540\n      },\n      \"page\": {\n        \"server\": \"cloudflare\",\n        \"ip\": \"172.66.157.237\",\n        \"domain\": \"example.org\",\n        \"url\": \"https://example.org/\",\n        \"status\": \"200\"\n      },\n      \"_id\": \"01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f\",\n      \"result\": \"https://urlscan.io/api/v1/result/01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f/\",\n      \"screenshot\": \"https://urlscan.io/screenshots/01a1ca17-8b1c-73eb-85e1-c6eb7b252d2f.png\"\n    }\n  ],\n  \"total\": 266,\n  \"took\": 20,\n  \"has_more\": false\n}"
+  },
+  "data": {
+    "license": {
+      "name": "urlscan.io terms of service; commercial customers have separate terms",
+      "url": "https://urlscan.io/terms/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (sites scanned by users and automated feeds)",
+      "temporal": "Rolling archive; scans from the same day present at check"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Each hit has _id (the scan uuid) and a result URL for the full JSON, but the result call returned 403 without a key in testing. Use the search fields (task, page, stats) for triage and the screenshot URL for visuals. Page deeper by passing the sort values of the last hit as search_after (common usage; not re-confirmed). Check the x-rate-limit-* headers.",
+  "caveats": [
+    "The Search API only covers public scans.",
+    "The 30 per minute search limit was read from response headers at check; account tiers differ and were not tested.",
+    "No Access-Control-Allow-Origin header was sent, so call it server-side.",
+    "No OpenAPI file was found at the paths tried; the docs site is a single-page app."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key; the result, DOM and phishfeed endpoints returned 403 without login."
+  },
+  "related": [
+    "cisa-kev",
+    "crt-sh"
+  ],
+  "added": "2026-11-11"
+}

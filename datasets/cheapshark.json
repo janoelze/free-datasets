@@ -1,0 +1,123 @@
+{
+  "slug": "cheapshark",
+  "name": "CheapShark Game Deals API",
+  "provider": {
+    "name": "CheapShark",
+    "url": "https://www.cheapshark.com",
+    "type": "individual"
+  },
+  "summary": "Free API aggregating PC game prices and deals across Steam, GOG, Humble, Fanatical and other stores, with historical lows.",
+  "description": "CheapShark tracks current sale and normal prices of PC games across many digital stores. Endpoints list deals with filters (store, price range, Metacritic and Steam rating), look up a game with all its current store prices and cheapest price ever, list the stores and create price alerts. No key is needed.",
+  "category": "fun-games",
+  "tags": [
+    "video-games",
+    "deals",
+    "prices",
+    "steam",
+    "game-stores",
+    "metacritic"
+  ],
+  "links": {
+    "homepage": "https://www.cheapshark.com",
+    "docs": "https://apidocs.cheapshark.com/"
+  },
+  "api": {
+    "base_url": "https://www.cheapshark.com/api/1.0",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "An empty User-Agent returned 400 asking for a descriptive one; the default curl User-Agent returned 400 on /games too."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched."
+    },
+    "pagination": "page",
+    "max_page_size": 60
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/deals",
+      "summary": "Current deals with filters and sorting",
+      "params": [
+        "storeID",
+        "upperPrice",
+        "onSale",
+        "sortBy",
+        "pageNumber",
+        "pageSize",
+        "title"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/games",
+      "summary": "Search games by title or steamAppID",
+      "params": [
+        "title",
+        "steamAppID",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/games?id={gameID}",
+      "summary": "All store deals and cheapest price ever for one game",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stores",
+      "summary": "List of tracked stores"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.cheapshark.com/api/1.0/games?title=batman&limit=2",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\n    \"gameID\": \"612\",\n    \"steamAppID\": null,\n    \"cheapest\": \"2.59\",\n    \"cheapestDealID\": \"0f%2B4gT2VVUn4UcmFzPxXnuqoXKAOYoJ5mpFZRWNyohc%3D\",\n    \"external\": \"LEGO Batman\",\n    \"internalName\": \"LEGOBATMAN\",\n    \"thumb\": \"https://cdn.fanatical.com/production/product/400x225/105f34ca-7757-47a...\"\n  },\n  {\n    \"gameID\": \"167613\",\n    \"steamAppID\": null,\n    \"cheapest\": \"3.29\",\n    \"cheapestDealID\": \"2XSMlnYtPjLoKI9g2vhZch9deHZ%2BE%2BpL7IoBprkWtgM%3D\",\n    \"external\": \"LEGO Batman 2\",\n    \"internalName\": \"LEGOBATMAN2\",\n    \"thumb\": \"https://cdn.fanatical.com/production/product/400x225/4cf0701e-77bf-453...\"\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated; free API, no data license found",
+      "url": "https://apidocs.cheapshark.com/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (store-specific regional prices)"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Search /games?title= first to get a gameID, then /games?id= for per-store deals. Prices are strings in USD. dealID values are URL-encoded; pass them on as returned.",
+  "caveats": [
+    "Deal listing can be slow (3.3 s for pageSize=2 today).",
+    "/deals returns at most 60 rows per page (pageSize=100 returned 60) and an x-total-page-count header.",
+    "Refresh cadence is not documented; update_frequency is a best guess.",
+    "The www.cheapshark.com/redirect link for a dealID answered 403 to curl, so only browsers can follow deal links."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key."
+  },
+  "related": [
+    "steam-store-web-api"
+  ],
+  "added": "2026-11-11"
+}

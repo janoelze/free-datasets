@@ -1,0 +1,139 @@
+{
+  "slug": "radio-browser",
+  "name": "Radio Browser API",
+  "provider": {
+    "name": "Radio Browser community",
+    "url": "https://www.radio-browser.info",
+    "type": "community"
+  },
+  "summary": "Community directory of internet radio stations with stream URLs, tags, countries, languages, codecs and click statistics.",
+  "description": "Search and list tens of thousands of internet radio and TV streams by name, tag, country, language, codec or bitrate, with resolved stream URLs, favicons, votes and recent click counts. Lookup lists for countries, languages and tags give station counts. Several redundant servers (resolved via all.api.radio-browser.info) expose the same data in JSON, XML and playlist formats.",
+  "category": "media-entertainment",
+  "tags": [
+    "radio",
+    "streams",
+    "stations",
+    "audio",
+    "directory",
+    "music"
+  ],
+  "links": {
+    "homepage": "https://www.radio-browser.info",
+    "docs": "https://api.radio-browser.info/",
+    "source": "https://github.com/segler-alex/radiobrowser-api-rust"
+  },
+  "api": {
+    "base_url": "https://de1.api.radio-browser.info/json",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented. The docs ask for a descriptive User-Agent (appname/appversion) so the maintainer can contact heavy users."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/stations/search",
+      "summary": "Search stations by name, tag, country, language, codec, bitrate",
+      "params": [
+        "name",
+        "tag",
+        "countrycode",
+        "language",
+        "codec",
+        "order",
+        "reverse",
+        "hidebroken",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stations/bycountrycodeexact/{code}",
+      "summary": "Stations for one ISO 3166-1 alpha-2 country",
+      "params": [
+        "order",
+        "reverse",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/countries",
+      "summary": "Countries with station counts",
+      "params": [
+        "order",
+        "reverse",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tags",
+      "summary": "Tags with station counts",
+      "params": [
+        "order",
+        "reverse",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stats",
+      "summary": "Database statistics: station, tag, language and country counts",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://de1.api.radio-browser.info/json/stations/search?name=jazz&limit=1&order=clickcount&reverse=true&hidebroken=true",
+    "response_excerpt": "[{\"changeuuid\":\"c7162475-4f4c-41ed-be3b-19ad8f87e4ac\",\"stationuuid\":\"d28420a4-eccf-47a2-ace1-088c7e7cb7e0\",\"name\":\"101 SMOOTH JAZZ\",\"url\":\"http://www.101smoothjazz.com/101-smoothjazz.m3u\",\"url_resolved\":\"http://jking.cdnstream1.com/b22139_128mp3\",\"homepage\":\"http://101smoothjazz.com/\",\"tags\":\"easy listening,jazz,smooth jazz\",\"country\":\"The United States Of America\",\"countrycode\":\"US\",\"language\":\"english\",\"votes\":91519,\"codec\":\"MP3\",\"bitrate\":192,\"lastcheckok\":1,\"clickcount\":817,\"geo_lat\":39.34810449643775,\"geo_long\":-103.974609375}]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the docs pages fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (224 countries and territories counted at check)",
+      "temporal": "Community edited in real time; stream health re-checked continuously"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Resolve a server first: query all.api.radio-browser.info (DNS) or GET https://all.api.radio-browser.info/json/servers and pick one at random, rather than hard-coding de1. Send a descriptive User-Agent. Use url_resolved (not url) to play, filter with hidebroken=true, and call /json/url/{stationuuid} when playing so the click is counted. The tags field is one comma-separated string.",
+  "caveats": [
+    "Individual servers can be down; the directory is mirrored, so retry on another host from /json/servers.",
+    "Stream URLs and metadata are user supplied and can be wrong or stale despite automatic checks (lastcheckok).",
+    "A data license was not confirmed from the pages fetched."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed against de1 without a key; /json/stats reported 52685 stations at check."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=48852717",
+      "title": "Internet Radio Station Directory",
+      "points": 4
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=40486902",
+      "title": "Internet Radio Stations – Public Domain Data",
+      "points": 4
+    }
+  ],
+  "added": "2026-11-11"
+}

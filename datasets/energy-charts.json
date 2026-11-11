@@ -1,0 +1,144 @@
+{
+  "slug": "energy-charts",
+  "name": "Energy-Charts API",
+  "provider": {
+    "name": "Fraunhofer Institute for Solar Energy Systems ISE",
+    "url": "https://www.ise.fraunhofer.de/en.html",
+    "type": "academic"
+  },
+  "summary": "Keyless JSON API for electricity generation, load, installed capacity, day-ahead prices, cross-border flows and renewable shares for Germany and Europe.",
+  "description": "The Energy-Charts API from Fraunhofer ISE backs the energy-charts.info site. Endpoints return time series of public net generation by source, total load, installed power, day-ahead spot prices per bidding zone, cross-border electricity trading, grid frequency, a traffic-light signal for green power and renewable share forecasts. Many countries and bidding zones are supported; v1 and /v2 variants of each endpoint exist.",
+  "category": "energy",
+  "tags": [
+    "electricity",
+    "energy-mix",
+    "day-ahead-prices",
+    "renewables",
+    "germany",
+    "europe",
+    "solar",
+    "wind"
+  ],
+  "links": {
+    "homepage": "https://energy-charts.info/",
+    "docs": "https://api.energy-charts.info/",
+    "terms": "https://energy-charts.info/publishing-notes.html",
+    "openapi": "https://api.energy-charts.info/openapi.json"
+  },
+  "api": {
+    "base_url": "https://api.energy-charts.info",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "restricted",
+    "rate_limit": {
+      "summary": "Per client IP and per endpoint (token bucket): 2 requests per minute with a burst of 4; /price 2 per minute with a burst of 2; /signal 20 per minute with a burst of 40. Limits can drop under load; HTTP 429 carries Retry-After.",
+      "requests": 2,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/public_power",
+      "summary": "Public net electricity generation and load by source",
+      "params": [
+        "country",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/price",
+      "summary": "Day-ahead spot price for a bidding zone",
+      "params": [
+        "bzn",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/installed_power",
+      "summary": "Installed capacity by technology",
+      "params": [
+        "country",
+        "time_step",
+        "installation_decommission"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/signal",
+      "summary": "Traffic-light signal for green electricity use",
+      "params": [
+        "country",
+        "postal_code"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ren_share_forecast",
+      "summary": "Forecast of the renewable share of load",
+      "params": [
+        "country"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/cbet",
+      "summary": "Cross-border electricity trading",
+      "params": [
+        "country",
+        "start",
+        "end"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.energy-charts.info/price?bzn=DE-LU&start=2026-11-10&end=2026-11-10",
+    "response_excerpt": "{\"license_info\":\"CC BY 4.0 (creativecommons.org/licenses/by/4.0) from Bundesnetzagentur | SMARD.de\",\"unix_seconds\":[1794265200,1794266100,1794267000,...],\"price\":[271.33,268.48,262.82,...],\"unit\":\"EUR / MWh\",\"deprecated\":false}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 unless stated otherwise (price data attributed to Bundesnetzagentur | SMARD.de)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://energy-charts.info/publishing-notes.html",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Germany and other European countries and bidding zones",
+      "temporal": "Historical to short-term forecasts"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Docs and OpenAPI are in English. Timestamps are Unix seconds marking the start of each period (15 minutes for public_power and price on 2026-11-10). A date-only start/end means the full local day. public_power returns a production_types list of {name, data} series aligned to unix_seconds. Use bzn=DE-LU for the German price zone. Honour Retry-After on 429 and cache.",
+  "caveats": [
+    "The rate limit is very low (2 requests per minute per endpoint); batch by wide date ranges and cache.",
+    "Access-Control-Allow-Origin was https://www.api.energy-charts.info for both test origins, so browser calls from other sites will fail; call from a server.",
+    "Higher limits for commercial access are by arrangement with Fraunhofer ISE (contact in the API description).",
+    "The CC BY 4.0 licence applies 'unless stated otherwise'; check license_info in each response."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; no User-Agent needed."
+  },
+  "related": [
+    "awattar-marketdata",
+    "carbon-intensity-uk",
+    "smard"
+  ],
+  "added": "2026-11-11"
+}

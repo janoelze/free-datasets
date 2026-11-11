@@ -118,5 +118,8 @@
       "points": 3
     }
   ],
+  "related": [
+    "openstreetmap-api"
+  ],
   "added": "2026-11-11"
 }

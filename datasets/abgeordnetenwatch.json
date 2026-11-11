@@ -1,0 +1,130 @@
+{
+  "slug": "abgeordnetenwatch",
+  "name": "abgeordnetenwatch.de API",
+  "provider": {
+    "name": "abgeordnetenwatch.de (Parlamentwatch e.V.)",
+    "url": "https://www.abgeordnetenwatch.de/",
+    "type": "nonprofit"
+  },
+  "summary": "CC0 JSON API on German parliamentarians: politicians, mandates, parliaments, roll-call votes, polls, constituencies, side jobs and citizen questions.",
+  "description": "The abgeordnetenwatch.de API exposes politicians at federal, state and EU level with party, birth year and links to Wikidata and Bundestag ids, their candidacies and mandates per parliament period, committees, constituencies, roll-call votes and polls, and disclosed side jobs. There were 18 parliaments and 36,574 politician records at check. Entities link to each other through api_url references.",
+  "category": "government-politics",
+  "tags": [
+    "germany",
+    "parliament",
+    "politicians",
+    "votes",
+    "bundestag",
+    "landtage",
+    "transparency"
+  ],
+  "links": {
+    "homepage": "https://www.abgeordnetenwatch.de/",
+    "docs": "https://www.abgeordnetenwatch.de/api",
+    "terms": "https://creativecommons.org/publicdomain/zero/1.0/deed.de"
+  },
+  "api": {
+    "base_url": "https://www.abgeordnetenwatch.de/api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in what was fetched."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/parliaments",
+      "summary": "Parliaments (Bundestag, Landtage, EU)"
+    },
+    {
+      "method": "GET",
+      "path": "/politicians",
+      "summary": "Politicians, filterable by name or party",
+      "params": [
+        "last_name",
+        "party",
+        "page",
+        "pager_limit",
+        "range_start",
+        "range_end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/candidacies-mandates",
+      "summary": "Candidacies and mandates per parliament period",
+      "params": [
+        "parliament_period",
+        "politician"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/polls",
+      "summary": "Roll-call votes and polls",
+      "params": [
+        "field_legislature"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/votes",
+      "summary": "Individual votes on a poll",
+      "params": [
+        "poll",
+        "mandate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sidejobs",
+      "summary": "Disclosed side jobs",
+      "params": [
+        "mandate"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.abgeordnetenwatch.de/api/v2/parliaments?range_end=1",
+    "response_excerpt": "{\"meta\":{\"abgeordnetenwatch_api\":{\"version\":\"2.10.0\",\"licence\":\"CC0 1.0\",\"licence_link\":\"https://creativecommons.org/publicdomain/zero/1.0/deed.de\"},\"status\":\"ok\",\"result\":{\"count\":1,\"total\":18,\"range_start\":0,\"range_end\":1}},\"data\":[{\"id\":18,\"entity_type\":\"parliament\",\"label\":\"Schleswig-Holstein\",\"api_url\":\"https://www.abgeordnetenwatch.de/api/v2/parliaments/18\",\"label_external_long\":\"Landtag Schleswig-Holstein\",\"current_project\":{\"id\":138,\"label\":\"Schleswig-Holstein 2022 - 2027\",...}}]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0 (stated in every response meta block)",
+      "spdx": "CC0-1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Germany (Bundestag, Landtage) and German EU parliamentarians",
+      "temporal": "Current and past periods"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Docs and labels are in German. Paginate with page and pager_limit, or with range_start and range_end (range_end=1000 returned 1000 rows; the maximum was not established). The meta.result block gives count and total. Filters use the field names of the entity (see the per-entity docs under /api/entitaeten/).",
+  "caveats": [
+    "Name filters are exact-ish: last_name=Merz returned 6 politicians, mostly not the chancellor; filter by party or id as well.",
+    "No rate limit was found in the docs; the HTML docs page could not be text-searched reliably."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; politicians, candidacies-mandates, polls, votes, sidejobs and committees also answered 200."
+  },
+  "related": [
+    "uk-parliament-members"
+  ],
+  "added": "2026-11-11"
+}

@@ -116,7 +116,9 @@
   },
   "related": [
     "eurostat",
-    "fred"
+    "fred",
+    "ibge-sidra",
+    "our-world-in-data"
   ],
   "added": "2026-11-11"
 }

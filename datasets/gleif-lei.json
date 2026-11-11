@@ -1,0 +1,128 @@
+{
+  "slug": "gleif-lei",
+  "name": "GLEIF LEI API",
+  "provider": {
+    "name": "Global Legal Entity Identifier Foundation (GLEIF)",
+    "url": "https://www.gleif.org",
+    "type": "nonprofit"
+  },
+  "summary": "Free JSON:API access to the Global LEI Index: legal entity identifiers, names, addresses, status and ownership relationships.",
+  "description": "Searchable API over the GLEIF Golden Copy: LEI records with legal name, jurisdiction, legal and headquarters address, registration status and managing LOU, plus direct and ultimate parent relationships, LEI issuers, countries and ISIN-to-LEI and BIC-to-LEI mappings via filters. Names can be searched with fuzzy completion. Responses follow the JSON:API format with pagination.",
+  "category": "finance-markets",
+  "tags": [
+    "lei",
+    "legal-entities",
+    "company-data",
+    "identifiers",
+    "open-data",
+    "cc0"
+  ],
+  "links": {
+    "homepage": "https://www.gleif.org/en/lei-data/gleif-api",
+    "docs": "https://api.gleif.org/docs",
+    "terms": "https://www.gleif.org/en/meta/lei-data-terms-of-use",
+    "bulk_download": "https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy"
+  },
+  "api": {
+    "base_url": "https://api.gleif.org/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "60 requests per minute per user for all users, per the Postman-hosted API docs.",
+      "requests": 60,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/lei-records",
+      "summary": "Search and list LEI records",
+      "params": [
+        "filter[lei]",
+        "filter[entity.legalName]",
+        "filter[isin]",
+        "filter[bic]",
+        "page[number]",
+        "page[size]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lei-records/{lei}",
+      "summary": "One LEI record"
+    },
+    {
+      "method": "GET",
+      "path": "/fuzzycompletions",
+      "summary": "Fuzzy name completion",
+      "params": [
+        "field",
+        "q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lei-issuers",
+      "summary": "LEI issuing organizations",
+      "params": [
+        "page[size]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/countries",
+      "summary": "Countries",
+      "params": [
+        "page[size]"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.gleif.org/api/v1/lei-records/5493001KJTIIGC8Y1R12",
+    "response_excerpt": "{\n  \"meta\": {\"goldenCopy\": {\"publishDate\": \"2026-11-11T08:00:00Z\"}},\n  \"data\": {\n    \"type\": \"lei-records\",\n    \"id\": \"5493001KJTIIGC8Y1R12\",\n    \"attributes\": {\n      \"lei\": \"5493001KJTIIGC8Y1R12\",\n      \"entity\": {\n        \"legalName\": {\"name\": \"Bloomberg Finance L.P.\", \"language\": \"en\"},\n        \"jurisdiction\": \"US-DE\",\n        \"category\": \"GENERAL\",\n        \"status\": \"ACTIVE\",\n        \"legalAddress\": {\"city\": \"Wilmington\", \"region\": \"US-DE\", \"country\": \"US\", ...}\n      },\n      \"registration\": {\"status\": \"ISSUED\", \"initialRegistrationDate\": \"2012-12-06T20:55:22Z\", ...},\n      \"bic\": null\n    },\n    \"relationships\": { ... }\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0",
+      "spdx": "CC0-1.0",
+      "url": "https://www.gleif.org/en/meta/lei-data-terms-of-use",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global; about 3.49 million LEI records at check time",
+      "temporal": "Daily Golden Copy"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Search by exact filter[lei], filter[entity.legalName], filter[isin] or filter[bic]; use /fuzzycompletions when you only have a partial name and then fetch the record by LEI. Use page[size] to control size. The meta.pagination block gives totals. Content type is application/vnd.api+json. Bulk files (Golden Copy) are the better route for the whole index.",
+  "caveats": [
+    "page[size] is a bracketed parameter that must be URL-encoded (page%5Bsize%5D) in some clients.",
+    "A name filter matches the exact legal name; Siemens AG returned 14 records.",
+    "No OpenAPI document found; docs are a Postman collection.",
+    "A /isins endpoint returned 404; ISIN lookups work through lei-records?filter[isin]=."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless: 200. lei-records list (3,490,817 records), name filter, fuzzycompletions, lei-issuers, countries and filter[isin] also 200. CORS * on two origins."
+  },
+  "related": [
+    "openfigi",
+    "openiban",
+    "sec-edgar"
+  ],
+  "added": "2026-11-11"
+}

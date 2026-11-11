@@ -1,0 +1,142 @@
+{
+  "slug": "listenbrainz",
+  "name": "ListenBrainz API",
+  "provider": {
+    "name": "MetaBrainz Foundation",
+    "url": "https://metabrainz.org",
+    "type": "nonprofit"
+  },
+  "summary": "Open listening-history database: site-wide and per-artist listening statistics, public user listens and MBID-keyed music metadata.",
+  "description": "ListenBrainz is the MetaBrainz scrobbling service. Its public endpoints serve site-wide top artists, releases, release groups and recordings per time range, listening-activity series, per-artist listeners, any user's public listens and artist metadata keyed by MusicBrainz IDs. Several endpoints (for example popularity and some recommendation calls) now answer 401 without a user token.",
+  "category": "media-entertainment",
+  "tags": [
+    "music",
+    "listening-history",
+    "scrobbles",
+    "statistics",
+    "charts",
+    "mbid"
+  ],
+  "links": {
+    "homepage": "https://listenbrainz.org",
+    "docs": "https://listenbrainz.readthedocs.io/en/latest/users/api/index.html",
+    "terms": "https://listenbrainz.org/data/",
+    "source": "https://github.com/metabrainz/listenbrainz-server"
+  },
+  "api": {
+    "base_url": "https://api.listenbrainz.org/1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "Public statistics, metadata and user-listens endpoints worked without a token. A user token (sent as 'Authorization: Token <token>') is needed to submit listens and for some endpoints, e.g. /popularity/top-recordings-for-artist returned 401 without one."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Documented: never more than one call per second per client. Responses carry X-RateLimit-Limit/Remaining/Reset headers (observed limit 30 with a roughly 10 second window).",
+      "requests": 1,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/stats/sitewide/artists",
+      "summary": "Top artists across all users for a time range",
+      "params": [
+        "count",
+        "offset",
+        "range"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stats/sitewide/listening-activity",
+      "summary": "Site-wide listen counts bucketed over a time range",
+      "params": [
+        "range"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stats/artist/{artist_mbid}/listeners",
+      "summary": "Top listeners of one artist",
+      "params": [
+        "range"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/metadata/artist/",
+      "summary": "Artist metadata and external links by MusicBrainz ID",
+      "params": [
+        "artist_mbids",
+        "inc"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/user/{user_name}/listens",
+      "summary": "Public listen history of a user",
+      "params": [
+        "count",
+        "max_ts",
+        "min_ts"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.listenbrainz.org/1/stats/sitewide/artists?count=2&range=this_week",
+    "response_excerpt": "{\"payload\":{\"artists\":[{\"artist_mbid\":\"0d79fe8e-ba27-4859-bb8c-2f255f346853\",\"artist_name\":\"BTS\",\"listen_count\":508450},{\"artist_mbid\":\"f09d2950-e3c6-47b2-b21c-2bad2cd3f616\",\"artist_name\":\"Agust D\",\"listen_count\":80971}],\"count\":2,\"from_ts\":1792368000,\"last_updated\":1792810697,\"offset\":0,\"range\":\"this_week\",\"to_ts\":1792972800,\"total_artist_count\":587333}}"
+  },
+  "data": {
+    "license": {
+      "name": "See the ListenBrainz data page; not re-confirmed",
+      "url": "https://listenbrainz.org/data/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (user submitted listens)",
+      "temporal": "Continuously updated; statistics ranges this_week, this_month, this_year, all_time and more"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Identify artists, releases and recordings by MusicBrainz IDs and join to the musicbrainz record for names and relationships. Statistics endpoints take a range parameter and return a payload object with from_ts/to_ts (Unix seconds). Keep to one call per second and watch X-RateLimit-Remaining.",
+  "caveats": [
+    "Some endpoints now require a user token (observed 401 on /popularity/top-recordings-for-artist with an explanatory message about AI scrapers).",
+    "Statistics are precomputed and refreshed periodically, see last_updated in each payload.",
+    "The old api.listenbrainz.org/openapi.json returned 410 Gone; a community OpenAPI file exists only in a third-party repository."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a token."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=38890018",
+      "title": "Show HN: ListenBrainz Year in Music 2023",
+      "points": 13
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=10236184",
+      "title": "ListenBrainz: Open-Data AudioScrobbler",
+      "points": 4
+    }
+  ],
+  "related": [
+    "cover-art-archive",
+    "musicbrainz"
+  ],
+  "added": "2026-11-11"
+}

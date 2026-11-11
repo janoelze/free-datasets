@@ -83,7 +83,8 @@
   },
   "related": [
     "ripestat",
-    "google-dns-doh"
+    "google-dns-doh",
+    "crt-sh"
   ],
   "added": "2026-11-11"
 }

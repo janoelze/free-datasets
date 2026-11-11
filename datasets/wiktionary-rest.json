@@ -1,0 +1,116 @@
+{
+  "slug": "wiktionary-rest",
+  "name": "Wiktionary REST API",
+  "provider": {
+    "name": "Wikimedia Foundation",
+    "url": "https://www.wikimedia.org",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless multilingual dictionary definitions from Wiktionary, grouped by language and part of speech.",
+  "description": "The Wikimedia REST API on en.wiktionary.org returns the definitions of a term in every language section Wiktionary holds for it, grouped by part of speech, with examples as HTML. The same host also serves page HTML and summaries, and other Wiktionary language editions expose the same routes under their own hostnames.",
+  "category": "language",
+  "tags": [
+    "dictionary",
+    "definitions",
+    "wiktionary",
+    "wikimedia",
+    "multilingual",
+    "etymology"
+  ],
+  "links": {
+    "homepage": "https://en.wiktionary.org",
+    "docs": "https://en.wiktionary.org/api/rest_v1/",
+    "terms": "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
+    "openapi": "https://en.wiktionary.org/api/rest_v1/?spec"
+  },
+  "api": {
+    "base_url": "https://en.wiktionary.org/api/rest_v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "html"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "A request with an empty User-Agent returned 403; the Wikimedia User-Agent policy asks for a descriptive agent with contact details."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched. Wikimedia asks for a descriptive User-Agent and low concurrency; generic agents can be throttled or blocked."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/page/definition/{term}",
+      "summary": "Definitions of a term, grouped by language code and part of speech",
+      "params": [
+        "term"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/page/html/{title}",
+      "summary": "Rendered page HTML for an entry",
+      "params": [
+        "title"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/page/summary/{title}",
+      "summary": "Short summary of an entry",
+      "params": [
+        "title"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://en.wiktionary.org/api/rest_v1/page/definition/test",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"en\": [\n    {\n      \"partOfSpeech\": \"Noun\",\n      \"language\": \"English\",\n      \"definitions\": [\n        {\"definition\": \"\"},\n        {\"definition\": \"A <a rel=\\\"mw:WikiLink\\\" href=\\\"/wiki/challenge#Noun\\\" title=\\\"challenge\\\">challenge</a>, <a ...>trial</a>.\\n\\n<ol>...</ol>\"}\n      ]\n    },\n    ...\n  ],\n  ...\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 4.0 (Wikimedia text; older text under CC BY-SA 3.0)",
+      "spdx": "CC-BY-SA-4.0",
+      "url": "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global; hundreds of languages",
+      "temporal": "Current revision"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Definitions are HTML strings with links and nested lists; strip tags before using them as plain text. The top-level keys are language codes (en, de, fr, ...), so look up a term and read the section you need. Terms are case sensitive; try the lower-case form.",
+  "caveats": [
+    "Definition text is HTML and may include an empty first definition.",
+    "Share-alike licensing applies to reused definitions.",
+    "Wikimedia is gradually moving older rest_v1 routes to newer paths, so this route may eventually change."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed with the descriptive User-Agent; no key exists."
+  },
+  "related": [
+    "datamuse",
+    "free-dictionary-api",
+    "wikipedia-api"
+  ],
+  "added": "2026-11-11"
+}

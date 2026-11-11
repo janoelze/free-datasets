@@ -1,0 +1,141 @@
+{
+  "slug": "binance-spot-market-data",
+  "name": "Binance Spot Market Data API",
+  "provider": {
+    "name": "Binance",
+    "url": "https://www.binance.com",
+    "type": "company"
+  },
+  "summary": "Keyless public market data from the Binance spot exchange: prices, order books, trades and candlesticks for all trading pairs.",
+  "description": "The data-api.binance.vision host serves only the public market-data endpoints of the Binance Spot REST API: exchangeInfo, tickers, order book depth, recent and aggregate trades and klines (candlesticks). No account or key is needed. It is the same API surface as api.binance.com minus trading and account endpoints.",
+  "category": "finance-markets",
+  "tags": [
+    "crypto",
+    "exchange",
+    "order-book",
+    "ohlc",
+    "candlesticks",
+    "prices",
+    "trades",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://www.binance.com",
+    "docs": "https://github.com/binance/binance-spot-api-docs",
+    "bulk_download": "https://data.binance.vision/",
+    "source": "https://github.com/binance/binance-spot-api-docs"
+  },
+  "api": {
+    "base_url": "https://data-api.binance.vision/api/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The market-data-only host needs no key; the docs list the endpoints available on it."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "exchangeInfo reports REQUEST_WEIGHT 6,000 per minute and RAW_REQUESTS 300,000 per 5 minutes per IP; each endpoint has a weight (response headers x-mbx-used-weight-1m show consumption).",
+      "requests": 6000,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/ticker/price",
+      "summary": "Latest price for one or all symbols",
+      "params": [
+        "symbol",
+        "symbols"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ticker/24hr",
+      "summary": "24-hour rolling statistics",
+      "params": [
+        "symbol",
+        "symbols"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/depth",
+      "summary": "Order book",
+      "params": [
+        "symbol",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/klines",
+      "summary": "Candlestick data",
+      "params": [
+        "symbol",
+        "interval",
+        "startTime",
+        "endTime",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/trades",
+      "summary": "Recent trades",
+      "params": [
+        "symbol",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/exchangeInfo",
+      "summary": "Symbols, filters and rate limits",
+      "params": [
+        "symbol"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data-api.binance.vision/api/v3/ticker/price?symbol=BTCUSDT",
+    "response_excerpt": "{\"symbol\": \"BTCUSDT\", \"price\": \"74032.06000000\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Binance terms of use (not re-confirmed for data reuse)",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global crypto spot markets on Binance",
+      "temporal": "Live data; klines history per symbol"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Symbols are concatenated pairs like BTCUSDT. Numbers are strings; klines are arrays: [openTime, open, high, low, close, volume, closeTime, quoteVolume, trades, ...]. For long history use startTime/endTime paging or the bulk dumps at data.binance.vision. Use data-api.binance.vision rather than api.binance.com for read-only work.",
+  "caveats": [
+    "Calling without a symbol on some endpoints returns every pair and carries a high request weight.",
+    "api.binance.com also answered 200 on /ping from the check host; the data-api host is the documented market-data-only alternative.",
+    "Weights vary per endpoint; check the x-mbx-used-weight-1m response header."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless. exchangeInfo, klines, depth and time also returned 200; CORS * on the example and on a second origin."
+  },
+  "related": [
+    "coinbase-exchange",
+    "coingecko",
+    "kraken-spot-rest"
+  ],
+  "added": "2026-11-11"
+}

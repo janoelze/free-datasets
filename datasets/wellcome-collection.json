@@ -1,0 +1,119 @@
+{
+  "slug": "wellcome-collection",
+  "name": "Wellcome Collection Catalogue API",
+  "provider": {
+    "name": "Wellcome Collection",
+    "url": "https://wellcomecollection.org",
+    "type": "nonprofit"
+  },
+  "summary": "Catalogue of Wellcome Collection's library, archives, images and digitised works on medicine and human culture.",
+  "description": "The Catalogue API serves works (books, archives, manuscripts, digitised items) and images with titles, descriptions, contributors, subjects, genres, languages and IIIF image locations. Filter by work type, availability, language, subjects and dates, and fetch single works or images by id. Wellcome-created metadata is CC0; items and their images carry their own licenses.",
+  "category": "art-museums",
+  "tags": [
+    "museum",
+    "library",
+    "archives",
+    "history-of-medicine",
+    "images",
+    "iiif",
+    "digitised-collections"
+  ],
+  "links": {
+    "homepage": "https://wellcomecollection.org",
+    "docs": "https://developers.wellcomecollection.org/docs/catalogue",
+    "terms": "https://developers.wellcomecollection.org/docs/catalogue"
+  },
+  "api": {
+    "base_url": "https://api.wellcomecollection.org/catalogue/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched."
+    },
+    "pagination": "page",
+    "max_page_size": 100
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/works",
+      "summary": "Search works",
+      "params": [
+        "query",
+        "workType",
+        "availabilities",
+        "languages",
+        "subjects.label",
+        "page",
+        "pageSize",
+        "include"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/works/{id}",
+      "summary": "One work with optional includes (items, subjects, contributors)",
+      "params": [
+        "include"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/images",
+      "summary": "Search digitised images",
+      "params": [
+        "query",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/images/{id}",
+      "summary": "One image",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.wellcomecollection.org/catalogue/v2/works?query=cat&pageSize=2",
+    "response_excerpt": "{\n  \"type\": \"ResultList\",\n  \"pageSize\": 2,\n  \"totalPages\": 1626,\n  \"totalResults\": 3251,\n  \"results\": [\n    {\n      \"id\": \"wt65n8pb\",\n      \"title\": \"Cat tongue, cross section.\",\n      \"description\": \"<p>Polarised light micrograph of a cross section of a cat tongue...</p>\",\n      \"workType\": {\"id\": \"q\", \"label\": \"Digital Images\"},\n      \"thumbnail\": {\"url\": \"https://iiif.wellcomecollection.org/thumbs/.../full/!200,200/0/default.jpg\", \"license\": {\"id\": \"cc-by\", \"label\": \"Attribution 4.0 International (CC BY 4.0)\"}},\n      \"availabilities\": [{\"id\": \"online\", \"label\": \"Online\"}]\n    },\n    ...\n  ],\n  \"nextPage\": \"https://api.wellcomecollection.org/catalogue/v2/works?pageSize=2&query=cat&page=2\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Wellcome-created metadata CC0; other data and images under per-item licenses",
+      "url": "https://developers.wellcomecollection.org/docs/catalogue",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global holdings, UK-based",
+      "temporal": "Antiquity to present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "pageSize must be 1 to 100 (101 returns 400). Follow nextPage for the next page. Descriptions are HTML. Each digital location carries a license object; use it for the images, and read item-level accessConditions before assuming open access. Add include=items,subjects,contributors on /works for more fields.",
+  "caveats": [
+    "No downloadable OpenAPI spec was found (catalogue/v2/swagger.json is 404); the docs site renders the reference with Redoc.",
+    "The docs say data created by Wellcome is CC0 but other data is not, and per-work licensing is still being clarified.",
+    "Descriptions contain HTML markup."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key."
+  },
+  "related": [
+    "europeana",
+    "smithsonian-open-access"
+  ],
+  "added": "2026-11-11"
+}

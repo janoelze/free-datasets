@@ -1,0 +1,146 @@
+{
+  "slug": "polymarket",
+  "name": "Polymarket Market Data APIs (Gamma, CLOB, Data)",
+  "provider": {
+    "name": "Polymarket",
+    "url": "https://polymarket.com",
+    "type": "company"
+  },
+  "summary": "Keyless read access to Polymarket prediction markets: events, markets, outcome prices, order books, price history and trades.",
+  "description": "Gamma API (gamma-api.polymarket.com) serves events, markets, tags, series, comments and search with outcome prices and volumes. The CLOB host (clob.polymarket.com) serves order books, midpoints and price history per outcome token, and the Data API (data-api.polymarket.com) serves trades and positions. Read endpoints need no key; trading endpoints need signed credentials and are out of scope here.",
+  "category": "finance-markets",
+  "tags": [
+    "prediction-markets",
+    "polymarket",
+    "order-book",
+    "time-series",
+    "real-time",
+    "events"
+  ],
+  "links": {
+    "homepage": "https://polymarket.com",
+    "docs": "https://docs.polymarket.com/",
+    "terms": "https://polymarket.com/tos",
+    "openapi": "https://docs.polymarket.com/api-spec/gamma-openapi.yaml"
+  },
+  "api": {
+    "base_url": "https://gamma-api.polymarket.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Read endpoints on gamma-api, clob and data-api answered without any credential."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Documented per 10 seconds: Gamma 4,000 requests general, 300 on /markets, 500 on /events, 900 on /markets plus /events listings; CLOB 9,000 general, 1,500 on /book and /price; Data API v2 800 general. Excess requests are throttled."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/markets",
+      "summary": "List markets with outcomes, prices, volume and CLOB token ids",
+      "params": [
+        "limit",
+        "offset",
+        "active",
+        "closed",
+        "order",
+        "ascending",
+        "slug",
+        "tag_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/events",
+      "summary": "List events (groups of markets)",
+      "params": [
+        "limit",
+        "offset",
+        "active",
+        "closed",
+        "tag_id",
+        "slug"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/public-search",
+      "summary": "Search events, tags and profiles",
+      "params": [
+        "q",
+        "limit_per_type"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://clob.polymarket.com/book",
+      "summary": "Order book for one outcome token",
+      "params": [
+        "token_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://clob.polymarket.com/prices-history",
+      "summary": "Price history for one outcome token",
+      "params": [
+        "market",
+        "interval",
+        "fidelity",
+        "startTs",
+        "endTs"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://data-api.polymarket.com/v2/trades",
+      "summary": "Recent trades",
+      "params": [
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://gamma-api.polymarket.com/markets?limit=2&active=true&closed=false",
+    "response_excerpt": "[\n  {\n    \"id\": \"559651\",\n    \"question\": \"Xi Jinping out before 2027?\",\n    \"conditionId\": \"0xa467b14d...\",\n    \"slug\": \"xi-jinping-out-before-2027\",\n    \"endDate\": \"2027-01-01T04:59:00Z\",\n    \"liquidity\": \"274372.95833\",\n    \"outcomes\": \"[\\\"Yes\\\", \\\"No\\\"]\",\n    \"outcomePrices\": \"[\\\"0.0145\\\", \\\"0.9855\\\"]\",\n    \"volume\": \"17169008.946739003\",\n    \"clobTokenIds\": \"[\\\"32338220190071351435772801779725302244575775216413325951443816017994629993401\\\", ...]\",\n    \"active\": true,\n    \"closed\": false\n  },\n  ...\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Polymarket Terms of Use (not re-confirmed for data reuse)",
+      "url": "https://polymarket.com/tos",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global event markets (politics, sports, crypto, culture)",
+      "temporal": "Markets from Polymarket's start to now; price history per token"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Start from /markets or /events and take clobTokenIds (a JSON-encoded string, parse it twice) to query the CLOB host. outcomes and outcomePrices are also JSON strings, in the same order as clobTokenIds. Use closed=false&active=true to skip resolved markets. Prices are probabilities between 0 and 1.",
+  "caveats": [
+    "Several numeric fields (liquidity, volume, outcomePrices) are strings, and arrays like outcomes are JSON-encoded strings inside the JSON.",
+    "The data-api v1 endpoints were retired on 2026-11-02 according to the docs banner; use the /v2 paths.",
+    "The docs banner announces that RTDS price feeds shut down on 2026-11-30.",
+    "Order placement is separate and needs signed credentials; this record covers read endpoints only."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without credentials. CLOB /book, /midpoint, /prices-history and data-api /v2/trades also returned 200 keyless; CORS * seen on all three hosts."
+  },
+  "related": [
+    "kalshi",
+    "manifold-markets"
+  ],
+  "added": "2026-11-11"
+}

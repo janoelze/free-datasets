@@ -1,0 +1,105 @@
+{
+  "slug": "tagesschau-api",
+  "name": "Tagesschau API (ARD news)",
+  "provider": {
+    "name": "ARD-aktuell (tagesschau.de)",
+    "url": "https://www.tagesschau.de",
+    "type": "nonprofit"
+  },
+  "summary": "JSON feed of current German news stories, videos and search results from tagesschau.de, free for private non-commercial use.",
+  "description": "The api2u endpoints behind the Tagesschau app return the latest news and breaking items, filterable by region and department (ressort), plus a search over articles and videos. Each item has an id, title, date, type (story or video), tags, a link to the web page and often a teaser image and video streams. Content is in German. The API is documented by the community bund.dev project rather than by ARD itself.",
+  "category": "news-social",
+  "tags": [
+    "news",
+    "germany",
+    "german",
+    "media",
+    "broadcast",
+    "videos"
+  ],
+  "links": {
+    "homepage": "https://www.tagesschau.de/",
+    "docs": "https://tagesschau.api.bund.dev/",
+    "terms": "https://www.tagesschau.de/creativecommons",
+    "openapi": "https://raw.githubusercontent.com/bundesAPI/tagesschau-api/main/openapi.yaml",
+    "source": "https://github.com/bundesAPI/tagesschau-api"
+  },
+  "api": {
+    "base_url": "https://www.tagesschau.de/api2u",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key or signup."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "The community OpenAPI description says more than 60 requests per hour is not permitted; the server sends cache-control max-age=291.",
+      "requests": 60,
+      "per": "hour"
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/news/",
+      "summary": "Current news and breaking items",
+      "params": [
+        "regions",
+        "ressort",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search/",
+      "summary": "Search stories and videos",
+      "params": [
+        "searchText",
+        "pageSize",
+        "resultPage"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.tagesschau.de/api2u/news/?pageSize=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"news\": [\n    {\n      \"sophoraId\": \"rbb-weniger-einschulungen-in-deutschland-vor-allem-auch-in-brandenburg-100\",\n      \"title\": \"Weniger Einschulungen in Deutschland, vor allem auch in Brandenburg\",\n      \"date\": \"2026-11-11T16:50:27.000+01:00\",\n      \"type\": \"story\",\n      \"tags\": [\n        {\n          \"tag\": \"rbb\"\n        },\n        {\n          \"tag\": \"Brandenburg\"\n        }\n      ],\n      \"detailsweb\": \"https://www.tagesschau.de/inland/regional/brandenburg/rbb-weniger-einschulungen-in-deutschland-vor-allem-auch-in-brandenburg-100.html\",\n      \"topline\": \"Brandenburg\",\n      \"firstSentence\": \"Die Zahl der Kinder, die neu eingeschult werden, geht in den meisten Bundeslaendern zurueck\",\n      \"...\": \"...\"\n    }\n  ],\n  \"regional\": [],\n  \"newStoriesCountLink\": \"\",\n  \"type\": \"news page\",\n  \"nextPage\": \"https://www.tagesschau.de/api2u/news?date=261110\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Private non-commercial use only; publication not allowed except content under the Tagesschau CC licence",
+      "url": "https://www.tagesschau.de/creativecommons",
+      "attribution_required": true,
+      "commercial_use": "prohibited"
+    },
+    "coverage": {
+      "geographic": "Germany and world news, German language",
+      "temporal": "Current news; items from the same day at check"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Items are polymorphic: check type (story or video) before reading fields; videos carry streams instead of body text. Page backwards with the nextPage URL returned by /news/ (a date-based link) and with resultPage in /search/. regions=1 returned items; other values were not explored. Keep calls well under 60 per hour and cache for about five minutes.",
+  "caveats": [
+    "This is the app backend (api2u) documented by the community; the official api2 path returned 403 and ARD gives no stability guarantee, hence status unstable.",
+    "The usage note in the community spec limits use to private non-commercial purposes and forbids publishing the content; read tagesschau.de terms before reuse.",
+    "/homepage and /channels returned a 308 redirect to the same path without a trailing slash."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials; /news/ with regions and ressort, and /search/ also returned 200."
+  },
+  "related": [
+    "gdelt-doc-api"
+  ],
+  "added": "2026-11-11"
+}

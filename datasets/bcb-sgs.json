@@ -1,0 +1,98 @@
+{
+  "slug": "bcb-sgs",
+  "name": "Banco Central do Brasil SGS time series API",
+  "provider": {
+    "name": "Banco Central do Brasil",
+    "url": "https://www.bcb.gov.br/",
+    "type": "government"
+  },
+  "summary": "Thousands of Brazilian economic and financial time series (Selic, inflation, FX, credit, activity) from the central bank SGS, by series code as JSON or CSV.",
+  "description": "The Sistema Gerenciador de Séries Temporais (SGS) holds interest rates, price indices, exchange rates, monetary aggregates, credit and activity indicators. The API at api.bcb.gov.br returns a series by numeric code, either the full range, a date window or the last N observations, in JSON or CSV.",
+  "category": "economics-statistics",
+  "tags": [
+    "brazil",
+    "central-bank",
+    "interest-rates",
+    "inflation",
+    "time-series",
+    "selic",
+    "macroeconomics"
+  ],
+  "links": {
+    "homepage": "https://dadosabertos.bcb.gov.br/",
+    "docs": "https://dadosabertos.bcb.gov.br/"
+  },
+  "api": {
+    "base_url": "https://api.bcb.gov.br/dados/serie",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/bcdata.sgs.{code}/dados",
+      "summary": "Observations for a series (date window with dataInicial and dataFinal)",
+      "params": [
+        "formato",
+        "dataInicial",
+        "dataFinal"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/bcdata.sgs.{code}/dados/ultimos/{n}",
+      "summary": "Last N observations",
+      "params": [
+        "formato"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/2?formato=json",
+    "response_excerpt": "[{\"data\":\"09/11/2026\",\"valor\":\"0.050788\"},{\"data\":\"10/11/2026\",\"valor\":\"0.050788\"}]"
+  },
+  "data": {
+    "license": {
+      "name": "Open Data Commons Open Database License (ODbL), as listed for the BCB open-data portal catalogue",
+      "spdx": "ODbL-1.0",
+      "url": "https://dadosabertos.bcb.gov.br/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Brazil",
+      "temporal": "Varies by series"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Docs are in Portuguese. Dates are dd/mm/yyyy and values are strings ('valor'), with a decimal point in JSON and a comma in CSV. Series 11 is the daily Selic rate (% per day) and 432 the Selic target; codes come from the SGS site. A daily series without dataInicial is rejected, and a daily window is limited to 10 years.",
+  "caveats": [
+    "Series 432 'ultimos' returned entries dated December 2026 on 2026-11-11 (future dates), so check the dates of the target series before treating them as observed.",
+    "The /dados/ultimos/{n} path needs the 'dados' segment; /ultimos/1 alone returned 404.",
+    "The ODbL statement was read from the portal catalogue, not from the SGS service itself."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "bcb-olinda",
+    "fred",
+    "ibge-sidra"
+  ],
+  "added": "2026-11-11"
+}

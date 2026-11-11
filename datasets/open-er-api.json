@@ -1,0 +1,82 @@
+{
+  "slug": "open-er-api",
+  "name": "ExchangeRate-API Open Access",
+  "provider": {
+    "name": "ExchangeRate-API",
+    "url": "https://www.exchangerate-api.com",
+    "type": "company"
+  },
+  "summary": "Free keyless daily exchange rates for about 160 currencies against any base currency.",
+  "description": "The open-access endpoint of ExchangeRate-API returns the latest rates for a base currency in one call, updated once per day, with the next update time in the response. No key is needed, attribution is required, and the service asks clients to cache responses. A keyed free plan with more features exists separately.",
+  "category": "finance-markets",
+  "tags": [
+    "exchange-rates",
+    "currency",
+    "forex",
+    "conversion",
+    "daily"
+  ],
+  "links": {
+    "homepage": "https://www.exchangerate-api.com/docs/free",
+    "docs": "https://www.exchangerate-api.com/docs/free",
+    "terms": "https://www.exchangerate-api.com/terms"
+  },
+  "api": {
+    "base_url": "https://open.er-api.com/v6",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Rate limited without a published number. The docs say requesting once every 24 hours never triggers limits and once per hour is also safe."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/latest/{base_code}",
+      "summary": "Latest rates against a base currency code such as USD"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://open.er-api.com/v6/latest/USD",
+    "response_excerpt": "{\n  \"result\": \"success\",\n  \"provider\": \"https://www.exchangerate-api.com\",\n  \"documentation\": \"https://www.exchangerate-api.com/docs/free\",\n  \"terms_of_use\": \"https://www.exchangerate-api.com/terms\",\n  \"time_last_update_unix\": 1794355352,\n  \"time_last_update_utc\": \"Wed, 11 Nov 2026 00:02:32 +0000\",\n  \"time_next_update_unix\": 1794443182,\n  \"time_next_update_utc\": \"Thu, 12 Nov 2026 00:26:22 +0000\",\n  \"time_eol_unix\": 0,\n  \"base_code\": \"USD\",\n  \"rates\": {\n    \"USD\": 1,\n    \"AED\": 3.6725,\n    \"AFN\": 65.112265,\n    ...\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "ExchangeRate-API open access terms: attribution required, caching allowed, redistribution not allowed",
+      "url": "https://www.exchangerate-api.com/terms",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "166 currency codes in the USD response at check time",
+      "temporal": "Latest only"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "One call returns all rates for the base, so cache it for a day and convert locally. An unknown base returns HTTP 200 with result error and error-type unsupported-code, so check result. Only the latest rates are available; use frankfurter for history.",
+  "caveats": [
+    "Errors (for example unsupported-code) come back as HTTP 200 with result: error.",
+    "Latest rates only; no historical dates on the open endpoint.",
+    "The docs page says the data may be cached and used for personal or commercial conversion but not redistributed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless; also 200 for EUR; an invalid base returned 200 with an error body. CORS * on two origins."
+  },
+  "related": [
+    "ecb-data-api",
+    "frankfurter"
+  ],
+  "added": "2026-11-11"
+}

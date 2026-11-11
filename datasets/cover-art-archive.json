@@ -1,0 +1,113 @@
+{
+  "slug": "cover-art-archive",
+  "name": "Cover Art Archive",
+  "provider": {
+    "name": "Internet Archive and MetaBrainz Foundation",
+    "url": "https://musicbrainz.org/doc/Cover_Art_Archive",
+    "type": "nonprofit"
+  },
+  "summary": "Free cover art for MusicBrainz releases and release groups: JSON image listings and direct image redirects in several sizes.",
+  "description": "Community-curated album artwork keyed by MusicBrainz release or release-group IDs. A listing endpoint returns every image with type flags (front, back, booklet), comments and thumbnail URLs; front and back shortcuts and sized thumbnails (250, 500, 1200 px) redirect to the image files hosted on the Internet Archive.",
+  "category": "media-entertainment",
+  "tags": [
+    "music",
+    "cover-art",
+    "images",
+    "albums",
+    "mbid"
+  ],
+  "links": {
+    "homepage": "https://coverartarchive.org",
+    "docs": "https://musicbrainz.org/doc/Cover_Art_Archive/API",
+    "terms": "https://musicbrainz.org/doc/Cover_Art_Archive"
+  },
+  "api": {
+    "base_url": "https://coverartarchive.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "image"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented; the docs list HTTP 503 for clients that exceed their rate limit."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/release/{mbid}",
+      "summary": "JSON listing of all artwork for a release (redirects to an Internet Archive index.json)",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/release/{mbid}/front",
+      "summary": "Redirect to the front cover image; also /back and /{image-id}",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/release/{mbid}/front-500",
+      "summary": "Redirect to a 250, 500 or 1200 px thumbnail",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/release-group/{mbid}",
+      "summary": "JSON listing of artwork for a release group, taken from one of its releases",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://coverartarchive.org/release/76df3287-6cda-33eb-8e9a-044b5e15ffdd",
+    "response_excerpt": "{\"images\":[{\"approved\":true,\"back\":false,\"comment\":\"\",\"edit\":17462565,\"front\":true,\"id\":829521842,\"image\":\"http://coverartarchive.org/release/76df3287-6cda-33eb-8e9a-044b5e15ffdd/829521842.jpg\",\"thumbnails\":{\"250\":\"http://coverartarchive.org/release/76df3287-6cda-33eb-8e9a-044b5e15ffdd/829521842-250.jpg\",\"500\":\"...-500.jpg\",\"1200\":\"...-1200.jpg\"},\"types\":[\"Front\"]}],\"release\":\"https://musicbrainz.org/release/76df3287-6cda-33eb-8e9a-044b5e15ffdd\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per image; uploaded by MusicBrainz users",
+      "url": "https://musicbrainz.org/doc/Cover_Art_Archive",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Continuously contributed"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Get MusicBrainz release or release-group MBIDs from the musicbrainz record first. The JSON endpoint answers with a 307 to archive.org (clients must follow redirects; CORS is sent on the redirect and the final response). Use /front-500 style URLs directly in img tags. A 404 means there is no art for that MBID.",
+  "caveats": [
+    "Image and thumbnail URLs inside the JSON use http:// even though the service is served over https; rewrite them to https.",
+    "The listing endpoint redirects (307, then 302) to Internet Archive hosts, so responses carry several CORS headers and a slow first hit (about 1.7 s observed).",
+    "Cover images are typically copyrighted by the artwork owner; the archive does not grant reuse rights."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed with redirects followed (curl -L), as bin/verify.php does."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=14806456",
+      "title": "Cover Art Archive by Internet Archive and Musicbrainz",
+      "points": 2
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=28247544",
+      "title": "Cover Art Archive – A Joint Project Between the Internet Archive and MusicBrainz",
+      "points": 1
+    }
+  ],
+  "related": [
+    "listenbrainz",
+    "musicbrainz"
+  ],
+  "added": "2026-11-11"
+}

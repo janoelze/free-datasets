@@ -1,0 +1,114 @@
+{
+  "slug": "models-dev",
+  "name": "models.dev",
+  "provider": {
+    "name": "models.dev (community, open source)",
+    "url": "https://models.dev",
+    "type": "community"
+  },
+  "summary": "Open-source JSON database of AI model specs, pricing and capabilities per provider, as a single static file.",
+  "description": "One JSON document keyed by provider id, listing each provider's API base URL, env variable names, SDK package and models. Each model carries context and output limits, input and output modalities, cost per million tokens, tool-call, reasoning and structured-output flags, knowledge cutoff, release date and open-weights status. At check it held 235 providers and 8,991 model entries. Separate models.json and catalog.json files give provider-agnostic model facts.",
+  "category": "developer-tools",
+  "tags": [
+    "llm",
+    "ai-models",
+    "model-registry",
+    "pricing",
+    "context-window",
+    "providers"
+  ],
+  "links": {
+    "homepage": "https://models.dev",
+    "docs": "https://github.com/anomalyco/models.dev#api",
+    "source": "https://github.com/anomalyco/models.dev"
+  },
+  "api": {
+    "base_url": "https://models.dev",
+    "style": "static-file",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; the data is one cacheable static file."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api.json",
+      "summary": "All providers with their models, pricing and capabilities",
+      "params": [
+        "type"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models.json",
+      "summary": "Provider-agnostic model metadata"
+    },
+    {
+      "method": "GET",
+      "path": "/catalog.json",
+      "summary": "Providers and model-only metadata in one response"
+    },
+    {
+      "method": "GET",
+      "path": "/logos/{provider}.svg",
+      "summary": "Provider logo as SVG"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://models.dev/api.json",
+    "response_excerpt": "{\n  \"abacus\": {\n    \"id\": \"abacus\",\n    \"env\": [\n      \"ABACUS_API_KEY\"\n    ],\n    \"npm\": \"@ai-sdk/openai-compatible\",\n    \"api\": \"https://routellm.abacus.ai/v1\",\n    \"name\": \"Abacus\",\n    \"doc\": \"https://abacus.ai/help/api\",\n    \"models\": {\n      \"gpt-4o-mini\": {\n        \"id\": \"gpt-4o-mini\",\n        \"name\": \"GPT-4o mini\",\n        \"family\": \"gpt-mini\",\n        \"tool_call\": true,\n        \"reasoning\": false,\n        \"knowledge\": \"2023-09\",\n        \"release_date\": \"2024-07-18\",\n        \"modalities\": {\n          \"input\": [\n            \"text\",\n            \"image\"\n          ],\n          \"output\": [\n            \"text\"\n          ]\n        },\n        \"open_weights\": false,\n        \"limit\": {\n          \"context\": 128000,\n          \"output\": 16384\n        },\n        \"cost\": {\n          \"input\": 0.15,\n          \"output\": 0.6\n        }\n      }\n    },\n    ...\n  },\n  ...\n}"
+  },
+  "data": {
+    "license": {
+      "name": "MIT (repository)",
+      "spdx": "MIT",
+      "url": "https://github.com/anomalyco/models.dev/blob/dev/LICENSE",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current catalogue"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "api.json is large (about 1.3 s to download at check), so download once and cache. Model ids are provider-scoped (provider.models[id]); canonical_model_id links the same model across providers. Costs are in USD per million tokens. ?type=decision or ?type=all includes specialised model types omitted by default.",
+  "caveats": [
+    "Community maintained; prices and limits can lag the providers.",
+    "Single large file, no query filters other than type.",
+    "The GitHub repository moved from sst/models.dev (301 redirect) to anomalyco/models.dev."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=48241172",
+      "title": "Models.dev: open-source database of AI model specs, pricing, and capabilities",
+      "points": 160
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=47067304",
+      "title": "Models.dev – An open-source database of AI models",
+      "points": 24
+    }
+  ],
+  "related": [
+    "huggingface-hub-api",
+    "openrouter-models"
+  ],
+  "added": "2026-11-11"
+}

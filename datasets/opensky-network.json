@@ -111,5 +111,9 @@
     "http_status": 200,
     "with_key": false
   },
+  "related": [
+    "adsb-fi",
+    "adsb-lol"
+  ],
   "added": "2026-11-11"
 }

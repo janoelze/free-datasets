@@ -1,0 +1,94 @@
+{
+  "slug": "gdelt-doc-api",
+  "name": "GDELT DOC 2.0 API",
+  "provider": {
+    "name": "The GDELT Project",
+    "url": "https://www.gdeltproject.org",
+    "type": "community"
+  },
+  "summary": "Free full-text search over a rolling 3-month window of worldwide online news in 65 translated languages, with article lists and time series.",
+  "description": "The DOC 2.0 API searches the articles GDELT monitors worldwide and returns article lists (title, URL, domain, language, source country, seen date), volume timelines, tone charts and image results. Queries support phrases, domain and language filters and a timespan. Non-English coverage is machine-translated so English keywords can match foreign-language articles. GDELT's other datasets (events, GKG) are bulk files, not part of this API.",
+  "category": "news-social",
+  "tags": [
+    "news",
+    "events",
+    "global",
+    "media-monitoring",
+    "multilingual",
+    "sentiment"
+  ],
+  "links": {
+    "homepage": "https://www.gdeltproject.org/",
+    "docs": "https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/",
+    "terms": "https://gdeltproject.org/about.html",
+    "bulk_download": "https://www.gdeltproject.org/data.html"
+  },
+  "api": {
+    "base_url": "https://api.gdeltproject.org/api/v2/doc",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key or signup."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "The server replies 429 with 'Please limit requests to one every 5 seconds'; larger jobs should use GDELT's bulk datasets."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/doc",
+      "summary": "Search articles; mode selects article list, volume timeline, tone and other outputs",
+      "params": [
+        "query",
+        "mode",
+        "maxrecords",
+        "format",
+        "timespan"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.gdeltproject.org/api/v2/doc/doc?query=%22climate%20change%22%20sourcelang:eng&mode=artlist&maxrecords=2&format=json&timespan=1d",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"articles\": [\n    {\n      \"url\": \"https://townhall.com/news/amy-curtis/2026/11/10/john-kerry-midterms-climate-change-n2686194\",\n      \"url_mobile\": \"\",\n      \"title\": \"John Kerry Is Another Democrat Taking All the Wrong Lessons From the Midterms\",\n      \"seendate\": \"20261110T220000Z\",\n      \"socialimage\": \"https://media.townhall.com/cdn/hodl/2023/347/46780421-d2cc-4134-9f62-07b21442471a-1200x630.jpg\",\n      \"domain\": \"townhall.com\",\n      \"language\": \"English\",\n      \"sourcecountry\": \"United States\"\n    },\n    \"...\"\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Free for unrestricted use incl. commercial; cite the GDELT Project and link https://www.gdeltproject.org/",
+      "url": "https://gdeltproject.org/about.html",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, 65 translated languages",
+      "temporal": "Rolling window of the last 3 months for search"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Quote exact phrases and add sourcelang:eng or sourcecountry filters to cut noise. Use mode=timelinevol for a coverage curve and mode=artlist for articles; the docs blog shows maxrecords values such as 100 and 150. Space calls at least five seconds apart and expect latency of 10 to 20 seconds.",
+  "caveats": [
+    "Requests alternated between 200 and 429 even when spaced about 10 seconds apart, and every call took 10 to 18 seconds, so verify.php (15 s timeout) may fail; hence status unstable.",
+    "Returns plain text, not JSON, on errors such as 429.",
+    "The API looks back 3 months only; older coverage needs the bulk datasets."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example returned 200 once after earlier 429 and 18 s latency; the 429 text is the service's own throttle message."
+  },
+  "related": [
+    "tagesschau-api"
+  ],
+  "added": "2026-11-11"
+}

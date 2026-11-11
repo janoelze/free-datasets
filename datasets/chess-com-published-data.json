@@ -1,0 +1,110 @@
+{
+  "slug": "chess-com-published-data",
+  "name": "Chess.com Published-Data API",
+  "provider": {
+    "name": "Chess.com",
+    "url": "https://www.chess.com",
+    "type": "company"
+  },
+  "summary": "Read-only Chess.com PubAPI: player profiles, ratings and stats, monthly game archives with PGN, leaderboards, titled players, clubs and tournaments.",
+  "description": "PubAPI re-packages public data from the Chess.com website as JSON-LD style documents: player profiles and stats, monthly game archives (with PGN), daily puzzle, titled-player lists, country, club and tournament data and the streamer list. Responses are cached and refresh at most every 12 hours. No key is needed.",
+  "category": "fun-games",
+  "tags": [
+    "chess",
+    "games",
+    "pgn",
+    "ratings",
+    "players",
+    "leaderboards"
+  ],
+  "links": {
+    "homepage": "https://www.chess.com",
+    "docs": "https://www.chess.com/news/view/published-data-api",
+    "terms": "https://www.chess.com/legal/user-agreement"
+  },
+  "api": {
+    "base_url": "https://api.chess.com/pub",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Requests with an empty or default curl User-Agent returned 403; docs ask for a User-Agent containing contact information."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Serial access is unlimited; parallel requests may get 429. Docs ask for a User-Agent with contact info so abusive clients can be contacted before blocking."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/player/{username}",
+      "summary": "Player profile"
+    },
+    {
+      "method": "GET",
+      "path": "/player/{username}/stats",
+      "summary": "Ratings and win/loss records per time control"
+    },
+    {
+      "method": "GET",
+      "path": "/player/{username}/games/{YYYY}/{MM}",
+      "summary": "All games of a month with PGN"
+    },
+    {
+      "method": "GET",
+      "path": "/leaderboards",
+      "summary": "Top players per game type"
+    },
+    {
+      "method": "GET",
+      "path": "/titled/{title}",
+      "summary": "Usernames of all players with a title (GM, IM, ...)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.chess.com/pub/player/hikaru",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"avatar\": \"https://images.chesscomfiles.com/uploads/v1/user/15448422.88c010c1.200...\",\n  \"player_id\": 15448422,\n  \"@id\": \"https://api.chess.com/pub/player/hikaru\",\n  \"url\": \"https://www.chess.com/member/Hikaru\",\n  \"name\": \"Hikaru Nakamura\",\n  \"username\": \"hikaru\",\n  \"title\": \"GM\",\n  \"followers\": 1428209,\n  \"country\": \"https://api.chess.com/pub/country/US\",\n  \"location\": \"Florida\",\n  \"last_online\": 1794402410,\n  \"joined\": 1389043258,\n  \"status\": \"premium\",\n  \"is_streamer\": true,\n  \"twitch_url\": \"https://twitch.tv/gmhikaru\",\n  \"verified\": false,\n  \"league\": \"Legend\",\n  \"streaming_platforms\": [\n    {\n      \"type\": \"twitch\",\n      \"channel_url\": \"https://twitch.tv/gmhikaru\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Chess.com Terms of Service; no data license stated",
+      "url": "https://www.chess.com/legal/user-agreement",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Usernames are lower-case in URLs. Walk /player/{u}/games/archives to list month URLs, then fetch each month. Always set a descriptive User-Agent and fetch serially.",
+  "caveats": [
+    "Default curl User-Agent and empty User-Agent both returned 403 today.",
+    "Data is cached for up to 12 hours.",
+    "No OpenAPI document found."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed with the datasets-library User-Agent."
+  },
+  "related": [
+    "lichess-api"
+  ],
+  "added": "2026-11-11"
+}

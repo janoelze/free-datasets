@@ -124,7 +124,9 @@
   ],
   "related": [
     "unpaywall",
-    "crossref"
+    "crossref",
+    "arxiv-api",
+    "ror-api"
   ],
   "added": "2026-11-11"
 }

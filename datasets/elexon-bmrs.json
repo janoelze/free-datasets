@@ -1,0 +1,116 @@
+{
+  "slug": "elexon-bmrs",
+  "name": "Elexon BMRS Insights Solution API",
+  "provider": {
+    "name": "Elexon (Balancing and Settlement Code company, Great Britain)",
+    "url": "https://developer.data.elexon.co.uk/",
+    "type": "company"
+  },
+  "summary": "Keyless JSON API for Great Britain electricity data: generation by fuel type, demand, system prices, balancing and market datasets from the BMRS.",
+  "description": "The Insights Solution API exposes Balancing Mechanism Reporting Service data: instantaneous generation by fuel (FUELINST, 5-minute), generation outturn summaries, national demand and forecasts, system sell/buy prices per settlement period, imbalance volumes, market index data and many more datasets (over 300 paths in the OpenAPI document). Most dataset endpoints accept publish-time ranges and a format parameter.",
+  "category": "energy",
+  "tags": [
+    "electricity",
+    "great-britain",
+    "energy-mix",
+    "grid",
+    "balancing",
+    "system-prices",
+    "demand"
+  ],
+  "links": {
+    "homepage": "https://developer.data.elexon.co.uk/",
+    "docs": "https://developer.data.elexon.co.uk/",
+    "terms": "https://developer.data.elexon.co.uk/",
+    "openapi": "https://data.elexon.co.uk/swagger/v1/swagger.json"
+  },
+  "api": {
+    "base_url": "https://data.elexon.co.uk/bmrs/api/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The developer portal states that all APIs are public and no API key is required."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; the portal says dataset endpoints have no restrictions or limits on data return."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/datasets/FUELINST",
+      "summary": "Instantaneous generation by fuel type (5-minute)",
+      "params": [
+        "publishDateTimeFrom",
+        "publishDateTimeTo",
+        "fuelType",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/generation/outturn/summary",
+      "summary": "Generation outturn summary by fuel",
+      "params": [
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/demand/outturn/summary",
+      "summary": "Demand outturn summary",
+      "params": [
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/balancing/settlement/system-prices/{settlementDate}",
+      "summary": "System sell and buy prices per settlement period",
+      "params": [
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELINST?publishDateTimeFrom=2026-11-11T15:00:00Z&publishDateTimeTo=2026-11-11T15:10:00Z&format=json",
+    "response_excerpt": "{\"data\":[{\"dataset\":\"FUELINST\",\"publishTime\":\"2026-11-11T15:10:00Z\",\"startTime\":\"2026-11-11T15:05:00Z\",\"settlementDate\":\"2026-11-11\",\"settlementPeriod\":31,\"fuelType\":\"BIOMASS\",\"generation\":3180},...]}"
+  },
+  "data": {
+    "license": {
+      "name": "BMRS Data Licence Terms (acknowledge the source)",
+      "url": "https://developer.data.elexon.co.uk/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Great Britain",
+      "temporal": "Recent history to forecasts, per dataset"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Docs are in English. Times are UTC; settlement periods are half-hours (settlementPeriod 33 = 16:00 UTC in the check). Summary endpoints return nested arrays grouped by startTime; dataset endpoints return a flat data list. Use the swagger.json to find the dataset names; the old /bmrs/api/v1/swagger path 404s.",
+  "caveats": [
+    "The licence is a separate BMRS Data Licence; its commercial-use terms were not clear in the portal text, so treat commercial use as unconfirmed.",
+    "Without a time range, FUELINST returns the latest slice only.",
+    "www.elexon.co.uk answered 403 to curl; the developer portal and API host work."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; the default FUELINST request returned 200 in 2.4 s."
+  },
+  "related": [
+    "carbon-intensity-uk"
+  ],
+  "added": "2026-11-11"
+}

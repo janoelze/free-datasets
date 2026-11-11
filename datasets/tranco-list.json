@@ -1,0 +1,110 @@
+{
+  "slug": "tranco-list",
+  "name": "Tranco Top Sites Ranking API",
+  "provider": {
+    "name": "Tranco (KU Leuven DistriNet)",
+    "url": "https://tranco-list.eu",
+    "type": "academic"
+  },
+  "summary": "Free API for a research-grade ranking of the most popular domains, with 30-day rank history per domain and list downloads.",
+  "description": "Tranco combines the Cisco Umbrella, Majestic, Radar and Chrome UX Report (CrUX) top-site lists (the providers listed in the list configuration at check: crux, farsight, majestic, radar, umbrella) into one manipulation-resistant ranking, updated daily. The API returns the rank history of a domain over at least the past 30 daily lists and metadata plus a download URL for any daily or custom list (top 1 million). It is the usual replacement for the retired Alexa ranking.",
+  "category": "networking-internet",
+  "tags": [
+    "domains",
+    "ranking",
+    "top-sites",
+    "popularity",
+    "web-traffic",
+    "research"
+  ],
+  "links": {
+    "homepage": "https://tranco-list.eu/",
+    "docs": "https://tranco-list.eu/api_documentation",
+    "bulk_download": "https://tranco-list.eu/top-1m.csv.zip",
+    "source": "https://github.com/DistriNet/tranco-list"
+  },
+  "api": {
+    "base_url": "https://tranco-list.eu/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The rank and list-metadata endpoints need nothing; only /lists/create (custom lists) requires an account."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "1 query per second on the rank endpoint (documented); exceeding it returns 429. Requests sent in quick succession during checking did get 429.",
+      "requests": 1,
+      "per": "second"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/ranks/domain/{domain}",
+      "summary": "Daily rank of a domain over the past 30 or more days",
+      "params": [
+        "domain"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lists/date/{date}",
+      "summary": "Metadata and download URL of the daily list (date as YYYYmmdd or latest)",
+      "params": [
+        "date",
+        "subdomains"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lists/id/{list_id}",
+      "summary": "Metadata of a list by id",
+      "params": [
+        "list_id"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://tranco-list.eu/api/ranks/domain/google.com",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"ranks\": [\n    {\n      \"date\": \"2026-11-10\",\n      \"rank\": 1\n    },\n    {\n      \"date\": \"2026-11-09\",\n      \"rank\": 1\n    },\n    \"...\"\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated for the combined list; the component lists carry CC BY 3.0, CC BY-SA 4.0 and CC BY-NC 4.0 licences",
+      "url": "https://tranco-list.eu/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Daily lists, each combining the previous 30 days"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Rank 1 is most popular. An unlisted domain returns 200 with an empty ranks array, not 404. Use the registrable (pay-level) domain; www.google.com also answered 200 but the default lists exclude subdomains. For bulk work download the list through lists/date/latest (the download field gives the file URL; the CSV layout was not inspected) instead of querying per domain. Space requests at least one second apart.",
+  "caveats": [
+    "Provider terms for the combined list were not found; check the site and cite the Tranco paper (linked from the homepage) when you use it in research.",
+    "The /lists/date docs say YYYYmmdd; a dashed date (2026-11-01) also answered 200.",
+    "403 'service temporarily unavailable' is documented for the rank endpoint."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials; /lists/date/latest returned list id and download URL; repeat calls within a second returned 429."
+  },
+  "related": [
+    "crt-sh",
+    "ripestat"
+  ],
+  "added": "2026-11-11"
+}

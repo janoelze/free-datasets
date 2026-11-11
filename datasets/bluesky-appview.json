@@ -1,0 +1,118 @@
+{
+  "slug": "bluesky-appview",
+  "name": "Bluesky Public AppView API",
+  "provider": {
+    "name": "Bluesky Social PBC",
+    "url": "https://bsky.social",
+    "type": "company"
+  },
+  "summary": "Unauthenticated read access to Bluesky profiles, author feeds and trending topics through the public AppView (AT Protocol XRPC).",
+  "description": "public.api.bsky.app is Bluesky's cached, read-only AppView endpoint. Without any login you can fetch actor profiles with follower counts, search actors, read an account's feed and list trending topics, all as JSON over plain HTTPS GET with XRPC method names such as app.bsky.actor.getProfile. Records are identified by DIDs and at:// URIs; handles resolve to DIDs.",
+  "category": "news-social",
+  "tags": [
+    "social",
+    "bluesky",
+    "atproto",
+    "profiles",
+    "posts",
+    "feeds"
+  ],
+  "links": {
+    "homepage": "https://docs.bsky.app/",
+    "docs": "https://docs.bsky.app/docs/api/app-bsky-feed-get-author-feed",
+    "terms": "https://docs.bsky.app/docs/rate-limits"
+  },
+  "api": {
+    "base_url": "https://public.api.bsky.app/xrpc",
+    "style": "rpc",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public read endpoints need no credential. Endpoints that act as a user, or search posts, need an authenticated session on a PDS."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "The rate-limit docs list public AppView requests as limited by IP at 3000 per 5 minutes. Responses are cached (cache-control max-age=30)."
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/app.bsky.actor.getProfile",
+      "summary": "Profile of one account by handle or DID",
+      "params": [
+        "actor"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/app.bsky.actor.searchActors",
+      "summary": "Search accounts by name or handle",
+      "params": [
+        "q",
+        "limit",
+        "cursor"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/app.bsky.feed.getAuthorFeed",
+      "summary": "Recent posts of one account",
+      "params": [
+        "actor",
+        "limit",
+        "cursor",
+        "filter"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/app.bsky.unspecced.getTrendingTopics",
+      "summary": "Currently trending topics (unspecced, may change)",
+      "params": [
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=bsky.app",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"did\": \"did:plc:z72i7hdynmk6r22z27h6tvur\",\n  \"handle\": \"bsky.app\",\n  \"displayName\": \"Bluesky\",\n  \"createdAt\": \"2023-04-12T04:53:57.057Z\",\n  \"description\": \"official Bluesky account (check username...)\",\n  \"followersCount\": 35618489,\n  \"followsCount\": 41,\n  \"postsCount\": 919\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated; posts are user-generated content",
+      "url": "https://docs.bsky.app/docs/rate-limits",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Network history; recent posts at check"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Method names go in the path after /xrpc/ and parameters in the query string. actor accepts a handle or a DID. Page with the cursor value from the previous response. Posts are addressed by at:// URIs; app.bsky.feed.getPosts resolves several at once (not re-confirmed). The firehose and Jetstream are separate streaming services.",
+  "caveats": [
+    "app.bsky.feed.searchPosts returned 403 on the public host even with an identifying User-Agent, so post search needs an authenticated session.",
+    "getTrendingTopics lives under unspecced and can change without notice.",
+    "No OpenAPI spec URL could be confirmed; the docs site renders one in the browser but the file paths tried returned HTML."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials; getAuthorFeed, searchActors and getTrendingTopics also returned 200."
+  },
+  "related": [
+    "lemmy-api",
+    "mastodon-public-api"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,101 @@
+{
+  "slug": "adsb-lol",
+  "name": "adsb.lol API",
+  "provider": {
+    "name": "adsb.lol",
+    "url": "https://adsb.lol",
+    "type": "community"
+  },
+  "summary": "Free live ADS-B aircraft positions from a community feeder network, ADS-B Exchange v2 compatible, open data under ODbL.",
+  "description": "Real-time aircraft state (position, altitude, speed, squawk, type, registration) queried by point and radius, hex code, callsign, registration, squawk or military flag. It is a drop-in replacement for the ADS-B Exchange v2 API. Plausible-route lookups are also offered.",
+  "category": "transport-mobility",
+  "tags": [
+    "aviation",
+    "adsb",
+    "aircraft",
+    "flights",
+    "tracking",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://adsb.lol",
+    "docs": "https://api.adsb.lol/docs",
+    "source": "https://github.com/adsblol/api"
+  },
+  "api": {
+    "base_url": "https://api.adsb.lol",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key needed today. The README says a key obtainable by feeding adsb.lol may be required in the future."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Dynamic, based on load. Responses carried x-ratelimit-limit: 500, 500;w=86400 and a remaining counter."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/v2/lat/{lat}/lon/{lon}/dist/{nm}",
+      "summary": "Aircraft within a radius in nautical miles"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/hex/{hex}",
+      "summary": "Aircraft by Mode-S hex code"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/callsign/{callsign}",
+      "summary": "Aircraft by callsign"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/mil",
+      "summary": "Aircraft flagged military"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.adsb.lol/v2/lat/51.47/lon/-0.45/dist/25",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\"ac\":[\n{\"hex\":\"402988\",\"type\":\"adsb_icao_nt\",\"flight\":\"GECRM   \",\"r\":\"G-ECRM\",\"t\":\"RF6\",\"alt_baro\":2700,\"alt_geom\":2575,\"gs\":93.2,\"track\":260.74,\"squawk\":\"0430\",\"lat\":51.466245,\"lon\":-1.044312,...},\n...\n],\"msg\":\"No error\",\"now\":...,\"total\":...}"
+  },
+  "data": {
+    "license": {
+      "name": "ODbL 1.0",
+      "spdx": "ODbL-1.0",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global where feeders exist",
+      "temporal": "Live"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Same field names as the ADS-B Exchange v2 API (alt_baro can be the string ground). Radius is in nautical miles. Poll gently and cache; the limit is dynamic.",
+  "caveats": [
+    "No CORS header was sent, so browser use needs a proxy.",
+    "api.adsb.lol/docs and /openapi.json returned 503 during my checks, so the endpoint list comes from the README and the working calls.",
+    "The point query took about 4 s on its first call and 0.3 s on a repeat."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "adsb-fi",
+    "opensky-network"
+  ],
+  "added": "2026-11-11"
+}

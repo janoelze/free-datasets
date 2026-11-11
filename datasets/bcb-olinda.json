@@ -1,0 +1,121 @@
+{
+  "slug": "bcb-olinda",
+  "name": "Banco Central do Brasil Olinda (PTAX, market expectations)",
+  "provider": {
+    "name": "Banco Central do Brasil",
+    "url": "https://www.bcb.gov.br/",
+    "type": "government"
+  },
+  "summary": "OData services of the Brazilian central bank: official PTAX exchange rates for the dollar and other currencies, and the Focus market expectations survey.",
+  "description": "Olinda hosts many OData v4 services from the Banco Central do Brasil. PTAX serves official daily buy/sell exchange rates (per day or per period, per currency) and the currency list; Expectativas serves the weekly Focus survey of market forecasts for IPCA, Selic, FX and GDP with mean, median and dispersion. $format=json, $top, $filter and $orderby are supported.",
+  "category": "finance-markets",
+  "tags": [
+    "brazil",
+    "exchange-rates",
+    "central-bank",
+    "ptax",
+    "inflation-expectations",
+    "odata"
+  ],
+  "links": {
+    "homepage": "https://dadosabertos.bcb.gov.br/",
+    "docs": "https://dadosabertos.bcb.gov.br/"
+  },
+  "api": {
+    "base_url": "https://olinda.bcb.gov.br/olinda/servico",
+    "style": "odata",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)",
+      "summary": "Official USD rate for a date (dataCotacao as MM-DD-YYYY in quotes)",
+      "params": [
+        "@dataCotacao",
+        "$format",
+        "$top"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/PTAX/versao/v1/odata/CotacaoMoedaPeriodo(moeda=@moeda,dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)",
+      "summary": "Rates for a currency over a period",
+      "params": [
+        "@moeda",
+        "@dataInicial",
+        "@dataFinalCotacao",
+        "$format",
+        "$top"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/PTAX/versao/v1/odata/Moedas",
+      "summary": "List of supported currencies",
+      "params": [
+        "$format",
+        "$top"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Expectativas/versao/v1/odata/ExpectativaMercadoMensais",
+      "summary": "Focus survey monthly market expectations",
+      "params": [
+        "$filter",
+        "$orderby",
+        "$top",
+        "$format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao=%2711-10-2026%27&$format=json",
+    "response_excerpt": "{\"@odata.context\":\"https://was-p.bcnet.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata$metadata#_CotacaoDolarDia\",\"value\":[{\"cotacaoCompra\":5.5834,\"cotacaoVenda\":5.584,\"dataHoraCotacao\":\"2026-11-10 13:06:01.353639\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Open Data Commons Open Database License (ODbL), as listed for the BCB open-data portal catalogue",
+      "spdx": "ODbL-1.0",
+      "url": "https://dadosabertos.bcb.gov.br/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Brazil; PTAX covers major currencies against BRL",
+      "temporal": "Daily series from the 1990s (per service)"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Docs and field names are in Portuguese. Dates in PTAX function parameters are MM-DD-YYYY inside single quotes (%27 when URL-encoded) and parameters are passed as @aliases. Each service has its own versao path; see each service's page on the portal.",
+  "caveats": [
+    "The licence (ODbL) was read from the first record in the BCB CKAN catalogue, not per Olinda service.",
+    "CORS reflects the request Origin.",
+    "Large result sets need $top and $skip."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key; Moedas, CotacaoMoedaPeriodo and Expectativas also answered 200."
+  },
+  "related": [
+    "bcb-sgs",
+    "brasilapi",
+    "frankfurter"
+  ],
+  "added": "2026-11-11"
+}

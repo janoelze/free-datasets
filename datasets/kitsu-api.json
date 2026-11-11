@@ -1,0 +1,127 @@
+{
+  "slug": "kitsu-api",
+  "name": "Kitsu API",
+  "provider": {
+    "name": "Kitsu",
+    "url": "https://kitsu.app",
+    "type": "company"
+  },
+  "summary": "JSON:API for anime and manga: titles, ratings, episodes, characters, streaming links, categories and trending lists.",
+  "description": "Kitsu's public edge API serves anime, manga, episodes, characters, categories, mappings to other sites (MyAnimeList, AniList, TheTVDB ids), streaming links and trending lists as JSON:API documents, with sparse fieldsets, filters, sorting and includes. Reading the catalogue needs no authentication; user libraries and writes use OAuth.",
+  "category": "media-entertainment",
+  "tags": [
+    "anime",
+    "manga",
+    "episodes",
+    "characters",
+    "json-api",
+    "ratings"
+  ],
+  "links": {
+    "homepage": "https://kitsu.app",
+    "docs": "https://kitsu.docs.apiary.io/"
+  },
+  "api": {
+    "base_url": "https://kitsu.io/api/edge",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Catalogue reads worked without credentials; user-specific data and writes need OAuth (not tested)."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched."
+    },
+    "pagination": "offset",
+    "max_page_size": 20
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/anime",
+      "summary": "List or search anime; filter[text], filter[categories], sort, include",
+      "params": [
+        "filter[text]",
+        "filter[season]",
+        "sort",
+        "page[limit]",
+        "page[offset]",
+        "fields[anime]",
+        "include"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/anime/{id}",
+      "summary": "One anime; include=episodes, characters, genres and more",
+      "params": [
+        "include",
+        "fields[anime]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/manga",
+      "summary": "List or search manga",
+      "params": [
+        "filter[text]",
+        "sort",
+        "page[limit]",
+        "page[offset]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/trending/anime",
+      "summary": "Currently trending anime",
+      "params": [
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/anime/{id}/episodes",
+      "summary": "Episodes of an anime",
+      "params": [
+        "page[limit]",
+        "page[offset]"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://kitsu.io/api/edge/anime?filter%5Btext%5D=cowboy&page%5Blimit%5D=1&fields%5Banime%5D=canonicalTitle,startDate,episodeCount,averageRating",
+    "response_excerpt": "{\"data\":[{\"id\":\"1\",\"type\":\"anime\",\"links\":{\"self\":\"https://kitsu.io/api/edge/anime/1\"},\"attributes\":{\"canonicalTitle\":\"Cowboy Bebop\",\"startDate\":\"1998-04-03\",\"episodeCount\":26,\"averageRating\":\"82.28\"}}],\"meta\":{\"count\":13},\"links\":{\"first\":\"https://kitsu.io/api/edge/anime?...&page%5Blimit%5D=1&page%5Boffset%5D=0\",\"next\":\"...&page%5Boffset%5D=1\",\"last\":\"...&page%5Boffset%5D=12\"}}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the docs pages fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Community edited in real time; records updated as recently as today at check"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use sparse fieldsets (fields[anime]=...) because full anime objects are large (image variants, rating histograms). Send page[limit] up to 20 and follow links.next. In curl, quote or percent-encode the bracket parameters (or use -g). Use /mappings?filter[externalSite]=myanimelist/anime to translate ids.",
+  "caveats": [
+    "page[limit] above 20 returns HTTP 400 ('Limit exceeds maximum page size of 20').",
+    "Responses are application/vnd.api+json; relationships appear as links unless you request include.",
+    "No usage license or rate limit was found in the docs pages fetched."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials."
+  },
+  "related": [
+    "anilist-graphql"
+  ],
+  "added": "2026-11-11"
+}

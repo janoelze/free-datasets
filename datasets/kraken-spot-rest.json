@@ -1,0 +1,130 @@
+{
+  "slug": "kraken-spot-rest",
+  "name": "Kraken Spot REST API (public market data)",
+  "provider": {
+    "name": "Kraken",
+    "url": "https://www.kraken.com",
+    "type": "company"
+  },
+  "summary": "Keyless public market data from the Kraken exchange: tickers, order books, OHLC candles, trades and asset pairs.",
+  "description": "The public section of Kraken's Spot REST API serves server time, asset and pair metadata, ticker information, OHLC candles, order book depth, recent trades and spreads for fiat and crypto pairs. No key is needed for these endpoints; private endpoints (balances, orders) need signed requests.",
+  "category": "finance-markets",
+  "tags": [
+    "crypto",
+    "exchange",
+    "order-book",
+    "ohlc",
+    "prices",
+    "trades",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://www.kraken.com",
+    "docs": "https://docs.kraken.com/api/docs/rest-api/get-ticker-information"
+  },
+  "api": {
+    "base_url": "https://api.kraken.com/0/public",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public endpoints answered without a key. Private endpoints need API-Key and API-Sign headers."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "The docs describe a per-key call counter with tier-based maximums and decay for private endpoints; the exact limit for keyless public calls was not re-confirmed. Excess calls return 'EAPI:Rate limit exceeded'."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/Time",
+      "summary": "Server time"
+    },
+    {
+      "method": "GET",
+      "path": "/AssetPairs",
+      "summary": "Tradable pairs and their metadata",
+      "params": [
+        "pair",
+        "info"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Ticker",
+      "summary": "Ticker information",
+      "params": [
+        "pair"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/OHLC",
+      "summary": "OHLC candles",
+      "params": [
+        "pair",
+        "interval",
+        "since"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Depth",
+      "summary": "Order book",
+      "params": [
+        "pair",
+        "count"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Trades",
+      "summary": "Recent trades",
+      "params": [
+        "pair",
+        "since",
+        "count"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.kraken.com/0/public/Ticker?pair=XBTUSD",
+    "response_excerpt": "{\n  \"error\": [],\n  \"result\": {\n    \"XXBTZUSD\": {\n      \"a\": [\"73939.70000\", \"2\", \"2.000\"],\n      \"b\": [\"73939.60000\", \"1\", \"1.000\"],\n      \"c\": [\"73939.70000\", \"0.00001960\"],\n      \"v\": [\"1253.36989790\", \"3171.29308345\"],\n      \"p\": [\"73723.74343\", \"73398.45079\"],\n      \"t\": [96488, 176690],\n      \"l\": [\"73113.60000\", \"72584.60000\"],\n      \"h\": [\"74399.90000\", \"74399.90000\"],\n      \"o\": \"73699.40000\"\n    }\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Kraken terms (not re-confirmed for data reuse)",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global crypto and fiat pairs on Kraken",
+      "temporal": "Live data; OHLC and trades history is limited per request (not re-confirmed)"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Kraken uses legacy asset codes (XBT for bitcoin, XXBTZUSD as result keys); pass altnames like XBTUSD in requests but read the long key in responses. Errors come back as HTTP 200 with a non-empty error array, so always check error.",
+  "caveats": [
+    "HTTP status is 200 even for errors; look at the error array.",
+    "The official docs moved to docs.kraken.com/exchange; old /api/docs URLs redirect.",
+    "No OpenAPI spec URL was confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless. OHLC, AssetPairs, Depth and Time also returned 200. CORS echoed the sent Origin on two different origins."
+  },
+  "related": [
+    "binance-spot-market-data",
+    "coinbase-exchange",
+    "coingecko"
+  ],
+  "added": "2026-11-11"
+}

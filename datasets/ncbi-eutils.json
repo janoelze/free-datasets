@@ -1,0 +1,142 @@
+{
+  "slug": "ncbi-eutils",
+  "name": "NCBI E-utilities (Entrez)",
+  "provider": {
+    "name": "National Center for Biotechnology Information (NLM/NIH)",
+    "url": "https://www.ncbi.nlm.nih.gov",
+    "type": "government"
+  },
+  "summary": "Search and fetch PubMed, gene, protein, nucleotide, ClinVar and other NCBI Entrez databases over HTTP.",
+  "description": "E-utilities is the programmatic front end to the Entrez databases: esearch finds record ids for a query, esummary returns document summaries, efetch returns full records and einfo lists the databases. It covers PubMed abstracts and metadata as well as nucleotide, protein, gene, taxonomy, MeSH, ClinVar, dbSNP and many more databases.",
+  "category": "life-sciences",
+  "tags": [
+    "pubmed",
+    "entrez",
+    "genomics",
+    "biomedical-literature",
+    "mesh",
+    "sequences",
+    "nih"
+  ],
+  "links": {
+    "homepage": "https://www.ncbi.nlm.nih.gov/home/develop/api/",
+    "docs": "https://www.ncbi.nlm.nih.gov/books/NBK25501/",
+    "terms": "https://www.ncbi.nlm.nih.gov/home/about/policies/",
+    "signup": "https://www.ncbi.nlm.nih.gov/account/"
+  },
+  "api": {
+    "base_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "text"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "Works without a key. A free NCBI account key (api_key parameter) raises the request limit; an invalid key was rejected with an 'API key invalid' error."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Responses carried X-RateLimit-Limit: 3, i.e. 3 requests per second without a key; a key raises it (about 10 per second per NCBI docs, not re-confirmed).",
+      "requests": 3,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/esearch.fcgi",
+      "summary": "Find record ids matching a query in a database",
+      "params": [
+        "db",
+        "term",
+        "retmode",
+        "retmax",
+        "retstart",
+        "usehistory"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/esummary.fcgi",
+      "summary": "Document summaries for a list of ids",
+      "params": [
+        "db",
+        "id",
+        "retmode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/efetch.fcgi",
+      "summary": "Full records (abstracts, FASTA, GenBank, ...) for ids",
+      "params": [
+        "db",
+        "id",
+        "rettype",
+        "retmode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/einfo.fcgi",
+      "summary": "List databases, or fields of one database",
+      "params": [
+        "db",
+        "retmode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/elink.fcgi",
+      "summary": "Related records within or across databases",
+      "params": [
+        "dbfrom",
+        "db",
+        "id"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=crispr&retmode=json&retmax=2",
+    "response_excerpt": "{\n  \"header\": {\"type\": \"esearch\", \"version\": \"0.3\"},\n  \"esearchresult\": {\n    \"count\": \"72573\",\n    \"retmax\": \"2\",\n    \"retstart\": \"0\",\n    \"idlist\": [\"43009202\", \"43009097\"],\n    \"translationset\": [...],\n    \"querytranslation\": \"\\\"clustered regularly interspaced short palindromic repeats\\\"[MeSH Terms] OR ...\"\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "US government work (public domain) plus third-party content under its own terms",
+      "url": "https://www.ncbi.nlm.nih.gov/home/about/policies/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Historical to current"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Default retmode is XML; pass retmode=json on esearch and esummary (efetch for PubMed is easier as rettype=abstract&retmode=text or retmode=xml). ids are strings. For more than a few thousand hits use usehistory=y with WebEnv/query_key instead of paging by retstart. Send requests serially and stay under the limit.",
+  "caveats": [
+    "Exceeding the per-IP limit returned HTTP 429 during checks; back off and retry.",
+    "The documentation pages were not fetchable as text from this environment, so the key-raises-limit figure is hedged and not re-confirmed.",
+    "Some NCBI content (PMC, Bookshelf, PubChem, OMIM) carries third-party copyright; check the policy page before redistributing it."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key."
+  },
+  "related": [
+    "clinicaltrials-gov",
+    "pubchem",
+    "uniprot"
+  ],
+  "added": "2026-11-11"
+}

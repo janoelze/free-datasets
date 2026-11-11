@@ -1,0 +1,135 @@
+{
+  "slug": "wikimedia-commons-api",
+  "name": "Wikimedia Commons API (MediaWiki)",
+  "provider": {
+    "name": "Wikimedia Foundation",
+    "url": "https://wikimediafoundation.org",
+    "type": "nonprofit"
+  },
+  "summary": "MediaWiki Action API on commons.wikimedia.org for searching and describing millions of freely licensed images, audio and video files.",
+  "description": "Commons is the shared media repository of Wikipedia and its sister projects. The Action API (api.php) searches files, lists category members and returns file metadata: direct upload URLs, dimensions, MIME type and the licence and author in extmetadata. A newer REST API at rest.php and structured-data (Wikibase) entities for files are served from the same host. This is a different host from the Wikipedia REST API in wikipedia-api. At check, siteinfo reported about 150 million files.",
+  "category": "knowledge-reference",
+  "tags": [
+    "wikimedia",
+    "commons",
+    "images",
+    "media",
+    "open-licensed",
+    "metadata"
+  ],
+  "links": {
+    "homepage": "https://commons.wikimedia.org/",
+    "docs": "https://www.mediawiki.org/wiki/API:Main_page",
+    "terms": "https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia",
+    "openapi": "https://commons.wikimedia.org/w/rest.php/specs/v0/module/-",
+    "bulk_download": "https://dumps.wikimedia.org/commonswiki/"
+  },
+  "api": {
+    "base_url": "https://commons.wikimedia.org/w",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key for reads."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "A request with an empty User-Agent returned 403."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No fixed number on the API pages; Wikimedia rate-limits by client identity and asks bots to send a descriptive User-Agent and avoid parallel requests."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api.php?action=query&list=search",
+      "summary": "Full-text search (srnamespace=6 for files)",
+      "params": [
+        "srsearch",
+        "srnamespace",
+        "srlimit",
+        "sroffset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api.php?action=query&generator=search&prop=imageinfo",
+      "summary": "Search files and get URL, size and licence metadata in one call",
+      "params": [
+        "gsrsearch",
+        "gsrnamespace",
+        "gsrlimit",
+        "iiprop",
+        "iiextmetadatafilter"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api.php?action=query&list=categorymembers",
+      "summary": "Files and subcategories of a category",
+      "params": [
+        "cmtitle",
+        "cmtype",
+        "cmlimit",
+        "cmcontinue"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api.php?action=query&meta=siteinfo",
+      "summary": "Site statistics",
+      "params": [
+        "siprop"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=cat%20filetype:bitmap&gsrnamespace=6&gsrlimit=1&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiextmetadatafilter=LicenseShortName%7CArtist&format=json&formatversion=2&origin=*",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"continue\": {\n    \"iistart\": \"2019-02-10T00:46:27Z\",\n    \"continue\": \"||\"\n  },\n  \"query\": {\n    \"pages\": [\n      {\n        \"pageid\": 9437797,\n        \"ns\": 6,\n        \"title\": \"File:Felis catus-cat on snow.jpg\",\n        \"imageinfo\": [\n          {\n            \"size\": 2125399,\n            \"width\": 3000,\n            \"height\": 2000,\n            \"url\": \"https://upload.wikimedia.org/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg?...\",\n            \"descriptionurl\": \"https://commons.wikimedia.org/wiki/File:Felis_catus-cat_on_snow.jpg\",\n            \"extmetadata\": {\n              \"Artist\": {\n                \"value\": \"<a href=...>Von.grzanka</a>\",\n                \"source\": \"commons-desc-page\"\n              },\n              \"LicenseShortName\": {\n                \"value\": \"CC BY-SA 3.0\",\n                \"source\": \"commons-desc-page\"\n              }\n            },\n            \"mime\": \"image/jpeg\"\n          }\n        ]\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per file: Creative Commons licences and public domain; read extmetadata.LicenseShortName",
+      "url": "https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Continuously updated; files from many eras"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always send formatversion=2 for cleaner JSON and origin=* for browser calls. Namespace 6 is File; namespace 14 is Category. Follow the continue object by merging its keys into the next request. Check extmetadata (LicenseShortName and Artist were requested in the example) per file before reuse, since licences vary file by file. Cache upload.wikimedia.org URLs rather than hot-linking.",
+  "caveats": [
+    "CORS headers are only sent when the request includes origin=* (ACAO * seen with it; none seen without it).",
+    "One search keyword (haslicense:) returned a warning and no results in testing, so rely on the documented CirrusSearch keywords you have verified.",
+    "The rest.php spec URL returned an OpenAPI document but only for REST modules, not for api.php."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials; list=search, list=categorymembers and meta=siteinfo also returned 200."
+  },
+  "related": [
+    "internet-archive",
+    "openverse",
+    "wikimedia-pageviews",
+    "wikipedia-api"
+  ],
+  "added": "2026-11-11"
+}

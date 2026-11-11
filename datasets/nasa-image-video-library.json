@@ -1,0 +1,119 @@
+{
+  "slug": "nasa-image-video-library",
+  "name": "NASA Image and Video Library API",
+  "provider": {
+    "name": "NASA",
+    "url": "https://www.nasa.gov",
+    "type": "government"
+  },
+  "summary": "Search NASA's archive of images, video and audio with metadata and asset URLs; no key needed.",
+  "description": "images-api.nasa.gov powers images.nasa.gov. Search by free text, centre, keywords, year range and media type, then fetch the asset list (original and resized files), metadata JSON, captions for video and curated albums. It is a separate host from api.nasa.gov and needs no key.",
+  "category": "space-astronomy",
+  "tags": [
+    "nasa",
+    "images",
+    "video",
+    "audio",
+    "media-archive",
+    "space",
+    "photos"
+  ],
+  "links": {
+    "homepage": "https://images.nasa.gov",
+    "docs": "https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf",
+    "terms": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+  },
+  "api": {
+    "base_url": "https://images-api.nasa.gov",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in the pages checked; no rate-limit headers seen."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search items by text, keywords, centre, years and media type",
+      "params": [
+        "q",
+        "media_type",
+        "year_start",
+        "year_end",
+        "center",
+        "keywords",
+        "page",
+        "page_size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/asset/{nasa_id}",
+      "summary": "URLs of all renditions of an item",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/metadata/{nasa_id}",
+      "summary": "Location of the full metadata JSON of an item",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/captions/{nasa_id}",
+      "summary": "Caption file location for video items",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/album/{album_name}",
+      "summary": "Items of a curated album",
+      "params": [
+        "page",
+        "page_size"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://images-api.nasa.gov/search?q=apollo&media_type=image&page_size=2",
+    "response_excerpt": "{\n  \"collection\": {\n    \"version\": \"1.1\",\n    \"href\": \"http://images-api.nasa.gov/search?q=apollo&media_type=image&page_size=2\",\n    \"items\": [\n      {\n        \"href\": \"https://images-assets.nasa.gov/image/.../collection.json\",\n        \"data\": [{\"center\": \"HQ\", \"date_created\": \"2018-06-18T00:00:00Z\", \"keywords\": [\"Apollo\", ...], \"media_type\": \"image\", \"nasa_id\": \"APOLLO 50th_FULL COLOR_300DPI\", \"title\": \"...\"}],\n        \"links\": [{\"href\": \"https://images-assets.nasa.gov/image/.../...~large.jpg\", \"rel\": \"alternate\", \"render\": \"image\"}]\n      },\n      ...\n    ],\n    \"metadata\": {\"total_hits\": 416},\n    \"links\": [...]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "NASA Media Usage Guidelines (NASA imagery is generally not copyrighted; insignia and some third-party material are restricted)",
+      "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Early flight to present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Everything lives under collection.items; each item has data[0] (metadata) and links[] (thumbnails). Call /asset/{nasa_id} to list original and resized file URLs; asset URLs may contain spaces, so percent-encode them. /captions only works for video items (400 for images).",
+  "caveats": [
+    "Asset hrefs are sometimes http:// and some contain spaces.",
+    "The captions endpoint returns 400 for image ids.",
+    "Brand guidelines restrict use of the NASA insignia and logotype even though much imagery is free to reuse."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key."
+  },
+  "related": [
+    "nasa-open-apis"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,131 @@
+{
+  "slug": "chembl",
+  "name": "ChEMBL Web Services",
+  "provider": {
+    "name": "EMBL-EBI",
+    "url": "https://www.ebi.ac.uk/chembl/",
+    "type": "intergovernmental"
+  },
+  "summary": "Manually curated bioactive molecules with drug-like properties, targets and bioassay data, free over a REST API.",
+  "description": "ChEMBL holds compounds, drugs, targets, assays, documents and measured activities. The web services expose each as a resource with search, filtering by field lookups and offset pagination. At check, the status endpoint reported ChEMBL_37 (released 2026-05-01) with about 2.9 million distinct compounds, 18,552 targets and 24.5 million activities.",
+  "category": "life-sciences",
+  "tags": [
+    "chemistry",
+    "drug-discovery",
+    "bioactivity",
+    "compounds",
+    "targets",
+    "bioinformatics",
+    "smiles"
+  ],
+  "links": {
+    "homepage": "https://www.ebi.ac.uk/chembl/",
+    "docs": "https://chembl.gitbook.io/chembl-interface-documentation/web-services/chembl-data-web-services",
+    "terms": "https://www.ebi.ac.uk/chembl/",
+    "bulk_download": "https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/"
+  },
+  "api": {
+    "base_url": "https://www.ebi.ac.uk/chembl/api/data",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "yaml",
+      "image"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched; no rate-limit headers seen."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/molecule/{chembl_id}.json",
+      "summary": "One molecule with structures, properties and cross references",
+      "params": [
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/molecule/search.json",
+      "summary": "Free-text molecule search",
+      "params": [
+        "q",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/target/search.json",
+      "summary": "Free-text target search",
+      "params": [
+        "q",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/activity.json",
+      "summary": "Bioactivity measurements, filterable by field lookups",
+      "params": [
+        "molecule_chembl_id",
+        "target_chembl_id",
+        "standard_type",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/status.json",
+      "summary": "Release version and record counts",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL25.json",
+    "response_excerpt": "{\n  \"atc_classifications\": [\"B01AC06\", \"N02BA01\", ...],\n  \"first_approval\": 1950,\n  \"max_phase\": \"4.0\",\n  \"molecule_chembl_id\": \"CHEMBL25\",\n  \"pref_name\": \"ASPIRIN\",\n  \"molecule_properties\": {\"full_mwt\": \"180.16\", ...},\n  \"molecule_structures\": {\"canonical_smiles\": \"CC(=O)Oc1ccccc1C(=O)O\", ...},\n  ...\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "spdx": "CC-BY-SA-3.0",
+      "url": "https://www.ebi.ac.uk/chembl/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Release ChEMBL_37 (2026-05-01) at check"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "The default response format is XML: add .json to the resource or send format=json. List responses wrap results under the resource name plus page_meta (limit, offset, next, total_count); follow page_meta.next. Filter with Django-style lookups, for example activity.json?target_chembl_id=CHEMBL240&standard_type=IC50&limit=5. Ids look like CHEMBL25.",
+  "caveats": [
+    "Default format is XML, which surprises JSON-first clients.",
+    "Large unfiltered activity queries are slow; filter first or use the bulk download.",
+    "The license statement (CC BY-SA 3.0) was read from the ChEMBL homepage; the share-alike term applies to derived datasets."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key."
+  },
+  "related": [
+    "pubchem",
+    "rxnav-rxnorm",
+    "uniprot"
+  ],
+  "added": "2026-11-11"
+}

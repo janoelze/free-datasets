@@ -121,5 +121,13 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "cover-art-archive",
+    "deezer-api",
+    "itunes-search-api",
+    "listenbrainz",
+    "lrclib",
+    "theaudiodb"
+  ],
   "added": "2026-11-11"
 }

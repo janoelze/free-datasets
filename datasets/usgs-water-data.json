@@ -1,0 +1,136 @@
+{
+  "slug": "usgs-water-data",
+  "name": "USGS Water Data OGC APIs",
+  "provider": {
+    "name": "U.S. Geological Survey",
+    "url": "https://www.usgs.gov",
+    "type": "government"
+  },
+  "summary": "USGS streamflow, groundwater and water-quality monitoring data via OGC API, replacing the retiring WaterServices.",
+  "description": "The Water Data APIs serve monitoring locations, daily and continuous time-series values (such as discharge in cubic feet per second), latest values, field measurements, peaks and reference code tables as GeoJSON from OGC API Features collections. They replace the NWIS WaterServices (waterservices.usgs.gov), which USGS says will be decommissioned on 2027-02-22.",
+  "category": "earth-environment",
+  "tags": [
+    "hydrology",
+    "streamflow",
+    "water",
+    "groundwater",
+    "monitoring-stations",
+    "usgs",
+    "ogc-api"
+  ],
+  "links": {
+    "homepage": "https://api.waterdata.usgs.gov",
+    "docs": "https://api.waterdata.usgs.gov/docs/ogcapi/",
+    "terms": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+    "openapi": "https://api.waterdata.usgs.gov/ogcapi/v1/openapi?f=json",
+    "signup": "https://api.waterdata.usgs.gov/signup/"
+  },
+  "api": {
+    "base_url": "https://api.waterdata.usgs.gov/ogcapi/v1",
+    "style": "rest",
+    "formats": [
+      "geojson",
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "Works without a key; an api.data.gov key (api_key parameter or X-Api-Key header) gives higher hourly limits. The docs use DEMO_KEY in examples."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not given as a number in the docs fetched; they say your own key means more requests per hour before 429 errors."
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/collections/monitoring-locations/items",
+      "summary": "Monitoring locations (stations), filterable by state, county, type, bbox",
+      "params": [
+        "state_name",
+        "bbox",
+        "limit",
+        "f"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections/daily/items",
+      "summary": "Daily values per time series (for example discharge 00060)",
+      "params": [
+        "monitoring_location_id",
+        "parameter_code",
+        "time",
+        "sortby",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections/latest-continuous/items",
+      "summary": "Latest instantaneous value per time series",
+      "params": [
+        "monitoring_location_id",
+        "parameter_code",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections/parameter-codes/items",
+      "summary": "Reference table of parameter codes",
+      "params": [
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections",
+      "summary": "All collections",
+      "params": [
+        "f"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&monitoring_location_id=USGS-01646500&parameter_code=00060&sortby=-time&limit=2",
+    "response_excerpt": "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"monitoring_location_id\": \"USGS-01646500\",\n        \"parameter_code\": \"00060\",\n        \"statistic_id\": \"00003\",\n        \"time\": \"2026-11-10\",\n        \"value\": \"1860\",\n        \"unit_of_measure\": \"ft^3/s\",\n        \"approval_status\": \"Provisional\",\n        \"last_modified\": \"2026-11-11T07:08:43.795358+00:00\"\n      },\n      \"id\": \"...\",\n      \"geometry\": {\"type\": \"Point\", \"coordinates\": [-77.1276, 38.9497]}\n    },\n    ...\n  ],\n  \"numberReturned\": 2,\n  \"links\": [...]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "US government work (public domain); data may be provisional",
+      "url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States and territories",
+      "temporal": "Decades of daily values to near real time"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Station ids are agency-prefixed: USGS-01646500. Parameter codes: 00060 discharge, 00065 gage height, 00010 water temperature. Without sortby results are not chronological (the oldest value came first); use sortby=-time or a time interval such as time=2026-10-01/.. . Follow links[rel=next] for pages (cursor). Values are strings.",
+  "caveats": [
+    "Replaces https://waterservices.usgs.gov (NWIS), whose pages say it will be permanently shut down on 2027-02-22 with deliberate slowdowns and outages from January 2027.",
+    "Recent values carry approval_status Provisional.",
+    "The v0 path (ogcapi/v0) also answered; v1 is the documented one."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key."
+  },
+  "related": [
+    "noaa-coops",
+    "pegel-online",
+    "usgs-earthquakes"
+  ],
+  "added": "2026-11-11"
+}

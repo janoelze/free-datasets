@@ -1,0 +1,92 @@
+{
+  "slug": "ibge-sidra",
+  "name": "IBGE SIDRA API",
+  "provider": {
+    "name": "Instituto Brasileiro de Geografia e Estatística (IBGE)",
+    "url": "https://www.ibge.gov.br/",
+    "type": "government"
+  },
+  "summary": "Keyless URL-path API to the IBGE SIDRA tables: Brazilian inflation (IPCA), census, population, GDP, employment and agricultural statistics as JSON.",
+  "description": "SIDRA is IBGE's database of aggregate statistics. The API builds a query from path parameters: table (t), territorial level and units (n), variables (v), periods (p), classifications (c), plus format (f) and header (h) switches. Responses are JSON arrays whose first element is a header row that names each column. Table 1737, for example, holds the monthly IPCA consumer price index.",
+  "category": "economics-statistics",
+  "tags": [
+    "brazil",
+    "official-statistics",
+    "inflation",
+    "census",
+    "ibge",
+    "population",
+    "gdp"
+  ],
+  "links": {
+    "homepage": "https://sidra.ibge.gov.br/",
+    "docs": "https://apisidra.ibge.gov.br/home/ajuda"
+  },
+  "api": {
+    "base_url": "https://apisidra.ibge.gov.br",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented (the docs pages are behind a Cloudflare challenge and could not be fetched)."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/values/t/{table}/n{level}/{units}/v/{variable}/p/{period}",
+      "summary": "Values from a SIDRA table (path-encoded query; p/last 3 for latest periods)",
+      "params": [
+        "t",
+        "n",
+        "v",
+        "p",
+        "c",
+        "f",
+        "h",
+        "d"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://apisidra.ibge.gov.br/values/t/1737/n1/all/v/63/p/last%203",
+    "response_excerpt": "[{\"NC\":\"Nível Territorial (Código)\",\"NN\":\"Nível Territorial\",\"MC\":\"Unidade de Medida (Código)\",\"MN\":\"Unidade de Medida\",\"V\":\"Valor\",\"D1C\":\"Brasil (Código)\",\"D1N\":\"Brasil\",\"D2C\":\"Variável (Código)\",\"D2N\":\"Variável\",\"D3C\":\"Mês (Código)\",\"D3N\":\"Mês\"},{\"NC\":\"1\",\"NN\":\"Brasil\",\"MC\":\"2\",\"MN\":\"%\",\"V\":\"0.07\",\"D1C\":\"1\",\"D1N\":\"Brasil\",\"D2C\":\"63\",\"D2N\":\"IPCA - Variação mensal\",\"D3C\":\"202607\",\"D3N\":\"julho 2026\"},...]"
+  },
+  "data": {
+    "license": {
+      "name": "Not re-confirmed",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Brazil, down to municipalities for many tables",
+      "temporal": "Varies by table; table 1737 returned data up to September 2026"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Docs and labels are in Portuguese. The first array element is a header row, not data; /h/n drops it and /f/c keeps codes only. V is a string ('...' or '-' mark missing data). Territorial level n1 is Brazil, n3 states, n6 municipalities (n6/3550308 is São Paulo city). Table and variable codes come from the SIDRA site.",
+  "caveats": [
+    "The documentation pages (apisidra.ibge.gov.br/home/ajuda, sidra.ibge.gov.br) and servicodados.ibge.gov.br timed out or returned a Cloudflare challenge (403) from this sandbox, so parameter semantics were taken from observed responses only.",
+    "The /desc/t/{table} metadata path answered 403 here.",
+    "servicodados.ibge.gov.br (localidades, agregados APIs) was unreachable by curl on 2026-11-11 and is not part of this record."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; /f/c, /h/n and a municipality query also answered 200."
+  },
+  "related": [
+    "bcb-sgs",
+    "eurostat",
+    "world-bank-indicators"
+  ],
+  "added": "2026-11-11"
+}

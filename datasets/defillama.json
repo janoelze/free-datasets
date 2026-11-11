@@ -1,0 +1,118 @@
+{
+  "slug": "defillama",
+  "name": "DefiLlama Free API",
+  "provider": {
+    "name": "DefiLlama",
+    "url": "https://defillama.com",
+    "type": "community"
+  },
+  "summary": "Free DeFi analytics: total value locked by protocol and chain, stablecoins, yields, DEX volumes, fees and token prices.",
+  "description": "Open API for DeFi data across thousands of protocols. api.llama.fi serves TVL (protocols, chains, history), DEX and options volumes and fees; stablecoins.llama.fi serves stablecoin supply and chain distribution; yields.llama.fi serves APY and TVL for liquidity pools; coins.llama.fi serves current, historical and charted token prices by chain:address or coingecko:id. All free endpoints work without a key; a paid Pro API exists separately.",
+  "category": "finance-markets",
+  "tags": [
+    "defi",
+    "crypto",
+    "tvl",
+    "stablecoins",
+    "yields",
+    "prices",
+    "time-series"
+  ],
+  "links": {
+    "homepage": "https://defillama.com",
+    "docs": "https://api-docs.defillama.com/",
+    "source": "https://github.com/DefiLlama/defillama-server"
+  },
+  "api": {
+    "base_url": "https://api.llama.fi",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Free API on api.llama.fi, stablecoins.llama.fi, yields.llama.fi and coins.llama.fi needs no key. The paid Pro API (pro-api.llama.fi/{key}) is a separate service and endpoints exclusive to it return 402 on the free hosts."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Described as 'Standard' on the free API with higher limits on the paid plan; no number published on the pages checked."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/protocols",
+      "summary": "All protocols with current TVL and metadata"
+    },
+    {
+      "method": "GET",
+      "path": "/protocol/{slug}",
+      "summary": "Historical TVL of one protocol with chain and token breakdown"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/chains",
+      "summary": "Current TVL for all chains"
+    },
+    {
+      "method": "GET",
+      "path": "/overview/dexs",
+      "summary": "DEX volume overview",
+      "params": [
+        "excludeTotalDataChart",
+        "excludeTotalDataChartBreakdown"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://stablecoins.llama.fi/stablecoins",
+      "summary": "Stablecoins with circulating supply",
+      "params": [
+        "includePrices"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://coins.llama.fi/prices/current/{coins}",
+      "summary": "Current token prices (coingecko:bitcoin or chain:address)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.llama.fi/tvl/aave",
+    "response_excerpt": "16253945902.636852"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the docs pages checked; free API, attribution not required by the docs",
+      "url": "https://api-docs.defillama.com/",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global DeFi, hundreds of chains",
+      "temporal": "Daily TVL history from 2017 for the chain aggregate"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Use slugs from /protocols (for example aave, uniswap) for protocol endpoints. Prices are addressed as coingecko:<id> or <chain>:<address> in the coins host. Start with /protocols and /v2/chains for the overview; the detail endpoints are large (/protocol/uniswap was about 2 MB). /tvl/{slug} returns a bare number, not JSON.",
+  "caveats": [
+    "Responses can be large: /protocols had about 9,000 entries, /yields/pools about 10 MB and /overview/dexs about 2.4 MB at check time.",
+    "No OpenAPI document was found at the obvious URLs; the docs site lists endpoints and an llms.txt.",
+    "Several different hosts (api, coins, stablecoins, yields) share the free API.",
+    "The main defillama.com/docs/api page sits behind a Cloudflare challenge; use api-docs.defillama.com."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless. /protocols, /v2/chains, stablecoins, yields, dexs and coins.llama.fi price/chart endpoints also returned 200; CORS * on two origins."
+  },
+  "related": [
+    "coingecko",
+    "coinpaprika"
+  ],
+  "added": "2026-11-11"
+}

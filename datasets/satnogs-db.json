@@ -1,0 +1,120 @@
+{
+  "slug": "satnogs-db",
+  "name": "SatNOGS DB API",
+  "provider": {
+    "name": "Libre Space Foundation",
+    "url": "https://libre.space",
+    "type": "nonprofit"
+  },
+  "summary": "Crowdsourced database of satellites, their radio transmitters, modes and TLEs, openly licensed and free to read without a key.",
+  "description": "SatNOGS DB lists satellites and other orbital objects with status, launch and decay dates, operator and countries, plus transmitters (frequencies, modes, baud) and recent TLEs. It is aimed at amateur-radio and ground-station use; telemetry and artifact endpoints need an authentication token.",
+  "category": "space-astronomy",
+  "tags": [
+    "satellites",
+    "amateur-radio",
+    "transmitters",
+    "tle",
+    "orbits",
+    "iss"
+  ],
+  "links": {
+    "homepage": "https://db.satnogs.org",
+    "docs": "https://db.satnogs.org/api/",
+    "openapi": "https://db.satnogs.org/api/schema/",
+    "source": "https://gitlab.com/librespacefoundation/satnogs/satnogs-db"
+  },
+  "api": {
+    "base_url": "https://db.satnogs.org/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Satellites, transmitters, modes and tle are public. telemetry and artifacts returned 401 without a token."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented on the pages I fetched."
+    },
+    "pagination": "unknown"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/satellites/",
+      "summary": "Satellites and objects with status, launch date, operator",
+      "params": [
+        "norad_cat_id",
+        "sat_id",
+        "status",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/transmitters/",
+      "summary": "Radio transmitters with frequencies, modes and baud",
+      "params": [
+        "satellite__norad_cat_id",
+        "alive",
+        "mode",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tle/",
+      "summary": "Latest two-line elements",
+      "params": [
+        "norad_cat_id",
+        "sat_id",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/modes/",
+      "summary": "Modulation modes"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://db.satnogs.org/api/satellites/?format=json&norad_cat_id=25544",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[{\"sat_id\":\"XSKZ-5603-1870-9019-3066\",\"norad_cat_id\":25544,\"name\":\"ISS\",\"names\":\"ZARYA, RS0ISS, NA1SS\",\"status\":\"in orbit\",\"launched\":\"1998-11-20T00:00:00Z\",\"operator\":\"None\",\"countries\":\"RU,US\",\"telemetries\":[{\"decoder\":\"iss\"}],...}]"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY-SA 4.0",
+      "spdx": "CC-BY-SA-4.0",
+      "url": "https://db.satnogs.org/about",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Earth orbit"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Filter by norad_cat_id for a single object; the unfiltered satellites list returns thousands of rows in one response. sat_id is SatNOGS's own stable id. Frequencies are in Hz.",
+  "caveats": [
+    "telemetry and artifacts endpoints require authentication (401 seen).",
+    "No CORS header was sent.",
+    "Rate limits are not documented in what I fetched; Django REST throttling may apply."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key; transmitters, tle and modes also answered 200."
+  },
+  "hn": [],
+  "related": [
+    "celestrak-gp"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,98 @@
+{
+  "slug": "cloudflare-doh",
+  "name": "Cloudflare DNS over HTTPS (JSON)",
+  "provider": {
+    "name": "Cloudflare",
+    "url": "https://www.cloudflare.com",
+    "type": "company"
+  },
+  "summary": "Resolve DNS records through Cloudflare's 1.1.1.1 resolver with a JSON-over-HTTPS GET.",
+  "description": "cloudflare-dns.com/dns-query answers A, AAAA, MX, TXT, NS, CNAME and other record queries as JSON when the request carries Accept: application/dns-json. It supports the DO (DNSSEC) and CD (checking disabled) bits and numeric or text record types, and works from browsers and scripts without a DNS library.",
+  "category": "networking-internet",
+  "tags": [
+    "dns",
+    "doh",
+    "resolver",
+    "dnssec",
+    "1-1-1-1",
+    "mx",
+    "txt"
+  ],
+  "links": {
+    "homepage": "https://developers.cloudflare.com/1.1.1.1/",
+    "docs": "https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/",
+    "terms": "https://www.cloudflare.com/application/terms/"
+  },
+  "api": {
+    "base_url": "https://cloudflare-dns.com",
+    "style": "rest",
+    "formats": [
+      "json",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "Accept",
+        "example": "application/dns-json",
+        "notes": "Without this header the same URL returned HTTP 400."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the page fetched."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/dns-query",
+      "summary": "Resolve a name and record type, JSON answer",
+      "params": [
+        "name",
+        "type",
+        "do",
+        "cd"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://cloudflare-dns.com/dns-query?name=example.org&type=A",
+    "headers": {
+      "Accept": "application/dns-json"
+    },
+    "response_excerpt": "{\n  \"Status\": 0,\n  \"TC\": false,\n  \"RD\": true,\n  \"RA\": true,\n  \"AD\": true,\n  \"CD\": false,\n  \"Question\": [{\"name\": \"example.org\", \"type\": 1}],\n  \"Answer\": [\n    {\"name\": \"example.org\", \"type\": 1, \"TTL\": 143, \"data\": \"104.20.26.136\"},\n    ...\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Service terms; no data license",
+      "url": "https://www.cloudflare.com/application/terms/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Live resolution"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always send Accept: application/dns-json. type accepts names (A, MX, TXT) or numbers. Status is the DNS RCODE (0 NOERROR, 3 NXDOMAIN). TTL values are seconds remaining in the resolver cache. The sibling Google service (google-dns-doh) has the same JSON shape on /resolve.",
+  "caveats": [
+    "Missing Accept header gives HTTP 400.",
+    "The JSON format is Cloudflare's documented 'JSON API' variant, not the RFC 8484 wire format (which uses application/dns-message)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed with the Accept header; no key exists."
+  },
+  "related": [
+    "google-dns-doh"
+  ],
+  "added": "2026-11-11"
+}

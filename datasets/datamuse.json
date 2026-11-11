@@ -102,7 +102,9 @@
     }
   ],
   "related": [
-    "free-dictionary-api"
+    "free-dictionary-api",
+    "languagetool",
+    "wiktionary-rest"
   ],
   "added": "2026-11-11"
 }

@@ -101,7 +101,8 @@
   },
   "related": [
     "rdap-org",
-    "google-dns-doh"
+    "google-dns-doh",
+    "tranco-list"
   ],
   "added": "2026-11-11"
 }

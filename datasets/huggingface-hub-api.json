@@ -1,0 +1,133 @@
+{
+  "slug": "huggingface-hub-api",
+  "name": "Hugging Face Hub API",
+  "provider": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co",
+    "type": "company"
+  },
+  "summary": "Search and inspect machine-learning models, datasets and Spaces on the Hugging Face Hub, plus daily papers; public reads need no token.",
+  "description": "The Hub API lists and filters public models, datasets and Spaces with metadata such as downloads, likes, tags, library, pipeline task, license tag, last-modified date and file listings, and exposes daily papers. It is documented by an OpenAPI 3.1 spec. Private repos and writes need a free access token.",
+  "category": "developer-tools",
+  "tags": [
+    "machine-learning",
+    "ai-models",
+    "datasets",
+    "model-registry",
+    "hugging-face",
+    "papers"
+  ],
+  "links": {
+    "homepage": "https://huggingface.co",
+    "docs": "https://huggingface.co/docs/hub/api",
+    "terms": "https://huggingface.co/terms-of-service",
+    "openapi": "https://huggingface.co/.well-known/openapi.json",
+    "signup": "https://huggingface.co/settings/tokens"
+  },
+  "api": {
+    "base_url": "https://huggingface.co/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "Public read endpoints answered without a token; a free access token (Authorization: Bearer hf_...) is needed for private or gated repos and for writes."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Anonymous API-bucket budget seen in response headers: 500 requests per 5-minute fixed window (RateLimit-Policy q=500, w=300); the docs describe separate buckets for other request classes."
+    },
+    "pagination": "link-header",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/models",
+      "summary": "Search and filter models",
+      "params": [
+        "search",
+        "filter",
+        "author",
+        "sort",
+        "limit",
+        "full"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models/{repo_id}",
+      "summary": "Full metadata for one model repo"
+    },
+    {
+      "method": "GET",
+      "path": "/datasets",
+      "summary": "Search and filter datasets",
+      "params": [
+        "search",
+        "filter",
+        "author",
+        "sort",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/spaces",
+      "summary": "Search Spaces",
+      "params": [
+        "search",
+        "filter",
+        "sort",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/daily_papers",
+      "summary": "Papers featured on the daily papers page",
+      "params": [
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://huggingface.co/api/models?search=bert&sort=downloads&limit=1",
+    "response_excerpt": "[\n  {\n    \"id\": \"google-bert/bert-base-uncased\",\n    \"downloads\": 31365205,\n    \"likes\": 3067,\n    \"pipeline_tag\": \"fill-mask\",\n    \"library_name\": \"transformers\",\n    \"createdAt\": \"2022-03-02T23:29:04.000Z\",\n    \"tags\": [\n      \"transformers\",\n      \"...\",\n      \"...\"\n    ]\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per repository; metadata API governed by Hugging Face Terms of Service",
+      "url": "https://huggingface.co/terms-of-service",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Page by following the Link: rel=\"next\" header (cursor based), not an offset. Add full=true for siblings, card data and config; default list rows are slim. Repo ids are owner/name. The license of a model is in its tags as license:<id>.",
+  "caveats": [
+    "The 500-per-5-minutes budget was read from RateLimit headers for anonymous callers; the docs say limits differ for authenticated and other request classes.",
+    "Papers with Code (paperswithcode.com/api) now redirects to huggingface.co/papers/trending, so its API is gone.",
+    "A limit above 1000 is silently capped at 1000 rows.",
+    "CORS echoes the request Origin on the endpoints tested."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a token."
+  },
+  "related": [
+    "models-dev",
+    "openrouter-models"
+  ],
+  "added": "2026-11-11"
+}

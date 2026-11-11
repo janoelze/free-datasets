@@ -125,7 +125,10 @@
     "with_key": true
   },
   "related": [
-    "open-meteo-geocoding"
+    "open-meteo-geocoding",
+    "bright-sky",
+    "openaq",
+    "pirate-weather"
   ],
   "added": "2026-11-11"
 }

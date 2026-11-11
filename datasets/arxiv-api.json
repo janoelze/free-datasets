@@ -1,0 +1,99 @@
+{
+  "slug": "arxiv-api",
+  "name": "arXiv API",
+  "provider": {
+    "name": "arXiv (Cornell University)",
+    "url": "https://arxiv.org",
+    "type": "academic"
+  },
+  "summary": "Search and fetch metadata for arXiv preprints in physics, maths, computer science and more via an Atom feed API.",
+  "description": "The arXiv API returns Atom 1.0 feeds of paper metadata: title, abstract, authors, categories, submission and update dates, journal reference, DOI and PDF links. Queries use field prefixes (ti, au, abs, cat, all) with boolean operators and date ranges, or an id_list to fetch specific papers. Metadata is released under CC0.",
+  "category": "books-literature",
+  "tags": [
+    "preprints",
+    "research-papers",
+    "scholarly-metadata",
+    "physics",
+    "computer-science",
+    "machine-learning",
+    "abstracts"
+  ],
+  "links": {
+    "homepage": "https://info.arxiv.org/help/api/index.html",
+    "docs": "https://info.arxiv.org/help/api/user-manual.html",
+    "terms": "https://info.arxiv.org/help/api/tou.html",
+    "bulk_download": "https://info.arxiv.org/help/bulk_data.html"
+  },
+  "api": {
+    "base_url": "https://export.arxiv.org/api",
+    "style": "rest",
+    "formats": [
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Terms: no more than one request every three seconds and a single connection at a time, applied across all machines you use."
+    },
+    "pagination": "offset",
+    "max_page_size": 2000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/query",
+      "summary": "Search papers or fetch by id as an Atom feed",
+      "params": [
+        "search_query",
+        "id_list",
+        "start",
+        "max_results",
+        "sortBy",
+        "sortOrder"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://export.arxiv.org/api/query?search_query=all:electron&max_results=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:opensearch=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:arxiv=\"http://arxiv.org/schemas/atom\">\n  <opensearch:totalResults>188762</opensearch:totalResults>\n  <opensearch:startIndex>0</opensearch:startIndex>\n  <opensearch:itemsPerPage>1</opensearch:itemsPerPage>\n  <entry>\n    <id>http://arxiv.org/abs/cond-mat/0011267v1</id>\n    <title>The electronic structure of cuprates from high energy spectroscopy</title>\n    <published>2000-11-15T16:19:15Z</published>\n    <summary>  We report studies of the electronic structure and elementary excitations ...</summary>\n    <arxiv:primary_category term=\"cond-mat.supr-con\"/>\n    <author><name>Mark S. Golden</name></author>\n    ...\n  </entry>\n</feed>"
+  },
+  "data": {
+    "license": {
+      "name": "Metadata: CC0 1.0; full texts have per-paper licenses",
+      "spdx": "CC0-1.0",
+      "url": "https://info.arxiv.org/help/api/tou.html",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "1991-present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Query syntax: search_query=cat:cs.LG+AND+ti:attention, sortBy=submittedDate&sortOrder=descending. Fetch one paper with id_list=1706.03762. Page with start and max_results (docs: slices of at most 2000, up to 30000 total). Ids in entries carry a version suffix (v1). For whole-corpus work use bulk metadata, not the API.",
+  "caveats": [
+    "Responses are Atom XML only; no JSON.",
+    "No CORS header was sent on a request with an Origin header.",
+    "Result totals shown are as of check (188,762 hits for all:electron)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key."
+  },
+  "related": [
+    "crossref",
+    "openalex",
+    "ror-api"
+  ],
+  "added": "2026-11-11"
+}

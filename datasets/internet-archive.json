@@ -121,7 +121,9 @@
   ],
   "related": [
     "open-library",
-    "wikipedia-api"
+    "wikipedia-api",
+    "common-crawl-index",
+    "wikimedia-commons-api"
   ],
   "added": "2026-11-11"
 }

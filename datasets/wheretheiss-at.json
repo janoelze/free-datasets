@@ -100,5 +100,8 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "celestrak-gp"
+  ],
   "added": "2026-11-11"
 }

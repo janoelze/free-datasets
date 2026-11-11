@@ -8,7 +8,7 @@
   },
   "summary": "Half-hourly forecast and actual carbon intensity (gCO2/kWh) and generation mix of the Great Britain electricity grid.",
   "description": "Provides national and regional (queryable by postcode) carbon intensity of electricity with a forecast, actual values, an index (very low to very high) and the fuel generation mix. Supports date ranges, past and future 24h/48h windows and a statistics endpoint, plus a national /generation endpoint. Useful for carbon-aware scheduling.",
-  "category": "earth-environment",
+  "category": "energy",
   "tags": [
     "carbon-intensity",
     "electricity-grid",
@@ -120,6 +120,10 @@
       "title": "UK Carbon Intensity API",
       "points": 1
     }
+  ],
+  "related": [
+    "elexon-bmrs",
+    "energy-charts"
   ],
   "added": "2026-11-11"
 }

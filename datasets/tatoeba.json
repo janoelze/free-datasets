@@ -1,0 +1,119 @@
+{
+  "slug": "tatoeba",
+  "name": "Tatoeba API",
+  "provider": {
+    "name": "Tatoeba Association",
+    "url": "https://tatoeba.org",
+    "type": "nonprofit"
+  },
+  "summary": "Community-built corpus of example sentences with translations in hundreds of languages, read-only and keyless.",
+  "description": "The Tatoeba API searches sentences by text and language, returns a sentence with its translations and per-sentence license, and serves audio recordings. Stable endpoints sit under /v1, experimental ones under /unstable. It supersedes the old api_v0 search endpoint, which Tatoeba marks deprecated.",
+  "category": "language",
+  "tags": [
+    "sentences",
+    "translations",
+    "multilingual",
+    "corpus",
+    "language-learning",
+    "audio"
+  ],
+  "links": {
+    "homepage": "https://tatoeba.org",
+    "docs": "https://en.wiki.tatoeba.org/articles/show/api",
+    "openapi": "https://api.tatoeba.org/openapi.json",
+    "bulk_download": "https://tatoeba.org/en/downloads"
+  },
+  "api": {
+    "base_url": "https://api.tatoeba.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in the spec or wiki page fetched."
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/v1/sentences",
+      "summary": "Search sentences (sort is required)",
+      "params": [
+        "lang",
+        "q",
+        "sort",
+        "limit",
+        "showtrans",
+        "trans:lang",
+        "after"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/sentences/{id}",
+      "summary": "One sentence with its translations",
+      "params": [
+        "showtrans"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/unstable/audios",
+      "summary": "Search audio recordings (unstable)",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/v1/audios/{id}/file",
+      "summary": "Download an audio file",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.tatoeba.org/v1/sentences?lang=eng&q=hello&sort=relevance&limit=1&showtrans=matching&trans:lang=deu",
+    "response_excerpt": "{\n  \"data\": [\n    {\n      \"id\": 3613319,\n      \"text\": \"Hello?\",\n      \"lang\": \"eng\",\n      \"license\": \"CC BY 2.0 FR\",\n      \"owner\": \"Thanuir\",\n      \"translations\": [\n        {\"id\": 349982, \"text\": \"Ist da jemand?\", \"lang\": \"deu\", \"is_direct\": false, ...},\n        {\"id\": 3623146, \"text\": \"Hallo?\", \"lang\": \"deu\", \"is_direct\": true, ...}\n      ]\n    }\n  ],\n  \"paging\": {\"total\": 361, \"has_next\": true, \"next\": \"https://api.tatoeba.org/v1/sentences?...&after=10099%2C3613319\"}\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per sentence: mostly CC BY 2.0 FR, some CC0 (license field on each sentence)",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Hundreds of languages (ISO 639-3 codes)",
+      "temporal": "Community contributions, ongoing"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Languages are ISO 639-3 (eng, deu, fra). sort is mandatory (for example relevance) or the call fails with 400. showtrans takes all, none or matching; combine matching with trans:lang to get translations in one language. Page with the cursor in paging.next (after=). Read each sentence's license and owner for attribution.",
+  "caveats": [
+    "Without sort the API returns 400 'Required parameter sort missing'.",
+    "The old https://tatoeba.org/en/api_v0/search still answered 200 with a descriptive User-Agent (500 without one), but the wiki marks it deprecated.",
+    "Endpoints under /unstable may change; only /v1 is stable."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=25006576",
+      "title": "Tatoeba: Collection of Sentences and Translations",
+      "points": 3
+    }
+  ],
+  "related": [
+    "free-dictionary-api",
+    "mymemory-translation"
+  ],
+  "added": "2026-11-11"
+}

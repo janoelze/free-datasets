@@ -127,7 +127,7 @@ test('catalog: facets, tags, categories, related', function () {
     assert_same('air-quality', array_key_first($tags), 'ties alphabetical');
 
     $cats = $c->categories();
-    assert_same(22, count($cats));
+    assert_same(count(json_decode((string) file_get_contents(dirname(__DIR__) . '/schema/categories.json'), true)), count($cats));
     assert_same('weather-climate', $cats[0]['id']);
     assert_same(1, $cats[0]['count']);
     assert_same('Weather & Climate', $c->category('weather-climate')['name']);
@@ -137,7 +137,7 @@ test('catalog: facets, tags, categories, related', function () {
 
     $enums = $c->enums();
     assert_same(['none', 'api_key', 'oauth2'], $enums['auth']);
-    assert_same(22, count($enums['category']));
+    assert_same(count(json_decode((string) file_get_contents(dirname(__DIR__) . '/schema/categories.json'), true)), count($enums['category']));
 });
 
 test('catalog: compiled cache is used only when fresh and from the same directory', function () {

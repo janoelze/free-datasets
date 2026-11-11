@@ -1,0 +1,107 @@
+{
+  "slug": "our-world-in-data",
+  "name": "Our World in Data chart API",
+  "provider": {
+    "name": "Our World in Data (Global Change Data Lab)",
+    "url": "https://ourworldindata.org",
+    "type": "nonprofit"
+  },
+  "summary": "Download the data and metadata behind any Our World in Data chart as CSV or JSON by appending a suffix to its URL.",
+  "description": "Every Grapher chart on ourworldindata.org has a slug; appending .csv returns its data table, .metadata.json returns units, sources and citations, .config.json the chart definition and .zip a bundle. Topics span health, demography, energy, climate, food, poverty, technology and more, as country-year series with ISO3 codes.",
+  "category": "economics-statistics",
+  "tags": [
+    "indicators",
+    "development",
+    "population",
+    "life-expectancy",
+    "climate",
+    "time-series",
+    "countries"
+  ],
+  "links": {
+    "homepage": "https://ourworldindata.org",
+    "docs": "https://docs.owid.io/projects/etl/api/chart-api/",
+    "terms": "https://ourworldindata.org/faqs"
+  },
+  "api": {
+    "base_url": "https://ourworldindata.org/grapher",
+    "style": "static-file",
+    "formats": [
+      "csv",
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; no rate-limit headers seen. Responses are CDN-cached."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{slug}.csv",
+      "summary": "Chart data as CSV (Entity, Code, Year, value columns)",
+      "params": [
+        "csvType",
+        "country",
+        "time",
+        "useColumnShortNames"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{slug}.metadata.json",
+      "summary": "Chart and indicator metadata: title, unit, citation, timespan, last update",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/{slug}.config.json",
+      "summary": "Grapher chart configuration",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/{slug}.values.json",
+      "summary": "Latest data point per entity, as JSON",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://ourworldindata.org/grapher/life-expectancy.csv?csvType=filtered&country=~DEU&time=2020..latest",
+    "response_excerpt": "Entity,Code,Year,Life expectancy\nGermany,DEU,2020,81.0036\nGermany,DEU,2021,81.1059\n..."
+  },
+  "data": {
+    "license": {
+      "name": "Varies per indicator; see citation in the metadata",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, mostly country level",
+      "temporal": "Varies by chart, often 1800s or 1950 to present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Find the slug from the chart URL (ourworldindata.org/grapher/<slug>). Unfiltered CSV is the full chart table; csvType=filtered with country=~DEU or country=DEU~FRA and time=2020..latest applies the filters server-side (verified for ~DEU; the ~ form selects by ISO3 code). Column names follow the indicator title unless useColumnShortNames=true. Read .metadata.json for units and the exact citation to attribute.",
+  "caveats": [
+    "There is no catalogue endpoint here: you must already know chart slugs (search the website or the ETL catalogue).",
+    "OWID's own text and charts are described by the site as CC BY, but each indicator carries upstream sources and terms; the license text was not found in the metadata files, so check the citation before reuse.",
+    "No documented rate limit, so cache downloads."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed; csv returned. No key exists."
+  },
+  "related": [
+    "who-gho",
+    "world-bank-indicators"
+  ],
+  "added": "2026-11-11"
+}

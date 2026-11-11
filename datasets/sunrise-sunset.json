@@ -79,5 +79,8 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "usno-astronomical-applications"
+  ],
   "added": "2026-11-11"
 }

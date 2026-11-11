@@ -1,0 +1,143 @@
+{
+  "slug": "openaq",
+  "name": "OpenAQ API v3",
+  "provider": {
+    "name": "OpenAQ",
+    "url": "https://openaq.org",
+    "type": "nonprofit"
+  },
+  "summary": "Global open air-quality measurements from government and research monitors, via a free-key REST API.",
+  "description": "OpenAQ v3 aggregates air-quality data from stations worldwide. Resources include locations, sensors, parameters (PM2.5, PM10, O3, NO2 and more), countries, providers, owners, instruments, manufacturers and licenses, with raw measurements and hourly, daily, monthly and yearly aggregates per sensor. A free API key is required.",
+  "category": "earth-environment",
+  "tags": [
+    "air-quality",
+    "pollution",
+    "pm25",
+    "sensors",
+    "monitoring-stations",
+    "environment",
+    "open-data"
+  ],
+  "links": {
+    "homepage": "https://openaq.org",
+    "docs": "https://docs.openaq.org",
+    "terms": "https://docs.openaq.org/about/terms",
+    "openapi": "https://api.openaq.org/openapi.json",
+    "signup": "https://explore.openaq.org/register",
+    "bulk_download": "https://docs.openaq.org/aws/about"
+  },
+  "api": {
+    "base_url": "https://api.openaq.org/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "header",
+      "key_name": "X-API-Key",
+      "notes": "Register at explore.openaq.org/register to get a key. v2 is gone; without a key the API answers 401 with an explanatory message."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "General use (free): 60 requests per minute and 2,000 per hour; 429 when exceeded (docs).",
+      "requests": 60,
+      "per": "minute",
+      "scope": "key"
+    },
+    "pagination": "page",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/locations",
+      "summary": "Monitoring locations, filterable by bbox, radius, country, provider, parameter",
+      "params": [
+        "coordinates",
+        "radius",
+        "bbox",
+        "iso",
+        "parameters_id",
+        "limit",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/locations/{locations_id}/latest",
+      "summary": "Latest value per sensor at a location",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/sensors/{sensors_id}/measurements",
+      "summary": "Raw measurements for a sensor",
+      "params": [
+        "datetime_from",
+        "datetime_to",
+        "limit",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sensors/{sensors_id}/days",
+      "summary": "Daily aggregates for a sensor",
+      "params": [
+        "datetime_from",
+        "datetime_to"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/parameters",
+      "summary": "Measured pollutants and their units",
+      "params": [
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.openaq.org/v3/locations?limit=1",
+    "response_excerpt": "{\"message\": \"Unauthorized. A valid API key must be provided in the X-API-Key header.\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per provider; see the licenses endpoint and the OpenAQ terms of use",
+      "url": "https://docs.openaq.org/about/terms",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Historical archive to near real time"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Send the key as X-API-Key. limit defaults to 100 and goes up to 1,000 with page for paging. Start with /locations?coordinates=lat,lon&radius=meters (radius in metres) or iso=DE, then use the sensor ids from the location to fetch measurements. Each location carries a license/provider, so keep attribution.",
+  "caveats": [
+    "Only the unauthenticated 401 was observed; endpoint names and parameters come from the public OpenAPI spec and docs (spec fetched, HTTP 200).",
+    "No CORS header was sent on the 401, so browser use is unconfirmed.",
+    "Terms and per-provider data licenses differ; check them before redistribution."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 401,
+    "with_key": false,
+    "notes": "Unauthenticated request; 401 with the documented X-API-Key message. No key was available."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=36504438",
+      "title": "OpenAQ: Air Quality API",
+      "points": 1
+    }
+  ],
+  "related": [
+    "open-meteo-forecast"
+  ],
+  "added": "2026-11-11"
+}

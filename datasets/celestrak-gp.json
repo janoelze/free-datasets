@@ -1,0 +1,111 @@
+{
+  "slug": "celestrak-gp",
+  "name": "CelesTrak GP Data",
+  "provider": {
+    "name": "CelesTrak",
+    "url": "https://celestrak.org",
+    "type": "nonprofit"
+  },
+  "summary": "Current orbital elements (GP/OMM and TLE) and the satellite catalogue for tracked objects in Earth orbit, free without a key.",
+  "description": "CelesTrak redistributes General Perturbations element sets for satellites by NORAD number, international designator, name or named group (stations, Starlink, GPS and so on), as JSON, CSV, XML, KVN OMM or classic TLE. A companion SATCAT endpoint returns catalogue records such as launch date, owner and decay.",
+  "category": "space-astronomy",
+  "tags": [
+    "satellites",
+    "orbits",
+    "tle",
+    "omm",
+    "norad",
+    "iss",
+    "space-situational-awareness"
+  ],
+  "links": {
+    "homepage": "https://celestrak.org",
+    "docs": "https://celestrak.org/NORAD/documentation/gp-data-formats.php"
+  },
+  "api": {
+    "base_url": "https://celestrak.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Element sets are refreshed about every 2 hours; the FAQ says polling more often than that gets the IP blocked with a custom 403. Redirects from the old .com domain can also trigger blocks."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/NORAD/elements/gp.php",
+      "summary": "Element sets by CATNR, INTDES, GROUP, NAME or SPECIAL, with FORMAT",
+      "params": [
+        "CATNR",
+        "INTDES",
+        "GROUP",
+        "NAME",
+        "SPECIAL",
+        "FORMAT"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/satcat/records.php",
+      "summary": "Satellite catalogue records (launch date, owner, decay, orbit)",
+      "params": [
+        "CATNR",
+        "FORMAT"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=json",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[{\"OBJECT_NAME\":\"ISS (ZARYA)\",\"OBJECT_ID\":\"1998-067A\",\"EPOCH\":\"2026-11-11T04:58:11.303328\",\"MEAN_MOTION\":15.49310717,\"ECCENTRICITY\":0.00073162,\"INCLINATION\":51.6322,\"RA_OF_ASC_NODE\":292.5559,\"ARG_OF_PERICENTER\":12.7435,\"MEAN_ANOMALY\":347.3737,\"NORAD_CAT_ID\":25544,\"BSTAR\":0.00017362007,...}]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated; derived from US Space Force/Space-Track data",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Earth orbit",
+      "temporal": "Current element sets"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Use FORMAT=json (OMM keys) for new code; TLE cannot hold 6-digit catalogue numbers. Cache results for at least 2 hours. Feed elements into an SGP4 propagator for positions. GROUP=stations, active and similar names return bulk lists.",
+  "caveats": [
+    "Blocks IPs that re-download the same file more often than the 2-hour update cycle (documented FAQ).",
+    "Use celestrak.org, not .com, because redirects from the old domain are a documented cause of runaway clients.",
+    "The licence is not stated on the pages I fetched."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key; GROUP, NAME and SATCAT queries also answered 200."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=38481164",
+      "title": "CelesTrak: A 501(C)(3) providing timely and highly accurate orbital data",
+      "points": 3
+    }
+  ],
+  "related": [
+    "satnogs-db",
+    "wheretheiss-at"
+  ],
+  "added": "2026-11-11"
+}

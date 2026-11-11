@@ -115,7 +115,8 @@
     "with_key": true
   },
   "related": [
-    "wikipedia-api"
+    "wikipedia-api",
+    "wikimedia-pageviews"
   ],
   "added": "2026-11-11"
 }

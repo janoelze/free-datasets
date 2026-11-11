@@ -1,0 +1,112 @@
+{
+  "slug": "opendota",
+  "name": "OpenDota API",
+  "provider": {
+    "name": "OpenDota",
+    "url": "https://www.opendota.com",
+    "type": "community"
+  },
+  "summary": "Open-source Dota 2 statistics API: matches parsed from replays, players, pro players, heroes, items and constants.",
+  "description": "OpenDota serves Dota 2 match data including replay-parsed details (teamfights, timelines, item and ability usage), player profiles with win/loss and heroes played, the pro-player and pro-match feeds, hero and item constants, rankings and distributions, plus a SQL explorer endpoint. A free key raises limits.",
+  "category": "fun-games",
+  "tags": [
+    "dota-2",
+    "esports",
+    "video-games",
+    "matches",
+    "players",
+    "heroes"
+  ],
+  "links": {
+    "homepage": "https://www.opendota.com",
+    "docs": "https://docs.opendota.com/",
+    "openapi": "https://api.opendota.com/api",
+    "signup": "https://www.opendota.com/api-keys",
+    "source": "https://github.com/odota/core"
+  },
+  "api": {
+    "base_url": "https://api.opendota.com/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "Works without a key; docs say a registered key increases rate limits and usage."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Keyless limits seen in response headers today: 60 requests per minute (x-rate-limit-remaining-minute 59 after the first call) and 3000 per day (x-rate-limit-remaining-day 2999).",
+      "requests": 60,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/heroes",
+      "summary": "All Dota 2 heroes"
+    },
+    {
+      "method": "GET",
+      "path": "/heroStats",
+      "summary": "Hero pick/win statistics by rank bracket"
+    },
+    {
+      "method": "GET",
+      "path": "/matches/{match_id}",
+      "summary": "Full parsed match data"
+    },
+    {
+      "method": "GET",
+      "path": "/players/{account_id}",
+      "summary": "Player profile and rank",
+      "params": [
+        "account_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/proPlayers",
+      "summary": "Professional players list"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.opendota.com/api/heroes",
+    "response_excerpt": "[\n  {\n    \"id\": 1,\n    \"name\": \"npc_dota_hero_antimage\",\n    \"localized_name\": \"Anti-Mage\",\n    \"primary_attr\": \"agi\",\n    \"attack_type\": \"Melee\",\n    \"roles\": [\n      \"Carry\",\n      \"Escape\",\n      \"...\"\n    ],\n    \"legs\": 2\n  },\n  {\n    \"id\": 2,\n    \"name\": \"npc_dota_hero_axe\",\n    \"localized_name\": \"Axe\",\n    \"primary_attr\": \"str\",\n    \"attack_type\": \"Melee\",\n    \"roles\": [\n      \"Initiator\",\n      \"Durable\",\n      \"...\"\n    ],\n    \"legs\": 2\n  },\n  \"...\"\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated; Dota 2 game data belongs to Valve",
+      "url": "https://docs.opendota.com/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "account_id is the 32-bit Steam friend id (steamid64 minus 76561197960265728). Cache /constants/* and /heroes: they only change with game patches.",
+  "caveats": [
+    "Daily keyless budget is small (3000/day today); register a key for bulk use.",
+    "The CORS header reflected the request Origin on both origins tested.",
+    "Heavy endpoints (/matches, /players) are slower than the constants."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key; OpenAPI spec returned by GET /api."
+  },
+  "related": [
+    "steam-store-web-api"
+  ],
+  "added": "2026-11-11"
+}

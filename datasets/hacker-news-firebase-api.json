@@ -8,7 +8,7 @@
   },
   "summary": "Official real-time read-only API for every Hacker News story, comment, job, poll and user.",
   "description": "Items (stories, comments, jobs, polls, poll options) and users are exposed as JSON documents on Firebase, with list endpoints for top, new, best, ask, show and job stories and a changed-items feed (updates.json) for incremental sync. Item IDs are sequential integers, so the full history can be walked down from maxitem.json. Firebase streaming (Server-Sent Events) is also supported for live updates.",
-  "category": "developer-tools",
+  "category": "news-social",
   "tags": [
     "hacker-news",
     "tech-news",
@@ -112,6 +112,9 @@
       "title": "Hacker News Official API",
       "points": 500
     }
+  ],
+  "related": [
+    "dev-to-forem-api"
   ],
   "added": "2026-11-11"
 }

@@ -98,5 +98,8 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "usgs-water-data"
+  ],
   "added": "2026-11-11"
 }

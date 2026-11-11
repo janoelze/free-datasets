@@ -125,7 +125,8 @@
   },
   "related": [
     "openfda",
-    "clinicaltrials-gov"
+    "clinicaltrials-gov",
+    "chembl"
   ],
   "added": "2026-11-11"
 }

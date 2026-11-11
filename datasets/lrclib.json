@@ -1,0 +1,142 @@
+{
+  "slug": "lrclib",
+  "name": "LRCLIB",
+  "provider": {
+    "name": "LRCLIB",
+    "url": "https://lrclib.net",
+    "type": "community"
+  },
+  "summary": "Free, open lyrics database with plain and time-synced (LRC) lyrics, searchable by track, artist, album and duration.",
+  "description": "Community-contributed lyrics records with plain lyrics, synced line timings in LRC form and a structured lyricsfile (YAML) representation, plus instrumental flags. Lookup works by exact track signature (artist, track, album, duration) or by record id, and search works by free text or fields. A beta v2 search returns lightweight summaries without lyric payloads.",
+  "category": "media-entertainment",
+  "tags": [
+    "lyrics",
+    "music",
+    "synced-lyrics",
+    "lrc",
+    "songs"
+  ],
+  "links": {
+    "homepage": "https://lrclib.net",
+    "docs": "https://lrclib.net/docs",
+    "source": "https://github.com/tranxuanthang/lrclib"
+  },
+  "api": {
+    "base_url": "https://lrclib.net/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Lrclib-Api-Key",
+      "notes": "Anonymous access works. Registered applications can send Lrclib-App-Id (client side) or Lrclib-Api-Key (server side) for higher limits; invalid values are rejected with 401."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Requests without it still returned 200, but the docs require client identification and give identified clients a higher limit (about 90 versus 45 requests per minute)."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Approximately 45 requests/min per IP for generic clients and about 90/min for identified clients (docs state these may change); 429 with Retry-After when exceeded.",
+      "requests": 90,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/get",
+      "summary": "Lyrics by track signature",
+      "params": [
+        "artist_name",
+        "track_name",
+        "album_name",
+        "duration"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/get/{id}",
+      "summary": "Lyrics by LRCLIB record id",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search lyrics records by free text or fields",
+      "params": [
+        "q",
+        "track_name",
+        "artist_name",
+        "album_name"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v2/search",
+      "summary": "Beta: lightweight search summaries without lyric text",
+      "params": [
+        "q",
+        "track_name",
+        "artist_name"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://lrclib.net/api/get?artist_name=Queen&track_name=Bohemian%20Rhapsody&duration=355",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\"id\":19079,\"name\":\"Bohemian Rhapsody\",\"trackName\":\"Bohemian Rhapsody\",\"artistName\":\"Queen\",\"albumName\":\"Stone Cold Classics\",\"duration\":355,\"instrumental\":false,\"hasWordSync\":false,\"plainLyrics\":\"Is this the real life? Is this just fantasy?...\",\"syncedLyrics\":\"[00:00.15] Is this the real life? Is this just fantasy?...\",\"lyricsfile\":\"version: '1.0'\\nmetadata:\\n  title: Bohemian Rhapsody...\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Community-submitted lyrics; no license stated in the API docs",
+      "url": "https://lrclib.net/docs",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Continuously contributed by users"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Prefer /api/get with artist, track, album and duration (within a couple of seconds) for an exact match; fall back to /api/search. syncedLyrics is LRC text ([mm:ss.xx] line) when a timed version exists, otherwise null. Honour Retry-After on 429 with jitter. Publishing needs a proof-of-work challenge flow and is out of scope for read use.",
+  "caveats": [
+    "Lyrics are user contributed and are usually copyrighted by their publishers; the API does not grant redistribution rights.",
+    "The docs say the stated rate limits are approximations that can change without notice.",
+    "/api/get with a deliberately wrong duration (100 s) still returned a record (a different album version), so verify the returned duration and album yourself."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=39480390",
+      "title": "Show HN: Synced lyrics database with a free, easy-to-use API",
+      "points": 2
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=49104324",
+      "title": "Lyricsfile is a YAML-based format for lyrics",
+      "points": 3
+    }
+  ],
+  "related": [
+    "musicbrainz"
+  ],
+  "added": "2026-11-11"
+}

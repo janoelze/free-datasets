@@ -1,0 +1,129 @@
+{
+  "slug": "openfigi",
+  "name": "OpenFIGI API",
+  "provider": {
+    "name": "Bloomberg L.P. (OpenFIGI)",
+    "url": "https://www.openfigi.com",
+    "type": "company"
+  },
+  "summary": "Free API for mapping tickers, ISINs, CUSIPs and other identifiers to FIGIs, plus instrument search and filter.",
+  "description": "OpenFIGI assigns Financial Instrument Global Identifiers (FIGI) to securities across asset classes. The mapping endpoint takes a batch of jobs (identifier type, value, optional exchange or currency) and returns matching instruments with FIGI, share-class and composite FIGI, name, ticker, exchange code and security type. Search and filter endpoints find instruments by keyword. A free key raises limits.",
+  "category": "finance-markets",
+  "tags": [
+    "figi",
+    "securities",
+    "identifiers",
+    "isin",
+    "cusip",
+    "tickers",
+    "reference-data"
+  ],
+  "links": {
+    "homepage": "https://www.openfigi.com/",
+    "docs": "https://www.openfigi.com/api/documentation",
+    "openapi": "https://api.openfigi.com/schema",
+    "signup": "https://www.openfigi.com/api"
+  },
+  "api": {
+    "base_url": "https://api.openfigi.com/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "X-OPENFIGI-APIKEY",
+      "notes": "Works without a key at lower limits; a free key from the signup page raises rate limit and batch size."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Without a key: 25 mapping requests per minute and 10 jobs per request; with a free key 250 per minute and 100 jobs per request. Search and filter are lower (5 and 20 per minute). Per IP without a key.",
+      "requests": 25,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/mapping",
+      "summary": "Map up to 10 identifier jobs (100 with a key) to FIGIs; body is a JSON array",
+      "params": [
+        "idType",
+        "idValue",
+        "exchCode",
+        "currency",
+        "micCode"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/search",
+      "summary": "Keyword search for instruments; the response includes a next token",
+      "params": [
+        "query",
+        "exchCode",
+        "securityType",
+        "start"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/filter",
+      "summary": "Filter instruments by keyword and attributes",
+      "params": [
+        "query",
+        "start"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/mapping/values/{key}",
+      "summary": "Allowed values for idType, exchCode and other fields"
+    }
+  ],
+  "example": {
+    "method": "POST",
+    "url": "https://api.openfigi.com/v3/mapping",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "Content-Type": "application/json"
+    },
+    "body": "[{\"idType\":\"TICKER\",\"idValue\":\"AAPL\",\"exchCode\":\"US\"}]",
+    "response_excerpt": "[\n  {\n    \"data\": [\n      {\n        \"figi\": \"BBG000B9XRY4\",\n        \"name\": \"APPLE INC\",\n        \"ticker\": \"AAPL\",\n        \"exchCode\": \"US\",\n        \"compositeFIGI\": \"BBG000B9XRY4\",\n        \"securityType\": \"Common Stock\",\n        \"marketSector\": \"Equity\",\n        \"shareClassFIGI\": \"BBG001S5N8V8\",\n        \"securityType2\": \"Common Stock\",\n        \"securityDescription\": \"AAPL\"\n      }\n    ]\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated for the data on the pages checked; the OpenAPI spec is Apache-2.0",
+      "url": "https://www.openfigi.com/api/documentation",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global securities across asset classes"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Mapping is POST with a JSON array and returns an array in the same order; each element has either data or a warning. One identifier can map to many listings, so add exchCode or micCode to narrow it. Use /mapping/values/idType to see valid idType strings (ID_ISIN, ID_CUSIP, TICKER and more). Windows are 60 seconds and ratelimit-* headers show the remainder.",
+  "caveats": [
+    "No Access-Control-Allow-Origin header was returned on the POST (and the preflight carried none), so browser calls are not usable; call from a server.",
+    "Requests with more than 10 jobs without a key are rejected with 413.",
+    "Rate-limit windows start at your first request and last 60 seconds.",
+    "The docs state the API is free to use without daily, weekly or monthly limits."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless: 200, ratelimit-limit 25 seen. /search, /filter and /mapping/values/idType also 200."
+  },
+  "related": [
+    "gleif-lei",
+    "sec-edgar"
+  ],
+  "added": "2026-11-11"
+}

@@ -114,5 +114,8 @@
     "with_key": true,
     "notes": "Verified with DEMO_KEY."
   },
+  "related": [
+    "nasa-image-video-library"
+  ],
   "added": "2026-11-11"
 }

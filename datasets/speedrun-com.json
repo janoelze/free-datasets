@@ -1,0 +1,129 @@
+{
+  "slug": "speedrun-com",
+  "name": "speedrun.com API",
+  "provider": {
+    "name": "speedrun.com",
+    "url": "https://www.speedrun.com",
+    "type": "company"
+  },
+  "summary": "Anonymous read-only API for speedrun.com: video games, categories, leaderboards, verified runs, users and platforms.",
+  "description": "The v1 REST API exposes games (with platforms, genres, developers and publishers), their categories and levels, per-category leaderboards with ranked runs, individual runs with video links and timings, users, series, guests and regions. Resources can be embedded to cut request counts. Reads need no credentials; write operations need a user API key.",
+  "category": "fun-games",
+  "tags": [
+    "speedrunning",
+    "video-games",
+    "leaderboards",
+    "runs",
+    "game-metadata",
+    "records"
+  ],
+  "links": {
+    "homepage": "https://www.speedrun.com",
+    "docs": "https://github.com/speedruncomorg/api/blob/master/version1/README.md",
+    "terms": "https://www.speedrun.com/terms",
+    "source": "https://github.com/speedruncomorg/api"
+  },
+  "api": {
+    "base_url": "https://www.speedrun.com/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Read endpoints are anonymous; write operations need a user API key (see the authentication doc in the source repo)."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Docs ask for a descriptive User-Agent; requests without one still returned 200 today."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "100 requests per minute per IP (throttling doc); exceeding it returns HTTP 420.",
+      "requests": 100,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "offset",
+    "max_page_size": 200
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/games",
+      "summary": "Search or list games",
+      "params": [
+        "name",
+        "abbreviation",
+        "max",
+        "offset",
+        "embed"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/games/{id}/categories",
+      "summary": "Categories (per-game and per-level) of a game"
+    },
+    {
+      "method": "GET",
+      "path": "/leaderboards/{game}/category/{category}",
+      "summary": "Ranked runs for a game category",
+      "params": [
+        "top",
+        "platform",
+        "region",
+        "embed"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/runs",
+      "summary": "List runs with filters",
+      "params": [
+        "game",
+        "user",
+        "status",
+        "orderby"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users/{id}/personal-bests",
+      "summary": "Personal bests of a user"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.speedrun.com/api/v1/leaderboards/o1y9j9v6/category/7kjpl1gk?top=1",
+    "response_excerpt": "{\n  \"data\": {\n    \"weblink\": \"https://www.speedrun.com/celeste?h=Any&x=7kjpl1gk\",\n    \"game\": \"o1y9j9v6\",\n    \"category\": \"7kjpl1gk\",\n    \"runs\": [\n      {\n        \"place\": 1,\n        \"run\": {\n          \"id\": \"z54n5v5m\",\n          \"weblink\": \"https://www.speedrun.com/celeste/runs/z54n5v5m\",\n          \"times\": {\n            \"primary\": \"PT24M44.083S\",\n            \"primary_t\": 1484.083,\n            \"realtime\": null,\n            \"realtime_t\": 0,\n            \"realtime_noloads\": null,\n            \"realtime_noloads_t\": 0,\n            \"ingame\": \"PT24M44.083S\",\n            \"ingame_t\": 1484.083\n          },\n          \"date\": \"2026-10-18\",\n          \"status\": \"verified\"\n        }\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "speedrun.com Terms of Service; no data license stated",
+      "url": "https://www.speedrun.com/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Ids are short alphanumeric strings; find the game id with /games?name= then list its categories. Per-level categories need a /level/{id} segment in the leaderboard URL, otherwise 400. Use embed= (e.g. embed=players,category) and max=200 to save requests.",
+  "caveats": [
+    "Leaderboard run records carry only user ids; embed players or fetch /users/{id} for names.",
+    "HTTP 420 (not 429) signals rate limiting.",
+    "Licence terms for the data were not located; check the terms page before redistribution."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without credentials."
+  },
+  "added": "2026-11-11"
+}

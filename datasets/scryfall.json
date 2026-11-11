@@ -1,0 +1,126 @@
+{
+  "slug": "scryfall",
+  "name": "Scryfall API",
+  "provider": {
+    "name": "Scryfall",
+    "url": "https://scryfall.com",
+    "type": "community"
+  },
+  "summary": "Magic: The Gathering card database with full-text search syntax, sets, rulings, prices and daily bulk downloads.",
+  "description": "Scryfall indexes every Magic: The Gathering card and printing: oracle text, mana costs, legalities per format, image URIs, set data, rulings, symbology and market prices. The search endpoint accepts the same query syntax as the website. Daily bulk files (oracle cards, all cards, rulings) are listed under /bulk-data.",
+  "category": "fun-games",
+  "tags": [
+    "magic-the-gathering",
+    "trading-cards",
+    "card-games",
+    "games",
+    "rulings",
+    "card-prices"
+  ],
+  "links": {
+    "homepage": "https://scryfall.com",
+    "docs": "https://scryfall.com/docs/api",
+    "terms": "https://scryfall.com/docs/api/rate-limits",
+    "bulk_download": "https://scryfall.com/docs/api/bulk-data"
+  },
+  "api": {
+    "base_url": "https://api.scryfall.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Docs require an accurate User-Agent and an Accept header; an empty User-Agent returned 400 today."
+      },
+      {
+        "name": "Accept",
+        "example": "application/json;q=0.9,*/*;q=0.8",
+        "notes": "Docs say the Accept header must be present; */* is acceptable."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Hard per-endpoint rate limits; excessive requests return 429 and block access for 30 seconds. Exact numbers were not re-confirmed."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/cards/search",
+      "summary": "Search cards with Scryfall query syntax",
+      "params": [
+        "q",
+        "unique",
+        "order",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/cards/named",
+      "summary": "Look up a card by exact or fuzzy name",
+      "params": [
+        "exact",
+        "fuzzy",
+        "set"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sets/{code}",
+      "summary": "Set details by code"
+    },
+    {
+      "method": "GET",
+      "path": "/cards/{id}/rulings",
+      "summary": "Official rulings for a card"
+    },
+    {
+      "method": "GET",
+      "path": "/bulk-data",
+      "summary": "Links to the daily bulk files"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.scryfall.com/cards/named?exact=Lightning+Bolt",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "Accept": "application/json"
+    },
+    "response_excerpt": "{\n  \"object\": \"card\",\n  \"id\": \"7673784e-db4b-43a1-8d55-1bb9fc1e284f\",\n  \"name\": \"Lightning Bolt\",\n  \"mana_cost\": \"{R}\",\n  \"type_line\": \"Instant\",\n  \"oracle_text\": \"Lightning Bolt deals 3 damage to any target.\",\n  \"set\": \"msc\",\n  \"rarity\": \"uncommon\",\n  \"released_at\": \"2026-06-26\",\n  \"cmc\": 1.0,\n  \"colors\": [\n    \"R\"\n  ],\n  \"legalities\": {\n    \"standard\": \"not_legal\",\n    \"future\": \"not_legal\",\n    \"historic\": \"banned\"\n  },\n  \"prices\": {\n    \"usd\": \"1.14\",\n    \"usd_foil\": \"2.80\"\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Scryfall API terms; card text and images are Wizards of the Coast property (Fan Content Policy)",
+      "url": "https://scryfall.com/docs/api/images",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "1993-present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Use /cards/named?fuzzy= for human typed names and /cards/search?q= for filters like t:creature c:r cmc<=2. Results page at 175 cards; follow next_page. For whole-catalogue work download the bulk files instead of paging. Errors come back as objects with object: \"error\", even on 404.",
+  "caveats": [
+    "The docs forbid paywalling access to Scryfall data; read the images and rate-limits pages before commercial use.",
+    "Card images and art belong to Wizards of the Coast and artists.",
+    "An ambiguous fuzzy name returns 404 with a type: ambiguous error body."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key."
+  },
+  "added": "2026-11-11"
+}

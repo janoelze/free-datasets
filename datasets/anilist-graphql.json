@@ -1,0 +1,113 @@
+{
+  "slug": "anilist-graphql",
+  "name": "AniList GraphQL API",
+  "provider": {
+    "name": "AniList",
+    "url": "https://anilist.co",
+    "type": "company"
+  },
+  "summary": "GraphQL API for anime and manga: titles, scores, episodes, studios, characters, staff, airing schedules and user lists.",
+  "description": "One GraphQL endpoint covers media (anime and manga) with titles in romaji, English and native, formats, seasons, scores, genres, tags and relations, plus characters, staff, studios, airing schedules and public user profiles and lists. Queries without authentication cover the public catalogue; mutations and private data need OAuth.",
+  "category": "media-entertainment",
+  "tags": [
+    "anime",
+    "manga",
+    "graphql",
+    "characters",
+    "studios",
+    "airing-schedule"
+  ],
+  "links": {
+    "homepage": "https://anilist.co",
+    "docs": "https://docs.anilist.co",
+    "terms": "https://docs.anilist.co/guide/terms-of-use"
+  },
+  "api": {
+    "base_url": "https://graphql.anilist.co",
+    "style": "graphql",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public queries need no token. OAuth is required only for mutations and the viewer's own private data."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Docs: 90 requests per minute, but the page currently warns of a degraded state limited to 30 per minute; the response header showed X-RateLimit-Limit: 30. Exceeding it brings a one-minute timeout with Retry-After.",
+      "requests": 30,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/",
+      "summary": "Media(id|search ...) for one anime or manga; Page(page, perPage) { media(...) } for lists",
+      "params": [
+        "query",
+        "variables"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "summary": "Character, Staff and Studio queries",
+      "params": [
+        "query",
+        "variables"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "summary": "AiringSchedule(...) for episode air times",
+      "params": [
+        "query",
+        "variables"
+      ]
+    }
+  ],
+  "example": {
+    "method": "POST",
+    "url": "https://graphql.anilist.co",
+    "headers": {
+      "Content-Type": "application/json",
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "body": "{\"query\":\"{ Media(id: 1, type: ANIME) { id title { romaji english } episodes seasonYear averageScore } }\"}",
+    "response_excerpt": "{\"data\":{\"Media\":{\"id\":1,\"title\":{\"romaji\":\"Cowboy Bebop\",\"english\":\"Cowboy Bebop\"},\"episodes\":26,\"seasonYear\":1998,\"averageScore\":86}}}"
+  },
+  "data": {
+    "license": {
+      "name": "Free for non-commercial use; commercial use below a monthly revenue threshold per the AniList terms",
+      "url": "https://docs.anilist.co/guide/terms-of-use",
+      "attribution_required": false,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current; continuously updated by the community"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Always POST JSON {query, variables}. Ask only for the fields you need; page with Page(page: n, perPage: 50) and read pageInfo.hasNextPage. idMal links entries to MyAnimeList ids. Check the terms before building a competing list or tracker service.",
+  "caveats": [
+    "The terms prohibit using the API as backup or data storage, mass data collection, and use in competing anime/manga list or tracker services.",
+    "Free for non-commercial use; commercial applications fall under a separate commercial-usage section in the terms (read it for the revenue threshold).",
+    "The docs page currently announces a temporary degraded state with a 30 requests/min cap, matching the X-RateLimit-Limit header seen."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example POST executed without a token."
+  },
+  "related": [
+    "kitsu-api"
+  ],
+  "added": "2026-11-11"
+}

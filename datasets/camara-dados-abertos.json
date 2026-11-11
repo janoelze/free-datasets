@@ -1,0 +1,135 @@
+{
+  "slug": "camara-dados-abertos",
+  "name": "Câmara dos Deputados Dados Abertos API",
+  "provider": {
+    "name": "Câmara dos Deputados (Brazilian Chamber of Deputies)",
+    "url": "https://www.camara.leg.br/",
+    "type": "government"
+  },
+  "summary": "Keyless REST API for the Brazilian Chamber of Deputies: deputies, parties, bills, votes, events, committees and parliamentary expenses.",
+  "description": "The Dados Abertos API exposes deputies (with party, state and legislature), parties and blocs, propositions (bills) and their processing, roll-call votes, committee and plenary events, and the expense reports (cota parlamentar) of each deputy. Lists are paginated and returned with HATEOAS links; JSON is the default and XML is available through the Accept header.",
+  "category": "government-politics",
+  "tags": [
+    "brazil",
+    "parliament",
+    "legislation",
+    "deputies",
+    "votes",
+    "bills",
+    "government-data"
+  ],
+  "links": {
+    "homepage": "https://dadosabertos.camara.leg.br/",
+    "docs": "https://dadosabertos.camara.leg.br/swagger/api.html",
+    "openapi": "https://dadosabertos.camara.leg.br/api/v2/api-docs"
+  },
+  "api": {
+    "base_url": "https://dadosabertos.camara.leg.br/api/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; every response carries a Retry-After: 30 header (observed on 200 responses)."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/deputados",
+      "summary": "Deputies, filterable by name, party, state and legislature",
+      "params": [
+        "nome",
+        "siglaPartido",
+        "siglaUf",
+        "idLegislatura",
+        "itens",
+        "pagina",
+        "ordem",
+        "ordenarPor"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/proposicoes",
+      "summary": "Bills and other propositions",
+      "params": [
+        "siglaTipo",
+        "ano",
+        "numero",
+        "itens",
+        "pagina"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/votacoes",
+      "summary": "Roll-call votes",
+      "params": [
+        "dataInicio",
+        "dataFim",
+        "itens"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/deputados/{id}/despesas",
+      "summary": "Expenses of one deputy",
+      "params": [
+        "ano",
+        "mes",
+        "itens"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/eventos",
+      "summary": "Plenary and committee events",
+      "params": [
+        "dataInicio",
+        "dataFim",
+        "itens"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados?itens=2&ordem=ASC&ordenarPor=nome",
+    "response_excerpt": "{\"dados\":[{\"id\":204379,\"uri\":\"https://dadosabertos.camara.leg.br/api/v2/deputados/204379\",\"nome\":\"Acácio Favacho\",\"siglaPartido\":\"MDB\",\"uriPartido\":\"https://dadosabertos.camara.leg.br/api/v2/partidos/36899\",\"siglaUf\":\"AP\",\"idLegislatura\":57,\"urlFoto\":\"https://www.camara.leg.br/internet/deputado/bandep/204379.jpg\",\"email\":\"dep.acaciofavacho@camara.leg.br\"},...],\"links\":[{\"rel\":\"self\",...},{\"rel\":\"next\",...}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the pages fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Brazil (federal level)",
+      "temporal": "Current legislature, with history for earlier ones"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Docs and field names are in Portuguese. Take pagination from the links array in the body or from the Link and X-Total-Count headers; itens=1000 was accepted on /deputados. Default list size is small, so pass itens. Send Accept: application/xml for XML; formato=csv returned 406.",
+  "caveats": [
+    "No data licence was found on the portal pages checked.",
+    "Retry-After: 30 is sent on successful responses; it is not an error signal.",
+    "A swagger.json path returns 405; the working OpenAPI document is /api/v2/api-docs."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; proposicoes, votacoes, eventos and despesas also answered 200."
+  },
+  "related": [
+    "congress-gov",
+    "senado-dados-abertos"
+  ],
+  "added": "2026-11-11"
+}

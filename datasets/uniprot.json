@@ -110,5 +110,9 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "chembl",
+    "ncbi-eutils"
+  ],
   "added": "2026-11-11"
 }

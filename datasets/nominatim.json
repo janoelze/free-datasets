@@ -126,7 +126,9 @@
     "with_key": true
   },
   "related": [
-    "overpass-api"
+    "overpass-api",
+    "geoboundaries",
+    "openstreetmap-api"
   ],
   "added": "2026-11-11"
 }

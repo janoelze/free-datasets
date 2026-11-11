@@ -1,0 +1,99 @@
+{
+  "slug": "common-crawl-index",
+  "name": "Common Crawl URL Index (CDX API)",
+  "provider": {
+    "name": "Common Crawl Foundation",
+    "url": "https://commoncrawl.org",
+    "type": "nonprofit"
+  },
+  "summary": "Look up which URLs a given monthly Common Crawl web crawl captured and where in the WARC archives each capture is stored.",
+  "description": "Each Common Crawl crawl has a CDX index served at index.commoncrawl.org/CC-MAIN-YYYY-WW-index. A query by URL, prefix or domain returns one JSON line per capture with timestamp, MIME type, status code, digest and the WARC filename, offset and length, which you then fetch from data.commoncrawl.org with an HTTP range request. collinfo.json lists every available index (129 at check, from the 2008 ARC files to the October 2026 crawl). This is a different service from the Wayback CDX in internet-archive.",
+  "category": "knowledge-reference",
+  "tags": [
+    "web-archive",
+    "common-crawl",
+    "cdx",
+    "warc",
+    "crawl",
+    "web-data"
+  ],
+  "links": {
+    "homepage": "https://commoncrawl.org/",
+    "docs": "https://github.com/webrecorder/pywb/wiki/CDX-Server-API",
+    "terms": "https://commoncrawl.org/terms-of-use",
+    "bulk_download": "https://data.commoncrawl.org/"
+  },
+  "api": {
+    "base_url": "https://index.commoncrawl.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key or signup."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not numbered. The index page asks users not to overload the server and to use the columnar index or bulk downloads for large jobs."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/collinfo.json",
+      "summary": "List of all crawl indexes with their cdx-api URLs",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/{collection}-index",
+      "summary": "CDX lookup in one crawl, for example CC-MAIN-2026-43-index",
+      "params": [
+        "url",
+        "output",
+        "limit",
+        "showNumPages",
+        "page"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://index.commoncrawl.org/CC-MAIN-2026-43-index?url=example.org&output=json&limit=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\"urlkey\": \"org,example)/\", \"timestamp\": \"20261005214924\", \"url\": \"https://example.org/\", \"mime\": \"text/html\", \"mime-detected\": \"text/html\", \"status\": \"200\", \"digest\": \"7R2CIN6GF6Q6ESDIBYADLOX3YVMSGQR3\", \"length\": \"1012\", \"offset\": \"198817100\", \"filename\": \"crawl-data/CC-MAIN-2026-43/segments/.../warc/CC-MAIN-20261005200620-20261005230620-00351.warc.gz\", \"languages\": \"eng\", \"recordid\": \"...\", \"encoding\": \"UTF-8\"}\n..."
+  },
+  "data": {
+    "license": {
+      "name": "Common Crawl Terms of Use",
+      "url": "https://commoncrawl.org/terms-of-use",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global web",
+      "temporal": "2008 to the monthly crawls of 2026 (CC-MAIN-2026-43 is the latest at check)"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "output=json gives one JSON object per line (newline-delimited), not a JSON array. Use showNumPages=true to see how many result pages a query has (it returned pages 1 for example.org). To read a capture, request https://data.commoncrawl.org/ plus filename with a Range header of offset to offset+length-1; the response is a gzip member (standard practice; not re-confirmed). Pick the newest index from collinfo.json. Wildcards (matchType, trailing *) follow the pywb CDX docs and were not re-confirmed.",
+  "caveats": [
+    "The CDX query endpoint often returned 504 after 10 s during checking, and the successful runs took 7 to 10 s; retry after a pause. The collinfo.json endpoint was fast and reliable (about 4 s).",
+    "A domain query with matchType=domain and fl returned 504 and is unconfirmed.",
+    "Respect the request not to overload the server."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example succeeded (200 in about 10 s) after repeated 504 gateway timeouts; collinfo.json returned 200."
+  },
+  "related": [
+    "internet-archive"
+  ],
+  "added": "2026-11-11"
+}

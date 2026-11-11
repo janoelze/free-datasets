@@ -1,0 +1,130 @@
+{
+  "slug": "usno-astronomical-applications",
+  "name": "USNO Astronomical Applications API",
+  "provider": {
+    "name": "U.S. Naval Observatory",
+    "url": "https://aa.usno.navy.mil",
+    "type": "government"
+  },
+  "summary": "Sun and Moon rise, set and transit times, moon phases, seasons, eclipses and celestial navigation data from the US Naval Observatory.",
+  "description": "JSON API behind the Astronomical Applications Department tools: complete sun and moon data for a day at a location, moon phases by date or year, equinoxes and solstices, solar and lunar eclipse circumstances, and celestial navigation almanac values. Locations are passed as latitude,longitude.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "moon",
+    "sun",
+    "ephemeris",
+    "sunrise-sunset",
+    "eclipses",
+    "navigation"
+  ],
+  "links": {
+    "homepage": "https://aa.usno.navy.mil",
+    "docs": "https://aa.usno.navy.mil/data/api"
+  },
+  "api": {
+    "base_url": "https://aa.usno.navy.mil/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages I fetched."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/rstt/oneday",
+      "summary": "Sun and moon rise, set, transit and phase for one day at a location",
+      "params": [
+        "date",
+        "coords",
+        "tz",
+        "dst"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/moon/phases/date",
+      "summary": "Next primary moon phases from a date",
+      "params": [
+        "date",
+        "nump"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/moon/phases/year",
+      "summary": "All primary moon phases in a year",
+      "params": [
+        "year"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/seasons",
+      "summary": "Equinoxes, solstices, perihelion and aphelion for a year",
+      "params": [
+        "year"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/eclipses/solar/date",
+      "summary": "Solar eclipse circumstances for a date and place",
+      "params": [
+        "date",
+        "coords"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/celnav",
+      "summary": "Almanac data for celestial navigation",
+      "params": [
+        "date",
+        "time",
+        "coords"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-11-11&nump=4",
+    "response_excerpt": "{\n  \"apiversion\": \"4.0.1\",\n  \"day\": 11,\n  \"month\": 11,\n  \"numphases\": 4,\n  \"phasedata\": [\n    {\"day\": 17, \"month\": 11, \"phase\": \"First Quarter\", \"time\": \"11:48\", \"year\": 2026},\n    ...\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "US Government work; terms not stated on the API page",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (lat,lon input)",
+      "temporal": "Computed on demand for dates the service supports"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Times are UT unless tz is given. coords is lat,lon. Date format is YYYY-MM-DD (some endpoints take YYYY-M-D). Missing parameters return a 400 JSON with an error string, for example 'Please supply valid coordinates'.",
+  "caveats": [
+    "Error responses are JSON bodies with HTTP 400.",
+    "Rate limits and licence were not found in the docs I fetched."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key; rstt/oneday, seasons, moon/phases/year and celnav also answered 200."
+  },
+  "hn": [],
+  "related": [
+    "sunrise-sunset"
+  ],
+  "added": "2026-11-11"
+}

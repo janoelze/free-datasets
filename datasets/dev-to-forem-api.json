@@ -1,0 +1,151 @@
+{
+  "slug": "dev-to-forem-api",
+  "name": "DEV Community (Forem) API",
+  "provider": {
+    "name": "DEV Community / Forem",
+    "url": "https://dev.to",
+    "type": "company"
+  },
+  "summary": "Keyless JSON API for articles, tags, podcast episodes and videos on DEV, a developer blogging community built on Forem.",
+  "description": "The Forem API v1 serves public reads without a key: article lists filtered by tag, user or time window, single articles with full markdown, tag lists, podcast episodes and videos. A free API key (api-key header) unlocks authoring and analytics endpoints. The OpenAPI document also lists many admin and write operations that do not apply to anonymous use.",
+  "category": "news-social",
+  "tags": [
+    "blogging",
+    "developer-community",
+    "articles",
+    "tags",
+    "podcasts",
+    "forem"
+  ],
+  "links": {
+    "homepage": "https://dev.to/",
+    "docs": "https://developers.forem.com/api/v1",
+    "openapi": "https://dev.to/swagger/v1/api_v1.json",
+    "signup": "https://dev.to/settings/extensions",
+    "source": "https://github.com/forem/forem"
+  },
+  "api": {
+    "base_url": "https://dev.to/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "api-key",
+      "notes": "Public reads work without a key; per the OpenAPI description a key (api-key header) is needed for write and account endpoints."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "A request with an empty User-Agent returned 403."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numbers documented in the spec. A burst of about nine requests in a few seconds produced 429 'Retry later' on later calls, so pace requests."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/articles",
+      "summary": "Published articles, filterable",
+      "params": [
+        "tag",
+        "tags",
+        "tags_exclude",
+        "username",
+        "state",
+        "top",
+        "page",
+        "per_page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/articles/latest",
+      "summary": "Most recent articles",
+      "params": [
+        "page",
+        "per_page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/articles/{id}",
+      "summary": "One article with body markdown",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tags",
+      "summary": "Tags with short summaries",
+      "params": [
+        "page",
+        "per_page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/podcast_episodes",
+      "summary": "Podcast episodes",
+      "params": [
+        "page",
+        "per_page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/videos",
+      "summary": "Video articles",
+      "params": [
+        "page",
+        "per_page"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://dev.to/api/articles?per_page=1&tag=python&top=7",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\n    \"type_of\": \"article\",\n    \"id\": 4992435,\n    \"title\": \"Building RailPulse AI: Deploying an Open-Source Railway Dispatch Agent with Gemma and Google Cloud Run\",\n    \"url\": \"https://dev.to/gde/building-railpulse-ai-deploying-an-open-source-railway-dispatch-agent-with-gemma-and-google-cloud-2b9g\",\n    \"published_at\": \"2026-11-07T07:35:33Z\",\n    \"tag_list\": [\n      \"ai\",\n      \"googlecloud\",\n      \"opensource\",\n      \"python\"\n    ],\n    \"positive_reactions_count\": 32,\n    \"comments_count\": 32,\n    \"reading_time_minutes\": 5,\n    \"user\": {\n      \"username\": \"robinamirbahar\",\n      \"...\": \"...\"\n    },\n    \"organization\": {\n      \"username\": \"gde\",\n      \"...\": \"...\"\n    },\n    \"...\": \"...\"\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated; articles belong to their authors",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Articles published on dev.to; new ones appear within minutes"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "top=N (days since publication) returns the most popular articles of the last N days and combines with tag. tag_list is an array in list responses and tags is a comma string. Use /articles/{id} for the full serialized article including its body; list responses carry only metadata. Forem is open source, so other Forem instances expose the same API under their own host.",
+  "caveats": [
+    "/comments and /organizations/devteam returned 429 'Retry later' after a burst of requests, so those were not confirmed.",
+    "/users/ben returned 404; the OpenAPI document defines /users/{id} (an id, not a username) and /users/me.",
+    "Copyright of articles stays with the authors; check before republishing."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key; articles/latest, articles/{id}, tags, podcast_episodes and videos also returned 200."
+  },
+  "related": [
+    "hacker-news-firebase-api",
+    "stack-exchange-api"
+  ],
+  "added": "2026-11-11"
+}

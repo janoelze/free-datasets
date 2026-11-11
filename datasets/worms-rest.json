@@ -1,0 +1,113 @@
+{
+  "slug": "worms-rest",
+  "name": "WoRMS REST API",
+  "provider": {
+    "name": "World Register of Marine Species (VLIZ)",
+    "url": "https://www.marinespecies.org",
+    "type": "academic"
+  },
+  "summary": "Authoritative taxonomy of marine species: names, synonyms, classification, vernacular names and distributions by AphiaID.",
+  "description": "The WoRMS web service returns taxon records and their relations: accepted names, synonyms, classification trees, children, vernacular names, sources and attributes. Lookups work by AphiaID, scientific name, vernacular name or external identifiers. The AphiaID is the identifier used by OBIS and many other marine datasets.",
+  "category": "life-sciences",
+  "tags": [
+    "taxonomy",
+    "marine",
+    "species",
+    "biodiversity",
+    "aphia",
+    "ocean"
+  ],
+  "links": {
+    "homepage": "https://www.marinespecies.org",
+    "docs": "https://www.marinespecies.org/rest/",
+    "terms": "https://www.marinespecies.org/about.php"
+  },
+  "api": {
+    "base_url": "https://www.marinespecies.org/rest",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages I fetched."
+    },
+    "pagination": "offset",
+    "max_page_size": 50
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/AphiaRecordByAphiaID/{id}",
+      "summary": "Full taxon record by AphiaID"
+    },
+    {
+      "method": "GET",
+      "path": "/AphiaRecordsByName/{name}",
+      "summary": "Records by scientific name",
+      "params": [
+        "like",
+        "marine_only",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/AphiaClassificationByAphiaID/{id}",
+      "summary": "Nested classification from Biota down"
+    },
+    {
+      "method": "GET",
+      "path": "/AphiaVernacularsByAphiaID/{id}",
+      "summary": "Common names in many languages"
+    },
+    {
+      "method": "GET",
+      "path": "/AphiaRecordsByVernacular/{name}",
+      "summary": "Search by common name",
+      "params": [
+        "like",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.marinespecies.org/rest/AphiaRecordByAphiaID/127160",
+    "response_excerpt": "{\"AphiaID\":127160,\"url\":\"https://www.marinespecies.org/aphia.php?p=taxdetails&id=127160\",\"scientificname\":\"Solea solea\",\"authority\":\"(Linnaeus, 1758)\",\"status\":\"accepted\",\"rank\":\"Species\",\"valid_AphiaID\":127160,\"valid_name\":\"Solea solea\",\"kingdom\":\"Animalia\",\"phylum\":\"Chordata\",...}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY (text); images CC BY-NC-SA unless stated otherwise",
+      "url": "https://www.marinespecies.org/about.php",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global marine species"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use AphiaRecordsByName for names (status 204 with an empty body when nothing matches, not 404). Lists return at most 50 records, use offset to continue. Prefer valid_AphiaID, since a record may be a synonym.",
+  "caveats": [
+    "No-match lookups answer HTTP 204 with an empty body, which breaks naive JSON parsing.",
+    "Result lists are capped at 50 per call.",
+    "Rate limits are not documented in what I fetched."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key; name, classification and vernacular lookups also worked."
+  },
+  "hn": [],
+  "related": [
+    "gbif",
+    "obis"
+  ],
+  "added": "2026-11-11"
+}

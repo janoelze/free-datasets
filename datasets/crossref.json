@@ -130,7 +130,9 @@
   ],
   "related": [
     "openalex",
-    "unpaywall"
+    "unpaywall",
+    "arxiv-api",
+    "ror-api"
   ],
   "added": "2026-11-11"
 }

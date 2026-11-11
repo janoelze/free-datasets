@@ -102,5 +102,8 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "pvgis"
+  ],
   "added": "2026-11-11"
 }

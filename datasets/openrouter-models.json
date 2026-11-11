@@ -1,0 +1,97 @@
+{
+  "slug": "openrouter-models",
+  "name": "OpenRouter Models API",
+  "provider": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai",
+    "type": "company"
+  },
+  "summary": "Public catalogue of LLMs routable through OpenRouter, with context lengths, modalities, per-token prices and supported parameters.",
+  "description": "GET /api/v1/models lists every model OpenRouter can route to, with id, display name, creation date, description, context length, input and output modalities, tokenizer, prompt and completion prices per token, top-provider limits, supported request parameters and, where known, the Hugging Face id and knowledge cutoff. A per-model endpoints listing shows each upstream provider. The list endpoint needs no key; calling the models themselves does.",
+  "category": "developer-tools",
+  "tags": [
+    "llm",
+    "ai-models",
+    "model-registry",
+    "pricing",
+    "context-window",
+    "openrouter"
+  ],
+  "links": {
+    "homepage": "https://openrouter.ai",
+    "docs": "https://openrouter.ai/docs/api-reference/overview",
+    "terms": "https://openrouter.ai/terms",
+    "openapi": "https://openrouter.ai/openapi.json",
+    "signup": "https://openrouter.ai/settings/keys"
+  },
+  "api": {
+    "base_url": "https://openrouter.ai/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "The model catalogue endpoints answered without a key; inference endpoints (chat/completions) need an OpenRouter API key."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No limit documented or sent in headers for the catalogue endpoints."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/models",
+      "summary": "All available models with pricing and capabilities",
+      "params": [
+        "output_modalities",
+        "category"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models/{author}/{slug}/endpoints",
+      "summary": "Upstream providers, prices and uptime for one model"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://openrouter.ai/api/v1/models",
+    "response_excerpt": "{\n  \"data\": [\n    {\n      \"id\": \"baidu/ernie-5.5-flash-preview:free\",\n      \"name\": \"Baidu: ERNIE-5.5-Flash-Preview (free)\",\n      \"created\": 1794333533,\n      \"context_length\": 1024000,\n      \"architecture\": {\n        \"modality\": \"text->text\",\n        \"input_modalities\": [\n          \"text\"\n        ],\n        \"output_modalities\": [\n          \"text\"\n        ],\n        \"tokenizer\": \"Other\",\n        \"instruct_type\": null\n      },\n      \"pricing\": {\n        \"prompt\": \"0\",\n        \"completion\": \"0\"\n      },\n      \"top_provider\": {\n        \"context_length\": 1024000,\n        \"max_completion_tokens\": 921600,\n        \"is_moderated\": false\n      },\n      \"supported_parameters\": [\n        \"include_reasoning\",\n        \"max_tokens\",\n        \"reasoning\",\n        \"...\"\n      ],\n      \"description\": \"ERNIE 5.5 Flash Preview is the latest foundation model in th...\"\n    },\n    \"...\"\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "OpenRouter Terms of Service; no data license stated",
+      "url": "https://openrouter.ai/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current catalogue (newest model created 2026-11-10)"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Prices are strings in USD per token (multiply by 1e6 for per-million). A price of \"0\" with a :free suffix on the id marks free-tier variants. The full list is one large response (466 models at check), so cache it. Use canonical_slug for a stable id across versions.",
+  "caveats": [
+    "Only catalogue endpoints are keyless; actually calling a model needs a key.",
+    "The output_modalities filter returned a subset (68 models for image); the category parameter was not verified beyond returning HTTP 200.",
+    "Update cadence is an observation (new models appear within days), not documented."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key; 466 models returned."
+  },
+  "related": [
+    "huggingface-hub-api",
+    "models-dev"
+  ],
+  "added": "2026-11-11"
+}

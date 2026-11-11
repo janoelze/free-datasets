@@ -1,0 +1,97 @@
+{
+  "slug": "nina-warnungen",
+  "name": "NINA / Warnung.bund.de civil protection warnings",
+  "provider": {
+    "name": "Bundesamt für Bevölkerungsschutz und Katastrophenhilfe (BBK)",
+    "url": "https://warnung.bund.de/",
+    "type": "government"
+  },
+  "summary": "Keyless JSON feeds behind the German NINA warning app: MoWaS civil-protection alerts plus Katwarn, BIWAPP, DWD weather, flood and police warnings.",
+  "description": "The warnung.bund.de api31 backend provides map-data lists of currently active warnings per channel (MoWaS, Katwarn, BIWAPP, DWD, LHP flood, police), a per-region dashboard keyed by 12-digit ARS regional code, full warning detail documents by id and the event-code catalogue. Titles are provided in several languages (de, en, ar, es, fr, pl, ru, tr).",
+  "category": "earth-environment",
+  "tags": [
+    "germany",
+    "warnings",
+    "civil-protection",
+    "emergency",
+    "mowas",
+    "alerts",
+    "disaster-management"
+  ],
+  "links": {
+    "homepage": "https://warnung.bund.de/",
+    "docs": "https://nina.api.bund.dev/",
+    "openapi": "https://nina.api.bund.dev/openapi.yaml",
+    "source": "https://github.com/bundesAPI/nina-api"
+  },
+  "api": {
+    "base_url": "https://warnung.bund.de/api31",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented; responses use Cache-Control max-age=10."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/mowas/mapData.json",
+      "summary": "Active MoWaS warnings (also katwarn, biwapp, dwd, lhp, police)"
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/{ARS}.json",
+      "summary": "Warnings for one region by 12-digit ARS code"
+    },
+    {
+      "method": "GET",
+      "path": "/warnings/{id}.json",
+      "summary": "Full detail of one warning by id"
+    },
+    {
+      "method": "GET",
+      "path": "/appdata/gsb/eventCodes/eventCodes.json",
+      "summary": "Event-code catalogue"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://warnung.bund.de/api31/mowas/mapData.json",
+    "response_excerpt": "[{\"id\":\"mow.DE-SL-SLS-W038-20260904-000\",\"version\":19,\"startDate\":\"2026-09-04T13:05:28+02:00\",\"severity\":\"Minor\",\"urgency\":\"Immediate\",\"type\":\"Update\",\"i18nTitle\":{\"de\":\"1. AKTUALISIERUNG: Bakteriologische Beeinträchtigung des Trinkwassers - ...\",\"en\":\"Contaminated drinking water\",...},\"transKeys\":{\"event\":\"BBK-EVC-069\"}},...]"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the pages fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Germany",
+      "temporal": "Currently active warnings"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "The only documentation is the community OpenAPI spec (German, at nina.api.bund.dev). An empty array [] means no active warnings in that feed (the Katwarn, BIWAPP, DWD, LHP and police feeds and the dashboard for ARS 064350000000 were empty at check). ARS is the 12-digit Amtlicher Regionalschlüssel. Poll no faster than the 10 s cache.",
+  "caveats": [
+    "Backend of the official app with community-written docs; the BBK does not publish an API contract, so paths can change.",
+    "No Access-Control-Allow-Origin header was sent; call from a server.",
+    "Active-warning lists were small (12 MoWaS entries at check)."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "nasa-eonet"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,99 @@
+{
+  "slug": "open-elevation",
+  "name": "Open-Elevation API",
+  "provider": {
+    "name": "Open-Elevation",
+    "url": "https://www.open-elevation.com",
+    "type": "community"
+  },
+  "summary": "Elevation in metres for latitude/longitude points worldwide, with a free keyless tier at low volume.",
+  "description": "Look up ground elevation for one or many coordinates with a GET or POST call. The service is open source and can be self-hosted; the public instance also accepts a dataset selector (for example srtm-250m) and an optional free key for higher monthly limits.",
+  "category": "earth-environment",
+  "tags": [
+    "elevation",
+    "terrain",
+    "dem",
+    "geospatial"
+  ],
+  "links": {
+    "homepage": "https://www.open-elevation.com",
+    "docs": "https://github.com/Jorl17/open-elevation/blob/master/docs/api.md",
+    "signup": "https://www.open-elevation.com/",
+    "source": "https://github.com/Jorl17/open-elevation"
+  },
+  "api": {
+    "base_url": "https://api.open-elevation.com/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "X-API-Key",
+      "notes": "Keyless use is allowed at low volume. A free key (X-API-Key header, or api_key query parameter on GET) raises the monthly quota; the signup form is on the homepage."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Homepage states up to 500 coordinates per month per IP without a key and 1,000 coordinates per month on the free key tier (paid tiers above that). Not enforced in headers I saw.",
+      "requests": 500,
+      "per": "month",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/lookup",
+      "summary": "Elevation for pipe-separated lat,lon pairs (request line limited to 1024 bytes)",
+      "params": [
+        "locations",
+        "dataset",
+        "api_key"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/lookup",
+      "summary": "Elevation for a JSON array of {latitude, longitude} objects (batch)",
+      "params": [
+        "locations",
+        "dataset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.open-elevation.com/api/v1/lookup?locations=41.161758,-8.583933",
+    "response_excerpt": "{\"results\":[{\"latitude\":41.161758,\"longitude\":-8.583933,\"elevation\":116.431114}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated for the dataset; the project code is open source",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (per the homepage)"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Locations are latitude,longitude in decimal degrees, results come back in input order with elevation in metres. Use POST for batches. Cache results, the quota is small.",
+  "caveats": [
+    "Free quota is small (500 coordinates per month per IP keyless, as stated on the homepage); a bulk job should self-host or use Open Topo Data.",
+    "The homepage mentions paid tiers and a dataset selector; I only ran keyless default-dataset lookups.",
+    "The dataset licence is not stated on the homepage."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Keyless GET and a two-point GET and POST lookup answered 200."
+  },
+  "related": [
+    "open-topo-data"
+  ],
+  "added": "2026-11-11"
+}

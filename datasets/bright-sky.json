@@ -1,0 +1,148 @@
+{
+  "slug": "bright-sky",
+  "name": "Bright Sky (DWD weather)",
+  "provider": {
+    "name": "Bright Sky open-source project (data from Deutscher Wetterdienst)",
+    "url": "https://brightsky.dev/",
+    "type": "community"
+  },
+  "summary": "Keyless JSON API over the German Weather Service's open data: current weather, hourly observations and forecasts, SYNOP, radar and alerts.",
+  "description": "Bright Sky is a free, open-source gateway to the DWD open data server. It serves current conditions, hourly weather records and MOSMIX-based forecasts for any lat/lon or DWD/WMO station, raw SYNOP reports, radar and weather alerts, with automatic fallback to nearby stations for missing fields. The Berlin sources seen in the checks have first records between 2022 and 2024.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "germany",
+    "dwd",
+    "observations",
+    "forecast",
+    "radar",
+    "weather-alerts"
+  ],
+  "links": {
+    "homepage": "https://brightsky.dev/",
+    "docs": "https://brightsky.dev/docs/",
+    "terms": "https://www.dwd.de/EN/service/legal_notice/legal_notice.html",
+    "openapi": "https://api.brightsky.dev/openapi.json",
+    "bulk_download": "https://opendata.dwd.de/",
+    "source": "https://github.com/jdemaeyer/brightsky"
+  },
+  "api": {
+    "base_url": "https://api.brightsky.dev",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The OpenAPI description states the public instance is free for all purposes and needs no key."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/current_weather",
+      "summary": "Latest conditions near a point or station",
+      "params": [
+        "lat",
+        "lon",
+        "dwd_station_id",
+        "wmo_station_id",
+        "max_dist",
+        "tz",
+        "units"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/weather",
+      "summary": "Hourly records and forecasts for a date range",
+      "params": [
+        "date",
+        "last_date",
+        "lat",
+        "lon",
+        "dwd_station_id",
+        "tz",
+        "units"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sources",
+      "summary": "Find stations and data sources near a point",
+      "params": [
+        "lat",
+        "lon",
+        "max_dist"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/synop",
+      "summary": "Raw SYNOP observations",
+      "params": [
+        "lat",
+        "lon",
+        "date",
+        "last_date"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/alerts",
+      "summary": "Active DWD weather alerts for a location",
+      "params": [
+        "lat",
+        "lon",
+        "warn_cell_id"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.brightsky.dev/current_weather?lat=52.52&lon=13.4",
+    "response_excerpt": "{\"weather\":{\"source_id\":303711,\"timestamp\":\"2026-11-11T15:30:00+00:00\",\"cloud_cover\":100,\"condition\":\"dry\",\"dew_point\":1.66,\"pressure_msl\":1003.7,\"relative_humidity\":82,\"visibility\":15389,\"wind_speed_10\":12.2,\"temperature\":4.5,\"fallback_source_ids\":{\"precipitation_30\":178149,...},\"icon\":\"cloudy\"},\"sources\":[{\"id\":303711,\"dwd_station_id\":\"00433\",\"observation_type\":\"synop\",\"lat\":52.4676,\"lon\":13.4,...}]}"
+  },
+  "data": {
+    "license": {
+      "name": "DWD Terms of Use apply (open data from Deutscher Wetterdienst; the API code is MIT)",
+      "url": "https://www.dwd.de/EN/service/legal_notice/legal_notice.html",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Germany",
+      "temporal": "Historical records to a forecast horizon of several days"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Start with /current_weather or /weather and pass lat and lon; the response lists the DWD stations used and falls back to neighbours per field (see fallback_source_ids). Units default to DWD units (use units=si for SI). Time zone defaults to UTC unless tz is set. Docs are in English.",
+  "caveats": [
+    "Data originates at the DWD; its terms of use apply to everything retrieved. The exact attribution wording was not re-confirmed.",
+    "Requests outside Germany return 'No sources match your criteria'.",
+    "No rate limit is documented; the project is a volunteer-run public instance, so cache and self-host (open source) for heavy use."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; a UA-less request and the curl default UA also returned 200."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=30307578",
+      "title": "Bright Sky – JSON API for DWD's open weather data",
+      "points": 2
+    }
+  ],
+  "related": [
+    "met-norway-locationforecast",
+    "open-meteo-forecast"
+  ],
+  "added": "2026-11-11"
+}

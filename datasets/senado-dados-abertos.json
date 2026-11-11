@@ -1,0 +1,103 @@
+{
+  "slug": "senado-dados-abertos",
+  "name": "Senado Federal Dados Abertos Legislativos API",
+  "provider": {
+    "name": "Senado Federal (Brazilian Federal Senate)",
+    "url": "https://www12.senado.leg.br/",
+    "type": "government"
+  },
+  "summary": "Keyless REST API of the Brazilian Senate: senators, legislative bills, plenary votes, committees, speeches and budget data, in XML or JSON.",
+  "description": "Covers senators in office and by legislature, legislative matters (matérias) and their proceedings, plenary sessions and votes, committee meetings, speeches, legislation texts and budget information for the Brazilian National Congress. The OpenAPI document lists 157 paths. The default output is XML; JSON is selected with an Accept header or a .json suffix.",
+  "category": "government-politics",
+  "tags": [
+    "brazil",
+    "senate",
+    "legislation",
+    "senators",
+    "votes",
+    "bills",
+    "government-data"
+  ],
+  "links": {
+    "homepage": "https://www12.senado.leg.br/dados-abertos",
+    "docs": "https://legis.senado.leg.br/dadosabertos/api-docs/swagger-ui/index.html",
+    "openapi": "https://legis.senado.leg.br/dadosabertos/v3/api-docs"
+  },
+  "api": {
+    "base_url": "https://legis.senado.leg.br/dadosabertos",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; responses are cacheable for 15 minutes (Cache-Control max-age=900)."
+    },
+    "pagination": "unknown"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/senador/lista/atual",
+      "summary": "Senators currently in office"
+    },
+    {
+      "method": "GET",
+      "path": "/senador/lista/legislatura/{legislature}",
+      "summary": "Senators of a legislature"
+    },
+    {
+      "method": "GET",
+      "path": "/materia/pesquisa/lista",
+      "summary": "Search legislative matters",
+      "params": [
+        "ano",
+        "sigla",
+        "numero"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/plenario/lista/votacao/{date}",
+      "summary": "Plenary votes on a date (YYYYMMDD)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://legis.senado.leg.br/dadosabertos/senador/lista/atual.json",
+    "response_excerpt": "{\"ListaParlamentarEmExercicio\":{\"Metadados\":{\"Versao\":\"11/11/2026 12:35:31\",\"VersaoServico\":\"4\",\"DescricaoDataSet\":\"Lista dos Parlamentares que estão atualmente em Exercício. ...\"},\"Parlamentares\":{\"Parlamentar\":[{\"IdentificacaoParlamentar\":{\"CodigoParlamentar\":\"5672\",\"NomeParlamentar\":\"Alan Rick\",\"SiglaPartidoParlamentar\":\"REPUBLICANOS\",\"UfParlamentar\":\"AC\",...}},...]}}}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the pages fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Brazil (federal level)",
+      "temporal": "Current and historical legislatures"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Docs are in Portuguese. Without .json or an Accept header the response is XML. The OpenAPI description at /v3/api-docs lists the media types per operation. Dates in paths are YYYYMMDD. JSON mirrors the XML tree, so single items can appear as an object and multiple as an array; normalise before iterating.",
+  "caveats": [
+    "No data licence was found on the pages fetched.",
+    "The single-vs-array shape of XML-derived JSON is a recurring trap (the single-item case was not tested).",
+    "/legislatura/atual answered 404; use /senador/lista/legislatura/{n} with a number."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; the Accept: application/json form and three other endpoints also answered 200."
+  },
+  "related": [
+    "camara-dados-abertos"
+  ],
+  "added": "2026-11-11"
+}

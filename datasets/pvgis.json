@@ -1,0 +1,145 @@
+{
+  "slug": "pvgis",
+  "name": "PVGIS (Photovoltaic Geographical Information System)",
+  "provider": {
+    "name": "European Commission Joint Research Centre",
+    "url": "https://joint-research-centre.ec.europa.eu/photovoltaic-geographical-information-system-pvgis_en",
+    "type": "intergovernmental"
+  },
+  "summary": "Keyless solar-energy API from the EU JRC: PV yield, hourly irradiance series, monthly radiation and horizon profiles for any location in Europe, Africa, Asia and the Americas.",
+  "description": "PVGIS computes the output of grid-connected and off-grid PV systems and returns solar radiation and temperature data for a lat/lon. The non-interactive API exposes the web tools: PVcalc (energy yield with losses), seriescalc (hourly time series), MRcalc and DRcalc (monthly and daily radiation), tmy (typical meteorological year) and printhorizon. Inputs include peak power, losses, mounting slope and azimuth and the radiation database.",
+  "category": "energy",
+  "tags": [
+    "solar",
+    "photovoltaics",
+    "irradiance",
+    "renewables",
+    "energy",
+    "europe",
+    "climate"
+  ],
+  "links": {
+    "homepage": "https://joint-research-centre.ec.europa.eu/photovoltaic-geographical-information-system-pvgis_en",
+    "docs": "https://joint-research-centre.ec.europa.eu/photovoltaic-geographical-information-system-pvgis/getting-started-pvgis/api-non-interactive-service_en"
+  },
+  "api": {
+    "base_url": "https://re.jrc.ec.europa.eu/api/v5_3",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "30 calls per second per IP; over that, HTTP 429. Concurrent heavy computations are also limited (HTTP 529 when overloaded).",
+      "requests": 30,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/PVcalc",
+      "summary": "Annual and monthly PV energy yield for a system",
+      "params": [
+        "lat",
+        "lon",
+        "peakpower",
+        "loss",
+        "angle",
+        "aspect",
+        "raddatabase",
+        "outputformat"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/seriescalc",
+      "summary": "Hourly irradiance and PV power series",
+      "params": [
+        "lat",
+        "lon",
+        "startyear",
+        "endyear",
+        "pvcalculation",
+        "outputformat"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/MRcalc",
+      "summary": "Monthly radiation values",
+      "params": [
+        "lat",
+        "lon",
+        "outputformat"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/printhorizon",
+      "summary": "Horizon profile for a location",
+      "params": [
+        "lat",
+        "lon",
+        "outputformat"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tmy",
+      "summary": "Typical meteorological year data",
+      "params": [
+        "lat",
+        "lon",
+        "outputformat"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://re.jrc.ec.europa.eu/api/v5_3/PVcalc?lat=52.5&lon=13.4&peakpower=1&loss=14&outputformat=json",
+    "response_excerpt": "{\"inputs\":{\"location\":{\"latitude\":52.5,\"longitude\":13.4,\"elevation\":40.0},\"meteo_data\":{\"radiation_db\":\"PVGIS-SARAH3\",\"meteo_db\":\"ERA5\",\"year_min\":2005,\"year_max\":2023},\"pv_module\":{\"technology\":\"c-Si\",\"peak_power\":1.0,\"system_loss\":14.0}},\"outputs\":{\"monthly\":{\"fixed\":[{\"month\":1,\"E_d\":0.49,\"E_m\":15.05,\"H(i)_d\":0.67,...}]},\"totals\":{\"fixed\":{\"E_d\":2.4,\"E_m\":73.06,\"E_y\":876.73,\"H(i)_y\":1118.4,...}}},\"meta\":{...}}"
+  },
+  "data": {
+    "license": {
+      "name": "Not re-confirmed (JRC data; check the PVGIS pages for reuse terms)",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Europe, Africa, most of Asia and the Americas (database dependent)",
+      "temporal": "Multi-year climatologies; the example uses 2005-2023"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "The version is part of the path (v5_3 here; v5_2 also listed in the docs, and the unversioned path serves a legacy version). Always pass outputformat=json. E_y is annual kWh for the given peakpower in kW. The example omits angle and aspect, so slope 0 was used (fixed, free-standing); pass angle and aspect for a tilted system. Per the docs, some invalid calls return 204 No Content instead of an error.",
+  "caveats": [
+    "No Access-Control-Allow-Origin header was sent for either test origin; browser calls will be blocked, call from a server.",
+    "The reuse licence was not found in the pages fetched (the JRC site rate-limited later fetches with 429).",
+    "Other tools (DRcalc, tmy) were not run with full parameters: DRcalc answered 400 to a bare call."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; MRcalc, seriescalc and printhorizon answered 200 to bare lat/lon calls."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=34235338",
+      "title": "Photovoltaic Geographical Information System",
+      "points": 1
+    }
+  ],
+  "related": [
+    "nasa-power"
+  ],
+  "added": "2026-11-11"
+}

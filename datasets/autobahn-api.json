@@ -1,0 +1,92 @@
+{
+  "slug": "autobahn-api",
+  "name": "Autobahn App API (Autobahn GmbH)",
+  "provider": {
+    "name": "Die Autobahn GmbH des Bundes",
+    "url": "https://www.autobahn.de/",
+    "type": "government"
+  },
+  "summary": "Keyless JSON API for current roadworks, warnings, closures, EV charging stations, lorry parking and webcams on German federal motorways.",
+  "description": "The API behind the Autobahn app lists the federal motorways (A1, A2, ...) and, for each road, current roadworks, traffic warnings, closures, electric charging stations, lorry parking areas and webcams, each with coordinates, geometry, descriptions and time spans. Detail documents are available per item identifier. About 281 roadworks were listed for A1 alone at check.",
+  "category": "transport-mobility",
+  "tags": [
+    "germany",
+    "motorways",
+    "roadworks",
+    "traffic",
+    "ev-charging",
+    "webcams",
+    "closures"
+  ],
+  "links": {
+    "homepage": "https://www.autobahn.de/",
+    "docs": "https://autobahn.api.bund.dev/",
+    "openapi": "https://autobahn.api.bund.dev/openapi.yaml",
+    "source": "https://github.com/bundesAPI/autobahn-api"
+  },
+  "api": {
+    "base_url": "https://verkehr.autobahn.de/o/autobahn",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "summary": "List of available motorways"
+    },
+    {
+      "method": "GET",
+      "path": "/{roadId}/services/roadworks",
+      "summary": "Roadworks on a motorway (also warning, closure, electric_charging_station, parking_lorry, webcam)"
+    },
+    {
+      "method": "GET",
+      "path": "/details/roadworks/{identifier}",
+      "summary": "Detail document for one roadworks item"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://verkehr.autobahn.de/o/autobahn/",
+    "response_excerpt": "{\"roads\":[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\",\"A6\",\"A7\",\"A8\",\"A9\",\"A10\",\"A11\",\"A12\",\"A13\",\"A14\",\"A15\",\"A17\",...]}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the pages fetched",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "German federal motorways",
+      "temporal": "Current state, including announced future roadworks"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Docs are in German and come from the bund.dev community spec. Start with / for road ids, then /{roadId}/services/{service}. Coordinates in the coordinate object are lat/long; the extent string is lat,long,lat,long. Item identifiers are long opaque strings; copy them from the list responses.",
+  "caveats": [
+    "The app backend is documented only by the community OpenAPI spec; no official developer terms were found, so mark it as subject to change.",
+    "Roadworks lists include future entries (future: true) and can be large (about 281 for A1).",
+    "Data licence not stated."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; roadworks, warning, closure, electric_charging_station, parking_lorry and webcam for A1 also answered 200."
+  },
+  "related": [
+    "tfl-unified-api"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,130 @@
+{
+  "slug": "lichess-api",
+  "name": "Lichess API",
+  "provider": {
+    "name": "Lichess",
+    "url": "https://lichess.org",
+    "type": "nonprofit"
+  },
+  "summary": "Open API of the Lichess chess server: players, ratings, games (PGN/NDJSON), puzzles, tournaments, TV and cloud engine evaluations.",
+  "description": "Lichess exposes user profiles and rating histories, full game exports with optional clocks and evals, the daily puzzle, tournaments, broadcasts, a cloud-eval cache of Stockfish analyses and live game streams. Most read endpoints work without a token; a personal API token (free) is needed for private data and some heavier endpoints. Complete monthly game dumps are published separately as CC0.",
+  "category": "fun-games",
+  "tags": [
+    "chess",
+    "games",
+    "pgn",
+    "puzzles",
+    "ratings",
+    "tournaments"
+  ],
+  "links": {
+    "homepage": "https://lichess.org",
+    "docs": "https://lichess.org/api",
+    "terms": "https://lichess.org/terms-of-service",
+    "openapi": "https://raw.githubusercontent.com/lichess-org/api/master/doc/specs/lichess-api.yaml",
+    "signup": "https://lichess.org/account/oauth/token",
+    "bulk_download": "https://database.lichess.org/",
+    "source": "https://github.com/lichess-org/lila"
+  },
+  "api": {
+    "base_url": "https://lichess.org/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "Public endpoints (users, games export, puzzle/daily, tournaments, cloud-eval) answered without a token; a personal API token (Authorization: Bearer ...) unlocks private data and some write endpoints."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Docs: make one request at a time; on 429 wait a minute or more before retrying. No numeric limit documented."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/user/{username}",
+      "summary": "Public profile with ratings per time control"
+    },
+    {
+      "method": "GET",
+      "path": "/games/user/{username}",
+      "summary": "Export a user's games as PGN or NDJSON (stream)",
+      "params": [
+        "max",
+        "since",
+        "until",
+        "perfType",
+        "evals",
+        "clocks"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/puzzle/daily",
+      "summary": "The current daily puzzle with its source game"
+    },
+    {
+      "method": "GET",
+      "path": "/cloud-eval",
+      "summary": "Cached Stockfish evaluation for a FEN",
+      "params": [
+        "fen",
+        "multiPv"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tournament",
+      "summary": "Current arena tournaments (created, started, finished)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://lichess.org/api/user/DrNykterstein",
+    "response_excerpt": "{\n  \"id\": \"drnykterstein\",\n  \"username\": \"DrNykterstein\",\n  \"title\": \"GM\",\n  \"createdAt\": 1544100290814,\n  \"count\": {\n    \"all\": 10455,\n    \"rated\": 10440,\n    \"draw\": 834,\n    \"loss\": 2409,\n    \"win\": 7212,\n    \"bookmark\": 0,\n    \"playing\": 0,\n    \"import\": 0,\n    \"me\": 0\n  },\n  \"perfs\": {\n    \"bullet\": {\n      \"games\": 9585,\n      \"rating\": 3263,\n      \"rd\": 90,\n      \"prog\": 23\n    }\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Game database CC0; API terms per Lichess ToS (AGPL for the source code)",
+      "spdx": "CC0-1.0",
+      "url": "https://database.lichess.org/",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "2010-present (game database)"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Send Accept: application/x-ndjson to stream game exports as one JSON object per line instead of PGN. Do requests serially and back off on 429 (waiting a minute is usually enough, per the docs). For millions of games use the monthly dumps on database.lichess.org instead of the API.",
+  "caveats": [
+    "Game and event endpoints are streamed; a plain curl without max= can run for a very long time.",
+    "The Lichess opening explorer lives on a different host and was not checked."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a token."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=15058514",
+      "title": "Lichess.org API",
+      "points": 2
+    }
+  ],
+  "related": [
+    "chess-com-published-data"
+  ],
+  "added": "2026-11-11"
+}

@@ -103,7 +103,8 @@
   },
   "related": [
     "openfda",
-    "rxnav-rxnorm"
+    "rxnav-rxnorm",
+    "ncbi-eutils"
   ],
   "added": "2026-11-11"
 }

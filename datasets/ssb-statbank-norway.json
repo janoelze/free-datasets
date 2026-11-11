@@ -1,0 +1,130 @@
+{
+  "slug": "ssb-statbank-norway",
+  "name": "Statistics Norway PxWebApi v2",
+  "provider": {
+    "name": "Statistics Norway (SSB)",
+    "url": "https://www.ssb.no/en",
+    "type": "government"
+  },
+  "summary": "Statistics Norway's StatBank: about 7,500 official statistics tables, free with no key, via GET or POST.",
+  "description": "PxWebApi v2 exposes Statbank Norway tables on population, labour, income, prices, housing, energy, health and more. Browse or search tables, read each table's variables and codes, and fetch selections of cells as JSON-stat 2, CSV, XLSX, Parquet or PX. The older PxWebApi (data.ssb.no/api/v0) still answers during a transition period.",
+  "category": "economics-statistics",
+  "tags": [
+    "official-statistics",
+    "norway",
+    "population",
+    "json-stat",
+    "pxweb",
+    "demographics",
+    "time-series"
+  ],
+  "links": {
+    "homepage": "https://www.ssb.no/en/statbank",
+    "docs": "https://www.ssb.no/en/api/pxwebapi",
+    "terms": "https://www.ssb.no/en/diverse/lisens"
+  },
+  "api": {
+    "base_url": "https://data.ssb.no/api/pxwebapi/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Headers show 40 requests per 60 seconds (X-RateLimit-Policy: 40;w=60s); /config reports maxDataCells 800000 per query.",
+      "requests": 40,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/tables",
+      "summary": "Search or list tables",
+      "params": [
+        "lang",
+        "query",
+        "pageSize",
+        "pageNumber",
+        "pastDays"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tables/{id}",
+      "summary": "Table description",
+      "params": [
+        "lang"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tables/{id}/metadata",
+      "summary": "Variables, codes and labels of a table",
+      "params": [
+        "lang",
+        "outputFormat"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tables/{id}/data",
+      "summary": "Selected cells as json-stat2, csv, xlsx, parquet, px",
+      "params": [
+        "lang",
+        "outputFormat",
+        "valuecodes[Var]",
+        "codelist[Var]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/config",
+      "summary": "API version, limits, languages, formats and licence",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.ssb.no/api/pxwebapi/v2/tables/07459/data?lang=en&outputFormat=json-stat2&valuecodes%5BRegion%5D=0&valuecodes%5BKjonn%5D=1,2&valuecodes%5BAlder%5D=000&valuecodes%5BContentsCode%5D=Personer1&valuecodes%5BTid%5D=top(2)",
+    "response_excerpt": "{\n  \"version\": \"2.0\",\n  \"class\": \"dataset\",\n  \"label\": \"07459: Population, by region, sex, age and year\",\n  \"source\": \"Statistics Norway\",\n  \"updated\": \"2026-02-25T07:00:00Z\",\n  \"id\": [\"Region\", \"Kjonn\", \"Alder\", \"ContentsCode\", \"Tid\"],\n  \"size\": [1, 2, 1, 1, 2],\n  \"dimension\": {\n    \"Region\": {\"label\": \"region\", \"category\": {\"index\": {\"0\": 0}, \"label\": {\"0\": \"The whole country\"}}},\n    \"Kjonn\": {\"category\": {\"label\": {\"1\": \"Males\", \"2\": \"Females\"}}},\n    ...\n  },\n  \"value\": [...]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://www.ssb.no/en/diverse/lisens",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Norway (national, county, municipality)",
+      "temporal": "Varies by table; table 07459 starts 1986"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Table ids are short strings like 07459. Read /tables/{id}/metadata first to get variable codes (Region, Kjonn, Alder, ContentsCode, Tid), then select values with valuecodes[Var]=a,b or top(n) / * wildcards. Square brackets in valuecodes must be percent-encoded or sent with curl -g. Use lang=en for English labels.",
+  "caveats": [
+    "The 40 requests per minute limit applies to the whole API; bulk queries should be few and large rather than many and small.",
+    "PxWebApi v1/v0 (data.ssb.no/api/v0/en/table/{id}, POST JSON query) still worked today but SSB recommends v2 and calls v1 a transition-period API.",
+    "No OpenAPI spec URL was found: swagger/openapi paths under /api/pxwebapi returned 404."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key; response was a JSON-stat2 dataset."
+  },
+  "related": [
+    "eurostat"
+  ],
+  "added": "2026-11-11"
+}

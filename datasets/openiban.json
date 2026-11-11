@@ -1,0 +1,99 @@
+{
+  "slug": "openiban",
+  "name": "openiban IBAN Validation and Calculation",
+  "provider": {
+    "name": "openiban (goiban)",
+    "url": "https://openiban.com",
+    "type": "community"
+  },
+  "summary": "Free IBAN checksum validation with optional bank code check and BIC lookup, plus IBAN calculation from bank code and account number.",
+  "description": "Public web service that validates an IBAN (checksum and country length), optionally checks the bank code and returns the bank name, BIC, city and ZIP for countries where it has reference data, and calculates an IBAN from country, bank code and account number (beta). Reference bank data covers only some countries; the service is open source (goiban-service) and can be self-hosted.",
+  "category": "finance-markets",
+  "tags": [
+    "iban",
+    "banking",
+    "validation",
+    "bic",
+    "payments"
+  ],
+  "links": {
+    "homepage": "https://openiban.com",
+    "docs": "https://openiban.com/",
+    "source": "https://github.com/fourcube/goiban-service"
+  },
+  "api": {
+    "base_url": "https://openiban.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented. The page states no request logs are written and everything works in memory."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/validate/{iban}",
+      "summary": "Validate an IBAN",
+      "params": [
+        "getBIC",
+        "validateBankCode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v2/calculate/{country}/{bankCode}/{accountNumber}",
+      "summary": "Calculate an IBAN (beta)",
+      "params": [
+        "getBIC",
+        "validateBankCode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/countries",
+      "summary": "Map of country names to ISO codes"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://openiban.com/validate/DE89370400440532013000?getBIC=true&validateBankCode=true",
+    "response_excerpt": "{\n  \"valid\": true,\n  \"messages\": [\"Bank code valid: 37040044\"],\n  \"iban\": \"DE89370400440532013000\",\n  \"bankData\": {\n    \"bankCode\": \"37040044\",\n    \"name\": \"Commerzbank\",\n    \"zip\": \"50447\",\n    \"city\": \"Köln\",\n    \"bic\": \"COBADEFFXXX\"\n  },\n  \"checkResults\": {\"bankCode\": true}\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the service page; source code is open source (goiban-service)",
+      "url": "https://openiban.com/",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "IBAN countries for checksum validation; bank and BIC data for a subset (for example DE, NL, BE, LU, CH per the page)"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Pass getBIC=true&validateBankCode=true to get bank data; without them bankData is empty. valid only means the checksum and length are right, not that the account exists. Treat the BIC and bank data as best effort: the GB and CH IBANs tested returned no BIC.",
+  "caveats": [
+    "Without getBIC the bankData object is empty even for German IBANs.",
+    "A GB and a CH example IBAN validated but returned messages saying no BIC was available.",
+    "Calculation is marked beta on the page; validate the result.",
+    "Invalid IBANs return HTTP 200 with valid: false, not an error status."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless. GB, CH, NL and an invalid DE IBAN, /countries and /v2/calculate also returned 200. CORS * on two origins."
+  },
+  "related": [
+    "gleif-lei"
+  ],
+  "added": "2026-11-11"
+}

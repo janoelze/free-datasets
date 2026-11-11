@@ -1,0 +1,106 @@
+{
+  "slug": "ror-api",
+  "name": "ROR (Research Organization Registry) API",
+  "provider": {
+    "name": "Research Organization Registry",
+    "url": "https://ror.org",
+    "type": "nonprofit"
+  },
+  "summary": "Open registry of research organizations with persistent ROR ids, names, locations, types and relationships; searchable and matchable to affiliation strings.",
+  "description": "ROR assigns persistent identifiers to universities, institutes, funders, companies and other research organizations, with display and alternate names, country and city (GeoNames), organization types, status, domains, links and parent/child/related relationships, plus crosswalked ids (GRID, Wikidata, ISNI, Crossref Funder ID). The v2 API supports search, filters, and affiliation matching. The whole registry is also a CC0 dump on Zenodo.",
+  "category": "knowledge-reference",
+  "tags": [
+    "research-organizations",
+    "identifiers",
+    "universities",
+    "funders",
+    "affiliations",
+    "scholarly-metadata"
+  ],
+  "links": {
+    "homepage": "https://ror.org",
+    "docs": "https://ror.readme.io/docs/rest-api",
+    "terms": "https://ror.org/about/",
+    "bulk_download": "https://doi.org/10.5281/zenodo.6347574",
+    "source": "https://github.com/ror-community"
+  },
+  "api": {
+    "base_url": "https://api.ror.org/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "notes": "No registration required; docs offer a client id (free registration) for higher limits."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Max 2000 requests per 5-minute period per IP address (docs); a registered client id raises it. Traffic peaks around midnight UTC."
+    },
+    "pagination": "page",
+    "max_page_size": 20
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/organizations",
+      "summary": "Search organizations by name, or filter",
+      "params": [
+        "query",
+        "query.advanced",
+        "filter",
+        "page",
+        "affiliation"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/organizations/{ror_id}",
+      "summary": "One organization by ROR id (the bare 9-character suffix)"
+    },
+    {
+      "method": "GET",
+      "path": "/heartbeat",
+      "summary": "Service health check"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.ror.org/v2/organizations?query=harvard",
+    "response_excerpt": "{\n  \"number_of_results\": 34,\n  \"items\": [\n    {\n      \"id\": \"https://ror.org/03vek6s52\",\n      \"names\": [\n        {\n          \"lang\": \"en\",\n          \"types\": [\n            \"ror_display\",\n            \"label\"\n          ],\n          \"value\": \"Harvard University\"\n        }\n      ],\n      \"types\": [\n        \"education\",\n        \"funder\"\n      ],\n      \"status\": \"active\",\n      \"established\": 1636,\n      \"links\": [\n        {\n          \"type\": \"website\",\n          \"value\": \"https://www.harvard.edu\"\n        }\n      ],\n      \"locations\": [\n        {\n          \"geonames_id\": 4931972,\n          \"geonames_details\": {\n            \"name\": \"Cambridge\",\n            \"country_code\": \"US\",\n            \"lat\": 42.3751,\n            \"lng\": -71.10561\n          }\n        }\n      ],\n      \"external_ids\": [\n        {\n          \"all\": [\n            \"100007229\",\n            \"100010520\",\n            \"100009802\",\n            \"...\"\n          ],\n          \"preferred\": \"100007229\",\n          \"type\": \"fundref\"\n        }\n      ]\n    },\n    \"...\"\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0 Universal",
+      "spdx": "CC0-1.0",
+      "url": "https://ror.readme.io/docs/data-dump",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Search with ?query= for names or ?affiliation= to match a messy affiliation string (returns a score and a chosen flag). Filters look like filter=country.country_code:DE,types:funder. Lists return 20 per page; ROR ids are https://ror.org/<id> but the path takes only the id suffix.",
+  "caveats": [
+    "Page size is fixed at 20 items.",
+    "update_frequency is a best guess; the release cadence was not confirmed.",
+    "The query harvard returned 34 matches including facilities and groups, not only Harvard University."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without a key."
+  },
+  "related": [
+    "arxiv-api",
+    "crossref",
+    "openalex"
+  ],
+  "added": "2026-11-11"
+}

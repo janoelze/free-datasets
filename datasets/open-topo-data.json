@@ -1,0 +1,100 @@
+{
+  "slug": "open-topo-data",
+  "name": "Open Topo Data",
+  "provider": {
+    "name": "Open Topo Data",
+    "url": "https://www.opentopodata.org",
+    "type": "individual"
+  },
+  "summary": "Elevation API over many open DEMs (SRTM, NED, ASTER, EU-DEM and more), with a free public instance and a self-hostable codebase.",
+  "description": "Query elevation for points or along a path from a choice of open digital elevation datasets selected by name in the URL. The API is largely compatible with the Google Maps Elevation API and supports bilinear, nearest and cubic interpolation, polyline input and GeoJSON output.",
+  "category": "earth-environment",
+  "tags": [
+    "elevation",
+    "terrain",
+    "dem",
+    "srtm",
+    "geospatial",
+    "topography"
+  ],
+  "links": {
+    "homepage": "https://www.opentopodata.org",
+    "docs": "https://www.opentopodata.org/api/",
+    "source": "https://github.com/ajnisbet/opentopodata"
+  },
+  "api": {
+    "base_url": "https://api.opentopodata.org/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Public API: max 100 locations per request, 1 call per second, 1,000 calls per day (from the homepage).",
+      "requests": 1000,
+      "per": "day",
+      "scope": "ip"
+    },
+    "pagination": "none",
+    "max_page_size": 100
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{dataset}",
+      "summary": "Elevation for locations in one dataset (comma-separate datasets for fallback)",
+      "params": [
+        "locations",
+        "interpolation",
+        "nodata_value",
+        "samples",
+        "format"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/{dataset}",
+      "summary": "Same lookup with a JSON body for many locations",
+      "params": [
+        "locations",
+        "interpolation"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.opentopodata.org/v1/srtm30m?locations=57.688709,11.976404",
+    "response_excerpt": "{\n  \"results\": [\n    {\n      \"dataset\": \"srtm30m\",\n      \"elevation\": 55.0,\n      \"location\": {\"lat\": 57.688709, \"lng\": 11.976404}\n    }\n  ],\n  \"status\": \"OK\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per dataset (SRTM, NED, ASTER, EU-DEM and others)",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global or regional, depending on dataset"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "The dataset name goes in the path (srtm30m, srtm90m, ned10m, aster30m, ...); see the homepage for the list. locations is lat,lon pairs separated by |. null elevation means outside the dataset or NODATA unless nodata_value is set.",
+  "caveats": [
+    "Public instance limits are 1 call per second and 1,000 calls per day; the same codebase can be self-hosted for bulk work.",
+    "No Access-Control-Allow-Origin header was sent, so browsers cannot call it cross-origin.",
+    "I ran only srtm30m; coverage and licences of other datasets are listed on the homepage and were not re-checked."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key; a two-point bilinear request also worked."
+  },
+  "related": [
+    "open-elevation"
+  ],
+  "added": "2026-11-11"
+}

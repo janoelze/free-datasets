@@ -1,0 +1,125 @@
+{
+  "slug": "coinbase-exchange",
+  "name": "Coinbase Exchange Public API",
+  "provider": {
+    "name": "Coinbase",
+    "url": "https://www.coinbase.com",
+    "type": "company"
+  },
+  "summary": "Keyless public market data from the Coinbase Exchange: products, tickers, order books, candles, trades and currencies.",
+  "description": "The public REST endpoints of Coinbase Exchange (formerly Coinbase Pro) list trading products and currencies and serve per-product tickers, order books at three levels, trades, 24-hour stats and historical candles. Public endpoints are throttled by IP and need no authentication; private endpoints need signed keys.",
+  "category": "finance-markets",
+  "tags": [
+    "crypto",
+    "exchange",
+    "order-book",
+    "ohlc",
+    "prices",
+    "trades",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://www.coinbase.com/exchange",
+    "docs": "https://docs.cdp.coinbase.com/exchange/rest-api/rate-limits"
+  },
+  "api": {
+    "base_url": "https://api.exchange.coinbase.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public endpoints answered keyless; private endpoints need CB-ACCESS-* headers."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Public endpoints: 10 requests per second per IP, bursts up to 15 (documented).",
+      "requests": 10,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/products",
+      "summary": "List trading pairs"
+    },
+    {
+      "method": "GET",
+      "path": "/products/{product_id}/ticker",
+      "summary": "Latest price, bid, ask, 24h volume"
+    },
+    {
+      "method": "GET",
+      "path": "/products/{product_id}/book",
+      "summary": "Order book",
+      "params": [
+        "level"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/products/{product_id}/candles",
+      "summary": "Historical candles",
+      "params": [
+        "granularity",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/products/{product_id}/trades",
+      "summary": "Latest trades",
+      "params": [
+        "limit",
+        "before",
+        "after"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/currencies/{currency_id}",
+      "summary": "Currency details"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+    "response_excerpt": "{\n  \"ask\": \"73936.09\",\n  \"bid\": \"73936.08\",\n  \"volume\": \"8548.65950216\",\n  \"trade_id\": 1118800441,\n  \"price\": \"73936.08\",\n  \"size\": \"0.00000031\",\n  \"time\": \"2026-11-11T15:41:52.981627987Z\",\n  \"rfq_volume\": \"64.901525\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Coinbase terms (not re-confirmed for data reuse)",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global crypto products listed on Coinbase Exchange",
+      "temporal": "Live data; historical candles via /candles"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Product ids are BASE-QUOTE like BTC-USD. Candles come back newest first as [time, low, high, open, close, volume]; granularity is in seconds (3600 was used in the check). Paging uses the cb-before and cb-after response headers. /products includes delisted pairs, so check status and trading_disabled.",
+  "caveats": [
+    "Candle responses are arrays, with low before high and open, unlike most exchanges.",
+    "Delisted products stay in /products with trading_disabled true.",
+    "A per-request candle cap exists but its exact size was not re-confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless. /products, /book, /candles, /currencies/BTC and /trades also returned 200; CORS * on two origins."
+  },
+  "related": [
+    "binance-spot-market-data",
+    "coingecko",
+    "kraken-spot-rest"
+  ],
+  "added": "2026-11-11"
+}

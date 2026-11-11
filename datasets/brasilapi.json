@@ -1,0 +1,108 @@
+{
+  "slug": "brasilapi",
+  "name": "BrasilAPI",
+  "provider": {
+    "name": "BrasilAPI community project",
+    "url": "https://brasilapi.com.br/",
+    "type": "community"
+  },
+  "summary": "Free keyless REST API bundling Brazilian public lookups: postal codes (CEP), company registry (CNPJ), banks, holidays, FIPE vehicle prices, DDD, Selic/CDI and more.",
+  "description": "BrasilAPI aggregates several Brazilian open data sources behind one consistent JSON API. Endpoints include CEP (postal code) lookup with coordinates, CNPJ company data, the list of banks by ISPB, national holidays per year, current Selic, CDI and IPCA rates, FIPE vehicle brands and prices, DDD area codes, CPTEC city weather, Registro.br domain status and PIX participants.",
+  "category": "geography-maps",
+  "tags": [
+    "brazil",
+    "postal-codes",
+    "cnpj",
+    "banks",
+    "holidays",
+    "fipe",
+    "selic",
+    "government-data"
+  ],
+  "links": {
+    "homepage": "https://brasilapi.com.br/",
+    "docs": "https://brasilapi.com.br/docs",
+    "source": "https://github.com/BrasilAPI/BrasilAPI"
+  },
+  "api": {
+    "base_url": "https://brasilapi.com.br/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/cep/v2/{cep}",
+      "summary": "Address and coordinates for a CEP"
+    },
+    {
+      "method": "GET",
+      "path": "/cnpj/v1/{cnpj}",
+      "summary": "Company registry data for a CNPJ"
+    },
+    {
+      "method": "GET",
+      "path": "/banks/v1",
+      "summary": "All banks with ISPB and codes"
+    },
+    {
+      "method": "GET",
+      "path": "/feriados/v1/{year}",
+      "summary": "National holidays for a year"
+    },
+    {
+      "method": "GET",
+      "path": "/taxas/v1",
+      "summary": "Current Selic, CDI and IPCA rates"
+    },
+    {
+      "method": "GET",
+      "path": "/fipe/marcas/v1/{vehicleType}",
+      "summary": "FIPE vehicle brands"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://brasilapi.com.br/api/cep/v2/01001000",
+    "response_excerpt": "{\"cep\":\"01001000\",\"state\":\"SP\",\"city\":\"São Paulo\",\"neighborhood\":\"Sé\",\"street\":\"Praça da Sé\",\"service\":\"open-cep\",\"ibge\":{\"city\":\"3550308\",\"state\":\"35\"},\"location\":{\"type\":\"Point\",\"coordinates\":{\"longitude\":\"-46.63611\",\"latitude\":\"-23.5475\"}}}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies by upstream source; API code is MIT",
+      "url": "https://github.com/BrasilAPI/BrasilAPI",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Brazil",
+      "temporal": "Current data"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Docs are in Portuguese (pt-br). Prefer /cep/v2 over v1 for coordinates. Use ISPB or code to join the banks list. IBGE ids come back as strings. Responses depend on upstream providers, so errors can be intermittent.",
+  "caveats": [
+    "/ibge/uf/v1 and /ibge/municipios/v1 answered 504 on 2026-11-11 (the upstream IBGE host also timed out from this sandbox).",
+    "The service is volunteer-run and proxies third-party sources; no SLA or rate limit is published.",
+    "No OpenAPI document URL was found (/api/doc redirects to a docs page)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; /cnpj, /feriados, /taxas, /fipe, /ddd and /pix endpoints also answered 200."
+  },
+  "related": [
+    "bcb-olinda"
+  ],
+  "added": "2026-11-11"
+}

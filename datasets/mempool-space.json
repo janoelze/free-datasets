@@ -1,0 +1,111 @@
+{
+  "slug": "mempool-space",
+  "name": "mempool.space REST API",
+  "provider": {
+    "name": "Mempool Space",
+    "url": "https://mempool.space",
+    "type": "company"
+  },
+  "summary": "Free Bitcoin explorer API: blocks, transactions, addresses, mempool state, recommended fees, mining pools and Lightning statistics.",
+  "description": "REST API behind the mempool.space block explorer. It follows the Esplora-style address, transaction and block endpoints and adds mempool statistics, recommended fee rates, difficulty adjustment, mining pool rankings, historical BTC fiat prices and Lightning network statistics. The same paths work under /testnet, /testnet4, /signet and other network prefixes.",
+  "category": "finance-markets",
+  "tags": [
+    "bitcoin",
+    "blockchain",
+    "mempool",
+    "fees",
+    "lightning",
+    "on-chain",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://mempool.space",
+    "docs": "https://mempool.space/docs/api/rest",
+    "terms": "https://mempool.space/terms-of-service",
+    "source": "https://github.com/mempool/mempool"
+  },
+  "api": {
+    "base_url": "https://mempool.space/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit found in the docs pages checked; the public instance is shared and heavy use should go to a self-hosted instance (not re-confirmed)."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/v1/fees/recommended",
+      "summary": "Recommended fee rates in sat/vB"
+    },
+    {
+      "method": "GET",
+      "path": "/mempool",
+      "summary": "Mempool size and fee histogram"
+    },
+    {
+      "method": "GET",
+      "path": "/blocks/tip/height",
+      "summary": "Current block height as plain text"
+    },
+    {
+      "method": "GET",
+      "path": "/address/{address}",
+      "summary": "Address chain and mempool statistics"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/mining/pools/{timespan}",
+      "summary": "Mining pool ranking (for example 1w)"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/historical-price",
+      "summary": "Historical BTC price",
+      "params": [
+        "currency",
+        "timestamp"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://mempool.space/api/v1/fees/recommended",
+    "response_excerpt": "{\"fastestFee\": 4, \"halfHourFee\": 3, \"hourFee\": 1, \"economyFee\": 1, \"minimumFee\": 1}"
+  },
+  "data": {
+    "license": {
+      "name": "Software: AGPL-3.0 with trademark restrictions; no separate data licence stated (blockchain data)",
+      "url": "https://github.com/mempool/mempool/blob/master/LICENSE",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Bitcoin mainnet plus testnet3/4 and signet",
+      "temporal": "Full chain history"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Amounts are in satoshis, fee rates in sat/vB, times in Unix seconds. Some endpoints return plain text (block height, hash). For a different network, put the prefix after the host, for example https://mempool.space/testnet4/api/blocks/tip/height.",
+  "caveats": [
+    "Several endpoints return plain text rather than JSON.",
+    "Cache-Control on /mempool was max-age=1, so polling faster than once per second adds nothing.",
+    "The data is public blockchain data and the public instance gives no uptime guarantee."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless. /mempool, /address, /v1/prices, /v1/mining/pools/1w, historical-price, lightning stats and testnet4 height also returned 200; CORS * on two origins."
+  },
+  "added": "2026-11-11"
+}

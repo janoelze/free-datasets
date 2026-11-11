@@ -1,0 +1,117 @@
+{
+  "slug": "deezer-api",
+  "name": "Deezer API",
+  "provider": {
+    "name": "Deezer",
+    "url": "https://www.deezer.com",
+    "type": "company"
+  },
+  "summary": "Keyless music catalogue of the Deezer streaming service: tracks, albums, artists, charts, genres and radios with 30-second previews.",
+  "description": "Search and lookup over Deezer's catalogue returns tracks with ISRC, duration, rank and explicit flags, albums with UPC and track lists, artists with fan counts and top tracks, editorial charts, genres and radio stations. Track objects include a short preview MP3 URL. Pagination uses index and limit; listing responses include a next link.",
+  "category": "media-entertainment",
+  "tags": [
+    "music",
+    "tracks",
+    "albums",
+    "artists",
+    "charts",
+    "isrc",
+    "previews"
+  ],
+  "links": {
+    "homepage": "https://developers.deezer.com",
+    "docs": "https://developers.deezer.com/api",
+    "terms": "https://developers.deezer.com/termsofservice"
+  },
+  "api": {
+    "base_url": "https://api.deezer.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public catalogue endpoints worked without credentials. User-specific endpoints (playlists, favourites) were not tested and need an OAuth application."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched; excess requests are expected to be throttled (not re-confirmed)."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search tracks (also /search/artist, /search/album, /search/playlist)",
+      "params": [
+        "q",
+        "limit",
+        "index",
+        "order"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/artist/{id}",
+      "summary": "Artist details; /artist/{id}/top and /albums for related lists",
+      "params": [
+        "limit",
+        "index"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/album/{id}",
+      "summary": "Album details with tracks, UPC and label",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/chart",
+      "summary": "Editorial chart of tracks, albums, artists, playlists and podcasts",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/genre",
+      "summary": "List of genres",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.deezer.com/search/artist?q=daft+punk&limit=1",
+    "response_excerpt": "{\"data\":[{\"id\":27,\"name\":\"Daft Punk\",\"link\":\"https://www.deezer.com/artist/27\",\"picture\":\"https://api.deezer.com/artist/27/image\",\"picture_xl\":\"https://cdn-images.dzcdn.net/images/artist/638e69b9caaf9f9f3f8826febea7b543/1000x1000-000000-80-0-0.jpg\",\"nb_album\":38,\"nb_fan\":5235950,\"radio\":true,\"tracklist\":\"https://api.deezer.com/artist/27/top?limit=50\",\"type\":\"artist\"}],\"total\":18,\"next\":\"https://api.deezer.com/search/artist?q=daft%20punk&limit=1&index=1\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Deezer API terms of service; no open data license",
+      "url": "https://developers.deezer.com/termsofservice",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global catalogue",
+      "temporal": "Current catalogue; charts updated regularly"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Use the typed searches (/search/artist, /search/album) to avoid mixed results. Track objects carry isrc, which joins to other catalogues. Page with limit and index; follow the next URL. Preview MP3 URLs contain a signed, expiring token, so fetch them fresh. Browser calls need a server-side proxy because no CORS header was returned.",
+  "caveats": [
+    "No Access-Control-Allow-Origin header was returned on the tested endpoints, so direct browser use fails.",
+    "A lookup of a non-existent artist id returned HTTP 200 with an error object in the body (type DataException, code 800), so check the body, not just the status.",
+    "Terms of service restrict how catalogue data and previews may be used; read them before redistributing."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials."
+  },
+  "related": [
+    "itunes-search-api",
+    "musicbrainz"
+  ],
+  "added": "2026-11-11"
+}

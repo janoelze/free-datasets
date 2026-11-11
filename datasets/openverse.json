@@ -1,0 +1,137 @@
+{
+  "slug": "openverse",
+  "name": "Openverse API",
+  "provider": {
+    "name": "Openverse (WordPress)",
+    "url": "https://openverse.org",
+    "type": "nonprofit"
+  },
+  "summary": "Search engine API for openly licensed images and audio from many sources, with licence and attribution fields per work.",
+  "description": "Openverse aggregates Creative Commons and public-domain media from providers such as Flickr and Wikimedia Commons. The API searches images and audio by keyword, licence, licence type, source, creator and tags, and returns creator, licence, attribution text, thumbnail and original URLs. The stats endpoints list sources with item counts (Wikimedia Commons alone reported about 89 million images at check). Anonymous use is capped; free OAuth2 registration exists for higher limits.",
+  "category": "art-museums",
+  "tags": [
+    "images",
+    "audio",
+    "creative-commons",
+    "open-licensed",
+    "media",
+    "attribution"
+  ],
+  "links": {
+    "homepage": "https://openverse.org/",
+    "docs": "https://api.openverse.org/v1/",
+    "openapi": "https://api.openverse.org/v1/schema/?format=json",
+    "source": "https://github.com/WordPress/openverse"
+  },
+  "api": {
+    "base_url": "https://api.openverse.org/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "notes": "Anonymous requests work within the limits below. The OpenAPI spec has /auth_tokens/register/ and /auth_tokens/token/ for free OAuth2 credentials that raise limits (not tested here)."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Anonymous limits in response headers: x-ratelimit-limit-anon_burst 20/min and anon_sustained 200/day, with available counts returned on each call.",
+      "requests": 200,
+      "per": "day"
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/images/",
+      "summary": "Search images",
+      "params": [
+        "q",
+        "page",
+        "page_size",
+        "license",
+        "license_type",
+        "source",
+        "creator",
+        "tags",
+        "extension",
+        "category",
+        "aspect_ratio",
+        "size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/audio/",
+      "summary": "Search audio",
+      "params": [
+        "q",
+        "page",
+        "page_size",
+        "license",
+        "source"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/images/{identifier}/",
+      "summary": "One image with attribution and related links",
+      "params": [
+        "identifier"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/images/stats/",
+      "summary": "Sources and item counts for images",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/rate_limit/",
+      "summary": "Current rate-limit status for the caller",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.openverse.org/v1/images/?q=cat&page_size=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"result_count\": 240,\n  \"page_count\": 240,\n  \"page_size\": 1,\n  \"page\": 1,\n  \"results\": [\n    {\n      \"id\": \"1c5442f6-6bb6-4ab7-b603-f598e7579dd2\",\n      \"title\": \"Cat Fish 2\",\n      \"foreign_landing_url\": \"https://www.flickr.com/photos/32426194@N00/3481540500\",\n      \"url\": \"https://live.staticflickr.com/3313/3481540500_c846c62863_b.jpg\",\n      \"creator\": \"admiller\",\n      \"license\": \"by\",\n      \"license_version\": \"2.0\",\n      \"license_url\": \"https://creativecommons.org/licenses/by/2.0/\",\n      \"provider\": \"flickr\",\n      \"source\": \"flickr\",\n      \"attribution\": \"\\\"Cat Fish 2\\\" by admiller is licensed under CC BY 2.0. ...\",\n      \"width\": 716,\n      \"height\": 1024,\n      \"thumbnail\": \"https://api.openverse.org/v1/images/1c5442f6-6bb6-4ab7-b603-f598e7579dd2/thumb/\",\n      \"detail_url\": \"https://api.openverse.org/v1/images/1c5442f6-6bb6-4ab7-b603-f598e7579dd2/\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per work: Creative Commons licences and public domain marks; see the license and attribution fields",
+      "url": "https://creativecommons.org/licenses/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Works from many eras; index refreshed continuously"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use license_type=commercial or modification to keep only works you may reuse that way, and show the attribution string with each work. The 20 per minute and 200 per day anonymous caps are tight, so cache results and register for credentials for anything bulk. Page with page and page_size.",
+  "caveats": [
+    "result_count was 240 for a broad query like cat, which looks like a cap on searchable depth rather than the true number of matches.",
+    "The first search attempts returned 504 for about a minute before succeeding; retry once after a pause."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials after an initial 504; audio search, image detail, stats and the OpenAPI schema also returned 200."
+  },
+  "related": [
+    "europeana",
+    "smithsonian-open-access",
+    "wikimedia-commons-api"
+  ],
+  "added": "2026-11-11"
+}

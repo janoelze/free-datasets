@@ -1,0 +1,95 @@
+{
+  "slug": "geoboundaries",
+  "name": "geoBoundaries API",
+  "provider": {
+    "name": "William & Mary geoLab",
+    "url": "https://www.geoboundaries.org",
+    "type": "academic"
+  },
+  "summary": "Metadata and download links for open administrative boundaries (country and subnational levels) for every country.",
+  "description": "The geoBoundaries API returns, per ISO country code and administrative level (ADM0 to ADM5), release metadata plus links to GeoJSON, TopoJSON and shapefile downloads. gbOpen is the CC BY 4.0 compatible release type; gbHumanitarian and gbAuthoritative mirror other sources. The special code ALL returns every country.",
+  "category": "geography-maps",
+  "tags": [
+    "boundaries",
+    "administrative-divisions",
+    "geojson",
+    "shapefile",
+    "countries",
+    "geospatial"
+  ],
+  "links": {
+    "homepage": "https://www.geoboundaries.org",
+    "docs": "https://www.geoboundaries.org/api.html",
+    "bulk_download": "https://www.geoboundaries.org/",
+    "source": "https://github.com/wmgeolab/geoBoundaries"
+  },
+  "api": {
+    "base_url": "https://www.geoboundaries.org/api/current",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{releaseType}/{ISO3}/{ADMlevel}/",
+      "summary": "Metadata and download URLs for one country and level, for example /gbOpen/DEU/ADM1/"
+    },
+    {
+      "method": "GET",
+      "path": "/gbOpen/ALL/ADM0/",
+      "summary": "Metadata for every country at one level"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.geoboundaries.org/api/current/gbOpen/DEU/ADM0/",
+    "response_excerpt": "{\"boundaryID\": \"DEU-ADM0-19620994\", \"boundaryName\": \"Germany\", \"boundaryISO\": \"DEU\", \"boundaryYearRepresented\": \"2021\", \"boundaryType\": \"ADM0\", \"boundarySource\": \"Federal Agency for Cartography and Geodesy\", \"boundaryLicense\": \"Data license Germany - Attribution - Version 2.0\", ... \"gjDownloadURL\": \"https://github.com/wmgeolab/geoBoundaries/raw/.../geoBoundaries-DEU-ADM0.geojson\", ...}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 compatible for gbOpen; per-country source licence is given in each record",
+      "url": "https://www.geoboundaries.org/api.html",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, about 200 countries and territories",
+      "temporal": "Per boundary; boundaryYearRepresented gives the year"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "The API returns metadata, not geometry: fetch gjDownloadURL (GeoJSON), tjDownloadURL or staticDownloadLink from the response. Use 3-letter ISO codes. Each record names its source and boundaryLicense, so attribute accordingly.",
+  "caveats": [
+    "Geometry files are hosted on GitHub, so large downloads are subject to GitHub limits.",
+    "Boundary years differ per country (the Germany example is year 2021)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example and the ADM1 variant executed without a key."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=30791310",
+      "title": "GeoBoundaries",
+      "points": 1
+    }
+  ],
+  "related": [
+    "nominatim"
+  ],
+  "added": "2026-11-11"
+}

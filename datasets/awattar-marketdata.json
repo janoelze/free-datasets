@@ -1,0 +1,85 @@
+{
+  "slug": "awattar-marketdata",
+  "name": "aWATTar Market Data (hourly day-ahead prices)",
+  "provider": {
+    "name": "aWATTar GmbH",
+    "url": "https://www.awattar.at/",
+    "type": "company"
+  },
+  "summary": "Keyless JSON API for hourly day-ahead electricity spot prices in Germany and Austria, in EUR per MWh with millisecond timestamps.",
+  "description": "A single endpoint, /v1/marketdata, returns hourly day-ahead market prices as a list of {start_timestamp, end_timestamp, marketprice, unit} objects. Without parameters it returns the coming hours (up to about 24 hours ahead); start and end in epoch milliseconds select past ranges. Separate hosts serve Germany (api.awattar.de) and Austria (api.awattar.at).",
+  "category": "energy",
+  "tags": [
+    "electricity",
+    "day-ahead-prices",
+    "germany",
+    "austria",
+    "spot-market",
+    "energy-prices"
+  ],
+  "links": {
+    "homepage": "https://www.awattar.at/",
+    "docs": "https://www.awattar.at/services/api"
+  },
+  "api": {
+    "base_url": "https://api.awattar.de/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The docs page states that no access token has been required since 2020-07-20."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented on the page fetched; responses send Cache-Control max-age=120 and expose Retry-After headers for CORS."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/marketdata",
+      "summary": "Hourly market prices (next hours by default, or a range)",
+      "params": [
+        "start",
+        "end"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.awattar.de/v1/marketdata?start=1794355200000&end=1794441600000",
+    "response_excerpt": "{\"object\":\"list\",\"data\":[{\"start_timestamp\":1794355200000,\"end_timestamp\":1794358800000,\"marketprice\":210.27,\"unit\":\"Eur/MWh\"},{\"start_timestamp\":1794358800000,\"end_timestamp\":1794362400000,\"marketprice\":203.27,\"unit\":\"Eur/MWh\"},...]}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the API docs page",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Germany and Austria (separate hosts)",
+      "temporal": "Past ranges via start and end, plus the coming day"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Timestamps are epoch milliseconds. marketprice is EUR per MWh as sent (unit field says Eur/MWh); whether it is net of VAT was not stated in the docs fetched, so check before showing consumer prices. Use api.awattar.at for Austria. The docs are in German; the German domain's docs page now redirects to energy.tado.com.",
+  "caveats": [
+    "No licence or terms were found for the data; treat reuse as unclear.",
+    "The DE docs URL redirects to energy.tado.com/services/api (aWATTar is now part of tado); the Austrian page https://www.awattar.at/services/api was the one fetched.",
+    "CORS reflects the request Origin."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; a no-UA and a curl-UA request returned 200 on the default endpoint."
+  },
+  "related": [
+    "energy-charts",
+    "smard"
+  ],
+  "added": "2026-11-11"
+}

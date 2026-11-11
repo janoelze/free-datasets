@@ -1,0 +1,140 @@
+{
+  "slug": "lemmy-api",
+  "name": "Lemmy API (lemmy.world)",
+  "provider": {
+    "name": "Lemmy (instance lemmy.world)",
+    "url": "https://join-lemmy.org",
+    "type": "community"
+  },
+  "summary": "Keyless JSON API for posts, communities, comments and search on Lemmy, a federated link aggregator, tested on lemmy.world.",
+  "description": "Lemmy servers expose /api/v3 with no login needed for public reads: post lists sorted by Hot, New or Top, community lists, single communities, comments, search and site statistics. The example host lemmy.world reports about 800,000 posts and 13,600 communities at check. The same API exists on every Lemmy instance (lemmy.ml also answered 200 on /site), and federated content from other servers shows up in the lists.",
+  "category": "news-social",
+  "tags": [
+    "social",
+    "lemmy",
+    "fediverse",
+    "communities",
+    "posts",
+    "comments"
+  ],
+  "links": {
+    "homepage": "https://join-lemmy.org/",
+    "docs": "https://join-lemmy.org/docs/contributors/04-api.html",
+    "source": "https://github.com/LemmyNet/lemmy"
+  },
+  "api": {
+    "base_url": "https://lemmy.world/api/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public instances allow reads without a token; some instances set private_instance and then require login."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "The instance publishes its limits in /site (local_site_rate_limit): for example search 100 per 600 s, comment 50 per 600 s, message and post 999 per 60 s. Which limit applies to plain reads was not confirmed."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/post/list",
+      "summary": "Posts, optionally per community, by sort",
+      "params": [
+        "sort",
+        "limit",
+        "page",
+        "community_name",
+        "type_"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/community/list",
+      "summary": "List communities",
+      "params": [
+        "sort",
+        "limit",
+        "page",
+        "type_"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/community",
+      "summary": "One community by name or id",
+      "params": [
+        "name",
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/comment/list",
+      "summary": "Comments, filterable by post",
+      "params": [
+        "sort",
+        "limit",
+        "post_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search posts, comments or communities",
+      "params": [
+        "q",
+        "type_",
+        "limit",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/site",
+      "summary": "Instance info, version, rate limits and counts",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://lemmy.world/api/v3/post/list?limit=1&sort=Hot",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"posts\": [\n    {\n      \"post\": {\n        \"id\": 54282676,\n        \"name\": \"Big Soup does not want you to know this\",\n        \"url\": \"https://lemmy.ml/pictrs/image/47390a04-c647-4be1-b1c4-723c6f8e1c09.jpeg\",\n        \"published\": \"2026-11-11T15:10:22.076135Z\"\n      },\n      \"creator\": {\n        \"name\": \"ComradePenguin\"\n      },\n      \"community\": {\n        \"name\": \"lemmyshitpost\"\n      },\n      \"counts\": {\n        \"score\": 36,\n        \"comments\": 14\n      }\n    }\n  ],\n  \"next_page\": \"P33c49b4\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated; user-generated content under instance terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, federated",
+      "temporal": "Posts as federated to the queried instance"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Parameter names use a trailing underscore where they clash with keywords (type_). The response also carries next_page, an opaque cursor (accepted as page_cursor in recent versions; not re-confirmed). Swap the host to use another instance, but check its /site for version and private_instance first.",
+  "caveats": [
+    "The record covers API v3 (instance reported version 0.19.21); /api/v4 returned 404 on lemmy.world.",
+    "A request with an empty User-Agent also returned 200.",
+    "Some responses contain raw control characters inside strings, so strict JSON parsers can choke on them.",
+    "No OpenAPI spec URL was confirmed; the docs link to third-party spec hosting."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without credentials; site, community, comment/list and search also returned 200."
+  },
+  "related": [
+    "bluesky-appview",
+    "mastodon-public-api"
+  ],
+  "added": "2026-11-11"
+}

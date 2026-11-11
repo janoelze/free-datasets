@@ -1,0 +1,114 @@
+{
+  "slug": "adsb-fi",
+  "name": "adsb.fi Open Data API",
+  "provider": {
+    "name": "adsb.fi",
+    "url": "https://adsb.fi",
+    "type": "community"
+  },
+  "summary": "Free live ADS-B aircraft positions from a community network, ADS-B Exchange v2 compatible, for non-commercial use.",
+  "description": "Open data API with real-time aircraft state by Mode-S hex, callsign, registration, squawk, military flag, or by point and radius up to 250 NM. Responses match the ADS-B Exchange v2 format. Feeders get an additional snapshot endpoint.",
+  "category": "transport-mobility",
+  "tags": [
+    "aviation",
+    "adsb",
+    "aircraft",
+    "flights",
+    "tracking",
+    "real-time"
+  ],
+  "links": {
+    "homepage": "https://adsb.fi",
+    "docs": "https://github.com/adsbfi/opendata",
+    "terms": "https://github.com/adsbfi/opendata",
+    "source": "https://github.com/adsbfi/opendata"
+  },
+  "api": {
+    "base_url": "https://opendata.adsb.fi/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Public endpoints are limited to 1 request per second; requests returning 400, 401, 403, 404 or 429 count against the limit and repeated invalid requests lead to a temporary IP block.",
+      "requests": 1,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/v3/lat/{lat}/lon/{lon}/dist/{nm}",
+      "summary": "Aircraft within a radius up to 250 NM (v2 variant is deprecated)"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/hex/{hex}",
+      "summary": "Aircraft by Mode-S hex code"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/callsign/{callsign}",
+      "summary": "Aircraft by callsign"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/registration/{reg}",
+      "summary": "Aircraft by registration"
+    },
+    {
+      "method": "GET",
+      "path": "/v2/mil",
+      "summary": "Aircraft flagged military"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://opendata.adsb.fi/api/v3/lat/51.47/lon/-0.45/dist/25",
+    "response_excerpt": "{\"ac\":[\n{\"hex\":\"4d02b1\",\"type\":\"adsb_icao\",\"flight\":\"JFA43S  \",\"r\":\"LX-JFC\",\"t\":\"PC12\",\"desc\":\"PILATUS PC-12\",\"alt_baro\":7275,\"gs\":242.2,\"track\":147.82,\"squawk\":\"2076\",...},\n...\n]}"
+  },
+  "data": {
+    "license": {
+      "name": "adsb.fi open data terms: personal, non-commercial use, cite adsb.fi with a link",
+      "url": "https://github.com/adsbfi/opendata",
+      "attribution_required": true,
+      "commercial_use": "prohibited"
+    },
+    "coverage": {
+      "geographic": "Global where feeders exist",
+      "temporal": "Live"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Use the v3 lat/lon/dist endpoint; the v2 one has a different format and is deprecated. Stay under 1 request per second, one burst of 429s is easy to trigger. Contact adsb.fi for commercial or higher-rate needs.",
+  "caveats": [
+    "Terms restrict use to personal, non-commercial purposes.",
+    "A second request fired within a second returned 429 in one test.",
+    "No CORS header was sent."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact v3 example executed without a key."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=48838043",
+      "title": "Adsb.fi",
+      "points": 7
+    }
+  ],
+  "related": [
+    "adsb-lol",
+    "opensky-network"
+  ],
+  "added": "2026-11-11"
+}

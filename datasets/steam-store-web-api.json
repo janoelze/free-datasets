@@ -1,0 +1,117 @@
+{
+  "slug": "steam-store-web-api",
+  "name": "Steam Store and Web API (keyless endpoints)",
+  "provider": {
+    "name": "Valve",
+    "url": "https://store.steampowered.com",
+    "type": "company"
+  },
+  "summary": "Keyless Steam endpoints: store appdetails, live player counts and per-game news for any appid, including Counter-Strike 2.",
+  "description": "A subset of the Steam platform APIs that answer without a key: store.steampowered.com/api/appdetails returns price, genres, requirements, screenshots and Metacritic data for an appid; ISteamUserStats/GetNumberOfCurrentPlayers returns the live concurrent players; ISteamNews/GetNewsForApp returns recent announcements. User-level and inventory endpoints need a free Steam Web API key and are not covered here.",
+  "category": "fun-games",
+  "tags": [
+    "steam",
+    "video-games",
+    "game-metadata",
+    "player-counts",
+    "news",
+    "cs2"
+  ],
+  "links": {
+    "homepage": "https://steamcommunity.com/dev",
+    "docs": "https://partner.steamgames.com/doc/webapi",
+    "terms": "https://steamcommunity.com/dev/apiterms",
+    "signup": "https://steamcommunity.com/dev/apikey"
+  },
+  "api": {
+    "base_url": "https://api.steampowered.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "key",
+      "notes": "The three endpoints listed work without a key; a free key (Steam account required) is needed for most other Web API interfaces."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "API terms cap Web API use at 100,000 calls per day per key; the store appdetails endpoint is undocumented and is known to throttle after bursts (not re-confirmed)."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/ISteamUserStats/GetNumberOfCurrentPlayers/v1/",
+      "summary": "Current concurrent players for an appid",
+      "params": [
+        "appid"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ISteamNews/GetNewsForApp/v2/",
+      "summary": "Latest news items for an appid",
+      "params": [
+        "appid",
+        "count",
+        "maxlength"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://store.steampowered.com/api/appdetails",
+      "summary": "Store page data for an appid (price, genres, requirements, screenshots)",
+      "params": [
+        "appids",
+        "cc",
+        "l",
+        "filters"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=730",
+    "response_excerpt": "{\n  \"response\": {\n    \"player_count\": 1096899,\n    \"result\": 1\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Steam Web API Terms of Use (Valve); game data belongs to publishers",
+      "url": "https://steamcommunity.com/dev/apiterms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Query appdetails with one appid per call: a two-appid request with filters=price_overview returned empty data arrays today. Use cc= for currency and l= for language. 730 is Counter-Strike 2, 570 is Dota 2. Success is signalled by \"success\": true inside the body even on HTTP 200.",
+  "caveats": [
+    "No CORS header on api.steampowered.com or the store endpoint; call it from a server.",
+    "store.steampowered.com/api/appdetails is not part of the official documentation, so its shape can change.",
+    "ISteamApps/GetAppList/v2 returned 404 today; the app list now needs the IStoreService interface with a key (not tested)."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Player-count example executed without a key; appdetails and GetNewsForApp also answered 200 without a key."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=1479818",
+      "title": "Steam Web API",
+      "points": 2
+    }
+  ],
+  "related": [
+    "cheapshark",
+    "opendota"
+  ],
+  "added": "2026-11-11"
+}

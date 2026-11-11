@@ -108,7 +108,9 @@
   },
   "related": [
     "world-bank-indicators",
-    "ecb-data-api"
+    "ecb-data-api",
+    "ibge-sidra",
+    "ssb-statbank-norway"
   ],
   "added": "2026-11-11"
 }

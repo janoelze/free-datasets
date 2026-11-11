@@ -1,0 +1,96 @@
+{
+  "slug": "smard",
+  "name": "SMARD Electricity Market Data (Bundesnetzagentur)",
+  "provider": {
+    "name": "Bundesnetzagentur (SMARD.de)",
+    "url": "https://www.smard.de/",
+    "type": "government"
+  },
+  "summary": "Static JSON time series of German electricity generation by source, consumption, wholesale prices and cross-border flows from the Bundesnetzagentur market portal.",
+  "description": "The SMARD portal serves its chart data as static JSON files: an index of weekly/daily chunk timestamps per filter, region and resolution, then one file per chunk. Filters cover generation by source (e.g. lignite), load, forecast and day-ahead wholesale price for Germany/Luxembourg, per TSO control area or neighbouring countries, in hour, quarter-hour, day, week, month and year resolution. Filter and region ids are listed in a community-maintained OpenAPI spec.",
+  "category": "energy",
+  "tags": [
+    "electricity",
+    "energy-mix",
+    "day-ahead-prices",
+    "germany",
+    "grid",
+    "time-series"
+  ],
+  "links": {
+    "homepage": "https://www.smard.de/",
+    "docs": "https://smard.api.bund.dev/",
+    "terms": "https://www.smard.de/en/downloadcenter/download-market-data/",
+    "openapi": "https://raw.githubusercontent.com/bundesAPI/smard-api/main/openapi.yaml",
+    "source": "https://github.com/bundesAPI/smard-api"
+  },
+  "api": {
+    "base_url": "https://www.smard.de/app",
+    "style": "static-file",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/chart_data/{filter}/{region}/index_{resolution}.json",
+      "summary": "List the chunk start timestamps (ms) for a filter, region and resolution"
+    },
+    {
+      "method": "GET",
+      "path": "/chart_data/{filter}/{region}/{filter}_{region}_{resolution}_{timestamp}.json",
+      "summary": "Time series chunk starting at a timestamp from the index"
+    },
+    {
+      "method": "GET",
+      "path": "/table_data/{filter}/{region}/{filter}_{region}_quarterhour_{timestamp}.json",
+      "summary": "Quarter-hour table data with versions"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.smard.de/app/chart_data/4169/DE/4169_DE_hour_1794178800000.json",
+    "response_excerpt": "{\"meta_data\":{\"version\":1,\"created\":1794400074065},\"series\":[[1794178800000,229.76],[1794182400000,226.56],[1794186000000,225.49],[1794189600000,223.27],...]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (Bundesnetzagentur | SMARD.de)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://www.smard.de/en/downloadcenter/download-market-data/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Germany, Luxembourg, Austria, TSO control areas and neighbouring countries",
+      "temporal": "From December 2014 (first weekly index entry) to present"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Always fetch the index first and take a timestamp from it; the data file name repeats filter, region and resolution and 404s on a mismatch. Timestamps are milliseconds since the epoch; series values are [timestamp, value] with null for gaps. Filter 4169 is the wholesale price for Germany/Luxembourg and 1223 is lignite generation per the community spec. The docs and spec are in German.",
+  "caveats": [
+    "These are the endpoints behind the SMARD web charts; the OpenAPI spec is maintained by the bund.dev community, not by the Bundesnetzagentur, so the paths can change without notice.",
+    "The chunk size depends on resolution (the hour example returned 168 hourly points for one week).",
+    "The CC BY 4.0 licence statement was read from the SMARD download-centre page."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Index and chunk both executed without a key; the example chunk timestamp comes from the live index."
+  },
+  "related": [
+    "awattar-marketdata",
+    "energy-charts"
+  ],
+  "added": "2026-11-11"
+}

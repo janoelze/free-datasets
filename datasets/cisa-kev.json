@@ -80,7 +80,8 @@
   "related": [
     "nvd-cve-api",
     "first-epss",
-    "osv-dev"
+    "osv-dev",
+    "urlscan-search"
   ],
   "added": "2026-11-11"
 }

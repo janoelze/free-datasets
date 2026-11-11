@@ -1,0 +1,99 @@
+{
+  "slug": "jpl-horizons",
+  "name": "JPL Horizons API",
+  "provider": {
+    "name": "NASA/JPL Solar System Dynamics",
+    "url": "https://ssd.jpl.nasa.gov",
+    "type": "government"
+  },
+  "summary": "High-precision ephemerides, state vectors and orbital elements for solar system bodies and spacecraft from NASA/JPL Horizons.",
+  "description": "Horizons computes observer tables (RA/Dec, azimuth/elevation, magnitude, rise/set), vector tables (position and velocity) and osculating elements for planets, moons, asteroids, comets and many spacecraft, from any observing site. Requests use quoted parameters on a single GET endpoint that returns JSON wrapping a text table; a POST batch-file variant also exists.",
+  "category": "space-astronomy",
+  "tags": [
+    "ephemeris",
+    "solar-system",
+    "orbits",
+    "astronomy",
+    "planets",
+    "asteroids",
+    "spacecraft"
+  ],
+  "links": {
+    "homepage": "https://ssd.jpl.nasa.gov/horizons/",
+    "docs": "https://ssd-api.jpl.nasa.gov/doc/horizons.html"
+  },
+  "api": {
+    "base_url": "https://ssd.jpl.nasa.gov/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented on the pages I fetched."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/horizons.api",
+      "summary": "Ephemeris, vectors or elements for a target body",
+      "params": [
+        "format",
+        "COMMAND",
+        "MAKE_EPHEM",
+        "EPHEM_TYPE",
+        "CENTER",
+        "START_TIME",
+        "STOP_TIME",
+        "STEP_SIZE",
+        "QUANTITIES",
+        "OBJ_DATA"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27499%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500@399%27&START_TIME=%272026-11-11%27&STOP_TIME=%272026-11-12%27&STEP_SIZE=%271%20d%27&QUANTITIES=%271%27",
+    "response_excerpt": "{\"signature\":{\"source\":\"NASA/JPL Horizons API\",\"version\":\"1.2\"},\"result\":\"...Target body name: Mars (499) ... Center body name: Earth (399) ...\\n$$SOE\\n 2026-Nov-11 00:00     ...\\n$$EOE\\n...\"}"
+  },
+  "data": {
+    "license": {
+      "name": "US Government work (NASA/JPL); no licence statement on the API page",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Solar system"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "String parameter values must be wrapped in single quotes (%27 when encoded). The table sits inside result between $$SOE and $$EOE, so parse that text. COMMAND takes a numeric id or a name, ambiguous names return a list of matches instead of an ephemeris. Centre 500@399 is geocentric Earth.",
+  "caveats": [
+    "From my sandbox the TLS chain was not trusted (self signed certificate in chain), so I ran the checks with curl -k; the API itself answered normally. Retry without -k from your own environment.",
+    "No CORS header was sent.",
+    "The output is a human-readable text table inside JSON, not structured rows."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key, using curl -k because the sandbox did not trust the TLS chain."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=42549195",
+      "title": "JPL Horizons on-line solar system data and ephemeris computation service",
+      "points": 125
+    }
+  ],
+  "related": [
+    "jpl-sbdb"
+  ],
+  "added": "2026-11-11"
+}

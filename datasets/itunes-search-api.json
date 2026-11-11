@@ -1,0 +1,108 @@
+{
+  "slug": "itunes-search-api",
+  "name": "iTunes Search API",
+  "provider": {
+    "name": "Apple",
+    "url": "https://www.apple.com",
+    "type": "company"
+  },
+  "summary": "Keyless search and lookup over the Apple Music, iTunes Store, App Store, podcast and book catalogues.",
+  "description": "Search by term or look up by iTunes, AMG or UPC id to get artists, albums, songs, music videos, podcasts, movies, TV episodes, audiobooks and software with prices, genres, release dates, artwork URLs and 30-second preview links. The store country is selectable. Responses are JSON served with a text/javascript content type.",
+  "category": "media-entertainment",
+  "tags": [
+    "music",
+    "podcasts",
+    "albums",
+    "apps",
+    "store-catalogue",
+    "artwork",
+    "previews"
+  ],
+  "links": {
+    "homepage": "https://performance-partners.apple.com/search-api",
+    "docs": "https://performance-partners.apple.com/search-api"
+  },
+  "api": {
+    "base_url": "https://itunes.apple.com",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Documented as approximately 20 calls per minute (subject to change); heavier use is pointed to Apple's enterprise feeds.",
+      "requests": 20,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search the stores by term",
+      "params": [
+        "term",
+        "country",
+        "media",
+        "entity",
+        "attribute",
+        "limit",
+        "offset",
+        "lang"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lookup",
+      "summary": "Look up items by iTunes id, AMG id or UPC; entity=album returns an artist's albums",
+      "params": [
+        "id",
+        "amgArtistId",
+        "upc",
+        "entity",
+        "limit",
+        "country"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://itunes.apple.com/search?term=radiohead&limit=1&entity=album",
+    "response_excerpt": "{\"resultCount\":1,\"results\":[{\"wrapperType\":\"collection\",\"collectionType\":\"Album\",\"artistId\":657515,\"collectionId\":1097861387,\"artistName\":\"Radiohead\",\"collectionName\":\"OK Computer\",\"collectionViewUrl\":\"https://music.apple.com/us/album/ok-computer/1097861387?uo=4\",\"artworkUrl100\":\"https://is1-ssl.mzstatic.com/image/thumb/.../100x100bb.jpg\",\"collectionPrice\":9.99,\"trackCount\":12,\"copyright\":\"℗ 1997 XL Recordings Ltd\",\"country\":\"USA\",\"currency\":\"USD\",\"releaseDate\":\"1997-05-21T07:00:00Z\",\"primaryGenreName\":\"Alternative\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Apple Search API terms; metadata for promoting store content",
+      "url": "https://performance-partners.apple.com/search-api",
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Per-country storefronts (country parameter)",
+      "temporal": "Current store catalogue"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Pick the entity (album, song, musicVideo, podcast, software, ebook ...) to get the right result type; without it you get a mix. Lookup with entity=album or entity=song and an artist id lists that artist's releases. Artwork URLs contain a size token (100x100bb) you can edit to get larger images. Results vary by country, so set country explicitly. Keep to about 20 calls per minute and cache.",
+  "caveats": [
+    "The JSON is served as text/javascript with leading blank lines; parse it as JSON anyway.",
+    "A media=movie search for 'inception' returned zero results when tested; coverage of some media types is thin.",
+    "Apple's terms limit use of previews and artwork to promoting the catalogued content with a store link or badge."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials."
+  },
+  "related": [
+    "deezer-api",
+    "musicbrainz"
+  ],
+  "added": "2026-11-11"
+}

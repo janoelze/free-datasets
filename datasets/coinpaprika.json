@@ -1,0 +1,124 @@
+{
+  "slug": "coinpaprika",
+  "name": "CoinPaprika API (free tier)",
+  "provider": {
+    "name": "CoinPaprika",
+    "url": "https://coinpaprika.com",
+    "type": "company"
+  },
+  "summary": "Keyless crypto market data: coin list, tickers, global stats, exchanges, markets and a price converter.",
+  "description": "Free tier of the CoinPaprika API at api.coinpaprika.com/v1 with prices, market cap, volume, percent changes and all-time highs for thousands of coins, exchange listings and markets per coin, global market statistics and a price converter. Historical OHLCV beyond the last day and higher limits need a paid key on a separate host.",
+  "category": "finance-markets",
+  "tags": [
+    "crypto",
+    "prices",
+    "market-cap",
+    "exchanges",
+    "coins",
+    "ohlc"
+  ],
+  "links": {
+    "homepage": "https://coinpaprika.com/api/",
+    "docs": "https://docs.coinpaprika.com/",
+    "signup": "https://coinpaprika.com/api/"
+  },
+  "api": {
+    "base_url": "https://api.coinpaprika.com/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "The free plan on api.coinpaprika.com needs no key. A paid key goes in the Authorization header (raw key, no Bearer prefix) against api-pro.coinpaprika.com."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Free plan: 20,000 calls per month; global cap of 10 requests per second per IP (docs). Responses carry ratelimit-limit/-remaining/-reset headers; 429 or 402 when exceeded.",
+      "requests": 20000,
+      "per": "month",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/coins",
+      "summary": "All coins with rank and type"
+    },
+    {
+      "method": "GET",
+      "path": "/tickers/{coin_id}",
+      "summary": "Ticker for one coin",
+      "params": [
+        "quotes"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/global",
+      "summary": "Global market cap, volume and bitcoin dominance"
+    },
+    {
+      "method": "GET",
+      "path": "/exchanges",
+      "summary": "Exchanges"
+    },
+    {
+      "method": "GET",
+      "path": "/coins/{coin_id}/ohlcv/latest",
+      "summary": "Latest daily OHLCV"
+    },
+    {
+      "method": "GET",
+      "path": "/price-converter",
+      "summary": "Convert between coins and fiat",
+      "params": [
+        "base_currency_id",
+        "quote_currency_id",
+        "amount"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.coinpaprika.com/v1/tickers/btc-bitcoin",
+    "response_excerpt": "{\n  \"id\": \"btc-bitcoin\",\n  \"name\": \"Bitcoin\",\n  \"symbol\": \"BTC\",\n  \"rank\": 1,\n  \"total_supply\": 20110775,\n  \"max_supply\": 21000000,\n  \"last_updated\": \"2026-11-11T15:41:12Z\",\n  \"quotes\": {\n    \"USD\": {\n      \"price\": 74038.98703556637,\n      \"volume_24h\": 18543623278.168823,\n      \"market_cap\": 1488981409500,\n      \"percent_change_24h\": 1.61,\n      \"ath_price\": 126173.1777846797,\n      \"ath_date\": \"2025-10-06T19:00:40Z\"\n    }\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Free plan terms (not re-confirmed); redistribution requires the Enterprise plan per the FAQ",
+      "url": "https://docs.coinpaprika.com/faq.md",
+      "attribution_required": false,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global crypto markets",
+      "temporal": "Current data; free OHLCV history limited"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Coin ids look like btc-bitcoin (symbol-name); find them with /coins or /search/. Prices are volume-weighted averages across tracked markets, not one exchange's quote. The /tickers call without limit returns thousands of coins, so pass limit or use /tickers/{id}.",
+  "caveats": [
+    "Historical OHLCV before the last day returned HTTP 402 (plan restriction) on the free host.",
+    "/search needs the trailing slash (/search/); without it the server answers 301.",
+    "The docs say commercial use is allowed inside the customer's company on paid plans and redistribution only on Enterprise; free-plan terms were not re-confirmed.",
+    "No OpenAPI document was found at the obvious URLs."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed keyless: 200, ratelimit-limit 20000 seen. /coins, /global, /exchanges, /price-converter, /coins/{id}/markets and ohlcv/latest also 200."
+  },
+  "related": [
+    "coingecko",
+    "defillama"
+  ],
+  "added": "2026-11-11"
+}

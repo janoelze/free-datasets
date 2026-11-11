@@ -111,5 +111,12 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "binance-spot-market-data",
+    "coinbase-exchange",
+    "coinpaprika",
+    "defillama",
+    "kraken-spot-rest"
+  ],
   "added": "2026-11-11"
 }

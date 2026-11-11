@@ -1,0 +1,133 @@
+{
+  "slug": "openstreetmap-api",
+  "name": "OpenStreetMap API v0.6",
+  "provider": {
+    "name": "OpenStreetMap Foundation",
+    "url": "https://www.openstreetmap.org",
+    "type": "nonprofit"
+  },
+  "summary": "Read access to the live OpenStreetMap database: nodes, ways, relations, map bounding boxes, changesets and notes.",
+  "description": "The editing API of OpenStreetMap, whose read endpoints are free without authentication. It serves individual elements and their history, all data inside a small bounding box, changeset metadata and map notes, in XML or JSON. It is meant for small interactive reads; large extracts should come from planet files or Overpass.",
+  "category": "geography-maps",
+  "tags": [
+    "openstreetmap",
+    "osm",
+    "map-data",
+    "geospatial",
+    "open-data",
+    "changesets"
+  ],
+  "links": {
+    "homepage": "https://www.openstreetmap.org",
+    "docs": "https://wiki.openstreetmap.org/wiki/API_v0.6",
+    "terms": "https://operations.osmfoundation.org/policies/api/",
+    "bulk_download": "https://planet.openstreetmap.org/",
+    "source": "https://github.com/openstreetmap/openstreetmap-website"
+  },
+  "api": {
+    "base_url": "https://api.openstreetmap.org/api/0.6",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "geojson"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Read endpoints need no credentials. Writes need OAuth 2 and are out of scope here."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "The usage policy requires a valid User-Agent identifying the application; fake agents get blocked. Plain curl worked in my tests."
+      }
+    ],
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "No numeric limit is published; the usage policy allows at most 2 download threads and tells heavy users to use planet files instead."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/node/{id}.json",
+      "summary": "One node (also /way/{id}, /relation/{id}, plus /full and /history)"
+    },
+    {
+      "method": "GET",
+      "path": "/map.json",
+      "summary": "All data in a bounding box (max area 0.25 square degrees)",
+      "params": [
+        "bbox"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/capabilities.json",
+      "summary": "Server limits (area, tracepoints, waynodes)"
+    },
+    {
+      "method": "GET",
+      "path": "/changesets.json",
+      "summary": "Search changesets",
+      "params": [
+        "bbox",
+        "user",
+        "time",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/notes.json",
+      "summary": "Map notes in a bounding box",
+      "params": [
+        "bbox",
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.openstreetmap.org/api/0.6/node/1.json",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"version\": \"0.6\",\n  \"generator\": \"openstreetmap-cgimap 2.1.1\",\n  \"license\": \"http://opendatacommons.org/licenses/odbl/1-0/\",\n  \"elements\": [\n    {\"type\": \"node\", \"id\": 1, \"lat\": 42.7957187, \"lon\": 13.5690032, \"version\": 47, \"tags\": {...}}\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "ODbL 1.0",
+      "spdx": "ODbL-1.0",
+      "url": "https://www.openstreetmap.org/copyright",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current data plus element history"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Append .json to most endpoints, otherwise XML is returned. Coordinates are lat/lon in the element, but bbox is left,bottom,right,top (lon,lat order). The map call returns an error for bounding boxes larger than the capabilities limit. For tag or area queries use Overpass instead.",
+  "caveats": [
+    "Not for bulk or repeated large queries; the policy points heavy users to planet files and Overpass.",
+    "CORS echoed the request origin on /node and sent * on /capabilities.json; confirm per endpoint before browser use.",
+    "Ids are element-type specific: node, way and relation ids overlap."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without credentials; map, changesets and notes JSON endpoints also answered 200."
+  },
+  "related": [
+    "nominatim",
+    "overpass-api",
+    "photon-geocoder"
+  ],
+  "added": "2026-11-11"
+}

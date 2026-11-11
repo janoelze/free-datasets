@@ -1,0 +1,113 @@
+{
+  "slug": "pirate-weather",
+  "name": "Pirate Weather API",
+  "provider": {
+    "name": "Pirate Weather",
+    "url": "https://pirateweather.net",
+    "type": "individual"
+  },
+  "summary": "Dark Sky-compatible weather forecast API built on open NOAA and ECMWF model data, with a free 10,000-call monthly tier.",
+  "description": "Returns current conditions, minutely, hourly (48 hours, or 168 with extend=hourly) and daily forecasts, alerts and optional historical (timemachine) data for a latitude and longitude, in the response shape of the retired Dark Sky API. Includes a lang parameter for translated summaries and several unit systems. A free key is required and must be subscribed after sign-up.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "forecast",
+    "dark-sky",
+    "noaa",
+    "historical-weather",
+    "hourly",
+    "alerts"
+  ],
+  "links": {
+    "homepage": "https://pirateweather.net",
+    "docs": "https://docs.pirateweather.net/en/latest/API/",
+    "signup": "https://pirateweather.net"
+  },
+  "api": {
+    "base_url": "https://api.pirateweather.net",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "path",
+      "key_name": "apikey segment in /forecast/{apikey}/...",
+      "notes": "Request a key at pirateweather.net, then subscribe to the forecast API in the account; the docs say the key can take up to 20 minutes to activate."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "The homepage advertises 10,000 free calls per month; the docs say a small donation raises it to 20,000. Responses expose ratelimit-limit, ratelimit-remaining and ratelimit-reset headers via CORS.",
+      "requests": 10000,
+      "per": "month",
+      "scope": "key"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/forecast/{apikey}/{latitude},{longitude}",
+      "summary": "Current, minutely, hourly and daily forecast for a point",
+      "params": [
+        "units",
+        "exclude",
+        "extend",
+        "lang",
+        "version",
+        "include",
+        "extraVars"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/forecast/{apikey}/{latitude},{longitude},{time}",
+      "summary": "Forecast or observed data for a Unix or ISO time",
+      "params": [
+        "units",
+        "exclude"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.pirateweather.net/forecast/x/37.8,-122.4",
+    "response_excerpt": "{\n  \"message\":\"Unauthorized\",\n  \"request_id\":\"28647d3032de343d0771fc612954df47\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated in the docs fetched; model data from NOAA, ECMWF and others",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Forecast up to 7-10 days plus historical timemachine"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "The API key sits in the URL path. Without a valid key the API answers HTTP 401 with {\"message\":\"Unauthorized\"}. Per the docs, the response mirrors Dark Sky: currently, minutely, hourly, daily, alerts blocks; use exclude=minutely,alerts to shrink it and units=si for metric. Locations can also be given as city,country.",
+  "caveats": [
+    "Only the unauthenticated 401 response was observed here; the endpoint, parameters and limits come from the public docs and homepage, not from a keyed call.",
+    "The free tier needs sign-up and a subscribe step; whether a credit card is needed was not checked.",
+    "Run by a single maintainer funded by donations; the docs ask for support."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 401,
+    "with_key": false,
+    "notes": "Example is the unauthenticated request with a dummy key; 401 observed, no key was available to this run."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=34329988",
+      "title": "Pirate Weather: A free, open, and documented forecast API",
+      "points": 1149
+    }
+  ],
+  "related": [
+    "nws-weather-gov",
+    "open-meteo-forecast"
+  ],
+  "added": "2026-11-11"
+}
