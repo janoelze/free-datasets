@@ -127,3 +127,34 @@ URLs with a trailing slash 308-redirect to the slash-less form.
 
 The OpenAPI document is generated from `schema/dataset.schema.json` and `schema/categories.json`
 (`components.schemas.Dataset` is the schema verbatim minus `$schema`/`$id`), so it cannot drift.
+
+## Deployment
+
+`bin/deploy.sh` is the only deploy path, used by hand and by CI. It runs `php bin/validate.php`
+(fail fast), rsyncs `public src templates datasets schema bin docs` to
+`janoelze@aquila.uberspace.de:/var/www/virtual/janoelze/datasets/` (`--delete` inside those
+directories; `var/` is never sent or deleted), runs `php bin/build.php` on the server (the cache
+records the directory it was built from, so it must be built there), creates the docroot symlink
+`/var/www/virtual/janoelze/endtime-instruments.org/datasets -> /var/www/virtual/janoelze/datasets/public`
+if it is missing (only after checking the target exists and Apache can traverse it; it refuses to
+replace anything else at that path), then smoke-tests the public URL and exits non-zero if any
+check fails. Host, user, paths and URL are overridable: `DEPLOY_HOST`, `DEPLOY_USER`,
+`DEPLOY_APP_DIR`, `DEPLOY_DOCROOT`, `DEPLOY_MOUNT`, `DEPLOY_PUBLIC_URL`, `DEPLOY_SSH_OPTS`,
+`DEPLOY_SKIP_SMOKE=1`. The app lives under `/var/www/virtual/janoelze/`, not `~/`, because the
+home directory is `0700` and Apache cannot follow a symlink into it (403, `AH00037`).
+
+CI (`.github/workflows/ci.yml`): every push and pull request runs `php -l`, `php bin/validate.php`
+and `php tests/run.php` on PHP 8.3. A push to `main` (or a manual `workflow_dispatch` on `main`)
+then runs the `deploy` job (environment `production`, concurrency group `deploy`, never cancelled
+mid-run). It loads the repository secret `DEPLOY_SSH_KEY` (a dedicated ed25519 key, comment
+`github-actions-datasets-deploy`, listed in the server's `~/.ssh/authorized_keys`), trusts a
+pinned host key for aquila.uberspace.de, and runs `bin/deploy.sh`.
+
+- Deploy by hand: `bin/deploy.sh` from a clean checkout, with an SSH identity that can log in
+  as `janoelze@aquila.uberspace.de`.
+- Roll back: check out (or re-run the workflow on) an older commit and deploy again; the rsync
+  makes the server match that tree and the catalogue is rebuilt from it.
+- Rotate the key: generate a new pair, replace the `github-actions-datasets-deploy` line in
+  `~/.ssh/authorized_keys`, `gh secret set DEPLOY_SSH_KEY --repo janoelze/datasets < key`.
+- Direct requests to `/datasets/index.php` return 404 on this host (same for other symlinked
+  apps); use the clean URLs.

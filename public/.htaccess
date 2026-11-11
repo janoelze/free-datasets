@@ -25,6 +25,11 @@ AddDefaultCharset utf-8
 
   RewriteRule ^index\.php$ - [L]
 
+  # Real directories below the root (assets/, assets/fonts/) have no index. Without this,
+  # mod_dir 301s /assets -> /assets/ and the app 308s /assets/ -> /assets: a redirect loop.
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^.+/$ - [R=404,L]
+
   # Everything that is not an existing file goes to the front controller.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^ index.php [QSA,L]

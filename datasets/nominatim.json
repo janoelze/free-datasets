@@ -34,7 +34,6 @@
       "type": "none",
       "notes": "No key; a valid User-Agent or Referer identifying the app is required."
     },
-    "cors": "any",
     "required_headers": [
       {
         "name": "User-Agent",
@@ -42,6 +41,7 @@
         "notes": "Must identify your application; generic client strings may be blocked."
       }
     ],
+    "cors": "any",
     "rate_limit": {
       "summary": "Absolute maximum 1 request/second; no bulk geocoding and no autocomplete-as-you-type; heavy use may be blocked.",
       "requests": 1,

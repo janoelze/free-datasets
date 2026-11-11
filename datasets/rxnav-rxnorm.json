@@ -1,0 +1,131 @@
+{
+  "slug": "rxnav-rxnorm",
+  "name": "RxNav RxNorm API",
+  "provider": {
+    "name": "U.S. National Library of Medicine (Lister Hill Center)",
+    "url": "https://lhncbc.nlm.nih.gov/RxNav/",
+    "type": "government"
+  },
+  "summary": "Keyless NLM API for RxNorm, the US normalized drug vocabulary: look up drugs by name, RxCUI or NDC, and walk ingredient, brand and dose-form relations.",
+  "description": "RxNorm gives every clinical drug in the US market a concept id (RxCUI) and links it to ingredients, strengths, dose forms, brand names, NDC package codes and the drug vocabularies it was built from. The RxNav REST API resolves free-text or misspelled drug names to RxCUIs (approximate match and spelling suggestions), returns concept properties and all related concepts, and maps NDCs to concepts with their status history.",
+  "category": "health-medicine",
+  "tags": [
+    "drugs",
+    "rxnorm",
+    "terminology",
+    "ndc",
+    "medications",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://lhncbc.nlm.nih.gov/RxNav/",
+    "docs": "https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html",
+    "terms": "https://lhncbc.nlm.nih.gov/RxNav/TermsofService.html"
+  },
+  "api": {
+    "base_url": "https://rxnav.nlm.nih.gov/REST",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "No key needed. A free UMLS (UTS) API key sent as Authorization: Bearer <key> raises the limit from 20 to 100 requests/second."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No more than 20 requests per second per IP address (100 with a UTS API key); NLM recommends caching results for 12-24 hours.",
+      "requests": 20,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/rxcui.json",
+      "summary": "Find the RxCUI for an exact drug name",
+      "params": [
+        "name",
+        "search"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/approximateTerm.json",
+      "summary": "Fuzzy match free-text or misspelled drug strings to RxCUIs",
+      "params": [
+        "term",
+        "maxEntries"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/drugs.json",
+      "summary": "Clinical and branded drug products for an ingredient or brand name",
+      "params": [
+        "name"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/rxcui/{rxcui}/allrelated.json",
+      "summary": "All related concepts (ingredients, brands, dose forms, packs)"
+    },
+    {
+      "method": "GET",
+      "path": "/ndcstatus.json",
+      "summary": "Status and history of an NDC package code",
+      "params": [
+        "ndc"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/spellingsuggestions.json",
+      "summary": "Spelling suggestions for a drug name",
+      "params": [
+        "name"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://rxnav.nlm.nih.gov/REST/approximateTerm.json?term=zocor%2010%20mg&maxEntries=2",
+    "response_excerpt": "{\"approximateGroup\":{\"inputTerm\":null,\"candidate\":[{\"rxcui\":\"563653\",\"rxaui\":\"12297106\",\"score\":\"12.793798446655273\",\"rank\":\"1\",\"name\":\"simvastatin 10 MG [Zocor]\",\"source\":\"RXNORM\"},{\"rxcui\":\"104490\",\"rxaui\":\"12661942\",\"score\":\"12.793798446655273\",\"rank\":\"1\",\"source\":\"GS\"}]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Free of charge under the NLM RxNav terms of service; content from some source vocabularies (e.g. SNOMED CT via RxClass) carries its own licence",
+      "url": "https://lhncbc.nlm.nih.gov/RxNav/TermsofService.html",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Current RxNorm release, with concept and NDC history"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "Use the .json suffix (or Accept: application/json); without it responses are XML. Resolve names to an RxCUI first (rxcui.json for exact names, approximateTerm.json for messy input), then query /rxcui/{rxcui}/... for relations and properties. Prefer candidates with source RXNORM; /version.json reports the loaded release.",
+  "caveats": [
+    "The drug-drug interaction API was discontinued; /REST/interaction/... returns 404.",
+    "Data is refreshed after each monthly RxNorm full release.",
+    "For bulk or high-rate use NLM points to RxNav-in-a-Box, a locally installable Docker version."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "openfda",
+    "clinicaltrials-gov"
+  ],
+  "added": "2026-11-11"
+}

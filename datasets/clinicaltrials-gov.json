@@ -102,7 +102,8 @@
     "with_key": true
   },
   "related": [
-    "openfda"
+    "openfda",
+    "rxnav-rxnorm"
   ],
   "added": "2026-11-11"
 }

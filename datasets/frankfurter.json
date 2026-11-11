@@ -101,7 +101,8 @@
     "with_key": true
   },
   "related": [
-    "ecb-data-api"
+    "ecb-data-api",
+    "bank-of-canada-valet"
   ],
   "added": "2026-11-11"
 }

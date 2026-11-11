@@ -1,0 +1,130 @@
+{
+  "slug": "bank-of-canada-valet",
+  "name": "Bank of Canada Valet API",
+  "provider": {
+    "name": "Bank of Canada",
+    "url": "https://www.bankofcanada.ca",
+    "type": "government"
+  },
+  "summary": "Keyless API for Bank of Canada time series: daily exchange rates, the policy interest rate, bond yields and other financial statistics.",
+  "description": "Valet exposes the Bank of Canada's published time series (more than 16,000 series listed at check) and series groups, such as daily indicative exchange rates against the Canadian dollar (27 currency series in FX_RATES_DAILY at check), the target for the overnight rate, money-market and bond yields, and research and forecasting datasets. Observations can be filtered by date range or most recent N, and returned as JSON, CSV or XML; exchange rates are also available as RSS.",
+  "category": "finance-markets",
+  "tags": [
+    "exchange-rates",
+    "interest-rates",
+    "central-bank",
+    "canada",
+    "time-series",
+    "bond-yields"
+  ],
+  "links": {
+    "homepage": "https://www.bankofcanada.ca/valet/docs",
+    "docs": "https://www.bankofcanada.ca/valet/docs",
+    "terms": "https://www.bankofcanada.ca/terms/",
+    "openapi": "https://www.bankofcanada.ca/valet/static/swagger/api-en.yml"
+  },
+  "api": {
+    "base_url": "https://www.bankofcanada.ca/valet",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml",
+      "rss"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/observations/{seriesNames}/{format}",
+      "summary": "Observations for one or more comma-separated series",
+      "params": [
+        "start_date",
+        "end_date",
+        "recent",
+        "recent_weeks",
+        "recent_months",
+        "recent_years",
+        "order_dir"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/observations/group/{groupName}/{format}",
+      "summary": "Observations for every series in a group, e.g. FX_RATES_DAILY",
+      "params": [
+        "start_date",
+        "end_date",
+        "recent"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lists/{type}/{format}",
+      "summary": "List all series or all groups"
+    },
+    {
+      "method": "GET",
+      "path": "/search/series",
+      "summary": "Search series by keyword (paginated)",
+      "params": [
+        "search",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/series/{seriesName}/{format}",
+      "summary": "Metadata for one series"
+    },
+    {
+      "method": "GET",
+      "path": "/fx_rss/{seriesNames}",
+      "summary": "RSS feed of daily exchange rates"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json?recent=2",
+    "response_excerpt": "{\n    \"terms\": {\n        \"url\": \"https://www.bankofcanada.ca/terms/\"\n    },\n    \"seriesDetail\": {\n        \"FXUSDCAD\": {\n            \"label\": \"USD/CAD\",\n            \"description\": \"Daily average exchange rate of the US dollar in Canadian dollars.\",\n            \"metadata\": {\n                \"unit\": \"Canadian dollars per US dollar\",\n                \"frequency\": \"Business daily\"\n            }\n        }\n    },\n    \"observations\": [\n        {\n            \"d\": \"2026-11-10\",\n            \"FXUSDCAD\": {\n                \"v\": \"1.4181\"\n            }\n        },\n        {\n            \"d\": \"2026-11-09\",\n            \"FXUSDCAD\": {\n                \"v\": \"1.4123\"\n            }\n        }\n    ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Bank of Canada terms of use: free use, copying and distribution with attribution",
+      "url": "https://www.bankofcanada.ca/terms/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Canada; exchange rates for major currencies against CAD",
+      "temporal": "Varies per series; current daily exchange-rate series from 2017"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Series names are codes: FX<CUR>CAD for daily exchange rates (e.g. FXUSDCAD, FXEURCAD), V39079 for the target overnight rate. Find codes with /search/series?search=... or /lists/series/json. Values come back as strings under observations[].<series>.v, keyed by date d. recent cannot be combined with start_date/end_date.",
+  "caveats": [
+    "Exchange rates are indicative averages published for statistical purposes, not trading rates; they appear once per business day after publication.",
+    "Re-distributing the data in paid products requires telling buyers it is available free from the Bank of Canada.",
+    "Only /search/* is paginated; observation and list responses are returned in full."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "related": [
+    "frankfurter",
+    "ecb-data-api",
+    "fred"
+  ],
+  "added": "2026-11-11"
+}

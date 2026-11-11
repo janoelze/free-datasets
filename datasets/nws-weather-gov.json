@@ -35,7 +35,6 @@
       "type": "none",
       "notes": "No key; a descriptive User-Agent header is required."
     },
-    "cors": "any",
     "required_headers": [
       {
         "name": "User-Agent",
@@ -43,6 +42,7 @@
         "notes": "Descriptive User-Agent identifying your app; requests without one may be blocked."
       }
     ],
+    "cors": "any",
     "rate_limit": {
       "summary": "Not published numerically; described as generous. Exceeding it returns 429 after a retry window of about 5 seconds."
     },

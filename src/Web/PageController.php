@@ -31,7 +31,9 @@ final class PageController
     {
         $params = ListParams::parse($this->request->query, $this->catalog, paging: true, strict: false);
         $matches = $this->catalog->filter($params->criteria);
-        $results = $this->catalog->paginate($this->catalog->sort($matches, $params->sort), $params->limit, $params->offset);
+        // The page shows the whole (filtered) catalogue at once unless ?limit= asks otherwise.
+        $limit = isset($this->request->query['limit']) ? $params->limit : ListParams::MAX_LIMIT;
+        $results = $this->catalog->paginate($this->catalog->sort($matches, $params->sort), $limit, $params->offset);
 
         return $this->render('home', [
             'params' => $params,
@@ -39,6 +41,8 @@ final class PageController
             'facets' => $this->catalog->facets($matches),
             'categories' => $this->catalog->categories(),
             'tags' => $this->catalog->tags(),
+            'keylessCount' => count($this->catalog->filter(['keyless' => true])),
+            'apiQueryUrl' => $this->urls->absolute('/api/v1/datasets', $params->canonical),
         ]);
     }
 

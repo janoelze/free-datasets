@@ -1,0 +1,139 @@
+{
+  "slug": "your-dataset-slug",
+  "name": "Example Weather Observations API",
+  "provider": {
+    "name": "Example Meteorological Institute",
+    "url": "https://www.example.org",
+    "type": "government"
+  },
+  "summary": "One plain sentence saying what data the API serves and that it is free; no marketing.",
+  "description": "Two to four sentences on what data is available: the main entities, the notable fields, the coverage and any sibling endpoints or hosts. Write it for someone deciding whether this API answers their question. Counts belong here only if you measured them today, worded as at check.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "observations",
+    "stations",
+    "historical-weather"
+  ],
+  "links": {
+    "homepage": "https://www.example.org/open-data",
+    "docs": "https://api.example.org/docs",
+    "terms": "https://www.example.org/terms",
+    "openapi": "https://api.example.org/openapi.json",
+    "signup": "https://www.example.org/api-key",
+    "bulk_download": "https://data.example.org/dumps/",
+    "source": "https://github.com/example/weather-api"
+  },
+  "api": {
+    "base_url": "https://api.example.org/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "X-API-Key",
+      "demo_key": "DEMO_KEY",
+      "notes": "Works without a key; a free key from the signup page raises the limit. Drop key_optional when auth.type is api_key."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Requests without an identifying User-Agent returned 403."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "60 requests per minute per IP without a key, 600 with a key (documented on the terms page).",
+      "requests": 60,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "cursor",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/stations",
+      "summary": "Search weather stations by name or bounding box",
+      "params": [
+        "q",
+        "bbox",
+        "limit",
+        "cursor"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stations/{id}/observations",
+      "summary": "Hourly observations for one station",
+      "params": [
+        "start",
+        "end",
+        "parameters"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "https://query.example.org/v1/sql",
+      "summary": "Ad-hoc SQL over the observation tables (form-encoded q parameter)",
+      "params": [
+        "q"
+      ]
+    }
+  ],
+  "example": {
+    "method": "POST",
+    "url": "https://query.example.org/v1/sql",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "body": "q=SELECT%20station%2C%20temp%20FROM%20latest%20LIMIT%201",
+    "response_excerpt": "{\n  \"rows\": [\n    {\"station\": \"10382\", \"temp\": 5.2}\n  ],\n  \"next_cursor\": \"abc123\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://www.example.org/terms",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Germany, plus about 2,000 international stations",
+      "temporal": "1950-present"
+    },
+    "update_frequency": "hourly"
+  },
+  "agent_notes": "Practical advice for an agent calling the API: id systems, units, coordinate order (lat,lon vs lon,lat), which endpoint to start with, how to page, and what to cache.",
+  "caveats": [
+    "One fact per item: a gotcha a caller would otherwise discover the hard way.",
+    "Observed behaviour beats documentation; say when the two disagree."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=18988308",
+      "title": "Story title exactly as on Hacker News",
+      "points": 3
+    }
+  ],
+  "related": [
+    "open-meteo-forecast",
+    "nws-weather-gov"
+  ],
+  "added": "2026-11-11"
+}

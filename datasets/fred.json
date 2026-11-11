@@ -115,7 +115,8 @@
   },
   "related": [
     "world-bank-indicators",
-    "us-treasury-fiscaldata"
+    "us-treasury-fiscaldata",
+    "bank-of-canada-valet"
   ],
   "added": "2026-11-11"
 }

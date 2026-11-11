@@ -32,16 +32,16 @@
     ],
     "auth": {
       "type": "none",
-      "notes": "No key; send a descriptive User-Agent (requests without one returned 406)."
+      "notes": "No key. Send a descriptive User-Agent with a real contact: the server answers 406 to generic clients (curl, browsers' default strings) and to placeholder contacts such as example.com."
     },
-    "cors": "unknown",
     "required_headers": [
       {
         "name": "User-Agent",
-        "example": "my-app/1.0 (contact@example.com)",
-        "notes": "Requests without a User-Agent returned HTTP 406."
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Name your app and give a real URL or e-mail. Generic or placeholder values (curl/x.y, Mozilla/5.0, anything containing example.com) returned HTTP 406 on 2026-11-11."
       }
     ],
+    "cors": "any",
     "rate_limit": {
       "summary": "Fair use: about 10,000 queries/day and 1 GB/day per server suggested; slots limit concurrent queries (see /api/status).",
       "requests": 10000,
@@ -68,10 +68,10 @@
   "example": {
     "method": "POST",
     "url": "https://overpass-api.de/api/interpreter",
-    "body": "data=[out:json];node(52.5,13.4,52.51,13.41)[amenity=cafe];out 2;",
     "headers": {
-      "User-Agent": "datasets-library/1.0 (https://example.com)"
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
     },
+    "body": "data=[out:json];node(52.5,13.4,52.51,13.41)[amenity=cafe];out 2;",
     "response_excerpt": "{\n  \"version\": 0.6,\n  \"generator\": \"Overpass API 0.7.62.11\",\n  \"osm3s\": {\n    \"timestamp_osm_base\": \"2026-11-11T14:25:34Z\"\n  },\n  \"elements\": [\n    {\n      \"type\": \"node\",\n      \"id\": 2542846158,\n      \"lat\": 52.5037732,\n      \"lon\": 13.4090016,\n      \"tags\": {\n        \"addr:city\": \"Berlin\",\n        \"amenity\": \"cafe\"\n      }\n    }\n  ]\n}"
   },
   "data": {
@@ -87,18 +87,19 @@
     },
     "update_frequency": "realtime"
   },
-  "agent_notes": "Send the query as form field data=<Overpass QL>. Set [out:json] and [timeout:N], keep bounding boxes small (south,west,north,east order), and send a User-Agent.",
+  "agent_notes": "Send the query as form field data=<Overpass QL>. Set [out:json] and [timeout:N], keep bounding boxes small (south,west,north,east order), and send a User-Agent that names your app and a real contact. Retry 502s with backoff.",
   "caveats": [
-    "Requests without a User-Agent returned 406.",
+    "Requests without a User-Agent, with a generic one, or with a placeholder contact (example.com) are rejected with HTTP 406 by the front-end nginx.",
+    "The public instance is often at capacity: on 2026-11-11 it alternated between HTTP 502 (Markdown body: all query workers busy, retry with exponential backoff) and connection timeouts with no response. Back off and retry; check /api/status before batch jobs; run your own instance for heavy use.",
     "Expensive queries time out; set [timeout:N].",
-    "Overpass QL has a learning curve.",
-    "CORS was not re-checked at curation time (status endpoint timed out); research reported it as supported."
+    "Overpass QL has a learning curve."
   ],
   "status": "active",
   "verification": {
     "last_verified": "2026-11-11",
     "http_status": 200,
-    "with_key": true
+    "with_key": true,
+    "notes": "Exact POST example with this User-Agent returned 200 (JSON, CORS *) several times on 2026-11-11 via curl; later runs of bin/verify.php hit 502/timeouts while the server was at capacity."
   },
   "related": [
     "nominatim"

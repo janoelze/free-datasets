@@ -119,7 +119,8 @@
     "with_key": true
   },
   "related": [
-    "clinicaltrials-gov"
+    "clinicaltrials-gov",
+    "rxnav-rxnorm"
   ],
   "added": "2026-11-11"
 }

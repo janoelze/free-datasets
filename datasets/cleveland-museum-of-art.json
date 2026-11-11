@@ -1,0 +1,143 @@
+{
+  "slug": "cleveland-museum-of-art",
+  "name": "Cleveland Museum of Art Open Access API",
+  "provider": {
+    "name": "The Cleveland Museum of Art",
+    "url": "https://www.clevelandart.org",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless JSON API for the Cleveland Museum of Art collection: artwork records, creators, exhibitions and CC0 image links.",
+  "description": "Search and retrieve artwork records from the Cleveland Museum of Art collection with titles, dates, creators, techniques, provenance, exhibition history and gallery locations. Works marked share_license_status CC0 include web, print and full-resolution image URLs on the museum CDN. Separate endpoints search creators (with biographies) and exhibitions, and the whole dataset is also published as JSON and CSV on GitHub.",
+  "category": "art-museums",
+  "tags": [
+    "art",
+    "museum",
+    "cc0",
+    "images",
+    "artists",
+    "exhibitions",
+    "provenance"
+  ],
+  "links": {
+    "homepage": "https://www.clevelandart.org/open-access",
+    "docs": "https://openaccess-api.clevelandart.org/",
+    "openapi": "https://openaccess-api.clevelandart.org/openapi.json",
+    "bulk_download": "https://github.com/ClevelandMuseumArt/openaccess"
+  },
+  "api": {
+    "base_url": "https://openaccess-api.clevelandart.org/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "unknown",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/artworks/",
+      "summary": "Search and filter artworks",
+      "params": [
+        "q",
+        "type",
+        "department",
+        "created_after",
+        "created_before",
+        "cc0",
+        "has_image",
+        "fields",
+        "skip",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/artworks/{id}",
+      "summary": "One artwork by numeric id or accession number",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/creators/",
+      "summary": "Search artists and other creators, with biographies",
+      "params": [
+        "name",
+        "nationality",
+        "birth_year_after",
+        "birth_year_before",
+        "skip",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/exhibitions/",
+      "summary": "Search exhibitions and the works shown in them",
+      "params": [
+        "title",
+        "venue",
+        "opened_after",
+        "closed_before",
+        "include_artworks",
+        "skip",
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://openaccess-api.clevelandart.org/api/artworks/?q=water%20lilies&has_image=1&limit=1&fields=id,accession_number,title,creation_date,share_license_status,images",
+    "response_excerpt": "{\"info\": {\"total\": 8, \"parameters\": {\"skip\": 0, \"limit\": 1, \"q\": \"water lilies\", \"has_image\": \"1\"}}, \"data\": [{\"id\": 136510, \"accession_number\": \"1960.81\", \"share_license_status\": \"CC0\", \"title\": \"Water Lilies (Agapanthus)\", \"creation_date\": \"c. 1915–26\", \"images\": {\"web\": {\"url\": \"https://openaccess-cdn.clevelandart.org/1960.81/1960.81_web.jpg\", \"width\": \"900\", \"height\": \"419\"}, \"print\": {...}, \"full\": {\"url\": \"https://openaccess-cdn.clevelandart.org/1960.81/1960.81_full.tif\", ...}}}]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0 for the metadata; images CC0 only where share_license_status is CC0",
+      "spdx": "CC0-1.0",
+      "url": "https://github.com/ClevelandMuseumArt/openaccess",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global (works held by the Cleveland Museum of Art)",
+      "temporal": "Antiquity to the present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Pass fields= with a comma-separated list to keep responses small; full records embed long creator biographies and provenance. Paginate with skip and limit (artworks return up to 1,000 per page when limit is omitted, creators and exhibitions up to 100). Filter with cc0 or check share_license_status before reusing an image.",
+  "caveats": [
+    "Only works with share_license_status CC0 come with CC0 images; Copyrighted and Other works have metadata only.",
+    "CORS is inconsistent: on 2026-11-11 some GET requests (artworks/?q=monet&limit=1, artworks/1960.81) returned Access-Control-Allow-Origin: *, while others (any request with fields=, creators, exhibitions) returned no CORS header. Test from your origin or use a proxy.",
+    "Search parameters differ per endpoint: artworks use q, creators use name, exhibitions use title.",
+    "The OpenAPI document is auto-generated and also lists internal routes under /api/collection."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, no CORS header on this exact request)."
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=18988308",
+      "title": "Cleveland Museum of Art Open Access API",
+      "points": 3
+    }
+  ],
+  "related": [
+    "artic",
+    "met-museum",
+    "smithsonian-open-access"
+  ],
+  "added": "2026-11-11"
+}

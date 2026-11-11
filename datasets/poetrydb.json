@@ -1,0 +1,115 @@
+{
+  "slug": "poetrydb",
+  "name": "PoetryDB",
+  "provider": {
+    "name": "PoetryDB (thundercomb)",
+    "url": "https://poetrydb.org",
+    "type": "individual"
+  },
+  "summary": "Keyless API for public-domain poems in English, searchable by author, title, line text and line count.",
+  "description": "PoetryDB serves the full text of classic English-language poems from public-domain editions (largely Project Gutenberg), with author, title, lines, line count and source edition. URL paths combine input fields (author, title, lines, linecount, poemcount, random) with optional output fields and a json or text format, so one request can ask for, say, all 14-line Shakespeare poems. Authors also have a structured biography endpoint.",
+  "category": "books-literature",
+  "tags": [
+    "poetry",
+    "literature",
+    "public-domain",
+    "full-text",
+    "authors"
+  ],
+  "links": {
+    "homepage": "https://poetrydb.org",
+    "docs": "https://github.com/thundercomb/poetrydb#api-reference",
+    "terms": "https://github.com/thundercomb/poetrydb/blob/main/DATA_LICENSE.md",
+    "source": "https://github.com/thundercomb/poetrydb"
+  },
+  "api": {
+    "base_url": "https://poetrydb.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/author",
+      "summary": "List all authors"
+    },
+    {
+      "method": "GET",
+      "path": "/author/{author}[:abs][/{output fields}][.text]",
+      "summary": "Poems by an author (partial match unless :abs); optional output fields and text format"
+    },
+    {
+      "method": "GET",
+      "path": "/title/{title}[/{output fields}]",
+      "summary": "Poems whose title matches"
+    },
+    {
+      "method": "GET",
+      "path": "/{field},{field}/{term};{term}",
+      "summary": "Combine input fields (author, title, lines, linecount, poemcount, random); terms separated by semicolons"
+    },
+    {
+      "method": "GET",
+      "path": "/random/{count}",
+      "summary": "Random poems"
+    },
+    {
+      "method": "GET",
+      "path": "/author/{author}/info",
+      "summary": "Structured author biography with notable poems"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://poetrydb.org/author,title/Dickinson;Hope/title,author,linecount",
+    "response_excerpt": "[\n  {\n    \"title\": \"Hope is the thing with feathers\",\n    \"author\": \"Emily Dickinson\",\n    \"linecount\": 12\n  },\n  {\n    \"title\": \"When I hoped I feared\",\n    \"author\": \"Emily Dickinson\",\n    \"linecount\": 8\n  },\n  {\n    \"title\": \"Hope is a subtle glutton\",\n    \"author\": \"Emily Dickinson\",\n    \"linecount\": 8\n  }\n]"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 for the curated database (poem texts themselves are public domain); code GPL-2.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://github.com/thundercomb/poetrydb/blob/main/DATA_LICENSE.md",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "English-language poetry"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Everything is in the path, not the query string: /<input fields>/<terms>[/<output fields>][.text]. Several input fields with the same number of terms are ANDed; several fields with one term are ORed. Append :abs to a term for an exact match. URL-encode spaces in names and titles.",
+  "caveats": [
+    "No matches returns HTTP 200 with {\"status\":404,\"reason\":\"Not found\"}, so check the body, not only the status code.",
+    "Semicolons separate search terms and cannot be searched for.",
+    "Run by a single maintainer; no uptime or rate-limit commitments are published."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true
+  },
+  "hn": [
+    {
+      "url": "https://news.ycombinator.com/item?id=13420698",
+      "title": "PoetryDB – Poetry API for internet poets",
+      "points": 1
+    }
+  ],
+  "related": [
+    "gutendex",
+    "open-library"
+  ],
+  "added": "2026-11-11"
+}

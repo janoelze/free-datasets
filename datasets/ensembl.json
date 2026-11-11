@@ -35,7 +35,6 @@
     "auth": {
       "type": "none"
     },
-    "cors": "any",
     "required_headers": [
       {
         "name": "Content-Type",
@@ -43,6 +42,7 @@
         "notes": "Or append ?content-type=application/json to the URL."
       }
     ],
+    "cors": "any",
     "rate_limit": {
       "summary": "15 requests/second per IP (documented); headers show an hourly budget (x-ratelimit-limit 55000 per 3600s observed); HTTP 429 with Retry-After.",
       "requests": 15,

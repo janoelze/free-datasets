@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: none
+
+      - name: Lint PHP files
+        run: |
+          set -euo pipefail
+          find . -name '*.php' -not -path './.git/*' -print0 \
+            | xargs -0 -n1 -P4 php -l > /dev/null
+
+      - name: Validate datasets
+        run: php bin/validate.php
+
+      - name: Run tests
+        run: php tests/run.php
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: https://endtime-instruments.org/datasets/
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: none
+
+      - uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Pin host key
+        # Pinned ed25519 host key of aquila.uberspace.de (verified 2026-11-11). Do not replace
+        # with ssh-keyscan: that would trust whatever answers on the network.
+        run: |
+          mkdir -p ~/.ssh
+          echo 'aquila.uberspace.de ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOOdDXepVcufKsQDWFOnPKRZsYCW2HQ9sd9vi8P6n3uz' >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          DEPLOY_SSH_OPTS: -o StrictHostKeyChecking=yes
+        run: bin/deploy.sh
