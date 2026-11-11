@@ -91,6 +91,52 @@ not from memory.
   backlog" or "find free APIs for X" and it will follow it. Leads that were verified but not
   yet added are in [`backlog.md`](.claude/skills/add-datasets/backlog.md).
 
+## Scheduled curation
+
+[`.github/workflows/curate.yml`](.github/workflows/curate.yml) runs once a day (03:37 UTC). A
+script re-tests the 30 records verified longest ago
+([`bin/curate-select.php`](bin/curate-select.php)), a Claude agent grooms the failures and adds up
+to 3 new APIs following the skill's
+[scheduled-run prompt](.claude/skills/add-datasets/scheduled-run.md), and a separate job with no
+agent decides what is accepted ([`bin/curate-guard.php`](bin/curate-guard.php): allowed paths,
+caps, validation, re-execution of every new or changed example, evidence for removals, free-text
+and host checks), runs lint, validation, the tests and the format check, opens a pull request
+(label `curation`) and squash-merges it. Merges made with the workflow token start no workflows,
+so the run then dispatches `ci.yml` on `main`, which tests and deploys. If the guard or the
+checks fail, nothing is merged: an allowed-paths change becomes a `curation-needs-review` PR, and
+anything else only fails the run. A run is skipped while a curation PR is still open.
+
+Setup (once; the run is a no-op with a notice until a credential exists):
+
+```sh
+# Agent credential: either a Claude subscription token ...
+claude setup-token                                   # prints the token
+gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo janoelze/datasets   # paste it
+# ... or an API key
+gh secret set ANTHROPIC_API_KEY --repo janoelze/datasets
+
+# Let workflows open pull requests (Settings > Actions > General > Workflow permissions)
+gh api -X PUT repos/janoelze/datasets/actions/permissions/workflow \
+  -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true
+```
+
+Operating it:
+
+```sh
+gh workflow run curate.yml -f dry_run=true           # everything except PR and merge; see the artifacts
+gh workflow run curate.yml -f add_count=0 -f verify_count=60
+gh variable set CURATE_AUTOMERGE --body false --repo janoelze/datasets  # review mode: open PRs, merge by hand
+gh variable delete CURATE_AUTOMERGE --repo janoelze/datasets           # back to auto-merge
+gh variable set CURATE_MODEL --body opus --repo janoelze/datasets      # default: sonnet
+gh workflow disable curate.yml                       # pause entirely (gh workflow enable curate.yml)
+```
+
+In review mode, CI does not start on its own for a PR opened by the workflow token (GitHub may
+show it as awaiting approval); the PR body links the run in which the checks passed, and merging
+it by hand triggers the normal CI and deploy. GitHub disables scheduled workflows in public
+repositories after 60 days without repository activity; if that happens, re-enable it with
+`gh workflow enable curate.yml`.
+
 ## Local development
 
 Plain PHP 8.3 with the curl extension; no Composer, no database.

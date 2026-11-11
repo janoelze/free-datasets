@@ -7,10 +7,9 @@ declare(strict_types=1);
  *
  *   php bin/verify.php [slug...] [--write] [--quiet]
  *
- * - 15 s timeout per request, up to 8 requests in parallel.
- * - Sends example.headers, api.required_headers (their example values) and
- *   User-Agent: datasets-library-verify/1.0 (+https://endtime-instruments.org/datasets/)
- *   (an explicit User-Agent in example.headers wins).
+ * - Requests are sent by Datasets\\Verify\\Verifier: 15 s timeout, up to 8 in parallel,
+ *   example.headers + api.required_headers + User-Agent: datasets-library-verify/1.0
+ *   (+https://endtime-instruments.org/datasets/) (an explicit User-Agent in example.headers wins).
  * - 2xx = OK. Non-2xx counts as a failure, except for entries recorded with
  *   verification.with_key = false whose observed status equals verification.http_status
  *   (keyed APIs checked without a key: the expected 401/403 is reported as "expected").
@@ -22,12 +21,8 @@ declare(strict_types=1);
 require dirname(__DIR__) . '/src/bootstrap.php';
 
 use Datasets\Config;
-use Datasets\Json;
 use Datasets\Schema\Linter;
-
-const USER_AGENT = 'datasets-library-verify/1.0 (+https://endtime-instruments.org/datasets/)';
-const TIMEOUT = 15;
-const PARALLEL = 8;
+use Datasets\Verify\Verifier;
 
 if (!extension_loaded('curl')) {
     fwrite(STDERR, "The curl extension is required.\n");
@@ -65,98 +60,21 @@ if ($slugs === []) {
     }
 }
 
-/** @return array{0: CurlHandle, 1: object}|string */
-function prepare(string $file): array|string
-{
-    $json = @file_get_contents($file);
-    $d = is_string($json) ? json_decode($json, false) : null;
-    if (!is_object($d) || !isset($d->example->url) || !is_string($d->example->url)) {
-        return 'no readable example.url';
-    }
-    $headers = [];
-    foreach ((array) ($d->example->headers ?? []) as $name => $value) {
-        $headers[strtolower((string) $name)] = $name . ': ' . $value;
-    }
-    foreach ((array) ($d->api->required_headers ?? []) as $h) {
-        $name = (string) ($h->name ?? '');
-        if ($name !== '' && isset($h->example) && !isset($headers[strtolower($name)])) {
-            $headers[strtolower($name)] = $name . ': ' . $h->example;
-        }
-    }
-    if (!isset($headers['user-agent'])) {
-        $headers['user-agent'] = 'User-Agent: ' . USER_AGENT;
-    }
-    $ch = curl_init($d->example->url);
-    $method = strtoupper((string) ($d->example->method ?? 'GET'));
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_MAXREDIRS => 5,
-        CURLOPT_TIMEOUT => TIMEOUT,
-        CURLOPT_CONNECTTIMEOUT => TIMEOUT,
-        CURLOPT_HTTPHEADER => array_values($headers),
-        CURLOPT_ENCODING => '',
-        CURLOPT_PROTOCOLS => CURLPROTO_HTTPS | CURLPROTO_HTTP,
-    ]);
-    if ($method === 'POST') {
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, (string) ($d->example->body ?? ''));
-    } elseif ($method !== 'GET') {
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-    }
-
-    return [$ch, $d];
+$records = [];
+foreach ($files as $file) {
+    $records[$file] = Verifier::load($file);
 }
-
-$queue = $files;
-$running = [];
-$results = [];
-$mh = curl_multi_init();
-while ($queue !== [] || $running !== []) {
-    while ($queue !== [] && count($running) < PARALLEL) {
-        $file = array_shift($queue);
-        $prep = prepare($file);
-        if (is_string($prep)) {
-            $results[$file] = ['status' => 0, 'error' => $prep, 'data' => null];
-            continue;
-        }
-        [$ch, $d] = $prep;
-        curl_multi_add_handle($mh, $ch);
-        $running[(int) spl_object_id($ch)] = ['file' => $file, 'ch' => $ch, 'data' => $d];
-    }
-    curl_multi_exec($mh, $active);
-    if (curl_multi_select($mh, 1.0) === -1) {
-        usleep(10000);
-    }
-    while ($info = curl_multi_info_read($mh)) {
-        $ch = $info['handle'];
-        $job = $running[(int) spl_object_id($ch)];
-        $status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        $error = $info['result'] === CURLE_OK ? '' : curl_error($ch);
-        $results[$job['file']] = ['status' => $error === '' ? $status : 0, 'error' => $error, 'data' => $job['data']];
-        curl_multi_remove_handle($mh, $ch);
-        unset($running[(int) spl_object_id($ch)]);
-    }
-}
-curl_multi_close($mh);
+$results = (new Verifier())->run($records);
 
 $failed = 0;
 $today = date('Y-m-d');
 foreach ($files as $file) {
     $r = $results[$file];
     $slug = basename($file, '.json');
-    $d = $r['data'];
+    $d = $records[$file];
     $status = $r['status'];
-    $ok = $status >= 200 && $status < 300;
-    $expected = !$ok && $status > 0 && $d !== null
-        && ($d->verification->with_key ?? true) === false
-        && (int) ($d->verification->http_status ?? 0) === $status;
-    if ($ok) {
-        $label = 'OK';
-    } elseif ($expected) {
-        $label = 'EXPECTED (no key)';
-    } else {
-        $label = 'FAIL';
+    $label = ['ok' => 'OK', 'expected' => 'EXPECTED (no key)', 'fail' => 'FAIL'][Verifier::classify($d, $status)];
+    if ($label === 'FAIL') {
         $failed++;
     }
     if (!$quiet || $label === 'FAIL') {
@@ -164,14 +82,11 @@ foreach ($files as $file) {
     }
 
     if ($write && $status > 0 && $d !== null) {
-        $doc = json_decode((string) file_get_contents($file), false);
-        if (!is_object($doc) || !isset($doc->verification) || !is_object($doc->verification)) {
-            fwrite(STDERR, "$slug: cannot update (no verification object)\n");
-            continue;
+        try {
+            Verifier::writeVerification($file, $today, $status);
+        } catch (RuntimeException $e) {
+            fwrite(STDERR, "$slug: " . $e->getMessage() . "\n");
         }
-        $doc->verification->last_verified = $today;
-        $doc->verification->http_status = $status;
-        file_put_contents($file, Json::encodeFile($doc));
     }
 }
 

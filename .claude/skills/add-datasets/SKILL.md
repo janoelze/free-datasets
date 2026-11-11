@@ -5,7 +5,8 @@ description: >-
   and keep existing records correct. Use when asked to add, find, research or suggest new
   datasets or free/public APIs for the library, to work through the backlog, to re-verify or
   refresh records (bin/verify.php failures, stale examples, dead hosts), to fix
-  bin/validate.php errors in dataset files, or to change the dataset schema.
+  bin/validate.php errors in dataset files, to change the dataset schema, or to run or adjust
+  the scheduled curation (scheduled-run.md, bin/curate-select.php, bin/curate-guard.php).
 ---
 
 # Adding and maintaining datasets
@@ -13,7 +14,8 @@ description: >-
 One record per file, `datasets/<slug>.json`, validated by `schema/dataset.schema.json` (read
 the field descriptions), `schema/categories.json` and `src/Schema/DatasetRules.php`. Sibling
 files: `template.json` (complete valid record), `research-brief.md` (sub-agent prompt),
-`backlog.md` (verified leads), `check-format.php` (key order and formatting check).
+`backlog.md` (verified leads), `check-format.php` (key order and formatting check),
+`scheduled-run.md` (prompt of the unattended daily run, section 11).
 
 Run everything from the repo root. Commands below were run as written; the placeholders are
 `<slug>`, `<draft-dir>` and the shell variables `$URL`, `$DOCS`, `$SPEC` you set yourself. The
@@ -244,3 +246,85 @@ One change, all of these together, then the done-check on every file:
 ```sh
 T=$(mktemp -d) && cp datasets/*.json "$T"/ && cp .claude/skills/add-datasets/template.json "$T/your-dataset-slug.json" && php bin/validate.php "$T/your-dataset-slug.json"; rm -rf "$T"
 ```
+
+## 11. Scheduled curation (unattended runs)
+
+`.github/workflows/curate.yml` runs this skill once a day without a human in the loop: the
+agent gets the prompt in `scheduled-run.md`, a deterministic script has already re-tested the
+oldest records, and deterministic guards decide afterwards whether the agent's work is merged
+and deployed. Run it locally the same way (no commit, no push):
+
+```sh
+mkdir -p var/curate
+php bin/curate-select.php --count=30 --retry=20 --report=var/curate/verify-report.json
+claude -p "$(cat .claude/skills/add-datasets/scheduled-run.md)"
+git add -A && git diff --cached --binary > var/curate/changes.patch
+git stash        # the guard applies the patch to a clean tree itself (var/ is git-ignored)
+php bin/curate-guard.php --patch=var/curate/changes.patch --verify-report=var/curate/verify-report.json \
+  --report=var/curate/curation-report.md --date=$(date -u +%F)
+php bin/curate-select.php --apply=var/curate/verify-report.json   # bump the passing records
+```
+
+### What is measured for you
+
+`bin/curate-select.php` picks the N records with the oldest `verification.last_verified`
+(ties by slug), runs their examples exactly as `bin/verify.php` does, retries failures once
+after a pause and writes `verify-report.json`: per slug `result` (`ok`, `expected`, `fail`),
+observed `http_status`, `expected_status` (the recorded one), `error`, `duration_ms`,
+`attempts`. Passing records get `last_verified`/`http_status` updated by the workflow from this
+report; never edit the verification fields of records you did not fix or add.
+
+### Grooming policy (conservative)
+
+For each `fail` entry, in this order:
+
+1. Retry after a pause (`sleep 20`, then the checklist curl from section 5), then diagnose with
+   curl: does the host resolve (`curl -sv` shows "Could not resolve host")? Did the version
+   move (301/410, a `/v2` in `Location`)? Does it now need a key (401/403 with an auth
+   message)? Bot wall (403/503 HTML "Just a moment", `cf-mitigated`)? Rate limit or capacity
+   (429, 502/503/504, timeouts) while the docs site is healthy?
+2. Pick exactly one outcome:
+   - **Transient** (429/502/503/504/timeouts, docs healthy): leave the record. Do not touch
+     `verification`. At most add or adjust one caveat about the flakiness.
+   - **API changed**: fix `example`, `endpoints`, `auth`, `base_url` from the docs and curl,
+     then `php bin/verify.php <slug> --write` (only when it now prints OK or EXPECTED).
+   - **Degraded but alive**: `status: unstable` and a caveat saying what you saw.
+   - **End of life announced**: `status: deprecated`, the announcement and its date in
+     `caveats`.
+   - **Gone**: only with hard evidence (host no longer resolves, the provider says the API is
+     shut down, or it became paid-only) AND an earlier recorded failure. Earlier failure means:
+     the current file already has a caveat `Failing since YYYY-MM-DD: ...` dated before today,
+     or `git log -p -- datasets/<slug>.json` shows a recorded non-2xx `verification.http_status`.
+     Then delete the file, remove the slug from every other record's `related`
+     (`grep -l '"<slug>"' datasets/*.json`) and add `- <Name> (`<slug>`): <reason> (removed
+     YYYY-MM-DD)` to the "Rejected" list in `backlog.md`. If this is the first observed failure,
+     instead set `status: unstable` and add the caveat `Failing since <today>: <what you saw>.`
+     so a later run can remove it.
+   - A record with a `Failing since` caveat that passes again: remove that caveat (and restore
+     `status: active` if it was only unstable because of the failure).
+3. Caps per run: at most 2 removals and at most 10 modified existing records. Prefer the
+   records with the clearest evidence; leave the rest for the next run and say so.
+
+### Adding policy
+
+Up to the run's add count (default 3; 0 disables): `backlog.md` leads first, then section 3.
+Full section 5 checklist and section 6 field mapping for each; reciprocal `related`; delete the
+backlog line. Adding zero is a fine outcome: quality over count.
+
+### What the guards check (so do not waste the run)
+
+The publish job applies your changes only if all of these hold; otherwise nothing is merged.
+
+- Only `datasets/<slug>.json` (add, modify, delete) and `backlog.md` (modify) changed.
+- Caps: added <= add count, removed <= 2, modified <= 10 (verification-only changes excluded).
+- `php bin/validate.php` passes; every touched file passes `check-format.php`.
+- No `related` points at a removed slug; removals meet the evidence rule above (checked from
+  the pre-agent report and git history, not from your report).
+- New records, and records whose `example`, required headers or `verification` you changed,
+  are executed again by the guard and must return exactly their recorded `http_status`.
+- Every URL of a new record is https on a public DNS name (not an IP, not an internal name,
+  not `endtime-instruments.org`); links of existing records stay on their domain.
+- Free text (`name`, `summary`, `description`, `agent_notes`, `caveats`, notes, coverage,
+  endpoint summaries, HN titles) links only to the record's own hosts or
+  news.ycombinator.com, contains no HTML tags and no control or invisible characters.
+- The report file exists.

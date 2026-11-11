@@ -1,0 +1,440 @@
+name: Curate
+
+# Daily unattended curation (see .claude/skills/add-datasets/SKILL.md, section 11).
+#
+#   prepare  no agent, no secrets: decide whether to run, re-test the oldest records
+#            (bin/curate-select.php) and upload the report.
+#   curate   the agent (read-only token that is never handed to it; credentials-free checkout).
+#            Its work leaves this job only as a patch + report artifact.
+#   publish  no agent: guard (bin/curate-guard.php) -> verification bumps -> full checks ->
+#            branch, commit, PR -> squash-merge -> dispatch ci.yml, which tests and deploys main.
+#
+# A merge made with GITHUB_TOKEN does not start ci.yml's push trigger (events created by
+# GITHUB_TOKEN start no workflows, except workflow_dispatch and repository_dispatch), so the
+# publish job dispatches ci.yml explicitly; that needs `actions: write`.
+#
+# Repository settings used (all optional except the secret):
+#   secrets.CLAUDE_CODE_OAUTH_TOKEN or secrets.ANTHROPIC_API_KEY  agent credential; absent = no-op
+#   vars.CURATE_AUTOMERGE  "false" = open the PR and leave it for review (default: merge)
+#   vars.CURATE_MODEL      model alias or id for the agent (default: sonnet)
+
+on:
+  schedule:
+    - cron: "37 3 * * *" # daily, 03:37 UTC
+  workflow_dispatch:
+    inputs:
+      verify_count:
+        description: Records to re-test (oldest last_verified first)
+        type: number
+        default: 30
+      add_count:
+        description: Maximum new records to add (0 disables adding)
+        type: number
+        default: 3
+      dry_run:
+        description: Run everything, but open no PR and merge nothing (patch and report are uploaded)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: curate
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+      date: ${{ steps.gate.outputs.date }}
+      add_count: ${{ steps.gate.outputs.add_count }}
+      dry_run: ${{ steps.gate.outputs.dry_run }}
+      automerge: ${{ steps.gate.outputs.automerge }}
+    steps:
+      - name: Gate (credential present, no curation PR still open, inputs sane)
+        id: gate
+        env:
+          HAS_OAUTH: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+          HAS_API_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+          GH_TOKEN: ${{ github.token }}
+          RAW_VERIFY: ${{ inputs.verify_count }}
+          RAW_ADD: ${{ inputs.add_count }}
+          RAW_DRY: ${{ inputs.dry_run }}
+          AUTOMERGE_VAR: ${{ vars.CURATE_AUTOMERGE }}
+        run: |
+          set -euo pipefail
+          verify="${RAW_VERIFY:-30}"; add="${RAW_ADD:-3}"; dry="${RAW_DRY:-false}"
+          [[ "$verify" =~ ^[0-9]+$ && "$verify" -ge 1 && "$verify" -le 200 ]] || { echo "::error::verify_count must be 1-200"; exit 1; }
+          [[ "$add" =~ ^[0-9]+$ && "$add" -le 10 ]] || { echo "::error::add_count must be 0-10"; exit 1; }
+          automerge=true
+          [ "$(printf '%s' "$AUTOMERGE_VAR" | tr '[:upper:]' '[:lower:]')" = "false" ] && automerge=false
+          {
+            echo "date=$(date -u +%F)"; echo "verify_count=$verify"; echo "add_count=$add"
+            echo "dry_run=$dry"; echo "automerge=$automerge"
+          } >> "$GITHUB_OUTPUT"
+          run=true
+          if [ "$HAS_OAUTH" != "true" ] && [ "$HAS_API_KEY" != "true" ]; then
+            echo "::notice title=Curation skipped::Neither CLAUDE_CODE_OAUTH_TOKEN nor ANTHROPIC_API_KEY is set as a repository secret; nothing to do. See README.md, 'Scheduled curation'."
+            run=false
+          elif [ "$dry" != "true" ]; then
+            open=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 100 \
+              --json number,headRefName,isCrossRepository \
+              --jq '[.[] | select((.headRefName | startswith("curate/")) and (.isCrossRepository | not))] | map("#\(.number)") | join(" ")')
+            if [ -n "$open" ]; then
+              echo "::notice title=Curation skipped::A curation pull request is still open ($open). Merge or close it first; runs do not pile up PRs."
+              run=false
+            fi
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+          echo "run=$run verify_count=$verify add_count=$add dry_run=$dry automerge=$automerge"
+
+      - uses: actions/checkout@v7
+        if: steps.gate.outputs.run == 'true'
+        with:
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@v2
+        if: steps.gate.outputs.run == 'true'
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: none
+
+      - name: Re-test the oldest records
+        if: steps.gate.outputs.run == 'true'
+        env:
+          VERIFY_COUNT: ${{ steps.gate.outputs.verify_count }}
+          RUN_DATE: ${{ steps.gate.outputs.date }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/verify"
+          php bin/curate-select.php --count="$VERIFY_COUNT" --retry=20 --date="$RUN_DATE" --report="$RUNNER_TEMP/verify/verify-report.json"
+
+      - uses: actions/upload-artifact@v7
+        if: steps.gate.outputs.run == 'true'
+        with:
+          name: verify-report
+          path: ${{ runner.temp }}/verify/verify-report.json
+          retention-days: 30
+          if-no-files-found: error
+
+  curate:
+    needs: prepare
+    if: needs.prepare.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # the agent reads `git log -p` for earlier failures
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: none
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: verify-report
+          path: var/curate
+
+      - name: Isolate the agent's subprocesses
+        # With CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 Claude Code removes Anthropic/cloud/Actions
+        # credentials from the environment of the commands it runs; with bubblewrap installed
+        # those commands also get their own PID namespace (no /proc/<pid>/environ of the parent).
+        # Same setup as anthropics/claude-code-action's action.yml.
+        run: |
+          for _ in 1 2 3; do
+            sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends bubblewrap socat && break
+            sleep 5
+          done
+          if [ -f /proc/sys/kernel/apparmor_restrict_unprivileged_userns ]; then
+            sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          fi
+          command -v bwrap
+
+      - name: Build the prompt
+        env:
+          RUN_DATE: ${{ needs.prepare.outputs.date }}
+          ADD_COUNT: ${{ needs.prepare.outputs.add_count }}
+        run: |
+          set -euo pipefail
+          mkdir -p var/curate/tmp
+          {
+            echo "Run parameters (set by .github/workflows/curate.yml):"
+            echo ""
+            echo "- DATE: $RUN_DATE"
+            echo "- VERIFY_REPORT: var/curate/verify-report.json"
+            echo "- ADD_COUNT: $ADD_COUNT"
+            echo "- REPORT_FILE: var/curate/curation-report.md"
+            echo ""
+            cat .claude/skills/add-datasets/scheduled-run.md
+          } > "$RUNNER_TEMP/curate-prompt.md"
+
+      - name: Run the agent
+        id: agent
+        continue-on-error: true # the publish job's guard decides what a partial run is worth
+        timeout-minutes: 38
+        # claude-code-action's base action (the same repository, base-action/ directory): it
+        # installs and runs Claude Code with exactly these inputs. The top-level action is not
+        # used because it always exports a GitHub token (GITHUB_TOKEN/GH_TOKEN) into the
+        # agent's environment and, without github_token, mints a Claude GitHub App token with
+        # contents/pull-requests/issues write via OIDC. v1.0.271:
+        uses: anthropics/claude-code-action/base-action@4fa93a88de49bbef68b10eb15aabedf28ca0e1ed
+        env:
+          CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: "1"
+        with:
+          prompt_file: ${{ runner.temp }}/curate-prompt.md
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: |
+            --model ${{ vars.CURATE_MODEL || 'sonnet' }}
+            --max-turns 150
+            --permission-mode dontAsk
+            --setting-sources user
+            --strict-mcp-config
+            --allowedTools "Read" "Glob" "Grep" "TodoWrite" "WebFetch" "WebSearch"
+              "Edit(datasets/**)" "Edit(.claude/skills/add-datasets/backlog.md)" "Edit(var/curate/**)"
+              "Bash(curl *)" "Bash(sleep *)" "Bash(mkdir -p var/curate/tmp)"
+              "Bash(php bin/verify.php *)" "Bash(php bin/validate.php)" "Bash(php bin/validate.php *)"
+              "Bash(php .claude/skills/add-datasets/check-format.php *)"
+              "Bash(git log *)" "Bash(git diff)" "Bash(git diff *)" "Bash(git status)" "Bash(git status *)" "Bash(git show *)"
+              "Bash(ls)" "Bash(ls *)" "Bash(cat *)" "Bash(head *)" "Bash(tail *)" "Bash(grep *)" "Bash(jq *)"
+              "Bash(sed -n *)" "Bash(sed -e *)" "Bash(tr *)" "Bash(wc *)" "Bash(sort *)" "Bash(uniq *)" "Bash(cut *)"
+              "Bash(date)" "Bash(date *)" "Bash(dig *)" "Bash(host *)" "Bash(getent hosts *)"
+            --disallowedTools "Bash(git push *)" "Bash(git commit *)" "Bash(git config *)" "Bash(git remote *)"
+              "Bash(git checkout *)" "Bash(git reset *)" "Bash(git stash *)" "Bash(gh *)"
+              "Bash(npm *)" "Bash(npx *)" "Bash(pip *)" "Bash(pip3 *)" "Bash(apt *)" "Bash(apt-get *)"
+              "Bash(sudo *)" "Bash(composer *)" "Bash(sed -i *)" "Bash(php -r *)"
+              "Edit(.github/**)" "Edit(bin/**)" "Edit(src/**)" "Edit(schema/**)" "Edit(tests/**)"
+              "Edit(public/**)" "Edit(templates/**)" "Edit(.claude/settings.json)" "Edit(.claude/settings.local.json)"
+              "Edit(.mcp.json)" "Edit(CLAUDE.md)" "Edit(README.md)"
+              "Read(//proc/**)" "Read(//sys/**)" "Read(~/.claude/**)" "Read(~/.ssh/**)"
+              "Task" "Agent" "NotebookEdit"
+
+      - name: Collect the agent's changes
+        if: always()
+        env:
+          AGENT_OUTCOME: ${{ steps.agent.outcome }}
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/agent-output"
+          mkdir -p "$out"
+          echo "$AGENT_OUTCOME" > "$out/agent-outcome.txt"
+          if [ -f var/curate/curation-report.md ]; then cp var/curate/curation-report.md "$out/"; fi
+          g() { git -c core.hooksPath=/dev/null -c core.fsmonitor=false "$@"; }
+          g add -A
+          g diff --cached --binary --no-ext-diff --no-textconv HEAD > "$out/changes.patch"
+          g diff --cached --stat HEAD
+          echo "agent outcome: $AGENT_OUTCOME; patch: $(wc -c < "$out/changes.patch") bytes"
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: agent-output
+          path: ${{ runner.temp }}/agent-output
+          retention-days: 30
+          if-no-files-found: error
+
+  publish:
+    needs: [prepare, curate]
+    if: needs.prepare.outputs.run == 'true' && needs.curate.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write # push the branch, squash-merge the PR
+      pull-requests: write # open the PR, labels
+      actions: write # gh workflow run ci.yml (the deploy)
+    env:
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      RUN_DATE: ${{ needs.prepare.outputs.date }}
+      ADD_COUNT: ${{ needs.prepare.outputs.add_count }}
+      DRY_RUN: ${{ needs.prepare.outputs.dry_run }}
+      AUTOMERGE: ${{ needs.prepare.outputs.automerge }}
+      BASE_BRANCH: ${{ github.event.repository.default_branch }}
+      # Separate directories: the agent's artifact must never be able to replace the trusted report.
+      TRUSTED: ${{ github.workspace }}/../curate-trusted
+      IN: ${{ github.workspace }}/../curate-agent
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the guard reads each removed record's git history
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: none
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: verify-report
+          path: ${{ env.TRUSTED }}
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: agent-output
+          path: ${{ env.IN }}
+
+      - name: Guard
+        id: guard
+        env:
+          CURATE_GUARD_TEST_UPSTREAM: "" # never redirect example requests here
+        run: |
+          set -uo pipefail
+          report="$IN/curation-report.md"
+          php bin/curate-guard.php --patch="$IN/changes.patch" --verify-report="$TRUSTED/verify-report.json" \
+            --report="$report" --max-added="$ADD_COUNT" --max-removed=2 --max-modified=10 \
+            --date="$RUN_DATE" --run-url="$RUN_URL" --summary-json="$IN/guard.json" --pr-body="$IN/pr-body.md" \
+            | tee "$IN/guard.md"
+          code=${PIPESTATUS[0]}
+          [ -f "$IN/guard.json" ] || { echo "::error::guard wrote no summary (exit $code)"; exit 1; }
+          {
+            echo "passed=$(jq -r .passed "$IN/guard.json")"
+            echo "paths_ok=$(jq -r .paths_ok "$IN/guard.json")"
+            echo "applied=$(jq -r .applied "$IN/guard.json")"
+          } >> "$GITHUB_OUTPUT"
+          echo "agent step outcome: $(cat "$IN/agent-outcome.txt" 2>/dev/null || echo unknown)"
+          cat "$IN/guard.md" >> "$GITHUB_STEP_SUMMARY"
+          [ "$code" -eq 0 ] && echo "::notice title=Guard::passed" || echo "::error title=Guard::failed; see the job summary"
+          exit 0
+
+      - name: Apply verification updates of passing records
+        if: steps.guard.outputs.applied == 'true'
+        run: php bin/curate-select.php --apply="$TRUSTED/verify-report.json"
+
+      - name: Full checks (lint, validate, tests, format)
+        id: checks
+        if: steps.guard.outputs.applied == 'true'
+        run: |
+          set -uo pipefail
+          ok=true
+          find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 -P4 php -l > /dev/null || ok=false
+          php bin/validate.php || ok=false
+          php tests/run.php || ok=false
+          mapfile -t touched < <(git diff --name-only --diff-filter=AM HEAD -- 'datasets/*.json')
+          if [ "${#touched[@]}" -gt 0 ]; then php .claude/skills/add-datasets/check-format.php "${touched[@]}" || ok=false; fi
+          echo "passed=$ok" >> "$GITHUB_OUTPUT"
+          if [ "$ok" = true ]; then echo "::notice title=Checks::passed"; else echo "::error title=Checks::failed"; fi
+          exit 0
+
+      - name: Decide
+        id: decide
+        env:
+          GUARD_PASSED: ${{ steps.guard.outputs.passed }}
+          PATHS_OK: ${{ steps.guard.outputs.paths_ok }}
+          APPLIED: ${{ steps.guard.outputs.applied }}
+          CHECKS_PASSED: ${{ steps.checks.outputs.passed }}
+        run: |
+          set -euo pipefail
+          git add -A -- datasets .claude/skills/add-datasets/backlog.md
+          if [ -n "$(git status --porcelain --untracked-files=all | grep -v -E '^(M|A|D)  (datasets/[a-z0-9-]+\.json|\.claude/skills/add-datasets/backlog\.md)$' || true)" ]; then
+            echo "::error::unexpected changes in the work tree"; git status --porcelain; echo "mode=none" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ "$GUARD_PASSED" = true ] && [ "$CHECKS_PASSED" = true ]; then
+            if git diff --cached --quiet HEAD; then mode=nothing
+            elif [ "$AUTOMERGE" = true ]; then mode=merge
+            else mode=review; fi
+          elif [ "$PATHS_OK" = true ] && [ "$APPLIED" = true ] && ! git diff --cached --quiet HEAD; then
+            mode=needs-review
+          else
+            mode=none
+          fi
+          [ "$DRY_RUN" = true ] && echo "Dry run: would have done '$mode'."
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          {
+            echo ""
+            echo "---"
+            echo ""
+            if [ "$CHECKS_PASSED" = true ]; then
+              echo "Lint, dataset validation, the test suite and the format check **passed** in the curation run ($RUN_URL)."
+            else
+              echo "Lint, dataset validation, the test suite or the format check **failed or did not run** in the curation run ($RUN_URL)."
+            fi
+            echo "They do not run on this pull request itself: pull requests opened with the workflow token start no other workflows."
+            [ "$mode" = merge ] && echo "This pull request is squash-merged by the curation run, which then dispatches CI, which deploys main."
+            [ "$mode" = needs-review ] && echo "**Not merged:** the guard or the checks failed. Review the problems above; merge manually only if they are acceptable."
+          } >> "$IN/pr-body.md"
+          git diff --cached --stat HEAD
+          echo "mode=$mode"
+
+      - name: Upload the result (dry run or review material)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: curation-result
+          path: |
+            ${{ env.TRUSTED }}/verify-report.json
+            ${{ env.IN }}/changes.patch
+            ${{ env.IN }}/curation-report.md
+            ${{ env.IN }}/guard.json
+            ${{ env.IN }}/guard.md
+            ${{ env.IN }}/pr-body.md
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Branch, commit and pull request
+        id: pr
+        if: env.DRY_RUN != 'true' && contains(fromJSON('["merge","review","needs-review"]'), steps.decide.outputs.mode)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MODE: ${{ steps.decide.outputs.mode }}
+        run: |
+          set -euo pipefail
+          title=$(jq -r .title "$IN/guard.json")
+          [ "$MODE" = needs-review ] && title="$title (needs review)"
+          branch="curate/$RUN_DATE"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then branch="$branch-$GITHUB_RUN_ID"; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -q -m "$title" -m "Automated curation run: $RUN_URL"
+          git push -q origin "$branch"
+          url=$(gh pr create --base "$BASE_BRANCH" --head "$branch" --title "$title" --body-file "$IN/pr-body.md")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          label=curation; [ "$MODE" = needs-review ] && label=curation-needs-review
+          gh label create curation --color 0E8A16 --description "Automated daily curation" 2> /dev/null || true
+          gh label create curation-needs-review --color D93F0B --description "Automated curation that failed its guard or checks" 2> /dev/null || true
+          gh pr edit "$url" --add-label "$label" || echo "::warning::could not add label $label"
+          echo "::notice title=Pull request::$url"
+
+      - name: Merge and deploy
+        if: steps.pr.outcome == 'success' && steps.decide.outputs.mode == 'merge'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.pr.outputs.url }}
+        run: |
+          set -uo pipefail
+          merged=false
+          for _ in 1 2 3 4; do
+            if gh pr merge "$URL" --squash --delete-branch; then merged=true; break; fi
+            sleep 15 # mergeability is computed asynchronously right after the PR is opened
+          done
+          if [ "$merged" != true ]; then
+            echo "::warning title=Not merged::$URL could not be merged (conflict or branch protection). It stays open for review; the next run is skipped until it is merged or closed."
+            exit 0
+          fi
+          if gh workflow run ci.yml --ref "$BASE_BRANCH"; then
+            echo "::notice title=Deploy::Merged $URL and dispatched ci.yml on $BASE_BRANCH (tests, then deploy)."
+          else
+            echo "::warning title=Deploy not started::Merged $URL, but dispatching ci.yml failed; run it by hand: gh workflow run ci.yml --ref $BASE_BRANCH"
+          fi
+
+      - name: Fail the run when the guard or checks failed
+        if: steps.guard.outputs.passed != 'true' || steps.checks.outputs.passed != 'true' || steps.decide.outputs.mode == 'none'
+        env:
+          GUARD_PASSED: ${{ steps.guard.outputs.passed }}
+          CHECKS_PASSED: ${{ steps.checks.outputs.passed || 'not run' }}
+        run: |
+          echo "::error::Nothing was merged. Guard passed: $GUARD_PASSED; checks passed: $CHECKS_PASSED. The patch, report and guard summary are in the curation-result artifact."
+          exit 1
