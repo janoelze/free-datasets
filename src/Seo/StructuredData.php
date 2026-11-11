@@ -199,8 +199,6 @@ final class StructuredData
             'documentation' => $d['links']['docs'] ?? null,
             'termsOfService' => $d['links']['terms'] ?? null,
             'provider' => $provider,
-            'isAccessibleForFree' => true,
-            'about' => ['@id' => $pageUrl . '#dataset'],
         ], static fn ($v) => $v !== null && $v !== []);
 
         $dates = array_filter([(string) ($d['added'] ?? ''), (string) ($d['verification']['last_verified'] ?? '')]);
@@ -213,6 +211,8 @@ final class StructuredData
             'inLanguage' => 'en',
             'isPartOf' => ['@id' => $this->websiteId()],
             'mainEntity' => ['@id' => $pageUrl . '#dataset'],
+            // WebAPI is a Service: it has no isAccessibleForFree/about, so the page ties the two together.
+            'about' => [['@id' => $pageUrl . '#dataset'], ['@id' => $pageUrl . '#api']],
             'breadcrumb' => ['@id' => $pageUrl . '#breadcrumb'],
             'datePublished' => $d['added'] ?? null,
             'dateModified' => $dates === [] ? null : max($dates),
