@@ -138,7 +138,8 @@
   "related": [
     "awattar-marketdata",
     "carbon-intensity-uk",
-    "smard"
+    "smard",
+    "eia-open-data"
   ],
   "added": "2026-11-11"
 }

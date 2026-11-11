@@ -1,0 +1,89 @@
+{
+  "slug": "eric-api",
+  "name": "ERIC API",
+  "provider": {
+    "name": "U.S. Institute of Education Sciences",
+    "url": "https://ies.ed.gov",
+    "type": "government"
+  },
+  "summary": "Search the ERIC education research database (journal articles, reports) over a free keyless JSON API.",
+  "description": "ERIC indexes education literature with titles, abstracts, authors, subjects, publication dates and full-text availability. The API supports Solr-style queries and returns JSON (or XML). At check time a query for reading returned 166,792 matching records.",
+  "category": "knowledge-reference",
+  "tags": [
+    "education",
+    "research",
+    "literature",
+    "bibliographic",
+    "government"
+  ],
+  "links": {
+    "homepage": "https://eric.ed.gov",
+    "docs": "https://eric.ed.gov/?api",
+    "terms": "https://eric.ed.gov/?terms"
+  },
+  "api": {
+    "base_url": "https://api.ies.ed.gov/eric",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in what was checked."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "summary": "Search records",
+      "params": [
+        "search",
+        "format",
+        "rows",
+        "start",
+        "fields"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.ies.ed.gov/eric/?search=reading&format=json&rows=1",
+    "response_excerpt": "{\n  \"response\": {\"numFound\": 166792, \"start\": 0, \"numFoundExact\": true, \"docs\": [\n    {\"id\": \"ED074439\", \"title\": \"Readings on Reading Instruction. Second Edition.\", \"author\": [\"Harris, Albert J., Ed.\", \"...\"], \"description\": \"This book is a compilation ...\", \"subject\": [\"Beginning Reading\", \"...\"]}\n  ]}\n}"
+  },
+  "data": {
+    "license": {
+      "name": "U.S. government publication; see ERIC terms",
+      "url": "https://eric.ed.gov/?terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Primarily U.S., international coverage",
+      "temporal": "1960s to present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use search=field:\"term\" Solr syntax; rows and start page the results. Response content-type is text/plain although the body is JSON.",
+  "caveats": [
+    "Content-type is text/plain; parse the body as JSON anyway.",
+    "Licensing text and page limits were not verified today.",
+    "The eric.ed.gov docs page sits behind a bot-defence script that returned no readable text to curl."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "crossref",
+    "openalex"
+  ],
+  "added": "2026-11-11"
+}

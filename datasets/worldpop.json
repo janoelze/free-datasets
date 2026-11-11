@@ -1,0 +1,103 @@
+{
+  "slug": "worldpop",
+  "name": "WorldPop REST API",
+  "provider": {
+    "name": "WorldPop, University of Southampton",
+    "url": "https://www.worldpop.org",
+    "type": "academic"
+  },
+  "summary": "Keyless REST catalogue API for WorldPop gridded population datasets: projects, categories and per-country dataset records with download links.",
+  "description": "The WorldPop Hub REST API lists projects (population counts, age and sex structures, births, urban change, covariates and more), the datasets in each category and per-country records with metadata, DOI and file URLs for the GeoTIFF rasters. It is a catalogue API: the rasters themselves are downloaded from the linked files.",
+  "category": "geography-maps",
+  "tags": [
+    "population",
+    "demographics",
+    "raster",
+    "geotiff",
+    "gridded-data",
+    "census",
+    "development"
+  ],
+  "links": {
+    "homepage": "https://hub.worldpop.org/",
+    "docs": "https://hub.worldpop.org/"
+  },
+  "api": {
+    "base_url": "https://hub.worldpop.org/rest",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/data",
+      "summary": "List projects"
+    },
+    {
+      "method": "GET",
+      "path": "/data/{project}",
+      "summary": "List datasets (categories) of a project, e.g. pop",
+      "params": [
+        "project"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/data/{project}/{dataset}",
+      "summary": "Dataset records with metadata and file URLs, filterable by country",
+      "params": [
+        "project",
+        "dataset",
+        "iso3"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://hub.worldpop.org/rest/data/pop/wpgp?iso3=AUS",
+    "response_excerpt": "{\"data\": [{\"id\": \"1325\", \"title\": \"The spatial distribution of population in 2000, Australia\", \"desc\": \"Estimated total number of people per grid-cell. The dataset ...\", \"doi\": \"10.5258/SOTON/WP00645\", \"date\": \"2018-11-01\", \"popyear\": \"2000\", \"citation\": \"WorldPop (www.worldpop.org - School of Geography and Environ...\", \"data_file\": \"GIS/Population/Global_2000_2020/2000/AUS/aus_ppp_2000.tif\", \"...\": \"...\"}, \"...\"]}"
+  },
+  "data": {
+    "license": {
+      "name": "Creative Commons Attribution 4.0 International",
+      "spdx": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, by country and continent",
+      "temporal": "For example 2000-2020 population counts"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Discover with /data, then /data/pop, then /data/pop/wpgp?iso3=AUS. Without the iso3 filter wpgp returns all 5,221 records in one response. Each record has a files array of download URLs and a doi. The hub docs page was not found at /api; the endpoint shapes above come from querying the API.",
+  "caveats": [
+    "No public API docs page was found (hub.worldpop.org/api returned 404); parameters were derived by probing and only iso3 was tested.",
+    "No CORS header was returned.",
+    "Responses (HTTP and PHP debug lines) include server details in headers; the body is clean JSON.",
+    "An older api.worldpop.org service (statistics/tasks) returned PHP deprecation output and was not verified."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, no CORS header); /rest/data and /rest/data/pop also 200."
+  },
+  "related": [
+    "geoboundaries",
+    "who-gho"
+  ],
+  "added": "2026-11-11"
+}

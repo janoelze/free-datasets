@@ -119,7 +119,9 @@
     }
   ],
   "related": [
-    "obis"
+    "obis",
+    "catalogue-of-life",
+    "nhm-data-portal"
   ],
   "added": "2026-11-11"
 }

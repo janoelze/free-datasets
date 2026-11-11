@@ -100,7 +100,8 @@
   "related": [
     "arxiv-api",
     "crossref",
-    "openalex"
+    "openalex",
+    "datacite"
   ],
   "added": "2026-11-11"
 }

@@ -1,0 +1,112 @@
+{
+  "slug": "openml-api",
+  "name": "OpenML REST API",
+  "provider": {
+    "name": "OpenML",
+    "url": "https://www.openml.org",
+    "type": "nonprofit"
+  },
+  "summary": "Free REST API to an open machine-learning platform: list and fetch datasets, tasks, flows, runs and evaluation results as JSON.",
+  "description": "OpenML hosts a large collection of tabular datasets with computed meta-features (number of instances, classes, missing values and many more), plus the ML tasks defined on them, the algorithms (flows) and the runs and evaluations people have uploaded. The read API needs no key: dataset descriptions include direct download URLs (ARFF and Parquet), feature lists and the licence label.",
+  "category": "developer-tools",
+  "tags": [
+    "machine-learning",
+    "datasets",
+    "benchmarks",
+    "tabular-data",
+    "open-data",
+    "metadata"
+  ],
+  "links": {
+    "homepage": "https://www.openml.org",
+    "docs": "https://docs.openml.org/",
+    "terms": "https://docs.openml.org/terms/",
+    "source": "https://github.com/openml"
+  },
+  "api": {
+    "base_url": "https://www.openml.org/api/v1/json",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "All read endpoints used here worked without a key; uploading datasets, runs or flows needs a free account API key (not tested)."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched. Responses are sent with no-store caching, so keep list calls small."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/data/list/limit/{n}/offset/{m}",
+      "summary": "List datasets with a handful of quality values; filters are appended as /key/value path segments (data_name, status, number_instances, tag)"
+    },
+    {
+      "method": "GET",
+      "path": "/data/{id}",
+      "summary": "Full description of one dataset: licence, download URLs (ARFF, Parquet), default target, tags"
+    },
+    {
+      "method": "GET",
+      "path": "/data/features/{id}",
+      "summary": "Column names, data types and missing-value counts of a dataset"
+    },
+    {
+      "method": "GET",
+      "path": "/task/list/limit/{n}",
+      "summary": "Machine-learning tasks (classification, regression, ...) defined on datasets"
+    },
+    {
+      "method": "GET",
+      "path": "/flow/list/limit/{n}",
+      "summary": "Algorithm and pipeline definitions (flows)"
+    },
+    {
+      "method": "GET",
+      "path": "/evaluation/list/function/{measure}/task/{id}/limit/{n}",
+      "summary": "Evaluation results (for example predictive_accuracy) of uploaded runs on a task"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.openml.org/api/v1/json/data/list/data_name/iris/limit/1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\"data\":{\"dataset\":[{\"did\":61,\"name\":\"iris\",\"version\":1,\"status\":\"active\",\"format\":\"ARFF\",\"md5_checksum\":\"\",\"file_id\":61,\"quality\":[{\"name\":\"MajorityClassSize\",\"value\":\"50.0\"},{\"name\":\"NumberOfClasses\",\"value\":\"3.0\"},{\"name\":\"NumberOfFeatures\",\"value\":\"5.0\"},{\"name\":\"NumberOfInstances\",\"value\":\"150.0\"},...]}]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Per dataset; the description's licence field (for example Public for iris)",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global; mostly benchmark and research datasets"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Filters go into the URL path, not the query string: /data/list/data_name/iris/status/active/limit/10/offset/0. Start with /data/list to find a did, then /data/{did} for the download url and /data/features/{did} for the schema. Dataset files are ARFF at the url field, or Parquet at parquet_url.",
+  "caveats": [
+    "Errors come back as HTTP 412 with a JSON error object (for example code 372 'No results' for a list filter that matches nothing, code 111 'Unknown dataset' for a bad id), not 404.",
+    "The /api/v1/openapi.json path answers 412 'Function not valid'; no OpenAPI document was found for this v1 API (the docs mention a newer APIv2 that was not tested).",
+    "Dataset licences vary per dataset; check the licence field before reuse."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "huggingface-datasets-server",
+    "huggingface-hub-api",
+    "uci-ml-repository"
+  ],
+  "added": "2026-11-11"
+}

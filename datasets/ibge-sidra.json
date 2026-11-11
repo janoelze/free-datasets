@@ -86,7 +86,8 @@
   "related": [
     "bcb-sgs",
     "eurostat",
-    "world-bank-indicators"
+    "world-bank-indicators",
+    "argentina-series-tiempo"
   ],
   "added": "2026-11-11"
 }

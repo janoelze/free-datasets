@@ -1,0 +1,115 @@
+{
+  "slug": "nhm-data-portal",
+  "name": "Natural History Museum Data Portal API",
+  "provider": {
+    "name": "Natural History Museum, London",
+    "url": "https://www.nhm.ac.uk",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless CKAN API for the Natural History Museum Data Portal: millions of specimen records and research datasets.",
+  "description": "The NHM Data Portal is a CKAN instance. package_search and package_show list datasets and their metadata, and datastore_search queries the tabular resources, including the museum's collection specimens (millions of records with taxonomy, locality, coordinates and catalogue numbers).",
+  "category": "life-sciences",
+  "tags": [
+    "museum",
+    "specimens",
+    "natural-history",
+    "biodiversity",
+    "ckan",
+    "collections",
+    "taxonomy"
+  ],
+  "links": {
+    "homepage": "https://data.nhm.ac.uk/",
+    "docs": "https://docs.ckan.org/en/latest/api/index.html"
+  },
+  "api": {
+    "base_url": "https://data.nhm.ac.uk/api/3/action",
+    "style": "rpc",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/package_search",
+      "summary": "Search datasets",
+      "params": [
+        "q",
+        "rows",
+        "start",
+        "fq"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_show",
+      "summary": "One dataset with its resources",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/datastore_search",
+      "summary": "Query records of a tabular resource",
+      "params": [
+        "resource_id",
+        "q",
+        "filters",
+        "fields",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_list",
+      "summary": "List all dataset names"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.nhm.ac.uk/api/3/action/datastore_search?resource_id=05ff2255-c38a-40c9-b657-4ccb55ab2feb&limit=1&fields=institutionCode,catalogNumber,scientificName,country",
+    "response_excerpt": "{\"help\": \"https://data.nhm.ac.uk/api/3/action/help_show?name=datastore_search\", \"success\": true, \"result\": {\"total\": 6312876, \"records\": [{\"institutionCode\": \"NHMUK\", \"country\": \"United Kingdom\", \"catalogNumber\": \"PV M 40707\", \"scientificName\": \"Ursus arctos Linnaeus, 1758\"}], \"facets\": {}, \"fields\": [{\"id\": \"_id\", \"type\": \"string\"}, \"...\"], \"after\": [\"2026-11-10t21:19:07+00:00\", \"...\"]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per dataset (the collection specimens dataset reports CC0-1.0)",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (specimens held by the NHM)",
+      "temporal": "Historic to present collections"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Standard CKAN action API. Find the resource id with package_show (collection specimens: id collection-specimens, resource 05ff2255-c38a-40c9-b657-4ccb55ab2feb), then page datastore_search with limit and offset. Check license_id per dataset before reuse.",
+  "caveats": [
+    "The portal website (including /about/) returned a Cloudflare 'Just a moment' challenge (403) to curl on 2026-11-11, so no docs page of NHM itself could be read; the API endpoints answered normally.",
+    "Licences vary per dataset; check license_id in package_show.",
+    "The action_list call returned 400; stick to the documented CKAN actions used here."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, access-control-allow-origin: *). package_show and datastore_search (6,312,876 specimen records) also 200."
+  },
+  "related": [
+    "gbif",
+    "inaturalist",
+    "obis"
+  ],
+  "added": "2026-11-11"
+}

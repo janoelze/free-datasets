@@ -1,0 +1,121 @@
+{
+  "slug": "uk-fhrs-ratings",
+  "name": "UK Food Hygiene Rating Scheme API",
+  "provider": {
+    "name": "UK Food Standards Agency",
+    "url": "https://ratings.food.gov.uk/",
+    "type": "government"
+  },
+  "summary": "Keyless REST API for food hygiene ratings of over 600,000 food businesses in England, Wales and Northern Ireland (and the FHIS scheme in Scotland).",
+  "description": "Query establishments by name, address, location or local authority, with the hygiene rating, inspection date, scores and geocode, plus lookups for authorities, regions, business types and rating schemes. Version 2 of the API is selected with a request header.",
+  "category": "food",
+  "tags": [
+    "food-safety",
+    "hygiene-ratings",
+    "uk",
+    "restaurants",
+    "inspections",
+    "establishments"
+  ],
+  "links": {
+    "homepage": "https://ratings.food.gov.uk/",
+    "docs": "https://api.ratings.food.gov.uk/help",
+    "terms": "https://ratings.food.gov.uk/open-data",
+    "bulk_download": "https://ratings.food.gov.uk/open-data"
+  },
+  "api": {
+    "base_url": "https://api.ratings.food.gov.uk",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The help page states no sign-up, API key or login is required."
+    },
+    "required_headers": [
+      {
+        "name": "x-api-version",
+        "example": "2",
+        "notes": "Without a version header the endpoints answer 404 \"The API 'Authorities' doesn't exist\"."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/Establishments",
+      "summary": "Search establishments",
+      "params": [
+        "name",
+        "address",
+        "longitude",
+        "latitude",
+        "maxDistanceLimit",
+        "localAuthorityId",
+        "ratingKey",
+        "pageNumber",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Authorities/basic",
+      "summary": "List local authorities with establishment counts"
+    },
+    {
+      "method": "GET",
+      "path": "/Regions/basic",
+      "summary": "List regions"
+    },
+    {
+      "method": "GET",
+      "path": "/BusinessTypes/basic",
+      "summary": "List business types"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.ratings.food.gov.uk/Establishments?name=Greggs&pageSize=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "x-api-version": "2"
+    },
+    "response_excerpt": "{\"establishments\": [{\"FHRSID\": 39449, \"BusinessName\": \"Greggs\", \"BusinessType\": \"Retailers - other\", \"PostCode\": \"SS8 7AE\", \"RatingValue\": \"5\", \"RatingDate\": \"2025-08-07T00:00:00\", \"LocalAuthorityName\": \"Castle Point\", \"SchemeType\": \"FHRS\", \"geocode\": {\"longitude\": \"0.592032\", \"latitude\": \"51.52236\"}, \"scores\": {\"Hygiene\": 0, \"Structural\": 0, \"ConfidenceInManagement\": 0}}], \"meta\": {\"dataSource\": \"ElasticSearch\", \"itemCount\": 1}}"
+  },
+  "data": {
+    "license": {
+      "name": "Open Government Licence (not confirmed on the pages fetched)",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "England, Wales, Northern Ireland (FHRS) and Scotland (FHIS)",
+      "temporal": "current ratings"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Always send x-api-version: 2. Results are wrapped in an 'establishments' array with a 'meta' block. RatingValue is a string, and Scotland's FHIS scheme uses 'Pass'/'Improvement Required' style values instead of 0-5. Latitude and longitude arrive as strings inside geocode.",
+  "caveats": [
+    "Missing the x-api-version header returns 404, not 400.",
+    "Ratings reflect the last inspection and can be 'AwaitingInspection' or 'Exempt'.",
+    "The licence is not stated on the pages fetched today; the OGL attribution was not re-confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key, with the x-api-version header."
+  },
+  "related": [
+    "open-food-facts"
+  ],
+  "added": "2026-11-11"
+}

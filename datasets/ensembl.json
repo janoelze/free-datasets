@@ -117,5 +117,9 @@
     "http_status": 200,
     "with_key": true
   },
+  "related": [
+    "mygene-info",
+    "quickgo"
+  ],
   "added": "2026-11-11"
 }

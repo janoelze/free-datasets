@@ -1,0 +1,111 @@
+{
+  "slug": "mygene-info",
+  "name": "MyGene.info",
+  "provider": {
+    "name": "BioThings (Scripps Research, Su Lab)",
+    "url": "https://mygene.info",
+    "type": "academic"
+  },
+  "summary": "Gene annotation aggregated from many sources: symbols, names, Entrez/Ensembl ids, pathways, GO, variants and more, with query and batch lookup.",
+  "description": "MyGene.info exposes a gene annotation service (/v3/gene/{id}) and a query service (/v3/query) over annotations merged from NCBI, Ensembl, UniProt, GO, pathways, orthology and other sources for many species. Responses are JSON, and the field list can be narrowed with fields=. Metadata at /v3/metadata reported build 20261030.",
+  "category": "life-sciences",
+  "tags": [
+    "genes",
+    "annotation",
+    "genomics",
+    "entrez",
+    "bioinformatics",
+    "biothings"
+  ],
+  "links": {
+    "homepage": "https://mygene.info",
+    "docs": "https://docs.mygene.info/en/latest/",
+    "source": "https://github.com/biothings/mygene.info"
+  },
+  "api": {
+    "base_url": "https://mygene.info/v3",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched here; the docs mention request limits for batch calls (not re-confirmed)."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/gene/{id}",
+      "summary": "One gene by Entrez id",
+      "params": [
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/query",
+      "summary": "Search genes (Lucene-style query)",
+      "params": [
+        "q",
+        "species",
+        "fields",
+        "size",
+        "from"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/gene",
+      "summary": "Batch gene lookup (POST ids)",
+      "params": [
+        "ids",
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/metadata",
+      "summary": "Data source and build metadata"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://mygene.info/v3/query?q=symbol:CDK2&species=human&fields=symbol,name,entrezgene",
+    "response_excerpt": "{\"took\":2,\"total\":1,\"max_score\":17.355864,\"hits\":[{\"_id\":\"1017\",\"_score\":17.355864,\"entrezgene\":\"1017\",\"name\":\"cyclin dependent kinase 2\",\"symbol\":\"CDK2\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Aggregated from many sources, each with its own terms (not re-confirmed)",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Many species (human, mouse, rat, fly, worm, zebrafish and others)",
+      "temporal": "Weekly builds"
+    },
+    "update_frequency": "weekly"
+  },
+  "agent_notes": "Use fields=symbol,name,entrezgene to avoid the huge default gene document. Query with q=symbol:CDK2&species=human to disambiguate. Batch with POST /gene ids=1017,1018. Use _id (Entrez id) as the join key to other NCBI/Ensembl resources.",
+  "caveats": [
+    "The default gene document is very large; always pass fields=.",
+    "License terms are those of the underlying sources; no single license was found.",
+    "Rate limit numbers were not confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials."
+  },
+  "related": [
+    "ensembl",
+    "ncbi-eutils",
+    "uniprot"
+  ],
+  "added": "2026-11-11"
+}

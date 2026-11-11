@@ -1,0 +1,116 @@
+{
+  "slug": "kegg-rest",
+  "name": "KEGG REST API",
+  "provider": {
+    "name": "Kanehisa Laboratories (KEGG)",
+    "url": "https://www.kegg.jp",
+    "type": "academic"
+  },
+  "summary": "Pathways, genes, compounds, reactions, diseases and drugs from KEGG, as tab-separated text lists and flat-file entries.",
+  "description": "The KEGG REST API at rest.kegg.jp offers info, list, find, get, conv and link operations over KEGG databases (pathway, module, ko, genome, enzyme, compound, glycan, reaction, disease, drug and organism gene sets). Output is mostly plain text (TSV or KEGG flat files); /get can return images and KGML for pathways. /info/kegg reported release stats on 2026-11-11.",
+  "category": "life-sciences",
+  "tags": [
+    "pathways",
+    "kegg",
+    "genes",
+    "metabolism",
+    "compounds",
+    "bioinformatics"
+  ],
+  "links": {
+    "homepage": "https://www.kegg.jp",
+    "docs": "https://www.kegg.jp/kegg/rest/",
+    "terms": "https://www.kegg.jp/kegg/legal.html"
+  },
+  "api": {
+    "base_url": "https://rest.kegg.jp",
+    "style": "rest",
+    "formats": [
+      "text",
+      "xml",
+      "image",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Docs ask for at most 3 calls per second, otherwise access is blocked.",
+      "requests": 3,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/info/{database}",
+      "summary": "Release information for a database"
+    },
+    {
+      "method": "GET",
+      "path": "/list/{database}",
+      "summary": "List entries (e.g. pathway/hsa for human pathways)"
+    },
+    {
+      "method": "GET",
+      "path": "/find/{database}/{query}",
+      "summary": "Search entries by keyword"
+    },
+    {
+      "method": "GET",
+      "path": "/get/{entries}",
+      "summary": "Retrieve entries (up to 10, joined with +)"
+    },
+    {
+      "method": "GET",
+      "path": "/link/{target}/{source}",
+      "summary": "Cross-references between databases (e.g. link/pathway/hsa:1017)"
+    },
+    {
+      "method": "GET",
+      "path": "/conv/{target}/{source}",
+      "summary": "Convert KEGG ids to and from external ids (NCBI gene, UniProt, PubChem)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://rest.kegg.jp/list/pathway/hsa",
+    "response_excerpt": "hsa01100\tMetabolic pathways - Homo sapiens (human)\nhsa01200\tCarbon metabolism - Homo sapiens (human)\nhsa01210\t2-Oxocarboxylic acid metabolism - Homo sapiens (human)\n..."
+  },
+  "data": {
+    "license": {
+      "name": "KEGG terms: academic use only for the API; non-academic use requires a commercial license",
+      "url": "https://www.kegg.jp/kegg/legal.html",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Global (all organisms)",
+      "temporal": "Current release"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Responses are TSV text, not JSON: split lines on tab. Entry ids look like hsa:1017 (organism:geneid), path:hsa04110, cpd:C00031. Combine up to 10 ids in /get with +. Keep to under 3 requests per second. Organism codes are three or four letters (hsa, mmu).",
+  "caveats": [
+    "The API is documented as for academic users only; non-academic use needs a license from Pathway Solutions.",
+    "No CORS header was sent, so browser calls from other origins will fail.",
+    "Unknown ids return 404 or an empty body rather than a JSON error.",
+    "The response format is plain text; there is no JSON mode."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials; CORS and rate-limit headers absent."
+  },
+  "related": [
+    "pubchem",
+    "reactome",
+    "uniprot"
+  ],
+  "added": "2026-11-11"
+}

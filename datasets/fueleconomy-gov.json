@@ -1,0 +1,129 @@
+{
+  "slug": "fueleconomy-gov",
+  "name": "FuelEconomy.gov Web Services",
+  "provider": {
+    "name": "U.S. Department of Energy and U.S. Environmental Protection Agency",
+    "url": "https://www.fueleconomy.gov",
+    "type": "government"
+  },
+  "summary": "Free keyless REST API for EPA fuel economy ratings, emissions and range of 1984-current vehicles, plus average fuel prices.",
+  "description": "The Find-a-Car web services return the full vehicle record (MPG city/highway/combined, CO2, electric range and charging data, fuel types, annual fuel cost) by vehicle id, and menu endpoints walk year, make, model and option to find that id. Also exposed are user-reported MPG averages (ympg) and current regional fuel prices. JSON or XML is selected with the Accept header.",
+  "category": "transport-mobility",
+  "tags": [
+    "vehicles",
+    "fuel-economy",
+    "mpg",
+    "emissions",
+    "electric-vehicles",
+    "epa",
+    "doe",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://www.fueleconomy.gov",
+    "docs": "https://www.fueleconomy.gov/feg/ws/index.shtml",
+    "bulk_download": "https://www.fueleconomy.gov/feg/download.shtml"
+  },
+  "api": {
+    "base_url": "https://www.fueleconomy.gov/ws/rest",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key needed."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; no rate-limit headers were seen."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/vehicle/menu/year",
+      "summary": "Model years available",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/vehicle/menu/make",
+      "summary": "Makes for a year",
+      "params": [
+        "year"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vehicle/menu/model",
+      "summary": "Models for a year and make",
+      "params": [
+        "year",
+        "make"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vehicle/menu/options",
+      "summary": "Trim/option variants with vehicle ids",
+      "params": [
+        "year",
+        "make",
+        "model"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vehicle/{id}",
+      "summary": "Full vehicle record including ratings and emissions",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/fuelprices",
+      "summary": "Current average US fuel prices",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=2024&make=Toyota&model=Camry",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "Accept": "application/json"
+    },
+    "response_excerpt": "{\"menuItem\": {\"text\": \"Auto (S8), 6 cyl, 3.5 L\", \"value\": \"47085\"}}"
+  },
+  "data": {
+    "license": {
+      "name": "U.S. Government data; no license statement found on the docs page",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States market vehicles",
+      "temporal": "Model years 1984 to 2027"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Walk menu/year, menu/make, menu/model, menu/options to get a vehicle id, then GET /vehicle/{id}. Send Accept: application/json. Fields are strings. Docs page says the vehicle table was last updated 2026-11-04.",
+  "caveats": [
+    "When a menu has exactly one entry, menuItem is an object, not an array; normalise before iterating.",
+    "Without an Accept header the response is XML.",
+    "Rate limits and the data license are not stated on the docs page (not confirmed)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without credentials."
+  },
+  "related": [
+    "nhtsa-api",
+    "nhtsa-vpic"
+  ],
+  "added": "2026-11-11"
+}

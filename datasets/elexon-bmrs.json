@@ -110,7 +110,8 @@
     "notes": "Exact example request executed without a key; the default FUELINST request returned 200 in 2.4 s."
   },
   "related": [
-    "carbon-intensity-uk"
+    "carbon-intensity-uk",
+    "eia-open-data"
   ],
   "added": "2026-11-11"
 }

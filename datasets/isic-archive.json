@@ -1,0 +1,123 @@
+{
+  "slug": "isic-archive",
+  "name": "ISIC Archive API (skin lesion images)",
+  "provider": {
+    "name": "International Skin Imaging Collaboration",
+    "url": "https://www.isic-archive.com",
+    "type": "nonprofit"
+  },
+  "summary": "Search the International Skin Imaging Collaboration archive of dermoscopic and clinical skin-lesion images with diagnosis metadata, keyless over a documented OpenAPI REST API.",
+  "description": "The ISIC Archive holds the public image collections behind the HAM10000 and ISIC challenge datasets that are popular on Kaggle. The v2 API lists collections and images, runs key:value search queries over clinical metadata (diagnosis, anatomical site, age, sex, image type) and returns direct file URLs and per-image licence and attribution. At check time the public image search reported 581,002 images in 63 collections.",
+  "category": "health-medicine",
+  "tags": [
+    "medical-imaging",
+    "dermatology",
+    "skin-cancer",
+    "images",
+    "machine-learning",
+    "melanoma"
+  ],
+  "links": {
+    "homepage": "https://www.isic-archive.com",
+    "docs": "https://api.isic-archive.com/api/docs/swagger/",
+    "openapi": "https://api.isic-archive.com/api/v2/openapi.json",
+    "source": "https://github.com/ImageMarkup/isic-archive"
+  },
+  "api": {
+    "base_url": "https://api.isic-archive.com/api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public images and collections answered without credentials; /users/me/ is for logged-in users."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "cursor",
+    "max_page_size": 100
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/images/search/",
+      "summary": "Search images with a key:value query string, returns count and next cursor",
+      "params": [
+        "query",
+        "collections",
+        "limit",
+        "cursor"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/images/{isic_id}/",
+      "summary": "One image with metadata and file URLs"
+    },
+    {
+      "method": "GET",
+      "path": "/images/{isic_id}/similar/",
+      "summary": "Visually similar images",
+      "params": [
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections/",
+      "summary": "List image collections",
+      "params": [
+        "pinned",
+        "sort",
+        "limit",
+        "cursor"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/lesions/",
+      "summary": "Lesions with diagnoses",
+      "params": [
+        "limit",
+        "cursor"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.isic-archive.com/api/v2/images/search/?limit=1&query=diagnosis_1%3A%22Malignant%22",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"results\": [\n    {\n      \"public\": true,\n      \"isic_id\": \"ISIC_0000002\",\n      \"copyright_license\": \"CC-0\",\n      \"attribution\": \"Anonymous\",\n      \"files\": {\"full\": {\"url\": \"https://isic-archive.s3.amazonaws.com/images/ISIC_0000002.jpg\", \"size\": 59201}, ...},\n      \"metadata\": {\"clinical\": {\"sex\": \"female\", \"diagnosis_1\": \"Malignant\", \"diagnosis_2\": \"Malignant melanocytic proliferations (Melanoma)\", \"age_approx\": 60, ...}}\n    }\n  ],\n  \"count\": 27295,\n  \"next\": \"https://api.isic-archive.com/api/v2/images/search/?cursor=...&limit=1&query=...\",\n  \"previous\": null\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per image (copyright_license field: CC-0, CC-BY or CC-BY-NC per collection); the first 100 images checked were all CC-0",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Contributions from clinics worldwide",
+      "temporal": "Archive of images collected over roughly the last decade; ongoing"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Queries use Lucene-like key:value syntax with quoted values, for example diagnosis_1:\"Malignant\"; URL-encode the colon and quotes. Walk results with the next URL (cursor); limit above 100 was capped at 100. For bulk downloads the swagger page itself recommends the AWS Open Data snapshot (about 61 GB) or the isic-cli tool instead of paging this API. The /images/facets/ endpoint also answers but is not in the OpenAPI document.",
+  "caveats": [
+    "Per-image licences vary; check copyright_license and attribution before reuse. Non-CC-0 values were not sampled.",
+    "No rate limit is documented; avoid bulk crawling.",
+    "Medical imaging data: not a diagnostic tool."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without credentials (200, about 0.5 s, CORS *). Collections, single image, similar, facets and the OpenAPI document (3.1.0) also answered 200. No User-Agent and the curl default both worked."
+  },
+  "added": "2026-11-11"
+}

@@ -121,5 +121,8 @@
     "http_status": 200,
     "with_key": false
   },
+  "related": [
+    "mcp-registry"
+  ],
   "added": "2026-11-11"
 }

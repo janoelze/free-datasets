@@ -1,0 +1,105 @@
+{
+  "slug": "harvard-atlas-of-economic-complexity",
+  "name": "Atlas of Economic Complexity GraphQL API",
+  "provider": {
+    "name": "Harvard Growth Lab",
+    "url": "https://growthlab.hks.harvard.edu",
+    "type": "academic"
+  },
+  "summary": "Keyless GraphQL API for Harvard Growth Lab trade data and economic complexity metrics (ECI, product complexity, RCA) for countries and products.",
+  "description": "The API behind the Atlas of Economic Complexity serves country-year indicators (GDP, GDP per capita, population, export and import values, ECI, COI), country-product-year trade flows with revealed comparative advantage and market share, product classifications (HS92, HS12, SITC), location groups, product space and growth-projection lookbacks. Queries are GraphQL POSTs; the endpoint also serves a GraphiQL explorer with the full schema.",
+  "category": "economics-statistics",
+  "tags": [
+    "trade",
+    "economic-complexity",
+    "exports",
+    "imports",
+    "gdp",
+    "hs-codes",
+    "graphql"
+  ],
+  "links": {
+    "homepage": "https://atlas.hks.harvard.edu/",
+    "docs": "https://github.com/harvard-growth-lab/api-docs/blob/main/atlas.md",
+    "bulk_download": "https://atlas.hks.harvard.edu/data-downloads"
+  },
+  "api": {
+    "base_url": "https://atlas.hks.harvard.edu/api/graphql",
+    "style": "graphql",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "A request with an empty User-Agent returned 403."
+      },
+      {
+        "name": "Content-Type",
+        "example": "application/json"
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "120 requests per minute (documented on the API docs page).",
+      "requests": 120,
+      "per": "minute"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "summary": "Single GraphQL endpoint; JSON body {\"query\": \"...\"}. Queries include countryYear, countryProductYear, locationCountry, productHs92, countryProfile and productSpace",
+      "params": [
+        "query"
+      ]
+    }
+  ],
+  "example": {
+    "method": "POST",
+    "url": "https://atlas.hks.harvard.edu/api/graphql",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+      "Content-Type": "application/json"
+    },
+    "body": "{\"query\": \"{ countryYear(countryId: 156, yearMin: 2021, yearMax: 2022) { year gdp gdppc population exportValue importValue eci } }\"}",
+    "response_excerpt": "{\n  \"data\": {\n    \"countryYear\": [\n      {\n        \"year\": 2021,\n        \"gdp\": 18183505000000.0,\n        \"gdppc\": 12872,\n        \"population\": 1412600000,\n        \"exportValue\": 3500325074579.0,\n        \"importValue\": 2533923668053.0,\n        \"eci\": 1.3822064\n      },\n      {\n        \"year\": 2022,\n        \"gdp\": 18337777000000.0,\n        \"gdppc\": 12989,\n        \"population\": 1411750000,\n        \"exportValue\": 3839995003098.0,\n        \"importValue\": 2576910746354.0,\n        \"eci\": 1.3638333\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Growth Lab Atlas data terms (see the Atlas site); license not re-confirmed",
+      "url": "https://atlas.hks.harvard.edu/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Annual trade data from the 1960s-1990s to recent years depending on classification"
+    },
+    "update_frequency": "annually"
+  },
+  "agent_notes": "Open the endpoint in a browser for GraphiQL and the schema. countryId takes the numeric M49-style code (156 = China, 840 = USA); locationCountry lists countries with their string ids and ISO3 codes. Product ids are internal numbers, not HS codes; use the product queries to map them. Filter in the query (yearMin, yearMax, productLevel, productClass) and request only the fields you need.",
+  "caveats": [
+    "The provider states public access is a courtesy; endpoints and values may change suddenly, and it is meant for stand-alone analysis rather than as a backend for other software.",
+    "An older path atlas.hks.harvard.edu/api/countries/graphql also answered with a different schema; use the documented /api/graphql.",
+    "Requests with an empty User-Agent returned 403."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example POST executed without a key; 200 with application/json and CORS *."
+  },
+  "related": [
+    "oec-tesseract",
+    "un-comtrade"
+  ],
+  "added": "2026-11-11"
+}

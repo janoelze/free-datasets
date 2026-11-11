@@ -1,0 +1,94 @@
+{
+  "slug": "mcp-registry",
+  "name": "Official MCP Registry API",
+  "provider": {
+    "name": "Model Context Protocol",
+    "url": "https://modelcontextprotocol.io",
+    "type": "nonprofit"
+  },
+  "summary": "Registry of published Model Context Protocol servers with remotes, packages and status, readable without a key.",
+  "description": "The official MCP Registry lists server entries (name, description, version, remote URLs, packages) with registry metadata such as status and publish times. It serves a documented OpenAPI spec and cursor-based listing.",
+  "category": "developer-tools",
+  "tags": [
+    "mcp",
+    "ai-agents",
+    "registry",
+    "servers",
+    "llm-tools"
+  ],
+  "links": {
+    "homepage": "https://registry.modelcontextprotocol.io",
+    "docs": "https://registry.modelcontextprotocol.io/docs",
+    "openapi": "https://registry.modelcontextprotocol.io/openapi.yaml",
+    "source": "https://github.com/modelcontextprotocol/registry"
+  },
+  "api": {
+    "base_url": "https://registry.modelcontextprotocol.io/v0",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in what was checked."
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/servers",
+      "summary": "List servers",
+      "params": [
+        "limit",
+        "cursor",
+        "search",
+        "updated_since",
+        "version"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/servers/{serverName}/versions",
+      "summary": "Versions of one server"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://registry.modelcontextprotocol.io/v0/servers?limit=1",
+    "response_excerpt": "{\"servers\": [{\"server\": {\"name\": \"ac.inference.sh/mcp\", \"description\": \"Run 150+ AI apps ...\", \"version\": \"1.0.0\", \"remotes\": [{\"type\": \"streamable-http\", \"url\": \"https://api.inference.sh/mcp\"}]}, \"_meta\": {\"io.modelcontextprotocol.registry/official\": {\"status\": \"active\", \"isLatest\": false}}}], \"metadata\": {\"nextCursor\": \"ac.inference.sh/mcp:1.0.0\", \"count\": 1}}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated in checked responses",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current registry"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Page with metadata.nextCursor. Entries are self-published and unvetted; each server version is its own entry, so check _meta isLatest.",
+  "caveats": [
+    "The path version is v0, so the API may change; treat as preview.",
+    "Only limit, cursor and search were exercised (all HTTP 200); other parameter names come from the OpenAPI spec.",
+    "Data license not found in the checked responses."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "github-rest-api",
+    "huggingface-hub-api",
+    "npm-registry"
+  ],
+  "added": "2026-11-11"
+}

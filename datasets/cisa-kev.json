@@ -81,7 +81,8 @@
     "nvd-cve-api",
     "first-epss",
     "osv-dev",
-    "urlscan-search"
+    "urlscan-search",
+    "shodan-internetdb"
   ],
   "added": "2026-11-11"
 }

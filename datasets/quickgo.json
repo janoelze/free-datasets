@@ -1,0 +1,122 @@
+{
+  "slug": "quickgo",
+  "name": "QuickGO Gene Ontology API",
+  "provider": {
+    "name": "EMBL-EBI (Gene Ontology Annotation team)",
+    "url": "https://www.ebi.ac.uk",
+    "type": "intergovernmental"
+  },
+  "summary": "Gene Ontology terms, evidence codes and GO annotations for gene products, with search and filtering.",
+  "description": "QuickGO is the EBI browser for the Gene Ontology and GOA annotations; its REST API serves ontology terms (GO and ECO), term search and hierarchy, annotation search and downloads, and gene product lookups. A term search for apoptosis returned 352 hits on 2026-11-11.",
+  "category": "life-sciences",
+  "tags": [
+    "gene-ontology",
+    "annotations",
+    "genes",
+    "proteins",
+    "ontology",
+    "bioinformatics"
+  ],
+  "links": {
+    "homepage": "https://www.ebi.ac.uk/QuickGO/",
+    "docs": "https://www.ebi.ac.uk/QuickGO/api/index.html",
+    "terms": "https://www.ebi.ac.uk/about/terms-of-use"
+  },
+  "api": {
+    "base_url": "https://www.ebi.ac.uk/QuickGO/services",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched; fair use."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/ontology/go/terms/{ids}",
+      "summary": "Terms by GO id (comma separated)"
+    },
+    {
+      "method": "GET",
+      "path": "/ontology/go/search",
+      "summary": "Search GO terms",
+      "params": [
+        "query",
+        "limit",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ontology/go/terms/{id}/children",
+      "summary": "Child terms"
+    },
+    {
+      "method": "GET",
+      "path": "/annotation/search",
+      "summary": "Search annotations",
+      "params": [
+        "geneProductId",
+        "goId",
+        "taxonId",
+        "evidenceCode",
+        "limit",
+        "page"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/geneproduct/search",
+      "summary": "Search gene products",
+      "params": [
+        "query",
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.ebi.ac.uk/QuickGO/services/ontology/go/search?query=apoptosis&limit=2",
+    "response_excerpt": "{\"numberOfHits\":352,\"results\":[{\"id\":\"GO:0097194\",\"isObsolete\":false,\"name\":\"execution phase of apoptosis\",\"definition\":{\"text\":\"A stage of the apoptotic process that starts with ...\"},\"aspect\":\"biological_process\"},...],\"pageInfo\":{...}}"
+  },
+  "data": {
+    "license": {
+      "name": "Gene Ontology data is CC BY 4.0 (not re-confirmed on this host); EBI terms of use apply",
+      "url": "https://www.ebi.ac.uk/about/terms-of-use",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (all organisms)",
+      "temporal": "Current GO release"
+    },
+    "update_frequency": "weekly"
+  },
+  "agent_notes": "GO ids use the form GO:0006915. Annotation queries are large: always filter by taxonId or geneProductId and page with limit/page. Download bulk annotations with the /annotation/downloadSearch endpoint (not tested).",
+  "caveats": [
+    "The api-docs page at /QuickGO/services/api-docs is a UI shell, not a spec; no OpenAPI URL was confirmed.",
+    "License text was not confirmed on the EBI pages fetched today; GO itself is CC BY 4.0 by project policy (not re-confirmed).",
+    "Annotation search without filters is very large."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials."
+  },
+  "related": [
+    "ensembl",
+    "reactome",
+    "uniprot"
+  ],
+  "added": "2026-11-11"
+}

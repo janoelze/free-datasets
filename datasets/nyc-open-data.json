@@ -1,0 +1,122 @@
+{
+  "slug": "nyc-open-data",
+  "name": "NYC Open Data (Socrata SODA)",
+  "provider": {
+    "name": "City of New York",
+    "url": "https://opendata.cityofnewyork.us",
+    "type": "government"
+  },
+  "summary": "Free SODA REST API over NYC Open Data: crashes, 311 requests, restaurant inspections, arrests, ridership, vital records and about 2,400 other city datasets.",
+  "description": "data.cityofnewyork.us is a Socrata portal. Each dataset is a table with a 4x4 id queryable at /resource/{id}.json using SoQL ($select, $where, $group, $order, $limit, $offset, $q). The Discovery API at /api/catalog/v1 searches the portal. Popular data.gov entries served from this host include Motor Vehicle Collisions - Crashes (h9gi-nx95), 311 Service Requests from 2020 to Present (erm2-nwe9), DOHMH Restaurant Inspection Results (43nn-pn8j) and NYPD Arrest Data (uip8-fykc).",
+  "category": "government-politics",
+  "tags": [
+    "nyc",
+    "open-data",
+    "socrata",
+    "soql",
+    "311",
+    "crashes",
+    "city-data",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://opendata.cityofnewyork.us/",
+    "docs": "https://dev.socrata.com/docs/queries/",
+    "terms": "https://www.nyc.gov/home/terms-of-use.page",
+    "signup": "https://dev.socrata.com/docs/app-tokens.html"
+  },
+  "api": {
+    "base_url": "https://data.cityofnewyork.us",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "X-App-Token",
+      "notes": "Works without credentials; an optional free Socrata app token gives a per-application throttling pool instead of the shared per-IP pool."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented. Without an app token requests share a per-IP pool and can be throttled with HTTP 429."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/resource/{id}.json",
+      "summary": "Query one dataset with SoQL (also .csv, .geojson, .xml)",
+      "params": [
+        "$select",
+        "$where",
+        "$group",
+        "$order",
+        "$limit",
+        "$offset",
+        "$q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog/v1",
+      "summary": "Discovery API: search datasets on the portal",
+      "params": [
+        "domains",
+        "q",
+        "only",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/views/{id}.json",
+      "summary": "Dataset metadata: columns, license, update time",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.cityofnewyork.us/resource/h9gi-nx95.json?$select=crash_date,borough,number_of_persons_injured&$order=crash_date%20DESC&$limit=2",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\"crash_date\": \"2026-11-08T00:00:00.000\", \"borough\": \"MANHATTAN\", \"number_of_persons_injured\": \"0\"},\n  {\"crash_date\": \"2026-11-08T00:00:00.000\", \"borough\": \"BRONX\", \"number_of_persons_injured\": \"0\"}\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per dataset; the crashes dataset has no license field in its metadata. See the NYC terms of use.",
+      "url": "https://www.nyc.gov/home/terms-of-use.page",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "New York City",
+      "temporal": "Varies per dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Find ids via /api/catalog/v1?domains=data.cityofnewyork.us&q=<topic>&only=datasets. Values are strings; cast in SoQL. The X-SODA2-Fields header lists columns. Add $order for stable paging. Dates are floating timestamps without a zone.",
+  "caveats": [
+    "Numeric columns are returned as JSON strings.",
+    "In the research sandbox the host's certificate chain (GlobalSign R46) was not trusted, so curl needed -k; the API itself answered 200 with Access-Control-Allow-Origin: *. Re-verify on a machine with a current CA store.",
+    "Updates vary per dataset; the crashes table was last modified the day it was checked."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Request executed without an app token using curl -k because of the sandbox trust store; catalog size 2410 datasets at check."
+  },
+  "related": [
+    "cdc-open-data",
+    "us-dot-open-data"
+  ],
+  "added": "2026-11-11"
+}

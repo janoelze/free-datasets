@@ -1,0 +1,96 @@
+{
+  "slug": "getty-vocabularies",
+  "name": "Getty Vocabularies SPARQL Endpoint",
+  "provider": {
+    "name": "J. Paul Getty Trust, Getty Research Institute",
+    "url": "https://www.getty.edu",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless SPARQL endpoint for the Getty Art & Architecture Thesaurus (AAT), Thesaurus of Geographic Names (TGN) and Union List of Artist Names (ULAN).",
+  "description": "Query the Getty Vocabularies as linked open data: controlled terms for art, architecture and material culture (AAT), historical and current places (TGN) and artists (ULAN), with multilingual labels, hierarchies and relationships. Results come back as SPARQL JSON, XML or CSV; common prefixes (gvp, skos, xl, luc) are predefined.",
+  "category": "art-museums",
+  "tags": [
+    "thesaurus",
+    "linked-data",
+    "sparql",
+    "art",
+    "cultural-heritage",
+    "vocabulary",
+    "gazetteer"
+  ],
+  "links": {
+    "homepage": "https://www.getty.edu/research/tools/vocabularies/",
+    "docs": "https://www.getty.edu/research/tools/vocabularies/obtain/index.html",
+    "terms": "https://www.getty.edu/research/tools/vocabularies/obtain/index.html"
+  },
+  "api": {
+    "base_url": "https://vocab.getty.edu",
+    "style": "sparql",
+    "formats": [
+      "json",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Requests without a User-Agent returned 403 on 2026-11-11."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/sparql.json",
+      "summary": "Run a SPARQL query; JSON results",
+      "params": [
+        "query"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://vocab.getty.edu/sparql.json?query=select%20%3Fs%20%3Fl%20where%20%7B%3Fs%20a%20gvp%3AConcept%3B%20skos%3AprefLabel%20%3Fl%3B%20gvp%3AprefLabelGVP%2Fxl%3AliteralForm%20%22teapots%22%40en%7D%20limit%203",
+    "response_excerpt": "{\"head\": {\"vars\": [\"s\", \"...\"]}, \"results\": {\"bindings\": [{\"s\": {\"type\": \"uri\", \"value\": \"http://vocab.getty.edu/aat/300043022\"}, \"l\": {\"xml:lang\": \"en\", \"type\": \"literal\", \"value\": \"teapots\"}}, \"...\"]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Open Data Commons Attribution License (ODC-By) 1.0",
+      "spdx": "ODC-By-1.0",
+      "url": "https://www.getty.edu/research/tools/vocabularies/obtain/index.html",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global (AAT terms, TGN places, ULAN artists)",
+      "temporal": "Current vocabulary releases"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "GET /sparql.json?query=<urlencoded SPARQL>. Prefixes gvp, skos and xl are preconfigured. Always LIMIT. Attribute with: Contains information from the J. Paul Getty Trust, Getty Research Institute, [tool name], which is made available under the ODC Attribution License. Send a User-Agent.",
+  "caveats": [
+    "A request without a User-Agent returned 403.",
+    "Per-concept JSON (for example /aat/300011914.json) returned HTTP 500 with a Java certificate error (PKIX path building failed) on 2026-11-11; use the SPARQL endpoint.",
+    "Update frequency (monthly full dumps) is from the docs page; the SPARQL data refresh is not re-confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, access-control-allow-origin: *); trivial SPARQL query also 200."
+  },
+  "related": [
+    "europeana",
+    "wikidata"
+  ],
+  "added": "2026-11-11"
+}

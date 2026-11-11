@@ -136,7 +136,9 @@
   "related": [
     "clinicaltrials-gov",
     "pubchem",
-    "uniprot"
+    "uniprot",
+    "gdc-api",
+    "mygene-info"
   ],
   "added": "2026-11-11"
 }

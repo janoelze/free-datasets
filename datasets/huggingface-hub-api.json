@@ -127,7 +127,11 @@
   },
   "related": [
     "models-dev",
-    "openrouter-models"
+    "openrouter-models",
+    "huggingface-datasets-server",
+    "mcp-registry",
+    "openml-api",
+    "uci-ml-repository"
   ],
   "added": "2026-11-11"
 }

@@ -130,7 +130,8 @@
   "related": [
     "noaa-coops",
     "pegel-online",
-    "usgs-earthquakes"
+    "usgs-earthquakes",
+    "epa-echo-web-services"
   ],
   "added": "2026-11-11"
 }

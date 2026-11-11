@@ -1,0 +1,125 @@
+{
+  "slug": "un-comtrade",
+  "name": "UN Comtrade API",
+  "provider": {
+    "name": "United Nations Statistics Division (UN Comtrade)",
+    "url": "https://comtradeplus.un.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Official UN trade statistics by reporter, partner and commodity; a keyless preview route returns up to 500 records, full queries need a free subscription key.",
+  "description": "UN Comtrade collects detailed annual and monthly trade data reported by countries, classified by HS, SITC and BEC commodity codes and by partner and mode of transport. The comtradeapi.un.org service has a keyless preview route (public/v1/preview) that returns at most 500 records per query, and a full data route (data/v1/get) that requires a free subscription key. Reference lists of reporters, partners and commodity codes are plain JSON files that need no key.",
+  "category": "economics-statistics",
+  "tags": [
+    "trade",
+    "exports",
+    "imports",
+    "hs-codes",
+    "international-trade",
+    "statistics",
+    "customs"
+  ],
+  "links": {
+    "homepage": "https://comtradeplus.un.org/",
+    "docs": "https://uncomtrade.org/docs/",
+    "terms": "https://uncomtrade.org/docs/policy-on-comtrade-data-use/",
+    "signup": "https://uncomtrade.org/docs/api-subscription-keys/"
+  },
+  "api": {
+    "base_url": "https://comtradeapi.un.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Ocp-Apim-Subscription-Key",
+      "notes": "The public/v1/preview route needs no key and returns up to 500 records. The data/v1/get route answered 401 'missing subscription key' without one; a free key is issued through the UN Comtrade developer portal."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Fair-use policy with a per-second rate limit and a daily call quota that UN Comtrade may adjust; no numbers confirmed for the keyless preview."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/public/v1/preview/{typeCode}/{freqCode}/{clCode}",
+      "summary": "Keyless preview of up to 500 trade records (typeCode C goods or S services, freqCode A or M, clCode e.g. HS)",
+      "params": [
+        "reporterCode",
+        "period",
+        "partnerCode",
+        "cmdCode",
+        "flowCode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/data/v1/get/{typeCode}/{freqCode}/{clCode}",
+      "summary": "Full trade data query (free subscription key required)",
+      "params": [
+        "reporterCode",
+        "period",
+        "partnerCode",
+        "cmdCode",
+        "flowCode",
+        "maxRecords"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/files/v1/app/reference/Reporters.json",
+      "summary": "Reporter country codes (keyless reference list)"
+    },
+    {
+      "method": "GET",
+      "path": "/files/v1/app/reference/HS.json",
+      "summary": "Harmonized System commodity codes (keyless reference list)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2022&cmdCode=TOTAL&flowCode=X&partnerCode=0",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"elapsedTime\": \"0.03 secs\",\n  \"count\": 1,\n  \"data\": [\n    {\n      \"typeCode\": \"C\",\n      \"freqCode\": \"A\",\n      \"refPeriodId\": 20220101,\n      \"refYear\": 2022,\n      \"period\": \"2022\",\n      \"reporterCode\": 842,\n      \"flowCode\": \"X\",\n      \"partnerCode\": 0,\n      \"classificationCode\": \"H6\",\n      \"cmdCode\": \"TOTAL\",\n      \"fobvalue\": 2062089832731.0,\n      \"primaryValue\": 2062089832731.0,\n      \"isAggregate\": true\n    }\n  ],\n  \"error\": \"\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "UN Comtrade policy on data use; the UN Statistics Division must be cited as source",
+      "url": "https://uncomtrade.org/docs/policy-on-comtrade-data-use/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global; about 200 reporters and their partners",
+      "temporal": "Historical to recent years; annual and monthly"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "Codes are numeric M49-style country codes (842 = USA, 0 = World) and HS commodity codes (TOTAL = all). The preview route does not name countries (reporterDesc, partnerDesc and cmdDesc come back null); join with the Reporters.json and HS.json files. Totals queries (cmdCode=TOTAL, partnerCode=0) are the quickest way to get a country-level figure. For more than 500 rows use the data route with a key or the bulk files.",
+  "caveats": [
+    "Sending an Origin header (as browsers do) to the preview route returned HTTP 200 with an empty body, so it cannot be called from browser JavaScript; use a server-side client.",
+    "The keyless public/v1/preview route is the one the UN Comtrade web tool uses; the documentation describes the preview feature (up to 500 records) but this record did not find the route spelled out as a public contract, so it may change.",
+    "The full data/v1/get route was only observed returning 401 without a key (not tested with a key).",
+    "Mirror trade flows (exports of A to B vs imports of B from A) disagree; see the Comtrade FAQ on bilateral asymmetries."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key, no Origin header; 200 with application/json. data/v1/get answered 401 without a key."
+  },
+  "related": [
+    "harvard-atlas-of-economic-complexity",
+    "oec-tesseract",
+    "usitc-hts-rest",
+    "world-bank-indicators"
+  ],
+  "added": "2026-11-11"
+}

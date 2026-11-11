@@ -1,0 +1,109 @@
+{
+  "slug": "argentina-series-tiempo",
+  "name": "Argentina Time Series API (Series de Tiempo)",
+  "provider": {
+    "name": "Argentine Government (Ministerio de Economia, Subsecretaria de Programacion Macroeconomica)",
+    "url": "https://datos.gob.ar/",
+    "type": "government"
+  },
+  "summary": "Keyless REST API serving thousands of Argentine official statistical time series (prices, GDP, employment, trade, finance) with on-the-fly transformations.",
+  "description": "The Series de Tiempo API on apis.datos.gob.ar returns series by id, merged into one table, with frequency conversion (collapse), percent-change and other representation modes, date filtering and JSON or CSV output. A /search endpoint finds series by text, and /dump gives full CSV dumps.",
+  "category": "economics-statistics",
+  "tags": [
+    "argentina",
+    "time-series",
+    "economic-indicators",
+    "inflation",
+    "statistics",
+    "latin-america"
+  ],
+  "links": {
+    "homepage": "https://datos.gob.ar/series/api/",
+    "docs": "https://datosgobar.github.io/series-tiempo-ar-api/",
+    "terms": "https://datosgobar.github.io/series-tiempo-ar-api/terms/",
+    "source": "https://github.com/datosgobar/series-tiempo-ar-api"
+  },
+  "api": {
+    "base_url": "https://apis.datos.gob.ar/series/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/series/",
+      "summary": "Values for one or more series ids",
+      "params": [
+        "ids",
+        "start_date",
+        "end_date",
+        "limit",
+        "start",
+        "format",
+        "collapse",
+        "collapse_aggregation",
+        "representation_mode",
+        "metadata"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search/",
+      "summary": "Find series by text",
+      "params": [
+        "q",
+        "limit",
+        "start",
+        "dataset_theme",
+        "dataset_source"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://apis.datos.gob.ar/series/api/series/?ids=148.3_INIVELNAL_DICI_M_26&limit=2&start_date=2025-01",
+    "response_excerpt": "{\"data\": [[\"2025-01-01\", 7864.1257], [\"2025-02-01\", 8052.9927]], \"count\": 20, \"meta\": [{\"frequency\": \"month\", \"start_date\": \"2025-01-01\", \"end_date\": \"2025-02-01\"}, {\"catalog\": {\"title\": \"Datos Programaci\\u00f3n Macroecon\\u00f3mica\"}, \"dataset\": {\"title\": \"...\"}}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Per series publisher (the sample catalogue states Creative Commons Attribution 4.0)",
+      "url": "https://datosgobar.github.io/series-tiempo-ar-api/terms/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Argentina",
+      "temporal": "varies by series"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Find series ids with /search/?q=..., then call /series/?ids=a,b. Rows are arrays [date, value, ...] in the order of the ids; meta[0] describes the table and meta[1..] each series (use metadata=full for licence and source). The parameter last cannot be combined with sort, start or limit. Errors come back as HTTP 400 with an errors array.",
+  "caveats": [
+    "Series ids change if a publisher restructures a dataset; the id in the example is the national CPI (base December 2016).",
+    "limit and start paginate rows; the count field is the total number of rows available.",
+    "The docs are in Spanish only."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; /search/ also returned 200."
+  },
+  "related": [
+    "bcb-sgs",
+    "ibge-sidra"
+  ],
+  "added": "2026-11-11"
+}

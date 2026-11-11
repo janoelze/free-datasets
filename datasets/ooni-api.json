@@ -1,0 +1,120 @@
+{
+  "slug": "ooni-api",
+  "name": "OONI API",
+  "provider": {
+    "name": "Open Observatory of Network Interference (OONI)",
+    "url": "https://ooni.org",
+    "type": "nonprofit"
+  },
+  "summary": "Open internet censorship and network-interference measurements collected by OONI Probe volunteers worldwide, free without a key.",
+  "description": "Query individual OONI Probe measurements (web connectivity, instant messaging, circumvention tool tests and more) by country, ASN, test name, input URL and time, or fetch aggregated counts of ok, anomaly, confirmed and failure results over time. Raw measurement JSON is available per measurement UID.",
+  "category": "networking-internet",
+  "tags": [
+    "censorship",
+    "internet-measurement",
+    "network-interference",
+    "human-rights",
+    "asn"
+  ],
+  "links": {
+    "homepage": "https://ooni.org",
+    "docs": "https://docs.ooni.org/api/",
+    "terms": "https://ooni.org/about/data-policy/",
+    "openapi": "https://api.ooni.org/openapi.json",
+    "bulk_download": "https://ooni.org/data/",
+    "source": "https://github.com/ooni"
+  },
+  "api": {
+    "base_url": "https://api.ooni.org/api/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented as a fixed number; responses carry an x-ratelimit-remaining header (3818 and 2549 seen on two calls, quota not re-confirmed)."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/measurements",
+      "summary": "List measurements, newest first",
+      "params": [
+        "probe_cc",
+        "probe_asn",
+        "test_name",
+        "domain",
+        "input",
+        "since",
+        "until",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/aggregation",
+      "summary": "Aggregated counts grouped along axes such as day, country or test",
+      "params": [
+        "probe_cc",
+        "since",
+        "until",
+        "axis_x",
+        "axis_y",
+        "test_name"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/raw_measurement",
+      "summary": "Full raw measurement JSON for one UID",
+      "params": [
+        "measurement_uid"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/files",
+      "summary": "Listing of raw measurement files"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.ooni.org/api/v1/aggregation?probe_cc=DE&since=2026-11-01&until=2026-11-08&axis_x=measurement_start_day",
+    "response_excerpt": "{\n  \"v\": 0,\n  \"dimension_count\": 1,\n  \"db_stats\": {\"row_count\": 14132712, \"elapsed_seconds\": 0.0525},\n  \"result\": [\n    {\"anomaly_count\": 258, \"confirmed_count\": 0, \"failure_count\": 433, \"ok_count\": 4047, \"measurement_count\": 4738, \"measurement_start_day\": \"2026-11-01T00:00:00Z\"},\n    ...\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Creative Commons (see OONI data license repository)",
+      "url": "https://ooni.org/about/data-policy/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, per probe country and ASN",
+      "temporal": "Continuously updated; measurements within minutes of the check"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Start with /aggregation for trends (axis_x=measurement_start_day, probe_cc, test_name) and use /measurements only to drill into single results. Measurements default to roughly the last 30 days unless since/until are set. The server answers with api.ooni.io URLs in next_url and measurement_url; both hosts serve the same API.",
+  "caveats": [
+    "Measurement results are crowdsourced and not verified; anomaly is a hint, not proof of censorship.",
+    "The measurements list reports count -1 and pages -1; follow next_url or step offset instead of relying on totals.",
+    "Exact license wording is on the OONI data policy and license repository page, not re-confirmed here."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "ripestat"
+  ],
+  "added": "2026-11-11"
+}

@@ -115,7 +115,9 @@
     "notes": "Verified with DEMO_KEY."
   },
   "related": [
-    "nasa-image-video-library"
+    "nasa-image-video-library",
+    "nasa-cmr",
+    "nasa-exoplanet-archive"
   ],
   "added": "2026-11-11"
 }

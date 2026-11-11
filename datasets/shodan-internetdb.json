@@ -1,0 +1,81 @@
+{
+  "slug": "shodan-internetdb",
+  "name": "Shodan InternetDB",
+  "provider": {
+    "name": "Shodan",
+    "url": "https://www.shodan.io",
+    "type": "company"
+  },
+  "summary": "Free, keyless lookup of open ports, hostnames, CPEs, tags and known CVEs for a public IPv4 or IPv6 address.",
+  "description": "InternetDB returns a compact JSON summary per IP from Shodan scans: open ports, reverse hostnames, detected software CPEs, tags and vulnerability IDs. It is updated weekly according to its landing page and has no authentication.",
+  "category": "security",
+  "tags": [
+    "ip",
+    "ports",
+    "vulnerabilities",
+    "cve",
+    "internet-scanning",
+    "osint"
+  ],
+  "links": {
+    "homepage": "https://internetdb.shodan.io",
+    "docs": "https://internetdb.shodan.io/docs",
+    "terms": "https://www.shodan.io/terms"
+  },
+  "api": {
+    "base_url": "https://internetdb.shodan.io",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{ip}",
+      "summary": "Ports, hostnames, CPEs, tags and vulns for one IP"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://internetdb.shodan.io/8.8.8.8",
+    "response_excerpt": "{\"cpes\": [], \"hostnames\": [\"dns.google\"], \"ip\": \"8.8.8.8\", \"ports\": [53, 443], \"tags\": [\"pqc\"], \"vulns\": []}"
+  },
+  "data": {
+    "license": {
+      "name": "Shodan terms of service",
+      "url": "https://www.shodan.io/terms",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global public IPs observed by Shodan"
+    },
+    "update_frequency": "weekly"
+  },
+  "agent_notes": "One IP per request; there is no bulk or search endpoint. A /docs page (HTTP 200) describes the schema. Empty lists mean nothing observed, a 404 means the IP has no data.",
+  "caveats": [
+    "Only a single-IP lookup exists.",
+    "Licensing and rate limits were not confirmed from the docs.",
+    "Update cadence comes from the provider's description, not measured."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "cisa-kev",
+    "nvd-cve-api"
+  ],
+  "added": "2026-11-11"
+}

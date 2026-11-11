@@ -117,7 +117,9 @@
     "world-bank-indicators",
     "us-treasury-fiscaldata",
     "bank-of-canada-valet",
-    "bcb-sgs"
+    "bcb-sgs",
+    "dbnomics",
+    "eia-open-data"
   ],
   "added": "2026-11-11"
 }

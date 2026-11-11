@@ -135,7 +135,8 @@
   "related": [
     "coinbase-exchange",
     "coingecko",
-    "kraken-spot-rest"
+    "kraken-spot-rest",
+    "bitstamp"
   ],
   "added": "2026-11-11"
 }

@@ -112,7 +112,9 @@
   },
   "related": [
     "aviation-weather-center",
-    "pirate-weather"
+    "pirate-weather",
+    "msc-geomet",
+    "noaa-ncei-access-data"
   ],
   "added": "2026-11-11"
 }

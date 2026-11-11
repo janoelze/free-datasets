@@ -89,7 +89,8 @@
     }
   ],
   "related": [
-    "nominatim"
+    "nominatim",
+    "worldpop"
   ],
   "added": "2026-11-11"
 }

@@ -1,0 +1,114 @@
+{
+  "slug": "open-data-hub-south-tyrol",
+  "name": "Open Data Hub South Tyrol (tourism content API)",
+  "provider": {
+    "name": "NOI Techpark / Autonomous Province of Bolzano - South Tyrol",
+    "url": "https://opendatahub.com/",
+    "type": "government"
+  },
+  "summary": "Open API for South Tyrol tourism content (accommodation, events, activities, POIs) and mobility time series, keyless.",
+  "description": "The Content API at tourism.api.opendatahub.com serves tourism entities such as accommodations (16,193 at check), events, points of interest and gastronomy, with filtering, sorting and several output formats. A separate Time Series API serves mobility and environment measurements from stations and sensors. An OpenAPI 3 spec is published.",
+  "category": "transport-mobility",
+  "tags": [
+    "south-tyrol",
+    "italy",
+    "tourism",
+    "accommodation",
+    "events",
+    "mobility"
+  ],
+  "links": {
+    "homepage": "https://opendatahub.com/",
+    "docs": "https://docs.opendatahub.com/",
+    "terms": "https://docs.opendatahub.com/licensing",
+    "openapi": "https://tourism.api.opendatahub.com/swagger/v1/swagger.json"
+  },
+  "api": {
+    "base_url": "https://tourism.api.opendatahub.com/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Anonymous reads work; registered users get larger quotas."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Unregistered without a referrer: 10 requests per second per IP and query path, and 5 days of historical time-series data; with a Referer header: 20 per second and 100 days (quota docs).",
+      "requests": 10,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "page",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/Accommodation",
+      "summary": "Accommodations",
+      "params": [
+        "pagesize",
+        "pagenumber",
+        "fields",
+        "searchfilter",
+        "rawfilter",
+        "rawsort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/Event",
+      "summary": "Events",
+      "params": [
+        "pagesize",
+        "pagenumber",
+        "begindate",
+        "enddate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ODHActivityPoi",
+      "summary": "Activities and points of interest",
+      "params": [
+        "pagesize",
+        "pagenumber",
+        "type"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://tourism.api.opendatahub.com/v1/Accommodation?pagesize=1",
+    "response_excerpt": "{\"TotalResults\": 16193, \"TotalPages\": 16193, \"CurrentPage\": 1, \"NextPage\": \"https://tourism.api.opendatahub.com/v1/Accommodation?pagesize=1&pagenumber=2\", \"Items\": [{\"Id\": \"0D502BB9-5856-4D77-8C13-D2533602B2E7\", \"Active\": true, \"LicenseInfo\": {\"License\": \"CC BY-SA\", \"ClosedData\": false, \"LicenseHolder\": \"www.discover.swiss\"}, \"...\": \"...\"}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Per record: see LicenseInfo (CC0, CC BY-SA and others)",
+      "url": "https://docs.opendatahub.com/licensing",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "South Tyrol, Italy (and neighbouring regions for some feeds)",
+      "temporal": "current content; time series reach back by quota"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Every Content API item carries a LicenseInfo block, so read it per record. Pagination is pagesize (max 1000) and pagenumber. Entities are very large JSON objects: use the fields parameter to cut them. Send a Referer header to double the anonymous rate and extend the time-series history window.",
+  "caveats": [
+    "Licences differ per record (CC0, CC BY-SA, proprietary closed fields); ClosedData true means the record is not open.",
+    "Response headers carry x-rate-limit-limit: 10 for anonymous callers; the docs name two APIs (Content and Time Series) with the same quota rules.",
+    "The base URL covers the Content (tourism) API only; the mobility Time Series API lives on a different host described in the docs."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "added": "2026-11-11"
+}

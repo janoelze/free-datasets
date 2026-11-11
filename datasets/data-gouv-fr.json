@@ -1,0 +1,123 @@
+{
+  "slug": "data-gouv-fr",
+  "name": "data.gouv.fr API (udata)",
+  "provider": {
+    "name": "Etalab / DINUM (French government)",
+    "url": "https://www.data.gouv.fr/",
+    "type": "government"
+  },
+  "summary": "Keyless REST API of data.gouv.fr, the French national open data platform: datasets, resources, organisations, reuses and spatial zones.",
+  "description": "The udata API behind data.gouv.fr returns metadata for open datasets published by French ministries, agencies, local authorities and citizens, with resource download URLs, organisation records, tags and reuses. A dataset search for 'velib' matched 11 datasets at check. Swagger 2.0 spec is published and lists 181 paths.",
+  "category": "government-politics",
+  "tags": [
+    "france",
+    "open-data-portal",
+    "catalogue",
+    "udata",
+    "french-government",
+    "metadata"
+  ],
+  "links": {
+    "homepage": "https://www.data.gouv.fr/",
+    "docs": "https://doc.data.gouv.fr/api/reference/",
+    "terms": "https://www.data.gouv.fr/fr/terms/",
+    "openapi": "https://www.data.gouv.fr/api/1/swagger.json"
+  },
+  "api": {
+    "base_url": "https://www.data.gouv.fr/api/1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Reads need no key; writes need an account key."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/datasets/",
+      "summary": "Search datasets",
+      "params": [
+        "q",
+        "tag",
+        "organization",
+        "page",
+        "page_size",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/datasets/{id}/",
+      "summary": "One dataset with its resources"
+    },
+    {
+      "method": "GET",
+      "path": "/organizations/",
+      "summary": "List and search organisations",
+      "params": [
+        "q",
+        "page",
+        "page_size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/spatial/zones/suggest/",
+      "summary": "Suggest territorial zones by name",
+      "params": [
+        "q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tags/suggest/",
+      "summary": "Suggest tags",
+      "params": [
+        "q"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.data.gouv.fr/api/1/datasets/?q=velib&page_size=1",
+    "response_excerpt": "{\"data\": [{\"id\": \"5cb5ec6606e3e71c8f62e16f\", \"title\": \"Stations Vélib'\", \"slug\": \"stations-velib\", \"license\": \"fr-lo\", \"last_modified\": \"2026-11-09T11:45:12+00:00\", \"resources\": [{\"title\": \"station-velib.csv\", \"format\": \"csv\", \"...\": \"...\"}], \"...\": \"...\"}], \"next_page\": \"https://www.data.gouv.fr/api/1/datasets/?q=velib&page_size=1&page=2\", \"page\": 1, \"page_size\": 1, \"total\": 11}"
+  },
+  "data": {
+    "license": {
+      "name": "Licence Ouverte / Open Licence (platform default; each dataset sets its own)",
+      "url": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "France",
+      "temporal": "varies by dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Responses are large: the dataset object carries full descriptions and every resource, so keep page_size small. Dataset ids can be the hex id or the slug. The resources[].url fields point at the actual CSV/JSON files, often on other hosts. Most free text is in French.",
+  "caveats": [
+    "Per-dataset licence ids vary (fr-lo, odc-odbl, notspecified ...).",
+    "Rate limits and terms of API use were not found in the docs fetched; terms page only confirms the Licence Ouverte for the platform's own content."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; organizations, spatial zones, tags and dataset detail endpoints also returned 200."
+  },
+  "related": [
+    "data-gov-uk",
+    "open-canada-ckan"
+  ],
+  "added": "2026-11-11"
+}

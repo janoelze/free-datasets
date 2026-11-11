@@ -124,7 +124,9 @@
   "related": [
     "frankfurter",
     "ecb-data-api",
-    "fred"
+    "fred",
+    "bis-statistics",
+    "open-canada-ckan"
   ],
   "added": "2026-11-11"
 }

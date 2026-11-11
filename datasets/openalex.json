@@ -126,7 +126,11 @@
     "unpaywall",
     "crossref",
     "arxiv-api",
-    "ror-api"
+    "ror-api",
+    "datacite",
+    "eric-api",
+    "harvard-dataverse",
+    "zenodo"
   ],
   "added": "2026-11-11"
 }

@@ -1,0 +1,111 @@
+{
+  "slug": "nasa-exoplanet-archive",
+  "name": "NASA Exoplanet Archive TAP Service",
+  "provider": {
+    "name": "NASA Exoplanet Science Institute (Caltech/IPAC)",
+    "url": "https://exoplanetarchive.ipac.caltech.edu",
+    "type": "government"
+  },
+  "summary": "Confirmed exoplanets and host stars, Kepler/TESS candidates and more, queryable with ADQL through a TAP service.",
+  "description": "The archive exposes its tables (planetary systems \"ps\", composite parameters \"pscomppars\", Kepler and TESS objects of interest, microlensing, stellar hosts and others) through the IVOA Table Access Protocol, with synchronous queries returning JSON, CSV, VOTable or ASCII. A count on the ps table returned 40,387 rows on 2026-11-11. A legacy \"nstedAPI\" also exists.",
+  "category": "space-astronomy",
+  "tags": [
+    "exoplanets",
+    "astronomy",
+    "tap",
+    "adql",
+    "nasa",
+    "stars"
+  ],
+  "links": {
+    "homepage": "https://exoplanetarchive.ipac.caltech.edu",
+    "docs": "https://exoplanetarchive.ipac.caltech.edu/docs/TAP/usingTAP.html",
+    "terms": "https://exoplanetarchive.ipac.caltech.edu/docs/NExScI_acknowledgements.html"
+  },
+  "api": {
+    "base_url": "https://exoplanetarchive.ipac.caltech.edu/TAP",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched; the docs recommend best practices for heavy queries."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/sync",
+      "summary": "Synchronous ADQL query (GET or POST)",
+      "params": [
+        "query",
+        "format",
+        "maxrec"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/async",
+      "summary": "Asynchronous ADQL job (POST)",
+      "params": [
+        "query",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tables",
+      "summary": "Table schema listing"
+    },
+    {
+      "method": "GET",
+      "path": "/capabilities",
+      "summary": "TAP capabilities document"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+top+2+pl_name,hostname,disc_year+from+ps+where+default_flag=1&format=json",
+    "response_excerpt": "[\n{\"pl_name\": \"Kepler-992 b\",\n\"hostname\": \"Kepler-992\",\n\"disc_year\": 2016},\n{\"pl_name\": \"Kepler-762 b\",\n\"hostname\": \"Kepler-762\",\n\"disc_year\": 2016}\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Public NASA-funded data; the archive asks for acknowledgement (see terms page)",
+      "url": "https://exoplanetarchive.ipac.caltech.edu/docs/NExScI_acknowledgements.html",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Sky-wide",
+      "temporal": "Current archive contents"
+    },
+    "update_frequency": "weekly"
+  },
+  "agent_notes": "Use ADQL with TOP n (not LIMIT). Table ps has one row per planet per publication; filter default_flag=1 for one row per planet or use pscomppars. Responses are bare JSON arrays. Discover columns via /tables or the docs column lists. Prefer format=csv for large pulls.",
+  "caveats": [
+    "ADQL, not SQL: use TOP and not LIMIT, and quote nothing unusual.",
+    "No CORS header was sent, so browsers on other origins cannot call it directly.",
+    "Update cadence is not stated on the pages fetched (\"weekly\" is an assumption, not confirmed).",
+    "The legacy nstedAPI was not tested."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials."
+  },
+  "related": [
+    "jpl-sbdb",
+    "nasa-open-apis"
+  ],
+  "added": "2026-11-11"
+}

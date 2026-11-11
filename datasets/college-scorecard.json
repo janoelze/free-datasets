@@ -1,0 +1,100 @@
+{
+  "slug": "college-scorecard",
+  "name": "College Scorecard API",
+  "provider": {
+    "name": "U.S. Department of Education",
+    "url": "https://collegescorecard.ed.gov",
+    "type": "government"
+  },
+  "summary": "U.S. Department of Education API for College Scorecard: institution-level data on costs, enrolment, completion and earnings.",
+  "description": "Query US colleges and universities by name, state, degree level or any of the Scorecard fields, and return selected fields such as enrolment size, admission rates, net price, graduation and post-graduation earnings. Served through api.data.gov and requires a free key (DEMO_KEY works for light testing).",
+  "category": "economics-statistics",
+  "tags": [
+    "education",
+    "universities",
+    "colleges",
+    "us",
+    "student-outcomes",
+    "tuition",
+    "statistics"
+  ],
+  "links": {
+    "homepage": "https://collegescorecard.ed.gov/data/",
+    "docs": "https://collegescorecard.ed.gov/data/api-documentation/",
+    "terms": "https://api.data.gov/docs/developer-manual/",
+    "signup": "https://api.data.gov/signup"
+  },
+  "api": {
+    "base_url": "https://api.data.gov/ed/collegescorecard/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "demo_key": "DEMO_KEY",
+      "notes": "Free key from api.data.gov/signup; without a key the API answers 403 API_KEY_MISSING. DEMO_KEY worked on 2026-11-11."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "api.data.gov default for a registered key: 1,000 requests per hour (documented). DEMO_KEY is shared and much lower; x-ratelimit-limit: 10 was observed with it.",
+      "requests": 1000,
+      "per": "hour",
+      "scope": "key"
+    },
+    "pagination": "page",
+    "max_page_size": 100
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/schools",
+      "summary": "Search schools and return selected fields",
+      "params": [
+        "school.name",
+        "school.state",
+        "fields",
+        "per_page",
+        "page",
+        "sort"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.data.gov/ed/collegescorecard/v1/schools?api_key=DEMO_KEY&school.name=Harvard&fields=id,school.name,school.state,latest.student.size&per_page=2",
+    "response_excerpt": "{\"metadata\": {\"page\": 0, \"total\": 1, \"per_page\": 2}, \"results\": [{\"latest.student.size\": 7601, \"school.name\": \"Harvard University\", \"school.state\": \"MA\", \"id\": 166027}]}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the documentation pages read (U.S. federal government data)",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Multiple academic years; latest.* fields hold the most recent"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Always pass fields= with dotted names (for example id,school.name,school.state,latest.student.size); full records are very large. per_page is capped at 100 (a request for 101 returned 100). Filter by adding field=value pairs such as school.state=CA. The data dictionary lists every variable.",
+  "caveats": [
+    "A key is mandatory; the unauthenticated call returns 403 API_KEY_MISSING.",
+    "DEMO_KEY has very small shared limits; register for your own key.",
+    "DEMO_KEY hit 429 OVER_RATE_LIMIT during verification (retry-after 26660 s).",
+    "The data licence is not spelled out on the pages read; treat as US government data and check the documentation."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 with DEMO_KEY (200, access-control-allow-origin: *); the same URL without api_key returned 403. The shared DEMO_KEY was rate-limited (429, retry-after about 7 hours) shortly afterwards, so the excerpt is the response seen earlier and the example was not re-run."
+  },
+  "related": [
+    "us-treasury-fiscaldata"
+  ],
+  "added": "2026-11-11"
+}

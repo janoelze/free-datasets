@@ -1,0 +1,143 @@
+{
+  "slug": "gdc-api",
+  "name": "NCI Genomic Data Commons API",
+  "provider": {
+    "name": "National Cancer Institute, Genomic Data Commons",
+    "url": "https://gdc.cancer.gov",
+    "type": "government"
+  },
+  "summary": "Cancer genomics metadata and open-access data: projects, cases, files, genes, somatic mutations (TCGA, TARGET and more).",
+  "description": "The GDC API exposes the GDC data model as JSON search endpoints (projects, cases, files, annotations) plus gene, simple somatic mutation (SSM) and copy-number-variation endpoints. Open-access files can be downloaded via the data endpoint without a token; controlled-access data needs an NIH token. A projects query on 2026-11-11 reported 93 projects.",
+  "category": "health-medicine",
+  "tags": [
+    "cancer",
+    "genomics",
+    "tcga",
+    "oncology",
+    "mutations",
+    "biomedical"
+  ],
+  "links": {
+    "homepage": "https://gdc.cancer.gov",
+    "docs": "https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/",
+    "terms": "https://gdc.cancer.gov/access-data/data-access-processes-and-tools"
+  },
+  "api": {
+    "base_url": "https://api.gdc.cancer.gov",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "text"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No credential needed for metadata and open-access data; controlled-access files need a dbGaP-authorised token in the X-Auth-Token header (not tested)."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched; fair use."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/projects",
+      "summary": "List or filter projects (programs such as TCGA, TARGET)",
+      "params": [
+        "fields",
+        "filters",
+        "size",
+        "from",
+        "sort",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/cases",
+      "summary": "Search cases (patients) with clinical and demographic fields",
+      "params": [
+        "fields",
+        "filters",
+        "size",
+        "from",
+        "expand"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/files",
+      "summary": "Search data files and their metadata",
+      "params": [
+        "fields",
+        "filters",
+        "size",
+        "from"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ssms",
+      "summary": "Search simple somatic mutations",
+      "params": [
+        "fields",
+        "filters",
+        "size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/genes",
+      "summary": "Search genes",
+      "params": [
+        "fields",
+        "filters",
+        "size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "summary": "Service status and current data release"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.gdc.cancer.gov/projects?size=2&fields=project_id,name,primary_site&sort=project_id",
+    "response_excerpt": "{\"data\": {\"hits\": [{\"id\": \"ALCHEMIST-ALCH\", \"primary_site\": [\"Not Reported\"], \"project_id\": \"ALCHEMIST-ALCH\", \"name\": \"Adjuvant Lung Cancer Enrichment Marker Identification and Sequencing Trial\"}, {\"id\": \"APOLLO-BRCA-1\", \"primary_site\": [\"Breast\"], \"project_id\": \"APOLLO-BRCA-1\", \"name\": \"Proteogenomic analysis of tumors from young women with breast cancer\"}], \"pagination\": {\"count\": 2, \"total\": 93, \"size\": 2, \"from\": 0, \"sort\": \"None\", \"page\": 1, \"pages\": 47}}, \"warnings\": {}}"
+  },
+  "data": {
+    "license": {
+      "name": "Open-access data is freely usable; controlled-access data needs authorisation (terms not re-confirmed)",
+      "url": "https://gdc.cancer.gov/access-data/data-access-processes-and-tools",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global patient cohorts, mostly US programs",
+      "temporal": "Data release 46.0 (2026-08-10) per /status"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use the fields parameter to keep responses small and the filters parameter (JSON, URL-encoded) for queries; size and from page results, pagination is in the response. Ids are UUIDs for cases and files, symbolic ids for projects (TCGA-LUAD). /status returns the data release. Open files download from /data/{file_id}.",
+  "caveats": [
+    "Filter syntax is a JSON expression language ({\"op\":\"in\",\"content\":{\"field\":..,\"value\":[..]}}) that must be URL-encoded; it is easier to start with simple field queries.",
+    "Only metadata and open-access files were checked; controlled-access downloads need an NIH token.",
+    "CORS reflected the sent origin on the example; other endpoints not checked.",
+    "License terms were not stated on the pages fetched; check GDC data use policy before redistributing."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials."
+  },
+  "related": [
+    "cbioportal",
+    "clinicaltrials-gov",
+    "ncbi-eutils"
+  ],
+  "added": "2026-11-11"
+}

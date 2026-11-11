@@ -1,0 +1,105 @@
+{
+  "slug": "data-gov-my",
+  "name": "data.gov.my Open API (Data Catalogue, OpenDOSM, transport)",
+  "provider": {
+    "name": "Government of Malaysia (Department of Statistics Malaysia / MAMPU, data.gov.my)",
+    "url": "https://data.gov.my/",
+    "type": "government"
+  },
+  "summary": "Keyless REST API for Malaysian open data: data catalogue tables, OpenDOSM statistics, weather and GTFS transport feeds.",
+  "description": "api.data.gov.my serves catalogue tables by id (fuel prices, for example), OpenDOSM national statistics, weather forecasts and warnings, and GTFS static and realtime transit data. Filtering uses a documented query syntax (filter, ifilter, contains, range, sort, limit, include, exclude).",
+  "category": "government-politics",
+  "tags": [
+    "malaysia",
+    "open-data-portal",
+    "statistics",
+    "fuel-prices",
+    "gtfs",
+    "weather"
+  ],
+  "links": {
+    "homepage": "https://data.gov.my/",
+    "docs": "https://developer.data.gov.my/",
+    "terms": "https://developer.data.gov.my/"
+  },
+  "api": {
+    "base_url": "https://api.data.gov.my",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "4 requests per minute per API (data catalogue, OpenDOSM, weather, GTFS) per the rate-limit docs; 429 when exceeded.",
+      "requests": 4,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/data-catalogue",
+      "summary": "Rows of a catalogue dataset (id required)",
+      "params": [
+        "id",
+        "limit",
+        "filter",
+        "contains",
+        "range",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/opendosm",
+      "summary": "OpenDOSM statistics dataset (id required)",
+      "params": [
+        "id",
+        "limit",
+        "filter",
+        "sort"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1",
+    "response_excerpt": "[{\"date\": \"2017-03-30\", \"ron95\": 2.13, \"ron97\": 2.41, \"diesel\": 2.11, \"series_type\": \"level\", \"diesel_eastmsia\": 2.11, \"...\": null}]"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "url": "https://developer.data.gov.my/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Malaysia",
+      "temporal": "varies by dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "The dataset id for each catalogue table is shown in the 'Sample OpenAPI query' section of its page on data.gov.my. A response is a bare JSON array, not an envelope. Use a trailing slash (/data-catalogue/) to avoid a redirect from /data-catalogue.",
+  "caveats": [
+    "4 requests per minute is very low; cache and avoid loops.",
+    "Without the trailing slash the data-catalogue path answers 301 first.",
+    "The CC BY 4.0 notice was read from the docs site footer; confirm per dataset on data.gov.my."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "data-gov-sg"
+  ],
+  "added": "2026-11-11"
+}

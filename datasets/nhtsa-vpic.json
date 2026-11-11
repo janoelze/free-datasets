@@ -1,0 +1,116 @@
+{
+  "slug": "nhtsa-vpic",
+  "name": "NHTSA vPIC Vehicle Product Information Catalog API",
+  "provider": {
+    "name": "U.S. National Highway Traffic Safety Administration",
+    "url": "https://www.nhtsa.gov",
+    "type": "government"
+  },
+  "summary": "Free keyless API that decodes vehicle identification numbers (VIN) and lists vehicle makes, models and manufacturers.",
+  "description": "vPIC decodes full or partial VINs into make, model, year, body class, engine, plant, safety equipment and error codes, singly or in batches of up to 50. It also lists makes (more than 12,000 at check), models for a make and year, vehicle types, manufacturers and the decoding variables and their values. Applies to vehicles sold in the US.",
+  "category": "transport-mobility",
+  "tags": [
+    "vehicles",
+    "vin",
+    "cars",
+    "manufacturers",
+    "decoder",
+    "united-states"
+  ],
+  "links": {
+    "homepage": "https://vpic.nhtsa.dot.gov/",
+    "docs": "https://vpic.nhtsa.dot.gov/api/",
+    "terms": "https://www.nhtsa.gov/website-terms-conditions"
+  },
+  "api": {
+    "base_url": "https://vpic.nhtsa.dot.gov/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "An automated traffic rate control mechanism applies; no number is documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/vehicles/DecodeVinValues/{vin}",
+      "summary": "Decode a VIN into a flat record",
+      "params": [
+        "format",
+        "modelyear"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vehicles/DecodeVINValuesBatch/",
+      "summary": "Decode up to 50 VINs per call",
+      "params": [
+        "format",
+        "data"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vehicles/GetAllMakes",
+      "summary": "List all makes",
+      "params": [
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vehicles/GetModelsForMakeYear/make/{make}/modelyear/{year}",
+      "summary": "Models for a make and model year",
+      "params": [
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/1HGCM82633A004352?format=json",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"Count\": 1,\n  \"Message\": \"Results returned successfully. NOTE: ...\",\n  \"SearchCriteria\": \"VIN(s): 1HGCM82633A004352\",\n  \"Results\": [\n    {\n      \"Make\": \"HONDA\",\n      \"Model\": \"Accord\",\n      \"ModelYear\": \"2003\",\n      \"BodyClass\": \"Coupe\",\n      \"VehicleType\": \"PASSENGER CAR\",\n      \"PlantCountry\": \"UNITED STATES (USA)\",\n      \"ErrorCode\": \"0\",\n      \"...\": \"...\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "US Government public data (NHTSA); no licence text fetched",
+      "url": "https://www.nhtsa.gov/website-terms-conditions",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Vehicles sold in the United States",
+      "temporal": "Current; VINs of vehicles from 1981 onward"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "Always add format=json (the default is XML). Check ErrorCode in the result: 0 is a clean decode, anything else needs the ErrorText. Many fields are empty strings, which NHTSA says means no data, not absence of the feature. Prefer the Values (flat) endpoints over the older key-value ones.",
+  "caveats": [
+    "Observed response time for the example was about 4 seconds.",
+    "Empty fields mean the data is missing in vPIC, not that the vehicle lacks the feature.",
+    "Only the endpoints in the example list were called; the full list is on the docs page."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key."
+  },
+  "related": [
+    "fueleconomy-gov",
+    "nhtsa-api"
+  ],
+  "added": "2026-11-11"
+}

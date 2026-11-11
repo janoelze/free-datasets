@@ -124,7 +124,8 @@
   "related": [
     "binance-spot-market-data",
     "coinbase-exchange",
-    "coingecko"
+    "coingecko",
+    "bitstamp"
   ],
   "added": "2026-11-11"
 }

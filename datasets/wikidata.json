@@ -116,7 +116,9 @@
   },
   "related": [
     "wikipedia-api",
-    "wikimedia-pageviews"
+    "wikimedia-pageviews",
+    "dbpedia-sparql",
+    "getty-vocabularies"
   ],
   "added": "2026-11-11"
 }

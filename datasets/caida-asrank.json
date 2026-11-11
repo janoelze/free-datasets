@@ -1,0 +1,116 @@
+{
+  "slug": "caida-asrank",
+  "name": "CAIDA ASRank API",
+  "provider": {
+    "name": "CAIDA (UC San Diego)",
+    "url": "https://www.caida.org",
+    "type": "academic"
+  },
+  "summary": "AS ranking by customer cone size plus AS, organization and link data derived from BGP, free without a key.",
+  "description": "ASRank ranks Autonomous Systems by customer cone and exposes per-AS details (name, country, location, degree, cone size in ASNs, prefixes and addresses), organizations, and inferred AS-to-AS relationships. A GraphQL endpoint and a REST interface serve the same data.",
+  "category": "networking-internet",
+  "tags": [
+    "asn",
+    "bgp",
+    "as-rank",
+    "internet-topology",
+    "caida"
+  ],
+  "links": {
+    "homepage": "https://asrank.caida.org",
+    "docs": "https://api.asrank.caida.org/v2/restful/doc",
+    "terms": "https://www.caida.org/about/legal/aua/",
+    "bulk_download": "https://www.caida.org/catalog/datasets/as-relationships/"
+  },
+  "api": {
+    "base_url": "https://api.asrank.caida.org/v2/restful",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/asns/{asn}",
+      "summary": "Details and rank for one AS"
+    },
+    {
+      "method": "GET",
+      "path": "/asns/",
+      "summary": "Ranked list of ASes",
+      "params": [
+        "first",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/asns/name/{name}",
+      "summary": "Find ASes by name"
+    },
+    {
+      "method": "GET",
+      "path": "/organizations/{organization}",
+      "summary": "One organization"
+    },
+    {
+      "method": "GET",
+      "path": "/asnLinks/",
+      "summary": "AS-to-AS links",
+      "params": [
+        "first",
+        "offset",
+        "asn"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/datasets",
+      "summary": "Available data snapshots"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.asrank.caida.org/v2/restful/asns/3356",
+    "response_excerpt": "{\"data\": {\"asn\": {\"rank\": 1, \"asn\": \"3356\", \"asnName\": \"LEVEL3\", \"source\": \"ARIN\", \"cliqueMember\": true, \"country\": {\"iso\": \"US\"}, \"cone\": {\"numberAsns\": 52579, \"numberPrefixes\": 955630, \"numberAddresses\": 2263051601}, \"asnDegree\": {\"total\": 6626, \"customer\": 6545, \"peer\": 81, \"provider\": 0}}}}"
+  },
+  "data": {
+    "license": {
+      "name": "CAIDA Acceptable Use Agreement",
+      "url": "https://www.caida.org/about/legal/aua/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Monthly inference snapshots; recent state"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "Look up one AS with /asns/{asn}; ASNs are strings in the response. The swagger spec is embedded in the /doc page (spec key). Cite CAIDA when using the data.",
+  "caveats": [
+    "The API serves a Swagger 2.0 spec inside the doc page rather than at a plain openapi URL, so no links.openapi is recorded.",
+    "Endpoint paths come from the Swagger spec on the doc page; only /asns/{asn} and /asns/ were exercised today. List paths need the trailing slash (without it the server answers 301)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "peeringdb-api",
+    "ripestat"
+  ],
+  "added": "2026-11-11"
+}

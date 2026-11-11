@@ -1,0 +1,107 @@
+{
+  "slug": "oecd-sdmx",
+  "name": "OECD Data API (SDMX REST)",
+  "provider": {
+    "name": "OECD",
+    "url": "https://www.oecd.org/",
+    "type": "intergovernmental"
+  },
+  "summary": "Keyless SDMX REST API of the OECD Data Explorer: economic, social and environmental indicators for OECD and partner countries in SDMX-JSON and CSV.",
+  "description": "sdmx.oecd.org/public/rest exposes about 1,550 dataflows at check (national accounts, key short-term indicators, prices, labour, health, environment) with SDMX 2.1 structure queries and data queries keyed by dot-separated dimensions. Output as SDMX-JSON, SDMX-CSV (with labels) or SDMX-ML.",
+  "category": "economics-statistics",
+  "tags": [
+    "oecd",
+    "sdmx",
+    "economic-indicators",
+    "statistics",
+    "cpi",
+    "national-accounts"
+  ],
+  "links": {
+    "homepage": "https://data-explorer.oecd.org/",
+    "docs": "https://gitlab.algobank.oecd.org/public-documentation/dotstat-migration/-/raw/main/OECD_Data_API_documentation.pdf",
+    "terms": "https://www.oecd.org/en/about/terms-conditions.html"
+  },
+  "api": {
+    "base_url": "https://sdmx.oecd.org/public/rest",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not confirmed: the OECD docs pages are behind a Cloudflare challenge for curl and the PDF guide fetched did not state a number."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/dataflow/all/all/latest",
+      "summary": "List all dataflows (send Accept: application/vnd.sdmx.structure+json)"
+    },
+    {
+      "method": "GET",
+      "path": "/dataflow/{agency}/{id}/{version}",
+      "summary": "Structure and dimensions of one dataflow",
+      "params": [
+        "references"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/data/{agency},{flow},{version}/{key}",
+      "summary": "Observations for a dimension key ('.' separated, '+' for OR, empty for all)",
+      "params": [
+        "startPeriod",
+        "endPeriod",
+        "lastNObservations",
+        "dimensionAtObservation",
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_KEI@DF_KEI,4.0/USA.M.PRVM.IX.C.Y._Z?lastNObservations=1&format=jsondata",
+    "response_excerpt": "{\"meta\": {\"id\": \"IREF024778\", \"prepared\": \"2026-11-11T16:30:27Z\", \"test\": false}, \"data\": {\"dataSets\": [{\"action\": \"Information\", \"series\": {\"0:0:0:0:0:0:0\": {\"observations\": {\"0\": [98.0927513890387, 0]}}}}], \"structure\": {\"name\": \"Key short-term economic indicators\", \"...\": \"...\"}}}"
+  },
+  "data": {
+    "license": {
+      "name": "OECD terms and conditions (per dataset)",
+      "url": "https://www.oecd.org/en/about/terms-conditions.html",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "OECD members and selected partner countries",
+      "temporal": "varies by dataflow"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Start from /dataflow/all/all/latest with Accept: application/vnd.sdmx.structure+json (about 6 MB), then request the dataflow structure to learn the dimension order; the data key must have exactly one value (or empty) per dimension and the wrong count returns 403 'Not enough key values in query'. Use lastNObservations or startPeriod to keep payloads small. Plain format=jsondata gives SDMX-JSON 1.0; format=csvfilewithlabels gives a flat table.",
+  "caveats": [
+    "A wrong number of key dimensions returns HTTP 403, and a key with no match returns 404 NoResultsFound.",
+    "The format parameter on structure queries only accepts structure formats; use the Accept header instead.",
+    "Rate limits and the licence text could not be fetched (oecd.org docs return a Cloudflare 403 to curl), so both are left unconfirmed; check the terms page before bulk use."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "dbnomics",
+    "eurostat",
+    "ssb-statbank-norway",
+    "world-bank-indicators"
+  ],
+  "added": "2026-11-11"
+}

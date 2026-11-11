@@ -1,0 +1,123 @@
+{
+  "slug": "datacite",
+  "name": "DataCite REST API",
+  "provider": {
+    "name": "DataCite",
+    "url": "https://datacite.org",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless REST API over the DataCite DOI registry: metadata for datasets, software and other research outputs.",
+  "description": "Search and retrieve DOI metadata registered with DataCite, including records from Zenodo and OSF (both seen in results today). Filter by resource type, year, client or provider, or search free text. JSON:API formatted responses with cursor paging.",
+  "category": "knowledge-reference",
+  "tags": [
+    "doi",
+    "research-data",
+    "metadata",
+    "citations",
+    "repositories",
+    "open-science",
+    "datasets"
+  ],
+  "links": {
+    "homepage": "https://datacite.org",
+    "docs": "https://support.datacite.org/docs/api"
+  },
+  "api": {
+    "base_url": "https://api.datacite.org",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented in the pages read; no rate-limit headers were returned."
+    },
+    "pagination": "cursor",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/dois",
+      "summary": "Search DOIs",
+      "params": [
+        "query",
+        "page[size]",
+        "page[cursor]",
+        "resource-type-id",
+        "client-id",
+        "provider-id",
+        "year",
+        "fields[dois]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dois/{doi}",
+      "summary": "One DOI record",
+      "params": [
+        "doi"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/clients",
+      "summary": "Repositories (clients) that register DOIs",
+      "params": [
+        "query",
+        "page[size]"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/providers",
+      "summary": "Providers (members)",
+      "params": [
+        "query",
+        "page[size]"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.datacite.org/dois?query=climate&page%5Bsize%5D=1&fields%5Bdois%5D=doi,titles,publisher",
+    "response_excerpt": "{\"data\": [{\"id\": \"10.17605/osf.io/8dynp\", \"type\": \"dois\", \"attributes\": {\"doi\": \"10.17605/osf.io/8dynp\", \"titles\": [{\"title\": \"CFP Route 4: Independent Severe Tests.\"}], \"publisher\": \"OSF\"}, \"relationships\": {}}], \"meta\": {\"total\": 633550, \"totalPages\": 10000, \"page\": 1}, \"links\": {\"self\": \"https://api.datacite.org/dois?query=climate&page%5Bsize%5D=1...\", \"next\": \"https://api.datacite.org/dois?fields%5Bdois%5D=doi%2Ctitles%...\"}}"
+  },
+  "data": {
+    "license": {
+      "name": "Metadata record licences not re-confirmed; DataCite states its metadata is openly available",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "All registered DOIs"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use page[size] up to 1000 and follow links.next (cursor). Reduce payloads with fields[dois]=doi,titles. The /events endpoint (used for data citation counts) timed out on 2026-11-11 and is not covered here.",
+  "caveats": [
+    "Responses can be large; request sparse fields.",
+    "The /events endpoint timed out (30 s) on 2026-11-11 and was not verified.",
+    "CC0 status of DataCite metadata is not re-confirmed from a docs page today.",
+    "No OpenAPI document found at /openapi.json (404)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200); CORS reflects the request origin; 1000-record page with cursor link also returned 200."
+  },
+  "related": [
+    "crossref",
+    "harvard-dataverse",
+    "openalex",
+    "ror-api",
+    "zenodo"
+  ],
+  "added": "2026-11-11"
+}

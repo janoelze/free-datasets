@@ -1,0 +1,108 @@
+{
+  "slug": "humanitarian-data-exchange",
+  "name": "Humanitarian Data Exchange (HDX) CKAN API",
+  "provider": {
+    "name": "UN OCHA Centre for Humanitarian Data",
+    "url": "https://data.humdata.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Keyless CKAN API for HDX: thousands of humanitarian datasets on crises, health, food security, displacement and population.",
+  "description": "HDX is a CKAN-based open data platform run by UN OCHA. package_search and package_show return dataset metadata, resources and licences; organization_list and group endpoints list contributing organisations and countries. The separate HAPI API needs a free app identifier and was not verified.",
+  "category": "economics-statistics",
+  "tags": [
+    "humanitarian",
+    "crisis",
+    "displacement",
+    "ckan",
+    "development",
+    "un",
+    "datasets"
+  ],
+  "links": {
+    "homepage": "https://data.humdata.org",
+    "docs": "https://docs.ckan.org/en/latest/api/index.html"
+  },
+  "api": {
+    "base_url": "https://data.humdata.org/api/3/action",
+    "style": "rpc",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/package_search",
+      "summary": "Search datasets",
+      "params": [
+        "q",
+        "rows",
+        "start",
+        "fq",
+        "sort",
+        "fl"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_show",
+      "summary": "One dataset with its resources",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/organization_list",
+      "summary": "List organisations",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.humdata.org/api/3/action/package_search?q=ebola&rows=1&fl=name,title,license_title",
+    "response_excerpt": "{\"help\": \"https://data.humdata.org/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 90, \"facets\": {}, \"expanded\": {}, \"results\": [{\"name\": \"drc-health-facilities\", \"title\": \"DRC Health Data Ebola 2018\"}], \"sort\": \"score desc, last_modified desc\", \"search_facets\": {\"pivot\": {}, \"queries\": []}, \"facet_pivot\": {}, \"facet_queries\": {}}}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per dataset (e.g. Open Database License for the example)",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, humanitarian contexts",
+      "temporal": "Varies per dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Standard CKAN action API; use rows and start to page and fq for filters like organization or groups (country). Each resource has a download url; read license_title per dataset. Data in resources is mostly CSV/XLSX/GeoJSON files, not queryable via the API.",
+  "caveats": [
+    "HDX's own developer FAQ (/faqs/devs) returned 202 without content to curl, so the CKAN docs are linked instead.",
+    "The HAPI v2 API returned 403 'Invalid app identifier' without an identifier and was not verified.",
+    "Licences and terms vary per dataset; the terms page was not readable."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, access-control-allow-origin: *). organization_list also 200."
+  },
+  "related": [
+    "our-world-in-data",
+    "who-gho",
+    "world-bank-indicators"
+  ],
+  "added": "2026-11-11"
+}

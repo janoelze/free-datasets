@@ -1,0 +1,121 @@
+{
+  "slug": "bitstamp",
+  "name": "Bitstamp Public Market Data API",
+  "provider": {
+    "name": "Bitstamp",
+    "url": "https://www.bitstamp.net",
+    "type": "company"
+  },
+  "summary": "Keyless public market data from the Bitstamp exchange: tickers, OHLC candles back to 2011, order books, recent trades, currencies and trading pairs.",
+  "description": "Bitstamp's v2 REST API serves public market data without authentication: per-market tickers, all-market tickers, hourly tickers, order books, recent transactions, OHLC candles at granularities from 1 minute to 3 days, plus currency and trading-pair listings. It is the source behind the widely used Kaggle 'Bitcoin Historical Data' minute-level OHLC dataset. Private trading endpoints require signed keys and are not covered here.",
+  "category": "finance-markets",
+  "tags": [
+    "crypto",
+    "exchange",
+    "order-book",
+    "ohlc",
+    "prices",
+    "trades",
+    "bitcoin"
+  ],
+  "links": {
+    "homepage": "https://www.bitstamp.net",
+    "docs": "https://www.bitstamp.net/api/"
+  },
+  "api": {
+    "base_url": "https://www.bitstamp.net/api/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public data functions answered without credentials; private endpoints need API keys with signed requests."
+    },
+    "cors": "unknown",
+    "rate_limit": {
+      "summary": "Documented: 400 requests per second by default, and a default threshold of 10,000 requests per 10 minutes; exceeding it returns error 400.002.",
+      "requests": 400,
+      "per": "second"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/ticker/{market_symbol}/",
+      "summary": "Latest price, 24h open/high/low, volume, bid and ask"
+    },
+    {
+      "method": "GET",
+      "path": "/ohlc/{market_symbol}/",
+      "summary": "OHLC candles; step in seconds, limit 1 to 1000",
+      "params": [
+        "step",
+        "limit",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/order_book/{market_symbol}/",
+      "summary": "Current bids and asks"
+    },
+    {
+      "method": "GET",
+      "path": "/transactions/{market_symbol}/",
+      "summary": "Recent trades",
+      "params": [
+        "time"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/trading-pairs-info/",
+      "summary": "All trading pairs and their rules"
+    },
+    {
+      "method": "GET",
+      "path": "/currencies/",
+      "summary": "Currencies with supply and network details"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.bitstamp.net/api/v2/ohlc/btcusd/?step=3600&limit=2",
+    "response_excerpt": "{\n  \"data\": {\n    \"pair\": \"BTC/USD\",\n    \"ohlc\": [\n      {\"timestamp\": \"1794409200\", \"open\": \"73469.93\", \"high\": \"74367.98\", \"low\": \"73320.60\", \"close\": \"73907.22\", \"volume\": \"211.98986752\"},\n      ...\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Bitstamp terms (terms page is behind a bot wall; not read)",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global crypto and fiat pairs listed on Bitstamp",
+      "temporal": "Live data; BTC/USD candles queried from start=1325376000 (January 2012) returned data"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Market symbols are lower-case base+quote without a separator, for example btcusd. Numbers come back as strings. OHLC needs step (seconds) and limit (1 to 1000); use start with a unix timestamp to page through history, since there is no cursor. The 1-minute candle for early 2012 exists but often has zero volume. For streaming use the documented websocket API instead of polling.",
+  "caveats": [
+    "CORS was inconsistent: /ohlc/ and /currencies/ sent Access-Control-Allow-Origin * while /ticker/ sent no CORS header.",
+    "The site sits behind Imperva; the terms-of-use page returned a bot-wall stub, so licence and reuse terms were not confirmed.",
+    "The API docs page embeds an OpenAPI document but no spec URL was found, so none is linked.",
+    "limit above 1000 on /ohlc/ returns a validation error."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without credentials (200, about 0.15 s); ticker, order_book, transactions, trading-pairs-info and currencies also returned 200. A missing and a curl-default User-Agent both worked."
+  },
+  "related": [
+    "binance-spot-market-data",
+    "coinbase-exchange",
+    "kraken-spot-rest"
+  ],
+  "added": "2026-11-11"
+}

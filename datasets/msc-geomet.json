@@ -1,0 +1,115 @@
+{
+  "slug": "msc-geomet",
+  "name": "MSC GeoMet OGC API (Environment Canada)",
+  "provider": {
+    "name": "Environment and Climate Change Canada, Meteorological Service of Canada",
+    "url": "https://eccc-msc.github.io/open-data/",
+    "type": "government"
+  },
+  "summary": "Canada's official weather, climate, hydrometric and air-quality data as an OGC API (Features) served as GeoJSON, free and keyless.",
+  "description": "The MSC GeoMet-OGC-API exposes more than 100 collections at the time of checking: climate stations, daily, monthly and hourly climate observations, climate normals, hydrometric stations and real-time water levels and flows, city page weather, marine weather, real-time surface observations (SWOB), air quality health index observations and forecasts, hurricane tracks and more. Collections are queried with standard OGC API Features parameters.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "climate",
+    "canada",
+    "hydrology",
+    "observations",
+    "ogc-api",
+    "stations"
+  ],
+  "links": {
+    "homepage": "https://eccc-msc.github.io/open-data/msc-geomet/web-services_en/",
+    "docs": "https://api.weather.gc.ca/",
+    "terms": "https://eccc-msc.github.io/open-data/licence/readme_en/",
+    "openapi": "https://api.weather.gc.ca/openapi?f=json"
+  },
+  "api": {
+    "base_url": "https://api.weather.gc.ca",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/collections",
+      "summary": "List all collections",
+      "params": [
+        "f"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections/{collectionId}/items",
+      "summary": "Query features of a collection (OGC API Features)",
+      "params": [
+        "f",
+        "limit",
+        "offset",
+        "bbox",
+        "datetime",
+        "sortby",
+        "properties",
+        "<queryable property>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/openapi",
+      "summary": "OpenAPI 3 description",
+      "params": [
+        "f"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.weather.gc.ca/collections/climate-stations/items?f=json&limit=1&STN_ID=2",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"STN_ID\": 2,\n        \"STATION_NAME\": \"CHEMAINUS BARE POINT\",\n        \"PROV_STATE_TERR_CODE\": \"BC\",\n        \"COUNTRY\": \"CAN\",\n        \"CLIMATE_IDENTIFIER\": \"101AE00\",\n        \"DLY_FIRST_DATE\": \"1979-11-01 00:00:00\",\n        \"DLY_LAST_DATE\": \"1979-12-31 00:00:00\"\n      }\n    }\n  ],\n  \"...\": \"...\"\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Environment and Climate Change Canada Data Server End-use Licence",
+      "url": "https://eccc-msc.github.io/open-data/licence/readme_en/",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Canada (some collections include nearby marine and international areas)",
+      "temporal": "Varies: real-time feeds and historical climate records from the 1800s onward in some collections"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Start with /collections?f=json to see the ids, then /collections/{id}/queryables for filterable properties. Use f=json (GeoJSON) or f=csv. Page with limit and offset (follow the next link in the response). Climate daily data is queried with CLIMATE_IDENTIFIER and datetime, e.g. climate-daily?CLIMATE_IDENTIFIER=6158355&sortby=-LOCAL_DATE.",
+  "caveats": [
+    "Observed: climate-stations LATITUDE and LONGITUDE are integers in 1e-7 degrees-style units (485500000); use the GeoJSON geometry for coordinates.",
+    "The newest daily climate rows can have null values until quality control completes.",
+    "Rate limits and CORS beyond the example endpoint were not individually confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; the OpenAPI URL returned openapi 3.0.2."
+  },
+  "related": [
+    "met-norway-locationforecast",
+    "nws-weather-gov"
+  ],
+  "added": "2026-11-11"
+}

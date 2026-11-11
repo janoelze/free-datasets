@@ -124,7 +124,8 @@
     "notes": "Exact example executed without a key; response was a JSON-stat2 dataset."
   },
   "related": [
-    "eurostat"
+    "eurostat",
+    "oecd-sdmx"
   ],
   "added": "2026-11-11"
 }

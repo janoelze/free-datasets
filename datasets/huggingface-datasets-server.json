@@ -1,0 +1,151 @@
+{
+  "slug": "huggingface-datasets-server",
+  "name": "Hugging Face Dataset Viewer API (datasets-server)",
+  "provider": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co",
+    "type": "company"
+  },
+  "summary": "Free API to read rows, splits, schemas, statistics and Parquet files of public Hugging Face Hub datasets without downloading them.",
+  "description": "The dataset viewer API serves the contents of public datasets on the Hugging Face Hub: list configs and splits, page through rows, run full-text search and SQL-like filters, get column statistics, dataset size and the auto-converted Parquet file URLs. It is a separate host from the Hub API that lists and searches the datasets themselves.",
+  "category": "developer-tools",
+  "tags": [
+    "machine-learning",
+    "datasets",
+    "hugging-face",
+    "parquet",
+    "nlp",
+    "text-search"
+  ],
+  "links": {
+    "homepage": "https://huggingface.co/docs/dataset-viewer/index",
+    "docs": "https://huggingface.co/docs/dataset-viewer/quick_start",
+    "terms": "https://huggingface.co/terms-of-service",
+    "openapi": "https://raw.githubusercontent.com/huggingface/dataset-viewer/main/docs/source/openapi.json",
+    "source": "https://github.com/huggingface/dataset-viewer"
+  },
+  "api": {
+    "base_url": "https://datasets-server.huggingface.co",
+    "style": "rest",
+    "formats": [
+      "json",
+      "parquet"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "Authorization",
+      "notes": "Public datasets work without a token; private and gated datasets need a Hugging Face user token sent as Authorization: Bearer <token>."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented for this host in the pages fetched."
+    },
+    "pagination": "offset",
+    "max_page_size": 100
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/splits",
+      "summary": "Configs and splits of a dataset",
+      "params": [
+        "dataset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/rows",
+      "summary": "Page through rows of a split",
+      "params": [
+        "dataset",
+        "config",
+        "split",
+        "offset",
+        "length"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Full-text search in the text columns of a split",
+      "params": [
+        "dataset",
+        "config",
+        "split",
+        "query",
+        "offset",
+        "length"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/filter",
+      "summary": "Rows matching a SQL-like where clause (and orderby)",
+      "params": [
+        "dataset",
+        "config",
+        "split",
+        "where",
+        "orderby",
+        "offset",
+        "length"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/statistics",
+      "summary": "Per-column statistics of a split",
+      "params": [
+        "dataset",
+        "config",
+        "split"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/parquet",
+      "summary": "URLs of the Parquet conversion of every split",
+      "params": [
+        "dataset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://datasets-server.huggingface.co/rows?dataset=stanfordnlp/imdb&config=plain_text&split=train&offset=0&length=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\"features\":[{\"feature_idx\":0,\"name\":\"text\",\"type\":{\"dtype\":\"string\",\"_type\":\"Value\"}},{\"feature_idx\":1,\"name\":\"label\",\"type\":{\"names\":[\"neg\",\"pos\"],\"_type\":\"ClassLabel\"}}],\"rows\":[{\"row_idx\":0,\"row\":{\"text\":\"I rented I AM CURIOUS-YELLOW from my video store ...\",\"label\":0},\"truncated_cells\":[]}],\"num_rows_total\":25000,\"num_rows_per_page\":100,\"partial\":false}"
+  },
+  "data": {
+    "license": {
+      "name": "Per dataset; each dataset sets its own licence on the Hub",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global; community-contributed datasets"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Call /splits first to get the exact config and split names, then /rows. length is capped at 100 per call; paginate with offset. Large datasets may be only partially converted (partial: true in the response). For bulk reads use the Parquet URLs from /parquet instead of paging rows. Dataset discovery (search by name, tags) is on the Hub API, not on this host.",
+  "caveats": [
+    "The /search and /filter endpoints returned HTTP 500 'Authentication check on the Hugging Face Hub failed or timed out' on several attempts, while /rows, /splits, /size, /statistics, /info and /parquet answered 200; /search worked once on a later try.",
+    "/filter wants a quoted column name inside where, for example where=\"label\"=1, URL-encoded.",
+    "The openapi.json path on the host answers 302 to the GitHub-hosted spec."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "huggingface-hub-api",
+    "openml-api"
+  ],
+  "added": "2026-11-11"
+}

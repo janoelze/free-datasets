@@ -1,0 +1,125 @@
+{
+  "slug": "nhtsa-api",
+  "name": "NHTSA Vehicle Recalls, Complaints and Safety Ratings API",
+  "provider": {
+    "name": "U.S. National Highway Traffic Safety Administration",
+    "url": "https://www.nhtsa.gov",
+    "type": "government"
+  },
+  "summary": "Free, keyless US vehicle safety data: recalls, owner complaints, NCAP crash-test ratings, investigations and child seat or equipment recalls.",
+  "description": "api.nhtsa.gov serves recalls by make, model and model year or campaign number, owner complaints filed with NHTSA (with component, crash, fire and injury flags), NCAP safety ratings, investigations and recalls of child seats and tyres. Related lookups list makes, models and model years that have recalls or complaints.",
+  "category": "transport-mobility",
+  "tags": [
+    "vehicles",
+    "recalls",
+    "safety",
+    "complaints",
+    "cars",
+    "united-states"
+  ],
+  "links": {
+    "homepage": "https://www.nhtsa.gov/nhtsa-datasets-and-apis",
+    "docs": "https://api.nhtsa.gov/",
+    "terms": "https://www.nhtsa.gov/website-terms-conditions",
+    "openapi": "https://api.nhtsa.gov/swagger.json"
+  },
+  "api": {
+    "base_url": "https://api.nhtsa.gov",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/recalls/recallsByVehicle",
+      "summary": "Recalls for a make, model and model year",
+      "params": [
+        "make",
+        "model",
+        "modelYear"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/recalls/campaignNumber",
+      "summary": "One recall campaign",
+      "params": [
+        "campaignNumber"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/complaints/complaintsByVehicle",
+      "summary": "Owner complaints for a make, model and model year",
+      "params": [
+        "make",
+        "model",
+        "modelYear"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/SafetyRatings/modelyear/{year}/make/{make}/model/{model}",
+      "summary": "NCAP vehicles for a model year, make and model (VehicleId then fetches ratings)",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/products/vehicle/makes",
+      "summary": "Makes with recalls or complaints for a model year",
+      "params": [
+        "modelYear",
+        "issueType"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.nhtsa.gov/recalls/recallsByVehicle?make=honda&model=accord&modelYear=2018",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"Count\": 6,\n  \"Message\": \"Results returned successfully\",\n  \"results\": [\n    {\n      \"Manufacturer\": \"Honda (American Honda Motor Co.)\",\n      \"NHTSACampaignNumber\": \"20V314000\",\n      \"ReportReceivedDate\": \"28/05/2020\",\n      \"Component\": \"FUEL SYSTEM, GASOLINE:DELIVERY:FUEL PUMP\",\n      \"Summary\": \"Honda (American Honda Motor Co.) is recalling certain 2018-2019 ...\",\n      \"ModelYear\": \"2018\",\n      \"Make\": \"HONDA\",\n      \"Model\": \"ACCORD\"\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "US Government public data (NHTSA); no licence text fetched",
+      "url": "https://www.nhtsa.gov/website-terms-conditions",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Recalls and complaints from the 1960s-70s onward to the present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Use upper- or lowercase make and model as in the example. Casing of keys differs between endpoints (Count/results in recalls, count/results in complaints). ReportReceivedDate is dd/mm/yyyy while complaint dates are mm/dd/yyyy. Pair with vPIC to decode VINs to make, model and year first.",
+  "caveats": [
+    "The nhtsa.gov documentation page returned HTTP 403 to curl, so parameters were taken from the Swagger spec and from live calls.",
+    "The swagger.json describes many routes (child seats, equipment, investigations); only the recalls, complaints and SafetyRatings routes were called.",
+    "Date formats differ between recalls (dd/mm/yyyy) and complaints (mm/dd/yyyy)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed without a key; swagger.json parsed as Swagger 2.0 with paths."
+  },
+  "related": [
+    "fueleconomy-gov",
+    "nhtsa-vpic",
+    "us-dot-open-data"
+  ],
+  "added": "2026-11-11"
+}

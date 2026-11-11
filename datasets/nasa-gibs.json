@@ -1,0 +1,112 @@
+{
+  "slug": "nasa-gibs",
+  "name": "NASA GIBS (Global Imagery Browse Services)",
+  "provider": {
+    "name": "NASA Earthdata (EOSDIS)",
+    "url": "https://www.earthdata.nasa.gov",
+    "type": "government"
+  },
+  "summary": "Keyless tile service (WMTS, WMS, TMS) for daily and historical NASA satellite imagery and derived layers.",
+  "description": "GIBS serves pre-rendered global imagery layers such as MODIS and VIIRS true-colour reflectance, sea surface temperature, aerosol, fires and snow cover, many with daily time steps going back decades. Tiles are addressed by layer, date, tile matrix set and row/column, for several projections (EPSG:4326, 3857, 3413, 3031). GetCapabilities lists every layer with its time extent.",
+  "category": "earth-environment",
+  "tags": [
+    "satellite",
+    "imagery",
+    "tiles",
+    "earth-observation",
+    "wmts",
+    "nasa",
+    "remote-sensing"
+  ],
+  "links": {
+    "homepage": "https://www.earthdata.nasa.gov/data/tools/gibs",
+    "docs": "https://nasa-gibs.github.io/gibs-api-docs/",
+    "terms": "https://www.earthdata.nasa.gov/engage/open-data-services-software-policies"
+  },
+  "api": {
+    "base_url": "https://gibs.earthdata.nasa.gov",
+    "style": "rest",
+    "formats": [
+      "image",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/wmts/epsg4326/best/wmts.cgi?SERVICE=WMTS&REQUEST=GetCapabilities",
+      "summary": "List layers, time extents and tile matrix sets (XML)",
+      "params": [
+        "SERVICE",
+        "REQUEST"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/wmts/epsg4326/best/{layer}/default/{date}/{tileMatrixSet}/{z}/{row}/{col}.{ext}",
+      "summary": "RESTful WMTS tile (jpeg or png)",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/wms/epsg4326/best/wms.cgi",
+      "summary": "WMS GetMap for a bounding box image",
+      "params": [
+        "SERVICE",
+        "REQUEST",
+        "LAYERS",
+        "TIME",
+        "BBOX",
+        "WIDTH",
+        "HEIGHT",
+        "FORMAT"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/2026-11-01/250m/2/1/2.jpeg",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "(binary JPEG tile, content-type image/jpeg; 200 OK)"
+  },
+  "data": {
+    "license": {
+      "name": "NASA open data; see the data use guidance and acknowledgements page",
+      "url": "https://nasa-gibs.github.io/gibs-api-docs/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Per layer; many MODIS layers have daily imagery since 2000 and are available within hours of acquisition"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Fetch GetCapabilities once, cache it, and read each layer's Identifier, time extent and TileMatrixSet. The /best/ path serves the best available product. Missing dates return an error or blank tile, so check the layer's time range. Use the tile row/column convention of the matrix set (250m, 500m, 2km ...).",
+  "caveats": [
+    "Imagery, not numeric data: for values use the source dataset via CMR.",
+    "The GetCapabilities XML is large; the documented access basics were not exhaustively tested beyond one tile and the capabilities document.",
+    "The data-use page was not parsed for exact licence wording."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact tile example executed without a key and returned image/jpeg; GetCapabilities returned XML."
+  },
+  "related": [
+    "nasa-cmr"
+  ],
+  "added": "2026-11-11"
+}

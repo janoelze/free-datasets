@@ -97,7 +97,8 @@
   },
   "related": [
     "pegel-online",
-    "usgs-water-data"
+    "usgs-water-data",
+    "noaa-ncei-access-data"
   ],
   "added": "2026-11-11"
 }

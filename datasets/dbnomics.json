@@ -1,0 +1,138 @@
+{
+  "slug": "dbnomics",
+  "name": "DBnomics Web API",
+  "provider": {
+    "name": "DBnomics (CEPREMAP and contributors)",
+    "url": "https://db.nomics.world",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless API that aggregates economic time series from hundreds of official providers (IMF, OECD, Eurostat, ECB, national statistics offices) under one uniform data model.",
+  "description": "DBnomics mirrors datasets from statistical agencies and central banks and exposes them as providers, datasets and series with a common JSON layout. At check the providers endpoint reported 47,467 datasets and about 1.7 billion series. You can list providers and datasets, fetch one series or a filtered set by dimension values, run a full-text search across datasets and series, and list the latest updates. Each dataset keeps its original dimension codes and labels; each provider's own terms of use apply.",
+  "category": "economics-statistics",
+  "tags": [
+    "economics",
+    "time-series",
+    "macroeconomics",
+    "statistics",
+    "imf",
+    "oecd",
+    "indicators"
+  ],
+  "links": {
+    "homepage": "https://db.nomics.world/",
+    "docs": "https://docs.db.nomics.world/web-api/",
+    "openapi": "https://api.db.nomics.world/v22/apispec_1.json",
+    "source": "https://git.nomics.world/dbnomics"
+  },
+  "api": {
+    "base_url": "https://api.db.nomics.world/v22",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/providers",
+      "summary": "List data providers with their terms_of_use and website",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/datasets/{provider_code}",
+      "summary": "List the datasets of one provider",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/series/{provider_code}/{dataset_code}",
+      "summary": "Series of one dataset, optionally filtered by dimension values",
+      "params": [
+        "dimensions",
+        "q",
+        "observations",
+        "metadata",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/series/{provider_code}/{dataset_code}/{series_code}",
+      "summary": "One series with its observations",
+      "params": [
+        "observations",
+        "metadata"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Full-text search over datasets and series",
+      "params": [
+        "q",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/last-updates",
+      "summary": "Datasets updated most recently"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.db.nomics.world/v22/series/IMF/WEO:2024-04/USA.NGDP_RPCH?observations=1&metadata=0",
+    "response_excerpt": "{\n  \"_meta\": {\n    \"args\": {\n      \"dataset_code\": \"WEO:2024-04\",\n      \"provider_code\": \"IMF\",\n      \"series_code\": \"USA.NGDP_RPCH\"\n    },\n    \"version\": \"22.1.17\"\n  },\n  \"errors\": null,\n  \"series\": {\n    \"docs\": [\n      {\n        \"@frequency\": \"annual\",\n        \"dataset_code\": \"WEO:2024-04\",\n        \"dataset_name\": \"World Economic Outlook by countries\",\n        \"dimensions\": {\n          \"unit\": \"pcent_change\",\n          \"weo-country\": \"USA\",\n          \"weo-subject\": \"NGDP_RPCH\"\n        },\n        \"period\": [\n          \"1980\",\n          \"1981\",\n          \"...\"\n        ],\n        \"value\": [\n          0.1,\n          \"...\"\n        ],\n        \"series_code\": \"USA.NGDP_RPCH.pcent_change\",\n        \"series_name\": \"United States - Gross domestic product, constant prices (NGDP_RPCH) - Percent change\"\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per provider: each provider's terms_of_use URL is listed in /providers",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (provider-dependent)",
+      "temporal": "Varies per dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Start with /providers, then /datasets/{provider}, then /series/{provider}/{dataset}?dimensions={\"country\":[\"FR\"]} (URL-encoded JSON) to filter. A series id is provider/dataset/series_code; the series_code shown in responses can carry an extra dimension suffix (e.g. USA.NGDP_RPCH.pcent_change) but the shorter prefix also resolved. Pass observations=1 to get period/value arrays, and metadata=0 to drop the large dimension label block. /search is slower (about 2 s at check).",
+  "caveats": [
+    "Datasets are copies of provider data and can lag the original publisher; check indexed_at and the dataset's updated_at.",
+    "Responses without metadata=0 include every dimension label of the dataset and can be large.",
+    "Limit is capped at 1000 series per page; page with offset.",
+    "Observed an Access-Control-Allow-Origin of the request origin on one request and * on another; treat CORS as open."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; 200 with application/json."
+  },
+  "related": [
+    "ecb-data-api",
+    "eurostat",
+    "fred",
+    "oecd-sdmx",
+    "world-bank-indicators"
+  ],
+  "added": "2026-11-11"
+}

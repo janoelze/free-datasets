@@ -1,0 +1,115 @@
+{
+  "slug": "data-gov-au",
+  "name": "data.gov.au (CKAN API)",
+  "provider": {
+    "name": "Australian Government (Department of Finance)",
+    "url": "https://data.gov.au/",
+    "type": "government"
+  },
+  "summary": "Metadata API for data.gov.au, the Australian government open data catalogue, over a keyless CKAN Action API.",
+  "description": "Search dataset metadata, organisations and resource links for Australian federal, state and local government data. A package_search for 'climate' returned 11,731 datasets at check. Datasets mostly link out to files on agency sites; some resources are queryable through datastore_search.",
+  "category": "government-politics",
+  "tags": [
+    "australia",
+    "open-data-portal",
+    "catalogue",
+    "ckan",
+    "federal-government",
+    "metadata"
+  ],
+  "links": {
+    "homepage": "https://data.gov.au/",
+    "docs": "https://docs.ckan.org/en/2.10/api/index.html",
+    "terms": "https://data.gov.au/"
+  },
+  "api": {
+    "base_url": "https://data.gov.au/data/api/3/action",
+    "style": "rpc",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/package_search",
+      "summary": "Search dataset metadata (q, fq, rows, start, sort)",
+      "params": [
+        "q",
+        "fq",
+        "rows",
+        "start",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_show",
+      "summary": "Full metadata and resource list for one dataset",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/organization_list",
+      "summary": "List publishing organisations",
+      "params": [
+        "all_fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_list",
+      "summary": "Names of all datasets",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.gov.au/data/api/3/action/package_search?q=climate&rows=1",
+    "response_excerpt": "{\"help\": \"https://data.gov.au/data/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 11731, \"results\": [{\"id\": \"e12e911c-01f4-5f1b-8001-8fb312d202c5\", \"name\": \"fedora-pid_csiro-64751\", \"title\": \"Agricultural climate metrics for the National Climate Risk Assessment\", \"license_id\": \"notspecified\", \"num_resources\": 312, \"...\": \"...\"}]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Per dataset (portal text is CC BY 4.0)",
+      "url": "https://data.gov.au/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Australia",
+      "temporal": "varies by dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use the generic CKAN docs for parameters; the portal does not publish its own API page that I could find. Read license_id per dataset.",
+  "caveats": [
+    "No data.gov.au-specific API documentation page was found; the docs link is the upstream CKAN API guide, and the CKAN version of this site was not confirmed.",
+    "license_id is frequently 'notspecified'.",
+    "Rate limits are not documented."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; package_show, organization_list and package_list also returned 200."
+  },
+  "related": [
+    "data-gov-uk",
+    "open-canada-ckan"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,125 @@
+{
+  "slug": "nasa-cmr",
+  "name": "NASA Common Metadata Repository (CMR) Search API",
+  "provider": {
+    "name": "NASA Earthdata (EOSDIS)",
+    "url": "https://www.earthdata.nasa.gov",
+    "type": "government"
+  },
+  "summary": "Keyless search over the metadata of NASA's Earth observation collections and granules (files), with links to the data.",
+  "description": "CMR is the catalogue behind NASA Earthdata Search. The Search API finds collections (datasets), granules (individual files), variables, services and tools by keyword, short name, time, bounding box, polygon, platform, instrument and more, and returns JSON, ATOM, UMM-JSON, ISO19115 and other formats. Results carry download and cloud-access links, though fetching many files needs a free Earthdata Login.",
+  "category": "earth-environment",
+  "tags": [
+    "earth-observation",
+    "satellite",
+    "metadata",
+    "nasa",
+    "remote-sensing",
+    "catalogue"
+  ],
+  "links": {
+    "homepage": "https://cmr.earthdata.nasa.gov/search/",
+    "docs": "https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html",
+    "terms": "https://www.earthdata.nasa.gov/engage/open-data-services-software-policies"
+  },
+  "api": {
+    "base_url": "https://cmr.earthdata.nasa.gov/search",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml",
+      "csv",
+      "other"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public metadata search needs no credential. An Earthdata Login token (Authorization: Bearer) is only needed for restricted collections."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the page fetched."
+    },
+    "pagination": "cursor",
+    "max_page_size": 2000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/collections.json",
+      "summary": "Search collections (datasets)",
+      "params": [
+        "keyword",
+        "short_name",
+        "provider",
+        "platform",
+        "instrument",
+        "temporal",
+        "bounding_box",
+        "page_size",
+        "sort_key"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/granules.json",
+      "summary": "Search granules (files) of collections",
+      "params": [
+        "short_name",
+        "collection_concept_id",
+        "temporal",
+        "bounding_box",
+        "polygon",
+        "cloud_cover",
+        "page_size"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/variables.json",
+      "summary": "Search variables",
+      "params": [
+        "keyword",
+        "page_size"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://cmr.earthdata.nasa.gov/search/collections.json?keyword=sea%20surface%20temperature&page_size=1",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"feed\": {\n    \"updated\": \"2026-11-11T16:28:09.242Z\",\n    \"title\": \"ECHO dataset metadata\",\n    \"entry\": [\n      {\n        \"id\": \"C2586786218-POCLOUD\",\n        \"short_name\": \"OSTIA-UKMO-L4-GLOB-REP-v2.0\",\n        \"version_id\": \"2.0\",\n        \"time_start\": \"1982-01-01T00:00:00.000Z\",\n        \"time_end\": \"2024-01-01T00:00:00.000Z\",\n        \"data_center\": \"POCLOUD\",\n        \"cloud_hosted\": true,\n        \"links\": [...]\n      }\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "NASA open data policy; per-collection access constraints in the metadata",
+      "url": "https://www.earthdata.nasa.gov/engage/open-data-services-software-policies",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Per collection; the example collection alone spans 1982-2024"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "The total hit count is in the CMR-Hits response header (3787 for the example search). Use short_name or concept ids (C...-PROVIDER) to jump from a collection to its granules. temporal takes ISO start,end pairs; bounding_box is west,south,east,north. Page with the CMR-Search-After response header: send its value back as a CMR-Search-After request header (page_num and offset are marked deprecated in the docs).",
+  "caveats": [
+    "Metadata only: downloading the data files themselves usually needs a free Earthdata Login or cloud credentials.",
+    "The default .json response is a legacy ECHO-style feed; .umm_json returns the richer native metadata.",
+    "Rate limits were not found in the docs; page_size is capped at 2000 (documented, and a larger value returned an error)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "nasa-eonet",
+    "nasa-gibs",
+    "nasa-open-apis"
+  ],
+  "added": "2026-11-11"
+}

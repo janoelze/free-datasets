@@ -1,0 +1,124 @@
+{
+  "slug": "zenodo",
+  "name": "Zenodo REST API",
+  "provider": {
+    "name": "CERN / Zenodo",
+    "url": "https://zenodo.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Public read API for the Zenodo research repository: records, files, communities and DOIs for papers, datasets and software.",
+  "description": "Search and retrieve Zenodo records with metadata, DOIs, licences, files and community membership. Anonymous reads of published records need no key; a token raises rate limits. Search by keyword and filter by record type; each record lists files, licence and DOI.",
+  "category": "knowledge-reference",
+  "tags": [
+    "research-data",
+    "repository",
+    "doi",
+    "open-science",
+    "datasets",
+    "software",
+    "preprints"
+  ],
+  "links": {
+    "homepage": "https://zenodo.org",
+    "docs": "https://developers.zenodo.org/",
+    "signup": "https://zenodo.org/signup/"
+  },
+  "api": {
+    "base_url": "https://zenodo.org/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "access_token",
+      "notes": "Published records are readable anonymously; a personal access token raises limits (also accepted as an Authorization: Bearer header)."
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Requests without a User-Agent returned 403 on 2026-11-11."
+      }
+    ],
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Guests: 60 requests per minute, 2000 per hour; authenticated users: 100 per minute, 5000 per hour (documented). Responses carry x-ratelimit-limit, x-ratelimit-remaining and x-ratelimit-reset; x-ratelimit-limit: 30 was observed on the example.",
+      "requests": 60,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "page",
+    "max_page_size": 25
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/records",
+      "summary": "Search published records",
+      "params": [
+        "q",
+        "size",
+        "page",
+        "sort",
+        "type"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/records/{id}",
+      "summary": "One record with metadata and file links",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/communities",
+      "summary": "Search communities",
+      "params": [
+        "q",
+        "size",
+        "page"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://zenodo.org/api/records?q=climate&size=1",
+    "response_excerpt": "{\"hits\": {\"hits\": [{\"created\": \"2026-10-01T07:34:37.349326+00:00\", \"modified\": \"2026-10-01T07:34:37.597454+00:00\", \"id\": 23077368, \"conceptrecid\": \"23077367\", \"doi\": \"10.5281/zenodo.23077368\", \"conceptdoi\": \"10.5281/zenodo.23077367\", \"doi_url\": \"https://doi.org/10.5281/zenodo.23077368\", \"metadata\": {\"title\": \"Monthly water storage levels, Victoria\", \"doi\": \"10.5281/zenodo.23077368\", \"publication_date\": \"2025-10-31\", \"description\": \"<p>The volume held in each of about 65 Victorian reservoirs ...\", \"access_right\": \"open\", \"creators\": [{\"name\": \"Department of Energy, Environment and Climate Action\", \"affiliation\": null}], \"contributors\": [{\"name\": \"National Digital\", \"affiliation\": null, \"type\": \"DataCurator\"}], \"keywords\": [\"Australia\", \"...\"], \"...\": \"...\"}, \"...\": \"...\"}], \"total\": 117097}, \"aggregations\": {\"publication_date\": {\"buckets\": [{\"key\": \"2000\", \"doc_count\": 132, \"label\": \"2000\", \"is_selected\": false}, \"...\"], \"label\": \"Publication date\"}, \"access_status\": {\"buckets\": [{\"key\": \"open\", \"doc_count\": 109199, \"label\": \"Open\", \"is_selected\": false}, \"...\"], \"label\": \"Access status\"}, \"resource_type\": {\"buckets\": [{\"key\": \"publication\", \"doc_count\": 72166, \"label\": \"Publication\", \"is_selected\": false, \"inner\": {\"buckets\": [{\"key\": \"publication-article\", \"doc_count\": 41842, \"label\": \"Journal article\", \"is_selected\": false}, \"...\"]}}, \"...\"], \"label\": \"Resource types\"}, \"subject\": {\"buckets\": [{\"key\": \"Biodiversity\", \"doc_count\": 14656, \"label\": \"Biodiversity\", \"is_selected\": false}, \"...\"], \"label\": \"Subjects\"}, \"file_type\": {\"buckets\": [{\"key\": \"pdf\", \"doc_count\": 66781, \"label\": \"PDF\", \"is_selected\": false}, \"...\"], \"label\": \"File type\"}}, \"links\": {\"self\": \"https://zenodo.org/api/records?page=1&q=climate&size=1&sort=bestmatch\", \"next\": \"https://zenodo.org/api/records?page=2&q=climate&size=1&sort=bestmatch\"}}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per record; each record states its own licence",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Varies per record"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Send an identifying User-Agent or you get 403. Anonymous requests cap size at 25 (100 with a token); for deeper paging use page or narrow the query. Check metadata.license on each record. Respect the retry-after header on 429.",
+  "caveats": [
+    "Guest page size is capped at 25 results.",
+    "Record descriptions contain HTML."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, access-control-allow-origin: *, x-ratelimit-limit: 30); request without User-Agent returned 403."
+  },
+  "related": [
+    "cern-open-data-portal",
+    "datacite",
+    "harvard-dataverse",
+    "openalex"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,117 @@
+{
+  "slug": "open-canada-ckan",
+  "name": "Open Government Portal Canada (CKAN API)",
+  "provider": {
+    "name": "Government of Canada (Treasury Board Secretariat)",
+    "url": "https://open.canada.ca/",
+    "type": "government"
+  },
+  "summary": "Metadata API for the Government of Canada open data catalogue: search datasets, organisations and resources over a CKAN Action API.",
+  "description": "The CKAN catalogue behind open.canada.ca lists federal datasets and their downloadable resources in English and French. A package_search for 'climate' returned 2,895 datasets at check. The Action API gives dataset metadata, resource URLs, organisations and tags; datastore tables are queryable where a resource has been loaded into the DataStore.",
+  "category": "government-politics",
+  "tags": [
+    "canada",
+    "open-data-portal",
+    "catalogue",
+    "ckan",
+    "federal-government",
+    "metadata"
+  ],
+  "links": {
+    "homepage": "https://open.canada.ca/en/open-data",
+    "docs": "https://open.canada.ca/en/access-our-application-programming-interface-api",
+    "terms": "https://open.canada.ca/en/open-government-licence-canada"
+  },
+  "api": {
+    "base_url": "https://open.canada.ca/data/api/action",
+    "style": "rpc",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/package_search",
+      "summary": "Search dataset metadata (q, fq, rows, start, sort)",
+      "params": [
+        "q",
+        "fq",
+        "rows",
+        "start",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_show",
+      "summary": "Full metadata and resource list for one dataset",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/organization_list",
+      "summary": "List publishing organisations",
+      "params": [
+        "all_fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_list",
+      "summary": "Names of all datasets",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://open.canada.ca/data/api/action/package_search?q=climate&rows=1",
+    "response_excerpt": "{\"help\": \"https://open.canada.ca/data/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 2895, \"results\": [{\"id\": \"09ffaeb5-ec8f-5bb5-bdcb-3436ccf26f58\", \"title\": \"Climatic Regions\", \"license_id\": \"ca-ogl-lgo\", \"num_resources\": 4, \"...\": \"...\"}], \"sort\": \"score desc, metadata_modified desc\"}}"
+  },
+  "data": {
+    "license": {
+      "name": "Open Government Licence - Canada",
+      "url": "https://open.canada.ca/en/open-government-licence-canada",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Canada (federal government)",
+      "temporal": "varies by dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Metadata only: follow resources[].url for the actual files. Many fields are bilingual objects ({\"en\":...,\"fr\":...}). Use rows and start to page; the license of each dataset is in license_id (most are ca-ogl-lgo).",
+  "caveats": [
+    "GET only: the docs state POST with a JSON body is not supported on this portal; pass parameters in the query string.",
+    "Dataset names are often UUIDs rather than readable slugs.",
+    "Rate limits are not documented on the pages fetched."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; package_show, organization_list, package_list and tag_list also returned 200."
+  },
+  "related": [
+    "bank-of-canada-valet",
+    "data-gouv-fr",
+    "data-gov-au",
+    "data-gov-uk"
+  ],
+  "added": "2026-11-11"
+}

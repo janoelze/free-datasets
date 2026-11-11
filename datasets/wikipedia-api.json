@@ -118,7 +118,8 @@
     "internet-archive",
     "wikimedia-commons-api",
     "wikimedia-pageviews",
-    "wiktionary-rest"
+    "wiktionary-rest",
+    "dbpedia-sparql"
   ],
   "added": "2026-11-11"
 }

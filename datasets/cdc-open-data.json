@@ -1,0 +1,127 @@
+{
+  "slug": "cdc-open-data",
+  "name": "CDC Open Data (data.cdc.gov, Socrata SODA)",
+  "provider": {
+    "name": "Centers for Disease Control and Prevention",
+    "url": "https://www.cdc.gov",
+    "type": "government"
+  },
+  "summary": "Free SODA REST API over the CDC's open data portal: chronic disease indicators, mortality, COVID-19, wastewater, vaccination and hundreds of other public-health tables.",
+  "description": "data.cdc.gov runs the Socrata Open Data platform, so every dataset is queryable at /resource/{4x4-id}.json with SoQL ($select, $where, $group, $order, $limit, $offset, $q full-text search). A Discovery API at /api/catalog/v1 lists and searches the portal's datasets, and /api/views/{id}.json returns column metadata. Many of the most-downloaded CDC entries on data.gov (U.S. Chronic Disease Indicators, NCHS leading causes of death, provisional COVID-19 death counts, wastewater viral activity) are served from this host. The same API shape works on other Socrata portals.",
+  "category": "health-medicine",
+  "tags": [
+    "cdc",
+    "public-health",
+    "mortality",
+    "chronic-disease",
+    "covid-19",
+    "socrata",
+    "soql",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://data.cdc.gov",
+    "docs": "https://dev.socrata.com/docs/queries/",
+    "terms": "https://www.cdc.gov/other/policies.html",
+    "signup": "https://dev.socrata.com/docs/app-tokens.html"
+  },
+  "api": {
+    "base_url": "https://data.cdc.gov",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "X-App-Token",
+      "notes": "Works without credentials; an optional free Socrata app token (header X-App-Token or $$app_token parameter) gives a per-application throttling pool instead of the shared per-IP pool."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented. Without an app token requests share a per-IP pool and can be throttled with HTTP 429; with a token Socrata says it does not throttle unless use is abusive."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/resource/{id}.json",
+      "summary": "Query one dataset with SoQL (also .csv, .geojson, .xml)",
+      "params": [
+        "$select",
+        "$where",
+        "$group",
+        "$order",
+        "$limit",
+        "$offset",
+        "$q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog/v1",
+      "summary": "Discovery API: search datasets on the portal",
+      "params": [
+        "domains",
+        "q",
+        "only",
+        "categories",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/views/{id}.json",
+      "summary": "Dataset metadata: columns, license, update time",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.cdc.gov/resource/hksd-2xuw.json?$select=yearstart,locationabbr,topic,datavalue&$limit=2",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\"yearstart\": \"2020\", \"locationabbr\": \"AR\", \"topic\": \"Asthma\", \"datavalue\": \"20.0\"},\n  {\"yearstart\": \"2019\", \"locationabbr\": \"IA\", \"topic\": \"Asthma\", \"datavalue\": \"32.0\"}\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per dataset (the example dataset is ODbL 1.0; others are public domain or unspecified)",
+      "url": "https://www.cdc.gov/other/policies.html",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States, mostly national, state and county level",
+      "temporal": "Varies per dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Find a dataset id with /api/catalog/v1?domains=data.cdc.gov&q=<topic>&only=datasets, then GET /resource/<id>.json. All values come back as strings (counts and rates included), so cast in SoQL (e.g. $where=datavalue::number > 10) or client side. Use $select=count(*) for row counts and $group for aggregates. Default page size is 1000 rows; $limit=60000 returned 60000 rows in a test, so large pages work. Page with $limit and $offset plus a stable $order. The fields of a dataset are listed in the X-SODA2-Fields response header. For per-column docs open /api/views/<id>.json.",
+  "caveats": [
+    "Numeric columns are returned as JSON strings.",
+    "The Discovery API without domains=data.cdc.gov searches every Socrata portal (a plain /api/catalog/v1?limit=1 returned a Dallas police dataset).",
+    "Dataset licenses differ; read license.name in /api/views/{id}.json before reuse.",
+    "Documented throttling is described qualitatively only; no numbers were found."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without an app token. Catalog count for domains=data.cdc.gov: 1084 datasets at check."
+  },
+  "related": [
+    "disease-sh",
+    "nyc-open-data",
+    "openfda",
+    "us-dot-open-data",
+    "who-gho"
+  ],
+  "added": "2026-11-11"
+}

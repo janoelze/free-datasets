@@ -1,0 +1,122 @@
+{
+  "slug": "eia-open-data",
+  "name": "EIA Open Data API v2",
+  "provider": {
+    "name": "U.S. Energy Information Administration",
+    "url": "https://www.eia.gov",
+    "type": "government"
+  },
+  "summary": "US Energy Information Administration data on electricity, oil, natural gas, coal, nuclear, emissions and forecasts, with a free API key.",
+  "description": "A hierarchical REST API: the root lists routes such as electricity, natural-gas, petroleum, coal, nuclear-outages, co2-emissions, seds, steo (Short-Term Energy Outlook), aeo and ieo (outlooks) and international. Each route exposes facets, frequencies and data columns, and a /data endpoint returns the rows. Data can be filtered by facet, period range and sorted.",
+  "category": "energy",
+  "tags": [
+    "energy",
+    "electricity",
+    "oil",
+    "natural-gas",
+    "coal",
+    "emissions",
+    "forecasts",
+    "united-states"
+  ],
+  "links": {
+    "homepage": "https://www.eia.gov/opendata/",
+    "docs": "https://www.eia.gov/opendata/documentation.php",
+    "terms": "https://www.eia.gov/about/copyrights_reuse.php",
+    "signup": "https://www.eia.gov/opendata/register.php"
+  },
+  "api": {
+    "base_url": "https://api.eia.gov/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "Free key by email registration. A request without a key returns 403 API_KEY_MISSING. The shared key DEMO_KEY was accepted on the day of verification but is not mentioned on the docs pages fetched, so treat it as unreliable for production."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented on the pages fetched. DEMO_KEY responses carried x-ratelimit-limit: 10 (period not stated)."
+    },
+    "pagination": "offset",
+    "max_page_size": 5000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "summary": "List the top-level routes",
+      "params": [
+        "api_key"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{route}/",
+      "summary": "Describe a route: child routes, facets, frequencies and data columns",
+      "params": [
+        "api_key"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{route}/data/",
+      "summary": "Return rows for a route",
+      "params": [
+        "api_key",
+        "frequency",
+        "data[]",
+        "facets[<id>][]",
+        "start",
+        "end",
+        "sort[0][column]",
+        "sort[0][direction]",
+        "offset",
+        "length"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.eia.gov/v2/electricity/retail-sales/data/?api_key=DEMO_KEY&frequency=monthly&data%5B0%5D=price&facets%5Bstateid%5D%5B%5D=CA&facets%5Bsectorid%5D%5B%5D=RES&length=2&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=desc",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"response\": {\n    \"total\": \"308\",\n    \"dateFormat\": \"YYYY-MM\",\n    \"frequency\": \"monthly\",\n    \"data\": [\n      {\"period\": \"2026-08\", \"stateid\": \"CA\", \"stateDescription\": \"California\", \"sectorid\": \"RES\", \"sectorName\": \"residential\", \"price\": \"29.75\", \"price-units\": \"cents per kilowatt-hour\"}\n    ]\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "US Government data; EIA states it is provided free of charge",
+      "url": "https://www.eia.gov/about/copyrights_reuse.php",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States (states, regions, plants) plus international energy statistics",
+      "temporal": "Varies by route; monthly and annual series, some going back decades, plus forecasts"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Walk the route tree first: GET /v2/electricity/retail-sales/ lists the facets and data columns you must name in data[0]=... . Numbers come back as strings. JSON is capped at 5000 rows per call; page with offset and length, and constrain with start/end and facets. Query parameters use bracket syntax, so URL-encode the brackets.",
+  "caveats": [
+    "Without a key the API answers HTTP 403 with code API_KEY_MISSING.",
+    "Too-large requests return a warning (incomplete return) in the body, still with HTTP 200.",
+    "Values are strings, and units are in a separate field such as price-units."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed with the shared DEMO_KEY; the same request without a key returned 403 API_KEY_MISSING."
+  },
+  "related": [
+    "elexon-bmrs",
+    "energy-charts",
+    "fred"
+  ],
+  "added": "2026-11-11"
+}

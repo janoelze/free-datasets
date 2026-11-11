@@ -132,7 +132,9 @@
     "openalex",
     "unpaywall",
     "arxiv-api",
-    "ror-api"
+    "ror-api",
+    "datacite",
+    "eric-api"
   ],
   "added": "2026-11-11"
 }

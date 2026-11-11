@@ -94,7 +94,8 @@
   "related": [
     "pypi-json-api",
     "crates-io-api",
-    "deps-dev"
+    "deps-dev",
+    "mcp-registry"
   ],
   "added": "2026-11-11"
 }

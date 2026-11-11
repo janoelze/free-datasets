@@ -104,7 +104,8 @@
   },
   "related": [
     "chembl",
-    "ncbi-eutils"
+    "ncbi-eutils",
+    "kegg-rest"
   ],
   "added": "2026-11-11"
 }

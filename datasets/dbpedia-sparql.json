@@ -1,0 +1,109 @@
+{
+  "slug": "dbpedia-sparql",
+  "name": "DBpedia SPARQL Endpoint",
+  "provider": {
+    "name": "DBpedia Association",
+    "url": "https://www.dbpedia.org",
+    "type": "nonprofit"
+  },
+  "summary": "Public SPARQL endpoint over DBpedia, the knowledge graph extracted from Wikipedia infoboxes and categories, free and keyless.",
+  "description": "DBpedia turns structured parts of Wikipedia into linked data: entities with labels, abstracts, types, infobox properties and links to other datasets. The endpoint at dbpedia.org/sparql answers SPARQL SELECT, ASK and CONSTRUCT queries over HTTP GET or POST, and every resource also has a JSON, RDF or HTML description under dbpedia.org/data.",
+  "category": "knowledge-reference",
+  "tags": [
+    "knowledge-graph",
+    "sparql",
+    "linked-data",
+    "wikipedia",
+    "entities",
+    "rdf"
+  ],
+  "links": {
+    "homepage": "https://www.dbpedia.org",
+    "docs": "https://www.dbpedia.org/resources/sparql/",
+    "terms": "https://www.dbpedia.org/about/",
+    "bulk_download": "https://databus.dbpedia.org/dbpedia/collections/latest-core"
+  },
+  "api": {
+    "base_url": "https://dbpedia.org",
+    "style": "sparql",
+    "formats": [
+      "json",
+      "xml",
+      "csv",
+      "text",
+      "json-ld",
+      "html"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented; a result cap of 10000 rows per query is sent in the X-SPARQL-MaxRows header."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/sparql",
+      "summary": "Run a SPARQL query; choose the result format with the format parameter",
+      "params": [
+        "query",
+        "format"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sparql",
+      "summary": "Same with a form-encoded body, for long queries",
+      "params": [
+        "query",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/data/{Resource_name}.json",
+      "summary": "All triples about one resource as JSON (also .rdf, .ttl, .nt)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://dbpedia.org/sparql?query=SELECT%20%3Flabel%20WHERE%20%7B%20%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FBerlin%3E%20rdfs%3Alabel%20%3Flabel%20.%20FILTER(lang(%3Flabel)%3D%22en%22)%20%7D&format=application%2Fsparql-results%2Bjson",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{ \"head\": { \"link\": [], \"vars\": [\"label\"] },\n  \"results\": { \"distinct\": false, \"ordered\": true, \"bindings\": [\n    { \"label\": { \"type\": \"literal\", \"xml:lang\": \"en\", \"value\": \"Berlin\" }} ] } }"
+  },
+  "data": {
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 and GNU Free Documentation License (as stated on the DBpedia SPARQL page)",
+      "url": "https://www.dbpedia.org/resources/sparql/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (English-centred, with localized chapters)"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Prefixes such as dbo:, dbr:, rdfs: are predefined on the public endpoint. Always add LIMIT; one response is cut at 10000 rows, use LIMIT/OFFSET with ORDER BY to page. Resource URIs follow http://dbpedia.org/resource/<Wikipedia_title>. Use format=application/sparql-results+json for JSON. For one entity, /data/<Name>.json is simpler than SPARQL.",
+  "caveats": [
+    "Public endpoint is shared; expect timeouts on heavy queries.",
+    "Content reflects a periodic extraction from Wikipedia, so it lags the live encyclopedia; for current facts use Wikidata or the Wikipedia API.",
+    "The lookup.dbpedia.org search service did not answer in testing, so entity search must be done with SPARQL text filters."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "wikidata",
+    "wikipedia-api"
+  ],
+  "added": "2026-11-11"
+}

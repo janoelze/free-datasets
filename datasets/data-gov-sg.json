@@ -1,0 +1,114 @@
+{
+  "slug": "data-gov-sg",
+  "name": "data.gov.sg APIs (real-time and datastore)",
+  "provider": {
+    "name": "Government Technology Agency of Singapore (GovTech)",
+    "url": "https://data.gov.sg/",
+    "type": "government"
+  },
+  "summary": "Singapore government open data: real-time weather, traffic and environment feeds plus datastore search over published datasets, usable without a key at a low rate.",
+  "description": "Two API families: v2 real-time endpoints on api-open.data.gov.sg (air temperature, rainfall, PM2.5, taxi availability, carpark availability and similar feeds) and a datastore_search endpoint that pages through any tabular dataset, for example HDB resale prices. Collection and dataset metadata APIs list what exists. Registering for an API key raises the rate limits.",
+  "category": "government-politics",
+  "tags": [
+    "singapore",
+    "open-data-portal",
+    "real-time",
+    "weather",
+    "traffic",
+    "housing"
+  ],
+  "links": {
+    "homepage": "https://data.gov.sg/",
+    "docs": "https://guide.data.gov.sg/developer-guide/api-overview",
+    "terms": "https://data.gov.sg/open-data-licence",
+    "signup": "https://data.gov.sg/?signin=Registration"
+  },
+  "api": {
+    "base_url": "https://api-open.data.gov.sg/v2",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "x-api-key",
+      "notes": "The docs list x-api-key on real-time endpoints, but the example request succeeded without any key; a free key from signup raises limits."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Per 10-second window: real-time APIs 6 requests without a key (12 dev key, 30 prod key); datastore search 4 (8, 20); dataset downloads 2 (4, 10). 429 when exceeded.",
+      "requests": 6,
+      "per": "second",
+      "scope": "ip"
+    },
+    "pagination": "cursor"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/real-time/api/air-temperature",
+      "summary": "Air temperature readings per weather station",
+      "params": [
+        "date",
+        "paginationToken"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://data.gov.sg/api/action/datastore_search",
+      "summary": "Rows of a tabular dataset (CKAN-style)",
+      "params": [
+        "resource_id",
+        "limit",
+        "offset",
+        "q",
+        "filters"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://api-production.data.gov.sg/v2/public/api/collections",
+      "summary": "List dataset collections",
+      "params": [
+        "page"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api-open.data.gov.sg/v2/real-time/api/air-temperature",
+    "response_excerpt": "{\"code\": 0, \"data\": {\"stations\": [{\"id\": \"S109\", \"name\": \"Ang Mo Kio Avenue 5\", \"location\": {\"latitude\": 1.3793, \"longitude\": 103.85}}, \"...\"], \"readings\": [{\"timestamp\": \"2026-11-12T00:28:00+08:00\", \"data\": [{\"stationId\": \"S109\", \"value\": 26.6}, \"...\"]}], \"readingType\": \"DBT 1M F\", \"readingUnit\": \"deg C\"}, \"errorMsg\": \"\"}"
+  },
+  "data": {
+    "license": {
+      "name": "Singapore Open Data Licence",
+      "url": "https://data.gov.sg/open-data-licence",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Singapore",
+      "temporal": "real-time feeds plus historical datasets"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "The rate limit is small without a key (6 real-time calls per 10 seconds), so cache. Real-time endpoints take an optional date parameter and paginate with paginationToken. For tables, take the d_... dataset id from the dataset page URL and pass it as resource_id to datastore_search on the data.gov.sg host (a different host from the real-time API). Timestamps carry the +08:00 offset.",
+  "caveats": [
+    "Three hosts are involved: api-open.data.gov.sg (real-time), data.gov.sg (datastore_search) and api-production.data.gov.sg (collections metadata).",
+    "Rate limit enforcement was announced to start on 31 December 2025; the docs mark keys as required on real-time endpoints but keyless calls worked today.",
+    "The licence page returned no text to curl; the licence name is taken from the docs and not re-confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; datastore_search and the collections endpoint also returned 200 without a key."
+  },
+  "related": [
+    "data-gov-my"
+  ],
+  "added": "2026-11-11"
+}

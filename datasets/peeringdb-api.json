@@ -1,0 +1,139 @@
+{
+  "slug": "peeringdb-api",
+  "name": "PeeringDB API",
+  "provider": {
+    "name": "PeeringDB",
+    "url": "https://www.peeringdb.com",
+    "type": "nonprofit"
+  },
+  "summary": "Community database of networks, internet exchanges, facilities and peering contacts, readable without a key.",
+  "description": "PeeringDB lists networks (ASNs with peering policy and contacts), internet exchanges and their LANs, colocation facilities, organizations and the connections between them. Anonymous requests read the public data; an API key is available for authenticated access and writes.",
+  "category": "networking-internet",
+  "tags": [
+    "peering",
+    "asn",
+    "internet-exchange",
+    "datacenter",
+    "internet-infrastructure"
+  ],
+  "links": {
+    "homepage": "https://www.peeringdb.com",
+    "docs": "https://docs.peeringdb.com/api_specs/",
+    "terms": "https://www.peeringdb.com/aup",
+    "signup": "https://www.peeringdb.com/register",
+    "bulk_download": "https://www.peeringdb.com/apidocs/"
+  },
+  "api": {
+    "base_url": "https://api.peeringdb.com/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "required_headers": [
+      {
+        "name": "User-Agent",
+        "example": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)",
+        "notes": "Requests with an empty User-Agent returned 403."
+      }
+    ],
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not confirmed from a response; anonymous access is throttled and a key raises limits per the docs (not re-confirmed)."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/net",
+      "summary": "Networks, filter by asn, name, info_type",
+      "params": [
+        "asn",
+        "name__contains",
+        "limit",
+        "skip",
+        "depth",
+        "fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ix",
+      "summary": "Internet exchanges",
+      "params": [
+        "country",
+        "name__contains",
+        "limit",
+        "skip"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/fac",
+      "summary": "Colocation facilities",
+      "params": [
+        "country",
+        "city",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/netixlan",
+      "summary": "Network ports at exchanges",
+      "params": [
+        "asn",
+        "ix_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/org",
+      "summary": "Organizations",
+      "params": [
+        "name__contains"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.peeringdb.com/api/ix?limit=1&depth=0",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\"data\": [{\"id\": 1, \"org_id\": 2, \"name\": \"Equinix Ashburn\", \"aka\": \"\", \"name_long\": \"Equinix Internet Exchange Ashburn\", \"city\": \"Ashburn\", \"country\": \"US\", \"region_continent\": \"North America\", \"media\": \"Ethernet\", \"proto_unicast\": true, \"proto_ipv6\": true, ...}], \"meta\": {}}"
+  },
+  "data": {
+    "license": {
+      "name": "PeeringDB Acceptable Use Policy",
+      "url": "https://www.peeringdb.com/aup",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current state, user maintained"
+    },
+    "update_frequency": "realtime"
+  },
+  "agent_notes": "Filter with Django-style suffixes (__contains, __in, __lt) and cut payload with fields and depth. Look up an ASN with /net?asn=N&depth=2 to also get IX and facility records.",
+  "caveats": [
+    "Requests without a User-Agent returned 403.",
+    "Data is self-reported by network operators and can be stale.",
+    "Terms and exact rate limits were not read in full today."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without a key."
+  },
+  "related": [
+    "caida-asrank",
+    "ripestat"
+  ],
+  "added": "2026-11-11"
+}

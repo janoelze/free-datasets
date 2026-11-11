@@ -1,0 +1,105 @@
+{
+  "slug": "uci-ml-repository",
+  "name": "UCI Machine Learning Repository API",
+  "provider": {
+    "name": "UC Irvine Machine Learning Repository",
+    "url": "https://archive.ics.uci.edu",
+    "type": "academic"
+  },
+  "summary": "Metadata and variable descriptions for the classic UCI machine-learning datasets (Iris, Wine, Heart Disease and more), plus links to the CSV data files.",
+  "description": "The repository behind many of the most downloaded Kaggle datasets (Iris, Wine Quality, Breast Cancer Wisconsin, Mushroom, SMS Spam, Heart Disease) exposes JSON endpoints that its ucimlrepo Python package uses. One call lists datasets by id and name; another returns a dataset's abstract, area, tasks, instance and feature counts, creators, DOI, variable table and a data_url to the CSV. At check time the list held 690 entries.",
+  "category": "developer-tools",
+  "tags": [
+    "datasets",
+    "machine-learning",
+    "benchmarks",
+    "classification",
+    "tabular",
+    "uci"
+  ],
+  "links": {
+    "homepage": "https://archive.ics.uci.edu",
+    "docs": "https://github.com/uci-ml-repo/ucimlrepo",
+    "source": "https://github.com/uci-ml-repo/ucimlrepo"
+  },
+  "api": {
+    "base_url": "https://archive.ics.uci.edu/api",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No credential needed. Responses are JSON but sent with content-type text/plain."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/dataset",
+      "summary": "One dataset's metadata and variables, by id or by name (name matches a substring)",
+      "params": [
+        "id",
+        "name"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/datasets/list",
+      "summary": "List datasets as id and name; the search parameter filters by name",
+      "params": [
+        "search",
+        "filter"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://archive.ics.uci.edu/static/public/{id}/data.csv",
+      "summary": "The dataset's data file (static URL given in data_url)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://archive.ics.uci.edu/api/dataset?id=53",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"status\": 200,\n  \"statusText\": \"OK\",\n  \"data\": {\n    \"uci_id\": 53,\n    \"name\": \"Iris\",\n    \"repository_url\": \"https://archive.ics.uci.edu/dataset/53/iris\",\n    \"data_url\": \"https://archive.ics.uci.edu/static/public/53/data.csv\",\n    \"area\": \"Biology\",\n    \"tasks\": [\"Classification\"],\n    \"num_instances\": 150,\n    \"num_features\": 4,\n    \"year_of_dataset_creation\": 1936,\n    \"dataset_doi\": \"10.24432/C56C76\",\n    \"creators\": [\"R. A. Fisher\"],\n    \"variables\": [{\"name\": \"sepal length\", \"role\": \"Feature\", \"type\": \"Continuous\", \"units\": \"cm\", ...}, ...],\n    ...\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Per dataset; licence not confirmed on the pages fetched",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Not applicable",
+      "temporal": "Datasets from the 1930s to the present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Look up an id with /datasets/list?search=wine, then call /dataset?id=. Ids are stable integers (Iris 53, Wine 109, Wine Quality 186, Heart Disease 45). The data_url points to a static CSV. An unknown id returns HTTP 200 with a JSON body whose status field is 404, so check the body status. The listing with filter=aim-ahead returns a richer shape (id, name, description, url).",
+  "caveats": [
+    "The HTTP endpoints are not documented; the only documentation is the ucimlrepo Python package README, so the API may change without notice.",
+    "No CORS header was sent, so browser calls from other origins will fail.",
+    "Responses carry content-type text/plain although the body is JSON."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed without credentials (200, about 1 s). /datasets/list and /dataset?name=wine also returned 200; an unknown id returned HTTP 200 with status 404 in the JSON body."
+  },
+  "related": [
+    "huggingface-hub-api",
+    "openml-api"
+  ],
+  "added": "2026-11-11"
+}

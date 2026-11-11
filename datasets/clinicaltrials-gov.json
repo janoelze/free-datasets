@@ -104,7 +104,8 @@
   "related": [
     "openfda",
     "rxnav-rxnorm",
-    "ncbi-eutils"
+    "ncbi-eutils",
+    "gdc-api"
   ],
   "added": "2026-11-11"
 }

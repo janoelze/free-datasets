@@ -1,0 +1,123 @@
+{
+  "slug": "us-dot-open-data",
+  "name": "U.S. DOT Open Data (data.transportation.gov, Socrata SODA)",
+  "provider": {
+    "name": "U.S. Department of Transportation",
+    "url": "https://www.transportation.gov",
+    "type": "government"
+  },
+  "summary": "Free SODA REST API over the Department of Transportation's open data portal: NHTSA recalls, FMCSA motor carrier census, border crossings, transit ridership, crash files and more.",
+  "description": "data.transportation.gov is a Socrata portal run by the U.S. DOT and its operating administrations (NHTSA, FMCSA, BTS, FTA, FHWA). Each dataset is queryable at /resource/{4x4-id}.json with SoQL. Several popular data.gov entries live here, for example Recalls Data (6axg-epim), Company Census File, Motor Carrier Registrations, Border Crossing Entry Data, Crash File, State, County and City FIPS Reference Table and Complete Monthly Ridership.",
+  "category": "transport-mobility",
+  "tags": [
+    "dot",
+    "transportation",
+    "recalls",
+    "safety",
+    "freight",
+    "socrata",
+    "soql",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://data.transportation.gov",
+    "docs": "https://dev.socrata.com/docs/queries/",
+    "signup": "https://dev.socrata.com/docs/app-tokens.html"
+  },
+  "api": {
+    "base_url": "https://data.transportation.gov",
+    "style": "rest",
+    "formats": [
+      "json",
+      "geojson",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "X-App-Token",
+      "notes": "Works without credentials; an optional free Socrata app token gives a per-application throttling pool instead of the shared per-IP pool."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No numeric limit documented. Without an app token requests share a per-IP pool and can be throttled with HTTP 429."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/resource/{id}.json",
+      "summary": "Query one dataset with SoQL (also .csv, .geojson, .xml)",
+      "params": [
+        "$select",
+        "$where",
+        "$group",
+        "$order",
+        "$limit",
+        "$offset",
+        "$q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog/v1",
+      "summary": "Discovery API: search datasets on the portal",
+      "params": [
+        "domains",
+        "q",
+        "only",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/views/{id}.json",
+      "summary": "Dataset metadata: columns, license, update time",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.transportation.gov/resource/6axg-epim.json?$select=manufacturer,subject,report_received_date&$order=report_received_date%20DESC&$limit=2",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\"manufacturer\": \"Daimler Trucks North America, LLC\", \"subject\": \"Driveline May Separate\", \"report_received_date\": \"2026-11-06T00:00:00.000\"},\n  {\"manufacturer\": \"Daimler Trucks North America, LLC\", \"subject\": \"Incorrect GAWR on Certification Label/Part 567\", \"report_received_date\": \"2026-11-06T00:00:00.000\"}\n]"
+  },
+  "data": {
+    "license": {
+      "name": "Public Domain U.S. Government (as stated in the Recalls Data dataset metadata; other datasets may differ)",
+      "url": "https://www.usa.gov/government-works",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Varies per dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Find ids via /api/catalog/v1?domains=data.transportation.gov&q=<topic>. Values are strings; cast in SoQL. The X-SODA2-Fields header lists columns. For recalls by vehicle, the NHTSA API (see nhtsa-vehicle-apis) is more convenient.",
+  "caveats": [
+    "Numeric columns are returned as JSON strings.",
+    "In the research sandbox the host's certificate chain was not trusted, so curl needed -k; the API itself answered 200 with Access-Control-Allow-Origin: *. Re-verify on a machine with a current CA store.",
+    "The Discovery API with domains=data.transportation.gov returned resultSetSize 1 in one test, so do not rely on it to count datasets; search without the domain filter and check each result's domain instead.",
+    "The www.transportation.gov site answered 403 to curl; only the data portal was tested."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without an app token using curl -k because of the sandbox trust store."
+  },
+  "related": [
+    "cdc-open-data",
+    "nhtsa-api",
+    "nyc-open-data"
+  ],
+  "added": "2026-11-11"
+}

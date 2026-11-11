@@ -1,0 +1,126 @@
+{
+  "slug": "police-uk-data",
+  "name": "data.police.uk Police API",
+  "provider": {
+    "name": "Home Office / data.police.uk",
+    "url": "https://data.police.uk",
+    "type": "government"
+  },
+  "summary": "Keyless API for street-level crime, outcomes, stop and search and neighbourhood data for police forces in England, Wales and Northern Ireland.",
+  "description": "Query street-level crimes by point or area and month, crime categories, outcomes, stop and search records, police forces and their neighbourhood teams and boundaries. Crime data is published monthly with anonymised snap-point locations. The same data is also offered as bulk CSV archives.",
+  "category": "government-politics",
+  "tags": [
+    "crime",
+    "policing",
+    "uk",
+    "open-government",
+    "neighbourhoods",
+    "statistics"
+  ],
+  "links": {
+    "homepage": "https://data.police.uk",
+    "docs": "https://data.police.uk/docs/",
+    "terms": "https://data.police.uk/about/",
+    "bulk_download": "https://data.police.uk/data/"
+  },
+  "api": {
+    "base_url": "https://data.police.uk/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "15 requests per second with a burst of 30 (leaky bucket, documented); exceeding it returns HTTP 429. A 429 with retry_after 30 was also returned today after a short burst of sequential requests.",
+      "requests": 15,
+      "per": "second"
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/forces",
+      "summary": "List police forces"
+    },
+    {
+      "method": "GET",
+      "path": "/forces/{force}",
+      "summary": "One force with contact details and engagement methods",
+      "params": [
+        "force"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/crime-categories",
+      "summary": "Crime categories valid for a month",
+      "params": [
+        "date"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/crimes-street/{category}",
+      "summary": "Street-level crimes within 1 mile of a point or inside a polygon",
+      "params": [
+        "category",
+        "lat",
+        "lng",
+        "poly",
+        "date"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{force}/neighbourhoods",
+      "summary": "Neighbourhoods of a force",
+      "params": [
+        "force"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/crimes-street-dates",
+      "summary": "Months for which crime data is available"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.police.uk/api/crimes-street/all-crime?lat=52.629729&lng=-1.131592&date=2025-08",
+    "response_excerpt": "[{\"category\": \"anti-social-behaviour\", \"location_type\": \"Force\", \"location\": {\"latitude\": \"52.636041\", \"street\": {\"id\": 1738351, \"name\": \"On or near East Gates\"}, \"longitude\": \"-1.133444\"}, \"context\": \"\", \"outcome_status\": null, \"persistent_id\": \"\", \"id\": 130958336, \"location_subtype\": \"\", \"...\": \"...\"}, \"...\"]"
+  },
+  "data": {
+    "license": {
+      "name": "Open Government Licence v3.0",
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "England, Wales and Northern Ireland",
+      "temporal": "Recent months (a rolling window), updated monthly"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "Always pass date=YYYY-MM; without it the latest month is used. Point queries return the crimes within a 1 mile radius, areas can be sent as poly=lat,lng:lat,lng:... . The example area returned 1,743 records for one month, so keep requests sequential and below the rate limit. Use /crimes-street-dates to find a valid month.",
+  "caveats": [
+    "Locations are anonymised to the nearest street snap point, not the exact crime site.",
+    "Not every force necessarily has data for every month (not re-confirmed); the dates endpoint lists availability.",
+    "Docs list further endpoints (stop and search, neighbourhood events and priorities, senior officers); only the ones listed here were queried today."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, access-control-allow-origin: *); UA-less request also 200; a later burst of requests got 429 retry_after 30."
+  },
+  "related": [
+    "data-gov-uk"
+  ],
+  "added": "2026-11-11"
+}

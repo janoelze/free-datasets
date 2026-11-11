@@ -1,0 +1,110 @@
+{
+  "slug": "harvard-dataverse",
+  "name": "Harvard Dataverse API",
+  "provider": {
+    "name": "Harvard University, Institute for Quantitative Social Science",
+    "url": "https://dataverse.harvard.edu",
+    "type": "academic"
+  },
+  "summary": "Keyless Search and Native APIs for the Harvard Dataverse repository of research datasets, with an OpenAPI spec.",
+  "description": "Harvard Dataverse is an open repository for research data. The Search API finds dataverses, datasets and files by keyword, facet and date; the Native API returns full dataset metadata, file listings and versions by persistent identifier; the same API is offered by other Dataverse installations.",
+  "category": "knowledge-reference",
+  "tags": [
+    "research-data",
+    "repository",
+    "datasets",
+    "social-science",
+    "doi",
+    "metadata",
+    "open-science"
+  ],
+  "links": {
+    "homepage": "https://dataverse.harvard.edu",
+    "docs": "https://guides.dataverse.org/en/latest/api/",
+    "openapi": "https://dataverse.harvard.edu/openapi"
+  },
+  "api": {
+    "base_url": "https://dataverse.harvard.edu/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "header",
+      "key_name": "X-Dataverse-key",
+      "notes": "Public read of published content works without a key; an API token (X-Dataverse-key header) is needed for unpublished content and writes."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented for anonymous read access; the guides list a configurable per-installation rate limiting feature (not re-confirmed for Harvard)."
+    },
+    "pagination": "offset",
+    "max_page_size": 1000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search dataverses, datasets and files",
+      "params": [
+        "q",
+        "type",
+        "per_page",
+        "start",
+        "sort",
+        "order",
+        "fq"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/datasets/:persistentId",
+      "summary": "Dataset metadata by DOI",
+      "params": [
+        "persistentId"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/info/version",
+      "summary": "Installed Dataverse version"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://dataverse.harvard.edu/api/search?q=climate&per_page=1&type=dataset",
+    "response_excerpt": "{\"status\": \"OK\", \"data\": {\"q\": \"climate\", \"total_count\": 7235, \"start\": 0, \"spelling_alternatives\": {}, \"items\": [{\"name\": \"Climatic characterization of the sites in Argentina (Córdoba...\", \"type\": \"dataset\", \"url\": \"https://doi.org/10.7910/DVN/DUWBBU\", \"image_url\": \"https://dataverse.harvard.edu/api/datasets/4491816/logo\", \"global_id\": \"doi:10.7910/DVN/DUWBBU\", \"description\": \"Dateset contains past and future exploration on climate in C...\", \"published_at\": \"2025-06-16T15:48:26Z\", \"publisher\": \"Climate variability in the Americas\", \"...\": \"...\"}], \"count_in_response\": 1}}"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per dataset (set by the depositor)",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global research data",
+      "temporal": "Varies per dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Page with per_page (default 10, max 1000 per the guide) and start until start reaches total_count. Use type=dataset to skip files and dataverses. Read the license field of each dataset (/datasets/:persistentId, latestVersion.license) before reusing data; it is set per dataset.",
+  "caveats": [
+    "Licences differ per dataset; the example dataset reported no license field in its latestVersion.",
+    "Total counts differ between runs as the repository grows (7,235 datasets for q=climate today)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, access-control-allow-origin: *). OpenAPI spec at /openapi returned 3.1.0 YAML. Dataset lookup by DOI also 200."
+  },
+  "related": [
+    "datacite",
+    "openalex",
+    "zenodo"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,111 @@
+{
+  "slug": "usitc-hts-rest",
+  "name": "USITC Harmonized Tariff Schedule REST API",
+  "provider": {
+    "name": "U.S. International Trade Commission",
+    "url": "https://www.usitc.gov",
+    "type": "government"
+  },
+  "summary": "Free keyless REST API for the Harmonized Tariff Schedule of the United States: search tariff lines by keyword or HTS number and export chapters as JSON.",
+  "description": "hts.usitc.gov/reststop exposes the current HTS release behind the HTS search site: keyword and number search, export of a range of HTS numbers (JSON, CSV or XLSX), the list of published releases (basic edition and numbered revisions) and the current release name. Records include description, indent level, general, special and other duty rates, units and footnotes.",
+  "category": "economics-statistics",
+  "tags": [
+    "tariffs",
+    "trade",
+    "hts",
+    "customs",
+    "duties",
+    "usitc",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://hts.usitc.gov/",
+    "docs": "https://www.usitc.gov/documents/hts/hts_external_user_guide.pdf",
+    "bulk_download": "https://hts.usitc.gov/"
+  },
+  "api": {
+    "base_url": "https://hts.usitc.gov/reststop",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key needed."
+    },
+    "cors": "restricted",
+    "rate_limit": {
+      "summary": "Not documented; no rate-limit headers were seen."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search tariff lines by keyword or HTS number",
+      "params": [
+        "keyword"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/exportList",
+      "summary": "Export a range of HTS numbers",
+      "params": [
+        "from",
+        "to",
+        "format",
+        "styles"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/currentRelease",
+      "summary": "Name and title of the current release",
+      "params": []
+    },
+    {
+      "method": "GET",
+      "path": "/releaseList",
+      "summary": "All published releases with status and dates",
+      "params": []
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://hts.usitc.gov/reststop/search?keyword=horse",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\"htsno\": \"0101\", \"indent\": \"0\", \"description\": \"Live horses, asses, mules and hinnies:\", \"general\": null, \"special\": null, \"other\": null, \"units\": null, \"footnotes\": [], ...},\n  {\"htsno\": \"0101.21.00\", \"description\": \"Purebred breeding animals\", \"general\": \"Free\", ...}\n]"
+  },
+  "data": {
+    "license": {
+      "name": "U.S. Government data; no license statement found",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Current release plus published revisions (current release at check: 2026 HTS Revision 23)"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Search returns about 15 matching rows for a keyword, including chapter headings. Use exportList?from=0101&to=0101&format=JSON for a full subtree. Call currentRelease before caching; revisions are published several times a year. Do not send an Origin header from a server client.",
+  "caveats": [
+    "A request carrying an Origin header was rejected with HTTP 403 'Invalid CORS request', so the API cannot be called from a browser page on another origin; plain server-side requests work.",
+    "exportList is served as application/octet-stream although the body is JSON.",
+    "The user guide PDF returned 403 to curl; its URL comes from the data.gov record and the guide was not read. Endpoint list is from observed responses."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without credentials; exportList, currentRelease and releaseList also returned 200."
+  },
+  "related": [
+    "un-comtrade"
+  ],
+  "added": "2026-11-11"
+}

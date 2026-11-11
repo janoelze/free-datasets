@@ -112,7 +112,9 @@
     "with_key": true
   },
   "related": [
-    "themealdb"
+    "themealdb",
+    "uk-fhrs-ratings",
+    "usda-fooddata-central"
   ],
   "added": "2026-11-11"
 }

@@ -1,0 +1,123 @@
+{
+  "slug": "catalogue-of-life",
+  "name": "Catalogue of Life ChecklistBank API",
+  "provider": {
+    "name": "Catalogue of Life / GBIF ChecklistBank",
+    "url": "https://www.catalogueoflife.org",
+    "type": "nonprofit"
+  },
+  "summary": "Global species checklist: accepted names, synonyms and classification for known organisms, plus other taxonomic checklists.",
+  "description": "ChecklistBank hosts the Catalogue of Life (monthly releases, 5.4 million names in the 2026-10 release per /dataset/3LR) and thousands of other checklists. The API offers name usage search, taxon records with classification, name matching, datasets and exports. Dataset key 3LR is the latest COL release.",
+  "category": "life-sciences",
+  "tags": [
+    "taxonomy",
+    "species",
+    "biodiversity",
+    "classification",
+    "checklist",
+    "nomenclature"
+  ],
+  "links": {
+    "homepage": "https://www.catalogueoflife.org",
+    "docs": "https://api.checklistbank.org/",
+    "terms": "https://www.catalogueoflife.org/about/licence",
+    "openapi": "https://api.checklistbank.org/openapi",
+    "source": "https://github.com/CatalogueOfLife/backend"
+  },
+  "api": {
+    "base_url": "https://api.checklistbank.org",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched; fair use."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/dataset/{key}/nameusage/search",
+      "summary": "Full text search of names in a dataset",
+      "params": [
+        "q",
+        "rank",
+        "status",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dataset/{key}/taxon/{id}",
+      "summary": "One taxon record"
+    },
+    {
+      "method": "GET",
+      "path": "/dataset/{key}/taxon/{id}/classification",
+      "summary": "Higher classification"
+    },
+    {
+      "method": "GET",
+      "path": "/dataset/{key}/match/nameusage",
+      "summary": "Match a scientific name to a usage",
+      "params": [
+        "q",
+        "rank"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dataset",
+      "summary": "Search datasets and releases",
+      "params": [
+        "q",
+        "limit"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.checklistbank.org/dataset/3LR/nameusage/search?q=Puma%20concolor&limit=1",
+    "response_excerpt": "{\"offset\":0,\"limit\":1,\"total\":2118,\"result\":[{\"id\":\"4QHKG\",\"classification\":[{\"id\":\"N\",\"name\":\"Animalia\",\"rank\":\"kingdom\",\"status\":\"accepted\"},...],\"usage\":{\"id\":\"4QHKG\",\"name\":{\"scientificName\":\"Puma concolor\",\"authorship\":\"(Linnaeus, 1771)\",\"rank\":\"species\",\"genus\":\"Puma\",\"specificEpithet\":\"concolor\"},\"status\":\"accepted\",...}}]}"
+  },
+  "data": {
+    "license": {
+      "name": "CC BY 4.0 (site content; dataset licenses vary per checklist)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://www.catalogueoflife.org/about/licence",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global",
+      "temporal": "Current release (COL26.10 per /dataset/3LR)"
+    },
+    "update_frequency": "monthly"
+  },
+  "agent_notes": "Dataset key 3LR always points to the latest Catalogue of Life release; use a numeric key for a fixed version. Name search returns the full classification with each hit, so responses are large: use limit. Checklists other than COL have their own licenses.",
+  "caveats": [
+    "Responses embed audit fields and the full classification, so even limit=1 is several KB.",
+    "Dataset licenses differ per checklist; only the site statement of CC BY 4.0 was confirmed today.",
+    "Authentication exists for editing; reads need none."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials."
+  },
+  "related": [
+    "gbif",
+    "inaturalist",
+    "obis"
+  ],
+  "added": "2026-11-11"
+}

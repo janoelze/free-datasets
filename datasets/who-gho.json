@@ -97,7 +97,10 @@
   },
   "related": [
     "disease-sh",
-    "our-world-in-data"
+    "our-world-in-data",
+    "cdc-open-data",
+    "humanitarian-data-exchange",
+    "worldpop"
   ],
   "added": "2026-11-11"
 }

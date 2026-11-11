@@ -47,7 +47,43 @@ and say why in your report.
 - Portal da Transparência (free key), ENTSO-E Transparency (free key), Open Power System Data
 - Natural Earth, Wikimedia Enterprise free tier, Abfallnavi
 
+## From list screening on 2026-11-11 (awesome-public-datasets, data.gov popularity, Kaggle top downloads)
+
+Working and keyless at the check, not yet written up:
+
+- Life sciences: EBI BioStudies (ArrayExpress), EMDB, PDBe (near-duplicate of `rcsb-pdb`), ENCODE,
+  GloBI, Rfam, NeuroMorpho, OpenNEURO (GraphQL), SDSS SkyServer (SQL), TCIA NBIA, MeSH lookup,
+  NHS ODS organisation directory, PhysioNet (slow, undocumented), STRING, EBI Search, InterPro
+- Health portals: healthdata.gov (Socrata), CMS OpenPayments (DKAN), CMS Medicare Coverage API
+- National open-data portals with a CKAN/udata API: Austria, Chile, Finland, Hong Kong (also
+  `api.data.gov.hk` historical archive; strongest of these), Ireland, Israel, Italy, Luxembourg,
+  Netherlands, Romania, Switzerland, Ukraine, Uruguay; UNESCO Data Hub (Opendatasoft);
+  Inter-American Development Bank (CKAN)
+- catalog.data.gov's new search API (`/search`, OpenAPI at `/openapi.json`; the CKAN paths are gone)
+- US federal: USBR RISE, BLS Public Data API v2, USDA NRCS Soil Data Access (POST/SQL),
+  FCC and VA Socrata portals; FBI Crime Data Explorer and NREL/NLR (api.data.gov key, DEMO_KEY worked)
+- Research repositories: Figshare
+- Museums: Minneapolis Institute of Art (undocumented)
+- Renfe open data (CKAN, mostly static timetables)
+
+Retry (failed for reasons that may be local or transient): ConceptNet (502), Software Heritage
+(host did not resolve), FAOSTAT (API path not found), Open Targets (GraphQL POST not tried),
+Allen Brain Atlas (works over http only), World Bank Climate Data API, Science Museum Group and
+Walters (unreachable from the sandbox), CFPB complaints and NHTSA CrashAPI (403 to curl),
+`college-scorecard` is in but its DEMO_KEY example was rate-limited at merge: re-verify
+
+Free key required, not tested: NASS Quick Stats, SEER, Copernicus CDS, KNMI, Te Papa, ACLED,
+UCDP, OpenSanctions, Libraries.io, OpenCorporates, dados.gov.br, YouTube Data API, Yelp Fusion
+
 ## Rejected (do not re-add without new evidence)
+
+- Self-promotional micro-APIs that list aggregators pick up (watch prices, coworking price index,
+  AI pricing files, theme-park news, tariff snapshots, derived indicator mirrors): not durable public data
+- Single-city open-data portals, unless exceptional (NYC is in): one record per platform or
+  national portal instead
+- Kaggle public API: docs require a token; keyless responses are undocumented behaviour
+- Road511: the "free" key is a 14-day trial
+- Cooper Hewitt: API host is gone; abuse.ch URLhaus: now 401; HEPData and Brooklyn Museum: bot wall
 
 - TheCocktailDB: docs say apps need a paid Premium key
 - Lorem Picsum: placeholder images, not a dataset

@@ -1,0 +1,115 @@
+{
+  "slug": "bis-statistics",
+  "name": "BIS Data Portal SDMX API",
+  "provider": {
+    "name": "Bank for International Settlements",
+    "url": "https://www.bis.org",
+    "type": "intergovernmental"
+  },
+  "summary": "Keyless SDMX 2.1/3.0 REST API for Bank for International Settlements statistics: policy rates, effective exchange rates, credit, debt securities, banking and derivatives data.",
+  "description": "The BIS Statistics API serves the data published on data.bis.org. At check the dataflow list for agency BIS held 29 dataflows, including central bank policy rates (WS_CBPOL), effective exchange rates (WS_EER), central bank total assets, consolidated banking statistics and CPMI payment statistics. It follows SDMX REST v2: structure queries return dataflows, data structures and codelists, data queries return series keyed by dimension codes. Data can be returned as SDMX-JSON, SDMX-ML or CSV.",
+  "category": "finance-markets",
+  "tags": [
+    "central-bank",
+    "sdmx",
+    "exchange-rates",
+    "interest-rates",
+    "banking",
+    "time-series",
+    "international-finance"
+  ],
+  "links": {
+    "homepage": "https://data.bis.org/",
+    "docs": "https://stats.bis.org/api-doc/v2/",
+    "terms": "https://data.bis.org/help/legal",
+    "bulk_download": "https://data.bis.org/bulkdownload"
+  },
+  "api": {
+    "base_url": "https://stats.bis.org/api/v2",
+    "style": "sdmx",
+    "formats": [
+      "csv",
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/structure/dataflow/BIS",
+      "summary": "List BIS dataflows (add detail=allstubs for a compact list)",
+      "params": [
+        "detail"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/structure/datastructure/BIS/{id}/{version}",
+      "summary": "Dimensions and codes of one data structure",
+      "params": [
+        "references"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/data/dataflow/BIS/{flow}/{version}/{key}",
+      "summary": "Series for a dimension key such as M.N.B.US; use . and + as wildcard and OR",
+      "params": [
+        "startPeriod",
+        "endPeriod",
+        "lastNObservations",
+        "detail",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/availability/dataflow/BIS/{flow}/{version}/{key}",
+      "summary": "Which codes have data for a partial key"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://stats.bis.org/api/v2/data/dataflow/BIS/WS_EER/1.0/M.N.B.US?lastNObservations=2&detail=full&format=csv",
+    "response_excerpt": "FREQ,EER_TYPE,EER_BASKET,REF_AREA,UNIT_MEASURE,TIME_FORMAT,COLLECTION,TITLE_TS,TIME_PERIOD,OBS_VALUE,OBS_STATUS,OBS_CONF,OBS_PRE_BREAK\nM,N,B,US,882,,A,United States - Nominal - Broad (64 economies),2026-08,101.72,A,F,\nM,N,B,US,882,,A,United States - Nominal - Broad (64 economies),2026-09,101.87,A,F,"
+  },
+  "data": {
+    "license": {
+      "name": "BIS terms of permitted use of BIS statistics: unrestricted use provided the BIS is cited as source",
+      "url": "https://data.bis.org/help/legal",
+      "attribution_required": true,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "Global, reported by central banks and national authorities",
+      "temporal": "Varies per dataflow"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Dataflow ids look like WS_EER, WS_CBPOL. Read /structure/dataflow/BIS first, then the dataflow's datastructure for dimension order; a data key lists one value per dimension separated by dots (empty = all, + = OR). The response format follows the Accept header (application/vnd.sdmx.data+csv;version=2.0.0, application/vnd.sdmx.data+json;version=1.0.0) or the format query parameter (csv confirmed); with only Accept: application/json the data endpoint returned SDMX-ML XML. Use lastNObservations or startPeriod to keep responses small.",
+  "caveats": [
+    "The API documentation at stats.bis.org/api-doc/v2 is a script-rendered page; no machine-readable OpenAPI file was found.",
+    "Default data format is SDMX-ML XML unless you ask for csv or json.",
+    "The statistics are compiled by central banks; the BIS asks that translations are not presented as official BIS translations."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; 200 with text/csv."
+  },
+  "related": [
+    "bank-of-canada-valet",
+    "ecb-data-api"
+  ],
+  "added": "2026-11-11"
+}

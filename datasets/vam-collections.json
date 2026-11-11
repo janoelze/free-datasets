@@ -1,0 +1,118 @@
+{
+  "slug": "vam-collections",
+  "name": "V&A Collections API",
+  "provider": {
+    "name": "Victoria and Albert Museum",
+    "url": "https://www.vam.ac.uk",
+    "type": "nonprofit"
+  },
+  "summary": "Keyless JSON API for the Victoria and Albert Museum collections: objects, makers, materials and IIIF image links.",
+  "description": "Search the V&A object records with free text and filters (material, technique, place, maker, date, on display), page through results, request clustered overviews by material or other facets, and fetch single records with IIIF image and presentation URLs. Results can also be returned as CSV for data-science tooling.",
+  "category": "art-museums",
+  "tags": [
+    "museum",
+    "art",
+    "design",
+    "collections",
+    "iiif",
+    "images",
+    "decorative-arts"
+  ],
+  "links": {
+    "homepage": "https://www.vam.ac.uk/collections",
+    "docs": "https://developers.vam.ac.uk/guide/v2/welcome.html",
+    "terms": "https://developers.vam.ac.uk/guide/v2/welcome.html"
+  },
+  "api": {
+    "base_url": "https://api.vam.ac.uk/v2",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/objects/search",
+      "summary": "Search object records",
+      "params": [
+        "q",
+        "page_size",
+        "page",
+        "response_format",
+        "id_material",
+        "images"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/museumobject/{system_number}",
+      "summary": "One object record by system number",
+      "params": [
+        "system_number"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/objects/clusters/search",
+      "summary": "Clustered overview of matching objects by facet",
+      "params": [
+        "q"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/objects/clusters/material/search",
+      "summary": "Terms for one cluster type (material)",
+      "params": [
+        "q"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.vam.ac.uk/v2/objects/search?q=teapot&page_size=1",
+    "response_excerpt": "{\"info\": {\"version\": \"2.0\", \"record_count\": 2808, \"record_count_exact\": true, \"parameters\": {}, \"page_size\": 1, \"pages\": 2808, \"page\": 1, \"image_count\": 5398}, \"records\": [{\"systemNumber\": \"O94917\", \"accessionNumber\": \"M.934-1983\", \"objectType\": \"Teapot\", \"availableToBook\": true, \"_currentLocation\": {\"id\": \"THES409757\", \"displayName\": \"in storage\", \"type\": \"storage\", \"site\": \"VA\", \"onDisplay\": false, \"detail\": {\"free\": \"\", \"case\": \"\", \"shelf\": \"\", \"box\": \"\"}}, \"_primaryTitle\": \"Teapot\", \"_primaryMaker\": {\"name\": \"Robert Crawford Johnson\", \"association\": \"designer\"}, \"_primaryImageId\": \"2006BG1640\", \"...\": \"...\"}], \"clusters\": {\"venue\": {\"other_terms_record_count\": 0, \"terms\": [{\"id\": \"VA\", \"value\": \"V&A South Kensington\", \"count\": 0, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}, \"gallery\": {\"other_terms_record_count\": 1010, \"terms\": [{\"id\": \"VA\", \"value\": \"V&A South Kensington\", \"count\": 0, \"depth\": 0, \"count_max_error\": 0, \"childTerms\": [{\"id\": \"THES49874\", \"value\": \"Ceramics, Room 139, The Curtain Foundation Gallery\", \"count\": 487, \"depth\": 1, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}]}, \"category\": {\"other_terms_record_count\": 475, \"terms\": [{\"id\": \"THES48982\", \"value\": \"Ceramics\", \"count\": 1477, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}, \"object_type\": {\"other_terms_record_count\": 457, \"terms\": [{\"id\": \"Teapot\", \"value\": \"Teapot\", \"count\": 970, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}, \"collection\": {\"other_terms_record_count\": 0, \"terms\": [{\"id\": \"THES48594\", \"value\": \"Ceramics Collection\", \"count\": 1382, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}, \"place\": {\"other_terms_record_count\": 568, \"terms\": [{\"id\": \"x29181\", \"value\": \"Staffordshire\", \"count\": 290, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}, \"style\": {\"other_terms_record_count\": 61, \"terms\": [{\"id\": \"AAT21167\", \"value\": \"Chinoiserie\", \"count\": 63, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}, \"material\": {\"other_terms_record_count\": 550, \"terms\": [{\"id\": \"AAT10662\", \"value\": \"porcelain\", \"count\": 399, \"count_max_error\": 0, \"childTerms\": []}, \"...\"]}, \"...\": \"...\"}}"
+  },
+  "data": {
+    "license": {
+      "name": "Governed by the terms of use of the V&A website (section 9.3 on collections data and images)",
+      "url": "https://developers.vam.ac.uk/guide/v2/welcome.html",
+      "attribution_required": false,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (objects held by the V&A)",
+      "temporal": "Antiquity to the present"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Use page_size (the guide shows values up to 50 in examples) with page to paginate; the response info block gives record_count and pages. Add response_format=csv for tabular output. Each record carries _images with a IIIF base URL you can request sized images from. The /objects/clusters endpoints return facet counts without records.",
+  "caveats": [
+    "Licensing is by reference to the V&A website terms of use rather than a named open licence; read them before reusing images.",
+    "No OpenAPI document found: /v2/openapi.json returned 404.",
+    "Maximum page size and rate limits are not documented in the pages read."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example executed 2026-11-11 (200, access-control-allow-origin: *). Also /museumobject/O94917 and /objects/clusters/search?q=teapot returned 200."
+  },
+  "related": [
+    "artic",
+    "europeana",
+    "met-museum"
+  ],
+  "added": "2026-11-11"
+}

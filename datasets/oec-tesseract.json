@@ -1,0 +1,119 @@
+{
+  "slug": "oec-tesseract",
+  "name": "OEC (Observatory of Economic Complexity) API",
+  "provider": {
+    "name": "Observatory of Economic Complexity (Datawheel)",
+    "url": "https://oec.world",
+    "type": "company"
+  },
+  "summary": "Keyless OLAP-style API for international trade flows (BACI, UN Comtrade), tariffs, product complexity and other economic cubes; free for historical data, paid tokens for latest and large queries.",
+  "description": "The OEC API is built on the Tesseract OLAP engine. At check the cubes endpoint listed 80 cubes: bilateral trade by HS revision (BACI), UN Comtrade monthly and annual trade, services trade, WITS tariffs, World Bank indicators, economic complexity (ECI, PCI, RCA) and more. You choose a cube, drilldowns (dimension levels) and measures, filter by member, sort and limit, and get JSON records, CSV, TSV, Parquet or XLSX back. The documentation states that many endpoints are free without authentication for historical trade data and metadata, while the latest data, subnational breakdowns and larger query volumes need a Pro or Premium token.",
+  "category": "economics-statistics",
+  "tags": [
+    "trade",
+    "economic-complexity",
+    "exports",
+    "imports",
+    "hs-codes",
+    "tariffs",
+    "olap"
+  ],
+  "links": {
+    "homepage": "https://oec.world/",
+    "docs": "https://oec.world/en/resources/api",
+    "terms": "https://oec.world/en/resources/terms",
+    "bulk_download": "https://oec.world/en/resources/bulk-download"
+  },
+  "api": {
+    "base_url": "https://api.oec.world/tesseract",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "parquet"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "token",
+      "notes": "Historical trade data and metadata work without a token. A paid Pro or Premium token (query parameter token) unlocks the latest data and larger queries."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented for the free tier."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/cubes",
+      "summary": "List all cubes with their dimensions and measures"
+    },
+    {
+      "method": "GET",
+      "path": "/cubes/{cube}",
+      "summary": "Dimensions, levels and measures of one cube"
+    },
+    {
+      "method": "GET",
+      "path": "/members",
+      "summary": "Members of one dimension level, e.g. all exporter countries",
+      "params": [
+        "cube",
+        "level",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/data.{format}",
+      "summary": "Query data; format is jsonrecords, jsonarrays, csv, tsv, parquet or xlsx",
+      "params": [
+        "cube",
+        "drilldowns",
+        "measures",
+        "limit",
+        "sort",
+        "locale"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.oec.world/tesseract/data.jsonrecords?cube=trade_i_baci_a_92&drilldowns=Year&measures=Trade+Value&locale=en&limit=3",
+    "response_excerpt": "{\n  \"annotations\": {\n    \"source_name\": \"BACI\",\n    \"dataset_name\": \"HS6 REV. 1992 (1995 - 2024)\",\n    \"topic\": \"International\"\n  },\n  \"page\": {\n    \"limit\": 3,\n    \"offset\": 0,\n    \"total\": 30\n  },\n  \"columns\": [\n    \"Year\",\n    \"Trade Value\"\n  ],\n  \"data\": [\n    {\n      \"Year\": 1995,\n      \"Trade Value\": 5071331093306.0\n    },\n    {\n      \"Year\": 1996,\n      \"Trade Value\": 5367317691311.0\n    },\n    {\n      \"Year\": 1997,\n      \"Trade Value\": 5600778992476.0\n    }\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "OEC terms and conditions; underlying data from CEPII BACI, UN Comtrade and others carry their own terms",
+      "url": "https://oec.world/en/resources/terms",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global; about 200 countries",
+      "temporal": "BACI HS92 cube covers 1995 to 2024 at check"
+    },
+    "update_frequency": "annually"
+  },
+  "agent_notes": "Flow: GET /cubes, pick a cube such as trade_i_baci_a_92, read its dimensions at /cubes/{cube}, list ids with /members?cube=..&level=.., then query data.jsonrecords with drilldowns and measures (names contain spaces, URL-encode with +). Add a member filter by name (Year=2020). limit takes 'N' or 'N,offset'. api-v2.oec.world/tesseract answered the same as api.oec.world/tesseract.",
+  "caveats": [
+    "Free access is for historical data; the newest data and subnational breakdowns need a paid token.",
+    "The older olap-proxy path that many examples use is a legacy route; this record uses the documented /tesseract routes.",
+    "Rate limits for anonymous use are not published; cache results."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; 200 with application/json and Access-Control-Allow-Origin: *."
+  },
+  "related": [
+    "harvard-atlas-of-economic-complexity",
+    "un-comtrade"
+  ],
+  "added": "2026-11-11"
+}

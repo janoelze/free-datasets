@@ -118,7 +118,11 @@
     "eurostat",
     "fred",
     "ibge-sidra",
-    "our-world-in-data"
+    "our-world-in-data",
+    "dbnomics",
+    "humanitarian-data-exchange",
+    "oecd-sdmx",
+    "un-comtrade"
   ],
   "added": "2026-11-11"
 }

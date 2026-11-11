@@ -1,0 +1,117 @@
+{
+  "slug": "cbioportal",
+  "name": "cBioPortal for Cancer Genomics API",
+  "provider": {
+    "name": "cBioPortal (Memorial Sloan Kettering and collaborators)",
+    "url": "https://www.cbioportal.org",
+    "type": "academic"
+  },
+  "summary": "Public cancer genomics studies: mutations, copy number, expression and clinical data for hundreds of studies via a REST API.",
+  "description": "The public cBioPortal instance serves a REST API behind the web UI, with endpoints for studies, cancer types, samples, patients, genes, molecular profiles, mutations and clinical data. A swagger/OpenAPI 3.1 spec is published. Unauthenticated access works for the public studies hosted on www.cbioportal.org.",
+  "category": "health-medicine",
+  "tags": [
+    "cancer",
+    "genomics",
+    "oncology",
+    "mutations",
+    "clinical-data",
+    "biomedical"
+  ],
+  "links": {
+    "homepage": "https://www.cbioportal.org",
+    "docs": "https://docs.cbioportal.org/web-api-and-clients/",
+    "openapi": "https://www.cbioportal.org/api/v3/api-docs",
+    "source": "https://github.com/cBioPortal/cbioportal"
+  },
+  "api": {
+    "base_url": "https://www.cbioportal.org/api",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public studies need no token; private portals use data access tokens."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented; the docs ask heavy users to run their own instance."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/studies",
+      "summary": "List studies",
+      "params": [
+        "pageSize",
+        "pageNumber",
+        "projection",
+        "keyword"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/studies/{studyId}",
+      "summary": "One study"
+    },
+    {
+      "method": "GET",
+      "path": "/cancer-types",
+      "summary": "List cancer types"
+    },
+    {
+      "method": "GET",
+      "path": "/studies/{studyId}/samples",
+      "summary": "Samples of a study",
+      "params": [
+        "pageSize",
+        "pageNumber"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/genes/{geneId}",
+      "summary": "Gene by Entrez id or symbol"
+    },
+    {
+      "method": "POST",
+      "path": "/mutations/fetch",
+      "summary": "Fetch mutations for a molecular profile and sample list (POST body)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.cbioportal.org/api/studies?pageSize=2&projection=SUMMARY",
+    "response_excerpt": "[{\"studyId\":\"acc_tcga\",\"cancerTypeId\":\"acc\",\"name\":\"Adrenocortical Carcinoma (TCGA, Firehose Legacy)\",\"description\":\"TCGA Adrenocortical Carcinoma. ...\",\"publicStudy\":true,\"groups\":\"PUBLIC\",\"status\":1,\"importDate\":\"2026-01-05 12:46:31\",\"allSampleCount\":92,\"referenceGenome\":\"hg19\",\"readPermission\":true,\"resourceCounts\":[]},...]"
+  },
+  "data": {
+    "license": {
+      "name": "Varies per study (public cancer studies; see study citations)",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global cohorts",
+      "temporal": "Varies per study"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Start from /studies, then /studies/{id}/molecular-profiles and /samples. Bulk queries use POST /…/fetch endpoints with JSON bodies (see the OpenAPI spec). Use projection=SUMMARY|DETAILED|META to control detail and pageSize/pageNumber to page.",
+  "caveats": [
+    "The OpenAPI spec title says \"[Alpha]\"; paths and fields may change.",
+    "Large mutation or expression pulls are heavy; prefer the fetch endpoints with explicit sample lists.",
+    "Study data licenses are not uniform; cite each study."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials."
+  },
+  "related": [
+    "gdc-api"
+  ],
+  "added": "2026-11-11"
+}

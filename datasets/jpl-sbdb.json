@@ -104,7 +104,8 @@
     "with_key": true
   },
   "related": [
-    "jpl-horizons"
+    "jpl-horizons",
+    "nasa-exoplanet-archive"
   ],
   "added": "2026-11-11"
 }

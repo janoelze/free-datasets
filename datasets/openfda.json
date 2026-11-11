@@ -120,7 +120,8 @@
   },
   "related": [
     "clinicaltrials-gov",
-    "rxnav-rxnorm"
+    "rxnav-rxnorm",
+    "cdc-open-data"
   ],
   "added": "2026-11-11"
 }

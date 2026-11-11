@@ -1,0 +1,157 @@
+{
+  "slug": "fdic-bankfind",
+  "name": "FDIC BankFind Suite API",
+  "provider": {
+    "name": "Federal Deposit Insurance Corporation",
+    "url": "https://www.fdic.gov",
+    "type": "government"
+  },
+  "summary": "Free keyless REST API for FDIC-insured institutions: bank profiles, branch locations, failures, quarterly financials, summary of deposits and demographics.",
+  "description": "The BankFind API serves the data behind banks.data.fdic.gov: institutions (with CERT, name, assets, state, charter), their branch locations, historical events and structure changes, bank failures since 1934 with cost to the insurance fund, quarterly financial reports, summary of deposits and demographics. Queries use Elasticsearch-style filters, field selection, sorting, limit/offset and csv or json output.",
+  "category": "finance-markets",
+  "tags": [
+    "banking",
+    "fdic",
+    "banks",
+    "bank-failures",
+    "deposits",
+    "financial-institutions",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://banks.data.fdic.gov/",
+    "docs": "https://api.fdic.gov/banks/docs/",
+    "terms": "https://www.fdic.gov/resources/data-tools/",
+    "openapi": "https://api.fdic.gov/banks/docs/swagger.yaml"
+  },
+  "api": {
+    "base_url": "https://api.fdic.gov/banks",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none",
+      "key_optional": true,
+      "key_in": "query",
+      "key_name": "api_key",
+      "notes": "The OpenAPI spec lists an optional api_key parameter; all requests tested worked without one."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "The response header x-ratelimit-limit: 20 was sent with x-ratelimit-remaining: 19 on every call; the unit (per second or per minute) is not stated."
+    },
+    "pagination": "offset",
+    "max_page_size": 10000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/institutions",
+      "summary": "Search institutions",
+      "params": [
+        "filters",
+        "fields",
+        "sort_by",
+        "sort_order",
+        "limit",
+        "offset",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/failures",
+      "summary": "Bank failures and assistance",
+      "params": [
+        "filters",
+        "fields",
+        "sort_by",
+        "sort_order",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/locations",
+      "summary": "Branch locations",
+      "params": [
+        "filters",
+        "fields",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/financials",
+      "summary": "Quarterly financial reports",
+      "params": [
+        "filters",
+        "fields",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/history",
+      "summary": "Structure change events",
+      "params": [
+        "filters",
+        "fields",
+        "limit",
+        "offset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sod",
+      "summary": "Summary of deposits",
+      "params": [
+        "filters",
+        "fields",
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.fdic.gov/banks/institutions?filters=STALP%3ADC%20AND%20ACTIVE%3A1&fields=NAME%2CCITY%2CASSET%2CCERT&limit=2&sort_by=ASSET&sort_order=DESC",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"meta\": {\"total\": 4, \"parameters\": {...}},\n  \"data\": [\n    {\"data\": {\"CITY\": \"Washington\", \"ASSET\": 1562007, \"CERT\": 34352, \"NAME\": \"City First Bank, National Association\", \"ID\": \"34352\"}, \"score\": 0},\n    {\"data\": {\"CITY\": \"Washington\", \"ASSET\": 774247, \"CERT\": 14679, \"NAME\": \"Industrial Bank\", \"ID\": \"14679\"}, \"score\": 0}\n  ],\n  \"totals\": {\"count\": 4}\n}"
+  },
+  "data": {
+    "license": {
+      "name": "U.S. Government data; no license statement found",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Varies per endpoint; the failures list includes 4,117 records at check"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Field names and filter values must be UPPERCASE. filters use Lucene-style syntax (STALP:DC AND ACTIVE:1). Each record is wrapped as data.data; add format=csv for flat CSV. Failure dataset had 4117 records and its newest failure dated 2026-07-17 at check.",
+  "caveats": [
+    "The spec is titled Beta (version 0.1.0).",
+    "The index name in meta changes when data is reloaded."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example executed without a key; /failures, /locations, /financials, /history, /sod and /summary also returned 200."
+  },
+  "related": [
+    "sec-edgar",
+    "us-treasury-fiscaldata"
+  ],
+  "added": "2026-11-11"
+}

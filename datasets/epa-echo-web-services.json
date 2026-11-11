@@ -1,0 +1,136 @@
+{
+  "slug": "epa-echo-web-services",
+  "name": "EPA ECHO Web Services",
+  "provider": {
+    "name": "U.S. Environmental Protection Agency",
+    "url": "https://www.epa.gov",
+    "type": "government"
+  },
+  "summary": "Free keyless REST services behind EPA's ECHO: facility compliance, inspections, violations and penalties under the Clean Air, Clean Water, RCRA and drinking water programs.",
+  "description": "ECHO's public web services return JSON, XML or JSONP. Facility search services (all media, Air, Clean Water, RCRA hazardous waste, drinking water) take a query, return summary counts plus a QueryID, and a second call (get_qid, get_map, get_download) pages through the matching facilities. Report services return the Detailed Facility Report for one facility by its FRS Registry ID, effluent charts, enforcement cases and the corporate compliance screener. Metadata endpoints list result columns.",
+  "category": "earth-environment",
+  "tags": [
+    "epa",
+    "environment",
+    "compliance",
+    "enforcement",
+    "pollution",
+    "facilities",
+    "water-quality",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://echo.epa.gov",
+    "docs": "https://echo.epa.gov/tools/web-services"
+  },
+  "api": {
+    "base_url": "https://echodata.epa.gov/echo",
+    "style": "rest",
+    "formats": [
+      "json",
+      "xml"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "No key or registration needed for the documented services."
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented on the web services page; no rate-limit headers were seen."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/echo_rest_services.get_facilities",
+      "summary": "All-media facility search: returns summary counts and a QueryID",
+      "params": [
+        "output",
+        "p_zip",
+        "p_st",
+        "p_act",
+        "p_sic",
+        "p_naics"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/echo_rest_services.get_qid",
+      "summary": "Page through the facilities of a previous search",
+      "params": [
+        "output",
+        "qid",
+        "pageno",
+        "pagesize"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/cwa_rest_services.get_facilities",
+      "summary": "Clean Water Act (NPDES) facility search",
+      "params": [
+        "output",
+        "p_st",
+        "p_act",
+        "responseset"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dfr_rest_services.get_dfr",
+      "summary": "Detailed Facility Report for one FRS Registry ID",
+      "params": [
+        "output",
+        "p_id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/echo_rest_services.metadata",
+      "summary": "Column definitions of the facility search results",
+      "params": [
+        "output"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://echodata.epa.gov/echo/echo_rest_services.get_facilities?output=JSON&p_zip=20001&p_act=Y",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"Results\": {\n    \"Message\": \"Success\",\n    \"Version\": \"ALL DATA v2017-06-16 0923\",\n    \"QueryRows\": \"164\",\n    \"SVRows\": \"2\",\n    \"CVRows\": \"16\",\n    \"INSPRows\": \"71\",\n    \"TotalPenalties\": \"$0\",\n    \"CAARows\": \"21\",\n    \"CWARows\": \"47\",\n    \"RCRRows\": \"100\",\n    \"QueryID\": \"488\"\n  }\n}"
+  },
+  "data": {
+    "license": {
+      "name": "U.S. Government data; no license statement found on the web services page",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United States",
+      "temporal": "Current compliance status and multi-year histories"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Two-step pattern: call get_facilities, read QueryID, then call get_qid with that qid and pageno/pagesize to get the facility rows. The Registry ID in a row (FRS) feeds dfr_rest_services.get_dfr?p_id=. Results come as strings. Keep output=JSON on every call. For bulk needs use the ECHO data downloads instead.",
+  "caveats": [
+    "QueryIDs are temporary server-side handles, so a qid cannot be bookmarked.",
+    "get_qid answered Message \"Working\" with data in the same body in one test; check QueryRows and the Facilities array rather than the message.",
+    "A wrong id returns HTTP 200 with a Results.Error object, not an HTTP error.",
+    "Access-Control-Allow-Origin echoes the request Origin (reflect).",
+    "The legacy host ofmpub.epa.gov/echo returned 404; use echodata.epa.gov.",
+    "Rate limits and the data license are not stated on the docs page (not confirmed)."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": false,
+    "notes": "Exact example request executed without credentials; get_qid and get_dfr were also checked."
+  },
+  "related": [
+    "usgs-water-data"
+  ],
+  "added": "2026-11-11"
+}

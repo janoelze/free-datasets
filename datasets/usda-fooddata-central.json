@@ -1,0 +1,136 @@
+{
+  "slug": "usda-fooddata-central",
+  "name": "USDA FoodData Central API",
+  "provider": {
+    "name": "U.S. Department of Agriculture, Agricultural Research Service",
+    "url": "https://www.ars.usda.gov",
+    "type": "government"
+  },
+  "summary": "Free REST API for USDA's food composition data: nutrients for foundation, SR Legacy, survey (FNDDS) and branded foods, public domain under CC0; free api.data.gov key (DEMO_KEY works).",
+  "description": "FoodData Central integrates the USDA data types: Foundation Foods, SR Legacy, FNDDS survey foods and Branded Foods (label data with GTIN/UPC, ingredients and brand owner). The API searches foods, fetches one or many foods by fdcId and lists foods by data type, returning nutrient amounts, portions and metadata in abridged or full format.",
+  "category": "food",
+  "tags": [
+    "nutrition",
+    "food",
+    "usda",
+    "nutrients",
+    "branded-foods",
+    "food-composition",
+    "usa"
+  ],
+  "links": {
+    "homepage": "https://fdc.nal.usda.gov/",
+    "docs": "https://fdc.nal.usda.gov/api-guide",
+    "terms": "https://fdc.nal.usda.gov/api-guide",
+    "openapi": "https://fdc.nal.usda.gov/api-spec/fdc_api.json",
+    "signup": "https://fdc.nal.usda.gov/api-key-signup"
+  },
+  "api": {
+    "base_url": "https://api.nal.usda.gov/fdc/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "api_key",
+      "key_in": "query",
+      "key_name": "api_key",
+      "demo_key": "DEMO_KEY",
+      "notes": "A free key is required (a keyless call returned 403 API_KEY_MISSING). The shared DEMO_KEY works for trials; sign up for a personal key."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Docs: default 1,000 requests per hour per IP address, then the key is blocked for 1 hour (HTTP 429). With DEMO_KEY the response header x-ratelimit-limit was 10.",
+      "requests": 1000,
+      "per": "hour",
+      "scope": "ip"
+    },
+    "pagination": "page",
+    "max_page_size": 200
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/foods/search",
+      "summary": "Search foods by keyword",
+      "params": [
+        "query",
+        "dataType",
+        "pageSize",
+        "pageNumber",
+        "sortBy",
+        "brandOwner",
+        "api_key"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/food/{fdcId}",
+      "summary": "One food with nutrients",
+      "params": [
+        "format",
+        "nutrients",
+        "api_key"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/foods",
+      "summary": "Several foods by fdcIds",
+      "params": [
+        "fdcIds",
+        "format",
+        "nutrients",
+        "api_key"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/foods/list",
+      "summary": "Paged list of foods",
+      "params": [
+        "dataType",
+        "pageSize",
+        "pageNumber",
+        "api_key"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.nal.usda.gov/fdc/v1/foods/search?query=cheddar&pageSize=1&api_key=DEMO_KEY",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "{\n  \"totalHits\": 19300,\n  \"currentPage\": 1,\n  \"totalPages\": 19300,\n  \"foodSearchCriteria\": {\"query\": \"cheddar\", \"pageSize\": 1, ...},\n  \"foods\": [\n    {\"fdcId\": 2428039, \"description\": \"CHEDDAR\", \"dataType\": \"Branded\", \"brandOwner\": \"Sartori Company\", \"foodCategory\": \"Cheese\", ...}\n  ]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "CC0 1.0 Universal (public domain); the guide asks to credit FoodData Central",
+      "spdx": "CC0-1.0",
+      "url": "https://fdc.nal.usda.gov/api-guide",
+      "attribution_required": false,
+      "commercial_use": "allowed"
+    },
+    "coverage": {
+      "geographic": "United States foods",
+      "temporal": "Current; publication dates per record"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Search first, then fetch /food/{fdcId}?format=abridged for compact nutrient lists. Filter with dataType=Foundation,SR Legacy to avoid the very large Branded set. Nutrient ids follow the nutrient 'number' (e.g. 203 protein). Put the key in api_key; keys found in public repositories are deactivated per the guide.",
+  "caveats": [
+    "DEMO_KEY is heavily shared; expect 429 quickly during testing."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example executed with DEMO_KEY; without any key the API answered 403 API_KEY_MISSING."
+  },
+  "related": [
+    "open-food-facts"
+  ],
+  "added": "2026-11-11"
+}

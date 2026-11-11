@@ -92,7 +92,9 @@
     "frankfurter",
     "eurostat",
     "bank-of-canada-valet",
-    "open-er-api"
+    "open-er-api",
+    "bis-statistics",
+    "dbnomics"
   ],
   "added": "2026-11-11"
 }

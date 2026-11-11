@@ -1,0 +1,109 @@
+{
+  "slug": "noaa-ncei-access-data",
+  "name": "NOAA NCEI Access Data Service",
+  "provider": {
+    "name": "NOAA National Centers for Environmental Information",
+    "url": "https://www.ncei.noaa.gov",
+    "type": "government"
+  },
+  "summary": "Keyless API for station-based climate observations from NOAA NCEI archives, such as GHCN-Daily daily summaries, as JSON or CSV.",
+  "description": "The Access Data Service v1 subsets NCEI datasets by station, date range, data type, bounding box and units. Datasets include daily-summaries (GHCN-Daily), global-summary-of-the-month and global-summary-of-the-year, and other station datasets listed in the docs. A companion Search Service lists the datasets and supports faceted lookup.",
+  "category": "weather-climate",
+  "tags": [
+    "weather",
+    "climate",
+    "observations",
+    "historical-weather",
+    "noaa",
+    "stations"
+  ],
+  "links": {
+    "homepage": "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
+    "docs": "https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation",
+    "terms": "https://www.ncei.noaa.gov/about/privacy-policy"
+  },
+  "api": {
+    "base_url": "https://www.ncei.noaa.gov/access/services/data/v1",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "summary": "Subset a dataset by station, date range and data types",
+      "params": [
+        "dataset",
+        "stations",
+        "startDate",
+        "endDate",
+        "dataTypes",
+        "units",
+        "format",
+        "boundingBox",
+        "includeAttributes",
+        "includeStationName",
+        "includeStationLocation"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "https://www.ncei.noaa.gov/access/services/search/v1/datasets",
+      "summary": "Search Service: list and facet the available datasets",
+      "params": [
+        "limit",
+        "offset",
+        "text"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://www.ncei.noaa.gov/access/services/data/v1?dataset=daily-summaries&stations=USW00094728&startDate=2024-01-01&endDate=2024-01-02&dataTypes=TMAX,TMIN,PRCP&units=metric&format=json",
+    "headers": {
+      "User-Agent": "datasets-library/1.0 (+https://endtime-instruments.org/datasets/)"
+    },
+    "response_excerpt": "[\n  {\"DATE\": \"2024-01-01\", \"STATION\": \"USW00094728\", \"TMAX\": \"8.3\", \"TMIN\": \"1.7\", \"PRCP\": \"0.8\"},\n  {\"DATE\": \"2024-01-02\", \"STATION\": \"USW00094728\", \"TMAX\": \"5.6\", \"TMIN\": \"-1.6\", \"PRCP\": \"0.0\"}\n]"
+  },
+  "data": {
+    "license": {
+      "name": "NOAA open data (US Government work); no licence text found on the docs page",
+      "url": "https://www.ncei.noaa.gov/about/privacy-policy",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global, station-based (daily-summaries covers land stations worldwide, densest in the US)",
+      "temporal": "Varies by dataset and station; some daily records go back well over a century"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Station ids are GHCN ids (USW00094728 is New York Central Park); find them in the Search Service or the NCEI station finder. Always pass dataTypes, units and format=json; values come back as strings. Request narrow date ranges per call. Add includeStationName=true to get names without a second lookup.",
+  "caveats": [
+    "Values are returned as strings, and in daily-summaries missing observations are simply absent.",
+    "Data types and units depend on the dataset; metric units are only a request option for some datasets.",
+    "No OpenAPI spec found, and the rate limits and licence are not documented on the user guide page."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key; CORS * on the example."
+  },
+  "related": [
+    "noaa-coops",
+    "nws-weather-gov"
+  ],
+  "added": "2026-11-11"
+}

@@ -1,0 +1,117 @@
+{
+  "slug": "reactome",
+  "name": "Reactome Content Service",
+  "provider": {
+    "name": "Reactome (OICR, EMBL-EBI, NYULH, Univ. of Toronto)",
+    "url": "https://reactome.org",
+    "type": "nonprofit"
+  },
+  "summary": "Curated human biological pathways and reactions: pathway hierarchy, participants, cross-references and full-text search.",
+  "description": "The Reactome Content Service serves pathway and reaction data (database objects by stable id, event hierarchies, participants, species, diseases), a search endpoint, mapping of identifiers to pathways and orthology. An OpenAPI 3 spec is published. A separate Analysis Service handles enrichment analysis.",
+  "category": "life-sciences",
+  "tags": [
+    "pathways",
+    "reactions",
+    "biology",
+    "genes",
+    "proteins",
+    "bioinformatics"
+  ],
+  "links": {
+    "homepage": "https://reactome.org",
+    "docs": "https://reactome.org/dev/content-service",
+    "terms": "https://reactome.org/license",
+    "openapi": "https://reactome.org/ContentService/v3/api-docs",
+    "source": "https://github.com/reactome"
+  },
+  "api": {
+    "base_url": "https://reactome.org/ContentService",
+    "style": "rest",
+    "formats": [
+      "json",
+      "text",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched; fair use."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/data/query/{id}",
+      "summary": "Database object by stable id (R-HSA-xxxx) or dbId"
+    },
+    {
+      "method": "GET",
+      "path": "/search/query",
+      "summary": "Full text search",
+      "params": [
+        "query",
+        "species",
+        "types",
+        "cluster",
+        "rows",
+        "start"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/data/pathways/low/entity/{id}",
+      "summary": "Lowest-level pathways containing an entity"
+    },
+    {
+      "method": "GET",
+      "path": "/data/participants/{id}",
+      "summary": "Participants of an event"
+    },
+    {
+      "method": "GET",
+      "path": "/data/species/main",
+      "summary": "Main species list"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://reactome.org/ContentService/search/query?query=apoptosis&species=Homo%20sapiens&types=Pathway&cluster=true&rows=2",
+    "response_excerpt": "{\"results\":[{\"entries\":[{\"dbId\":\"109581\",\"stId\":\"R-HSA-109581\",\"id\":\"R-HSA-109581\",\"name\":\"<span class=\\\"highlighting\\\" >Apoptosis</span>\",\"type\":\"Pathway\",\"exactType\":\"Pathway\",\"species\":[\"Homo sapiens\"],\"summation\":\"...\"},...],\"typeName\":\"Pathway\",\"entriesCount\":...}],...}"
+  },
+  "data": {
+    "license": {
+      "name": "Reactome content under CC BY 4.0 (illustrations and branding confirmed; data terms on the license page)",
+      "spdx": "CC-BY-4.0",
+      "url": "https://reactome.org/license",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Global (human with orthology to other species)",
+      "temporal": "Current release"
+    },
+    "update_frequency": "quarterly"
+  },
+  "agent_notes": "Stable ids look like R-HSA-109581 (R-<species>-<number>). Search highlights matches with HTML span tags that you should strip. For gene-list enrichment use the separate Analysis Service at reactome.org/AnalysisService (not tested).",
+  "caveats": [
+    "Search results wrap matched terms in HTML span tags.",
+    "Only the CC BY 4.0 statement for art and branding was read on the license page today; check it for data terms.",
+    "Release cadence (\"quarterly\") is an assumption, not confirmed."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Example run without credentials."
+  },
+  "related": [
+    "kegg-rest",
+    "quickgo",
+    "uniprot"
+  ],
+  "added": "2026-11-11"
+}

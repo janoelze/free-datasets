@@ -110,7 +110,9 @@
     "world-bank-indicators",
     "ecb-data-api",
     "ibge-sidra",
-    "ssb-statbank-norway"
+    "ssb-statbank-norway",
+    "dbnomics",
+    "oecd-sdmx"
   ],
   "added": "2026-11-11"
 }

@@ -1,0 +1,118 @@
+{
+  "slug": "data-gov-uk",
+  "name": "data.gov.uk (CKAN API)",
+  "provider": {
+    "name": "UK Government (Government Digital Service / Cabinet Office)",
+    "url": "https://www.data.gov.uk/",
+    "type": "government"
+  },
+  "summary": "Metadata API for data.gov.uk, the UK government dataset directory, over a keyless CKAN Action API.",
+  "description": "Search and fetch metadata for datasets published by central government, local authorities and public bodies on data.gov.uk. Returns dataset descriptions, publishers, licences and resource links; the files themselves stay on the publishers' sites. A package_search for 'bus' returned 181 datasets at check.",
+  "category": "government-politics",
+  "tags": [
+    "uk",
+    "open-data-portal",
+    "catalogue",
+    "ckan",
+    "local-government",
+    "metadata"
+  ],
+  "links": {
+    "homepage": "https://www.data.gov.uk/",
+    "docs": "https://guidance.data.gov.uk/get_data/api_documentation/",
+    "terms": "https://www.data.gov.uk/support"
+  },
+  "api": {
+    "base_url": "https://data.gov.uk/api/action",
+    "style": "rpc",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "The guidance page states no API key is needed."
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "No rate limits per the guidance page (checked today)."
+    },
+    "pagination": "offset"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/package_search",
+      "summary": "Search dataset metadata (q, fq, rows, start, sort)",
+      "params": [
+        "q",
+        "fq",
+        "rows",
+        "start",
+        "sort"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_show",
+      "summary": "Full metadata and resource list for one dataset",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/organization_list",
+      "summary": "List publishing organisations",
+      "params": [
+        "all_fields"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/package_list",
+      "summary": "Names of all datasets",
+      "params": [
+        "limit",
+        "offset"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://data.gov.uk/api/action/package_search?q=bus&rows=1",
+    "response_excerpt": "{\"help\": \"https://ckan.publishing.service.gov.uk/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 181, \"results\": [{\"name\": \"bus-lanes5\", \"title\": \"Bus Lanes\", \"num_resources\": 15, \"license_id\": \"\", \"...\": \"...\"}]}}"
+  },
+  "data": {
+    "license": {
+      "name": "Open Government Licence v3.0 (site default; each dataset states its own licence)",
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "United Kingdom",
+      "temporal": "varies by dataset"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "The documented base is https://data.gov.uk/api/action/ and it 301-redirects to ckan.publishing.service.gov.uk; follow redirects (curl -L). Check each dataset's license_id because many are empty or non-OGL.",
+  "caveats": [
+    "data.gov.uk answers the API path with a 301 to ckan.publishing.service.gov.uk; clients must follow redirects.",
+    "One status_show call returned 403 from nginx while package_search, package_show, organization_list and package_list returned 200, so not every CKAN action is exposed.",
+    "Many datasets have an empty license_id; the OGL statement is a site-wide default, not a per-dataset guarantee."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-11",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without a key, following one 301."
+  },
+  "related": [
+    "data-gouv-fr",
+    "data-gov-au",
+    "open-canada-ckan",
+    "police-uk-data"
+  ],
+  "added": "2026-11-11"
+}
