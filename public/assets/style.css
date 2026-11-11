@@ -278,12 +278,13 @@ ul.spaced li { margin-bottom: 8px; }
 .copy.done { color: var(--ok); border-color: currentColor; }
 pre { margin: 0; padding: 14px 16px; background: var(--bg-2); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); overflow: auto; font-size: 12.5px; line-height: 1.55; tab-size: 2; color: var(--ink); }
 pre code { font-size: inherit; overflow-wrap: normal; }
-#curl, pre.wrap { white-space: pre-wrap; overflow-wrap: anywhere; }
+#curl, pre.wrap, #curl code, pre.wrap code { white-space: pre-wrap; overflow-wrap: anywhere; }
 pre.response { max-height: 460px; }
 
 .agent-notes { border-left: 2px solid var(--signal); padding: 2px 0 2px 16px; max-width: 42em; }
 .agent-notes h3.micro { margin: 0 0 4px !important; color: var(--signal); }
 .agent-notes p { margin: 0; font-size: 17px; text-wrap: pretty; }
+.prose p, .agent-notes p, .caveats li { overflow-wrap: break-word; } /* long URLs in notes must not widen the page */
 .caveats { margin: 0; padding: 0 0 0 1.1em; max-width: 42em; }
 .caveats li { margin: 0 0 6px; padding-left: 2px; }
 .caveats li::marker { color: var(--context-2); }
@@ -308,7 +309,7 @@ pre.response { max-height: 460px; }
 .record-json { margin: 0 0 12px; }
 
 /* ---------- explorer ("Try it" on dataset pages; public/assets/explorer.js) ---------- */
-.explorer, .x-result { max-width: 880px; }
+.explorer, .x-panel { max-width: 880px; }
 .x-note { font: 14px/1.55 var(--sans); color: var(--ink); border-left: 2px solid var(--context); padding: 1px 0 1px 12px; margin: 0 0 14px; max-width: 70ch; }
 .x-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; }
 .x-method, .x-url, .x-send, .x-body, .x-retry { border-radius: 4px; }
@@ -348,8 +349,11 @@ select.x-method option { background: var(--bg); color: var(--ink); }
 .x-hint { margin: 10px 0 0; font: 13px/1.45 var(--sans); color: var(--ink-2); }
 .x-hint.bad { color: var(--signal); }
 .x-hint:empty { display: none; }
-.x-result { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--ink); transition: opacity .12s; }
-.x-result.loading { opacity: .5; }
+.x-panel.on { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--ink); transition: opacity .12s; }
+.x-panel.loading { opacity: .5; }
+.x-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.x-link { padding: 0; font: 12.5px/1.45 var(--sans); color: var(--ink-2); background: none; border: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--context); text-underline-offset: 2px; }
+.x-link:hover { color: var(--ink); text-decoration-color: var(--ink); }
 .x-status { display: flex; flex-wrap: wrap; align-items: baseline; row-gap: 2px; font: 13px/1.45 var(--sans); color: var(--ink-2); }
 .x-status > :not(:last-child)::after { content: "·"; margin: 0 9px; color: var(--context); } /* trailing, so a wrapped line never starts with a dot */
 .x-code { font-weight: 600; color: var(--ink); }
@@ -360,7 +364,7 @@ select.x-method option { background: var(--bg); color: var(--ink); }
 .x-headers dt { color: var(--ink-2); }
 .x-headers dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
 .x-msg { margin: 8px 0 0; font: 13px/1.5 var(--sans); color: var(--ink-2); max-width: 80ch; overflow-wrap: anywhere; }
-.x-result .code { margin: 14px 0 0; }
+.x-panel.on .code { margin: 14px 0 0; }
 .x-retry { height: 36px; margin-top: 12px; padding: 0 14px; font: 500 13px/1 var(--sans); color: var(--ink); background: none; border: 1px solid var(--ink); cursor: pointer; }
 .x-retry:hover { background: var(--bg-2); }
 
@@ -462,6 +466,6 @@ select.x-method option { background: var(--bg); color: var(--ink); }
   .rail .brand { font-size: 14px; }
 }
 @media print {
-  .rail, .filters, .copy, .theme-toggle, .explorer, .x-result { display: none !important; }
+  .rail, .filters, .copy, .theme-toggle, .explorer { display: none !important; }
   .shell { display: block; }
 }

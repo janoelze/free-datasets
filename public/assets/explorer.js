@@ -1,4 +1,5 @@
-// Live API explorer on dataset pages ("Try it"). Loaded only there; the page works without it.
+// Live API explorer on dataset pages ("Try it", section #example). Loaded only where it can run;
+// without it the section shows the recorded curl command and response excerpt.
 // Requests go directly from the browser when the API allows it (CORS, GET, no special headers),
 // otherwise through POST {base}/explore, this site's locked-down proxy (see docs/ARCHITECTURE.md).
 (function () {
@@ -8,6 +9,14 @@
   var DIRECT_CAP = 2 * 1024 * 1024; // bytes read from a direct response
   var DIRECT_TIMEOUT = 15000;
   var PROXY_TIMEOUT = 30000;
+
+  function statusClass(code) { return code < 300 ? 'ok' : code < 400 ? 'redir' : 'bad'; }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
 
   function init() {
     var form = document.querySelector('[data-explorer]');
@@ -24,7 +33,10 @@
     var transportBox = $('[data-x-transport]');
     var hint = $('[data-x-hint]');
     var curlBtn = $('[data-x-curl]');
+    var panel = document.querySelector('[data-x-panel]');
+    var recorded = document.querySelector('[data-x-recorded]');
     var result = document.querySelector('[data-x-result]');
+    var staticBlock = document.querySelector('[data-x-static]');
     var nojs = document.querySelector('[data-x-nojs]');
 
     var busy = false;
@@ -32,6 +44,18 @@
 
     form.hidden = false;
     if (nojs) nojs.hidden = true;
+    if (staticBlock) staticBlock.hidden = true; // "Copy as curl" replaces the static command
+    panel.classList.add('on');
+    if (recorded && cfg.recorded) {
+      var rs = cfg.recorded.status;
+      var rhead = el('div', 'x-status');
+      rhead.appendChild(el('span', 'x-code ' + statusClass(rs), String(rs)));
+      rhead.appendChild(el('span', null, 'recorded ' + (cfg.recorded.withKey ? '' : 'without a key, ') + cfg.recorded.date));
+      rhead.appendChild(el('span', null, 'excerpt'));
+      var rrow = el('div', 'x-head');
+      rrow.appendChild(rhead);
+      recorded.insertBefore(rrow, recorded.firstChild);
+    }
 
     function method() { return methodSelect ? methodSelect.value : 'GET'; }
     function canDirect(m) { return cfg.cors && !cfg.requiredHeaders && m === 'GET'; }
@@ -169,12 +193,7 @@
       sendBtn.disabled = on;
       sendBtn.textContent = on ? 'Sending…' : 'Send';
       form.setAttribute('aria-busy', on ? 'true' : 'false');
-      if (on) {
-        result.hidden = false;
-        result.classList.add('loading');
-      } else {
-        result.classList.remove('loading');
-      }
+      panel.classList.toggle('loading', on);
     }
 
     function withTimeout(ms) {
@@ -284,12 +303,6 @@
     }
 
     /* ---------- rendering ---------- */
-    function el(tag, cls, text) {
-      var n = document.createElement(tag);
-      if (cls) n.className = cls;
-      if (text != null) n.textContent = text;
-      return n;
-    }
     function fmtBytes(n) {
       if (n < 1024) return n + ' B';
       if (n < 1024 * 1024) return (n / 1024).toFixed(n < 10240 ? 1 : 0) + ' KB';
@@ -303,17 +316,43 @@
       return { text: text, json: false };
     }
 
-    function renderResult(r) {
+    // Swap the panel to a live result; returns the status line to fill.
+    function showLive() {
       result.textContent = '';
       result.hidden = false;
+      if (recorded) recorded.hidden = true;
+      var row = el('div', 'x-head');
       var head = el('div', 'x-status');
-      var code = el('span', 'x-code ' + (r.status < 300 ? 'ok' : r.status < 400 ? 'redir' : 'bad'), r.status + (r.status_text ? ' ' + r.status_text : ''));
-      head.appendChild(code);
+      row.appendChild(head);
+      if (recorded) {
+        var back = el('button', 'x-link', 'Show recorded example');
+        back.type = 'button';
+        back.addEventListener('click', showRecorded);
+        row.appendChild(back);
+      }
+      result.appendChild(row);
+      return head;
+    }
+
+    function showRecorded() {
+      if (busy) return;
+      result.hidden = true;
+      result.textContent = '';
+      recorded.hidden = false;
+      urlInput.value = cfg.example.url;
+      if (methodSelect) methodSelect.value = cfg.example.method;
+      if (bodyInput) bodyInput.value = cfg.example.body;
+      chosen = null;
+      syncMethod();
+    }
+
+    function renderResult(r) {
+      var head = showLive();
+      head.appendChild(el('span', 'x-code ' + statusClass(r.status), r.status + (r.status_text ? ' ' + r.status_text : '')));
       head.appendChild(el('span', 'num', r.duration_ms + ' ms'));
       head.appendChild(el('span', 'num', fmtBytes(r.size || 0) + (r.truncated ? '+' : '')));
       head.appendChild(el('span', 'x-how', r.via === 'direct' ? 'direct from your browser' : 'via this site’s proxy'));
       if (r.cached) head.appendChild(el('span', 'x-how', 'cached (≤ 30 s)'));
-      result.appendChild(head);
 
       var names = Object.keys(r.headers || {});
       if (names.length) {
@@ -365,12 +404,9 @@
     }
 
     function renderError(err) {
-      result.textContent = '';
-      result.hidden = false;
-      var head = el('div', 'x-status');
+      var head = showLive();
       head.appendChild(el('span', 'x-code bad', err.title || 'Error'));
       if (err.status) head.appendChild(el('span', 'num', 'HTTP ' + err.status));
-      result.appendChild(head);
       result.appendChild(el('p', 'x-msg', err.message || 'Something went wrong.'));
       if (err.retryProxy) {
         var b = el('button', 'x-retry', 'Retry via this site’s proxy');

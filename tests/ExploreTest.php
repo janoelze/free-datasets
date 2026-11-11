@@ -538,14 +538,36 @@ test('explore http: robots.txt, prefixed mount, dataset page', function () {
     $r = http('POST', prefixed_server()->base . '/datasets/explore', ['Content-Type: application/json'], '{"slug":"nope","method":"GET","url":"https://x/"}');
     assert_problem($r, 404, 'Unknown dataset');
 
+    // One merged section (#example, "Try it"): explorer mount + no-JS curl + recorded excerpt.
     $html = get('/d/open-meteo')['body'];
-    assert_contains('<section class="section" id="try"', $html);
-    assert_contains('<li><a href="#try">Try it</a></li>', $html);
+    assert_same(1, substr_count($html, '<section class="section" id="example"'), 'one example section');
+    assert_false(str_contains($html, 'id="try"'), 'no separate Try it section');
+    assert_contains('<h2 id="h-example">Try it</h2>', $html);
+    assert_same(1, substr_count($html, '<li><a href="#example">Try it</a></li>'), 'one rail entry');
+    assert_false(str_contains($html, '>Example request<'), 'old rail entry/heading gone');
     assert_contains('data-explorer-config', $html);
     assert_contains('"proxy":"/explore"', $html);
+    assert_contains('"recorded":{"status":200,"date":"2026-11-01","withKey":true}', $html);
     assert_true(preg_match('~<script src="/assets/explorer\.js\?v=\d+" defer>~', $html) === 1, 'explorer.js cache-busted');
     assert_contains('data-x-nojs', $html);
+    assert_contains('<pre id="curl"><code>curl ', $html, 'static curl for no-JS');
+    assert_contains('data-x-recorded', $html);
+    assert_contains('&quot;temperature_2m&quot;: 9.3', $html, 'recorded excerpt, pretty-printed');
     assert_false(str_contains(get('/')['body'], 'explorer.js'), 'only on dataset pages');
     assert_false((bool) preg_match('/\son[a-z]+=/', $html), 'no inline event handlers');
+
+    // Proxy-eligible demo-key record: explorer present. Own-key record without CORS: static only.
+    assert_contains('data-explorer-config', get('/d/nasa-apod')['body']);
+    $direct = http('GET', xs()->base . '/d/up-key')['body'];
+    assert_contains('data-explorer-config', $direct, 'own key + CORS: direct-only explorer');
+    assert_contains('"mode":"direct"', $direct);
+    assert_contains('needs your own free key', $direct);
+    $off = http('GET', xs()->base . '/d/up-deprecated')['body'];
+    assert_false(str_contains($off, 'data-explorer'), 'deprecated: no explorer mount');
+    assert_false(str_contains($off, 'explorer.js'), 'deprecated: no explorer script');
+    assert_contains('marked deprecated', $off);
+    assert_contains('<pre id="curl"><code>curl ', $off, 'static curl');
+    assert_contains('<pre id="response" class="response">', $off, 'static recorded excerpt');
+    assert_same(1, substr_count($off, '<li><a href="#example">Try it</a></li>'));
     assert_contains('"proxy":"/datasets/explore"', http('GET', prefixed_server()->base . '/datasets/d/open-meteo')['body']);
 });

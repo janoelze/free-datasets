@@ -24,7 +24,7 @@ src/Api/OpenApi.php          generated OpenAPI 3.1 document
 src/Api/LlmsTxt.php          /llms.txt and /robots.txt
 src/Web/PageController.php   HTML routes -> templates/*.php
 src/Explore/{ExploreController,Policy,Target,Fetcher,RateLimiter,Storage,Refusal}.php   POST /explore proxy
-public/assets/explorer.js    "Try it" explorer (dataset pages only)
+public/assets/explorer.js    "Try it" explorer (dataset pages, section #example)
 bin/validate.php  bin/build.php  bin/verify.php
 tests/run.php     tests/*Test.php  tests/fixtures/
 ```
@@ -132,11 +132,18 @@ The OpenAPI document is generated from `schema/dataset.schema.json` and `schema/
 
 ## Explorer & proxy
 
-Every dataset page has a "Try it" section (`templates/dataset.php`, `public/assets/explorer.js`,
-loaded only there). It edits and sends a request (method, URL, POST body; an endpoint picker fills
-`base_url + path` and sending is blocked while `{placeholders}` remain) and shows status,
-duration, size, transport, a few response headers and the body (pretty-printed JSON; at most
-200 KB rendered). Without JavaScript the section only says so and points at the curl command.
+Every dataset page has one "Try it" section (id `example`, so old `#example` links still work;
+`templates/dataset.php`, `public/assets/explorer.js`, loaded only where the explorer can run). The
+form comes first, prefilled with the recorded example (method, URL, POST body; an endpoint picker
+fills `base_url + path` and sending is blocked while `{placeholders}` remain; "Copy as curl" always
+reflects the current request). Below it, the panel starts with the *recorded* response
+(`example.response_excerpt`, pretty-printed, under "200 · recorded 2026-11-11 · excerpt" from
+`verification`; "recorded without a key" when `with_key` is false). Send replaces it in place with
+the live result — status, duration, size, transport, a few response headers and the body
+(pretty-printed JSON; at most 200 KB rendered) — and "Show recorded example" switches back and
+restores the example request. Without JavaScript, and on records where the explorer is off, the
+same section is static: the curl command (`View::curl`) and the recorded excerpt, plus the key or
+deprecation note.
 `Datasets\Explore\Policy` decides, for the page and the server alike:
 
 | Record | Explorer |

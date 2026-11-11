@@ -51,12 +51,16 @@ test('http: home lists everything, keeps filters and shows the API equivalent', 
     assert_contains('No dataset matches', get('/?q=zzzz-nothing')['body']);
 });
 
-test('http: dataset page has curl, JSON alternate and JSON-LD', function () {
+test('http: dataset page has the Try it section (curl, excerpt), JSON alternate and JSON-LD', function () {
     $base = server()->base;
     $r = get('/d/wikidata');
     assert_contains('<link rel="alternate" type="application/json" href="' . $base . '/api/v1/datasets/wikidata"', $r['body']);
     assert_contains('<script type="application/ld+json">', $r['body']);
     assert_contains('-H &apos;User-Agent: my-app/1.0 (me@example.org)&apos;', $r['body'], 'required header added to curl');
+    assert_contains('<section class="section" id="example" aria-labelledby="h-example">', $r['body']);
+    assert_contains('<pre id="curl"><code>curl ', $r['body'], 'curl command in the no-JS markup');
+    assert_contains('<pre id="response" class="response"><code>', $r['body'], 'recorded excerpt');
+    assert_contains('data-explorer hidden', $r['body'], 'explorer mount (enabled for a keyless record)');
     preg_match('~<script type="application/ld\+json">(.*?)</script>~s', $r['body'], $m);
     $ld = json_decode($m[1] ?? '', true);
     assert_same(['Dataset', 'WebAPI'], array_column($ld['@graph'] ?? [], '@type'));

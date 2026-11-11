@@ -17,6 +17,12 @@ $pageUrl = abs_url('/d/' . $d['slug']);
 $categoryName = $category['name'] ?? $d['category'];
 $formats = implode(', ', array_map(static fn ($f) => View::label('format', $f), $api['formats']));
 
+$explorer = new Policy($d);
+$xMode = $explorer->mode();
+$xConfig = $explorer->clientConfig(url('/explore')) + [
+    'recorded' => ['status' => (int) $ver['http_status'], 'date' => (string) $ver['last_verified'], 'withKey' => (bool) $ver['with_key']],
+];
+
 $title = $d['name'];
 $description = $d['summary'];
 $canonical = $pageUrl;
@@ -24,7 +30,7 @@ $current = '';
 $ogType = 'article';
 $headExtra = '<link rel="alternate" type="application/json" href="' . e($apiUrl) . '" title="This record as JSON">' . "\n"
     . '<script type="application/ld+json">' . View::jsonLd($d, $pageUrl, $apiUrl) . '</script>' . "\n"
-    . '<script src="' . e(asset('assets/explorer.js')) . '" defer></script>' . "\n";
+    . ($xMode !== 'off' ? '<script src="' . e(asset('assets/explorer.js')) . '" defer></script>' . "\n" : '');
 
 $authText = match ($auth['type']) {
     'none' => !empty($auth['key_optional']) ? 'None required (a free key raises limits)' : 'None — no key, no signup',
@@ -33,11 +39,8 @@ $authText = match ($auth['type']) {
     default => $auth['type'],
 };
 
-$explorer = new Policy($d);
-$xMode = $explorer->mode();
-$xConfig = $explorer->clientConfig(url('/explore'));
 
-$sections = ['access' => 'Access', 'endpoints' => 'Endpoints', 'example' => 'Example request', 'try' => 'Try it'];
+$sections = ['access' => 'Access', 'endpoints' => 'Endpoints', 'example' => 'Try it'];
 if (!empty($d['agent_notes']) || !empty($d['caveats'])) {
     $sections['notes'] = 'Notes & caveats';
 }
@@ -156,30 +159,15 @@ include __DIR__ . '/partials/header.php';
       </section>
 
       <section class="section" id="example" aria-labelledby="h-example">
-        <h2 id="h-example">Example request</h2>
-        <p class="aside">Executed on <?= e($ver['last_verified']) ?>, returned HTTP <?= e($ver['http_status']) ?>.<?php if ($d['example']['method'] === 'POST'): ?> This API takes a POST body.<?php endif ?></p>
-        <div class="code">
-          <div class="code-head"><span class="micro">Request · shell</span><button type="button" class="copy" data-copy="#curl" hidden>Copy</button></div>
-          <pre id="curl"><code><?= e(View::curl($d)) ?></code></pre>
-        </div>
-        <div class="code">
-          <div class="code-head"><span class="micro">Response excerpt<?= $excerpt['json'] ? ' · JSON' : '' ?></span><button type="button" class="copy" data-copy="#response" hidden>Copy</button></div>
-          <pre id="response" class="response"><code><?= e($excerpt['text']) ?></code></pre>
-        </div>
-      </section>
-
-      <section class="section" id="try" aria-labelledby="h-try">
-        <h2 id="h-try">Try it</h2>
-        <?php if ($xMode === 'off'): ?>
-          <p class="x-note"><?= e($d['status'] === 'deprecated' ? 'This API is marked deprecated, so the live explorer is turned off.' : 'This API needs your own free key') ?><?php if ($d['status'] !== 'deprecated'): ?><?php if (isset($links['signup'])): ?> — get one at <a href="<?= e($links['signup']) ?>" rel="noopener"><?= e(View::host($links['signup'])) ?></a><?php endif ?>. Requests with personal keys are not sent through this site, and this API is not known to accept calls from browser JavaScript, so there is no live explorer here. Use the curl command above with your key.<?php endif ?></p>
-        <?php else: ?>
-          <?php if ($xMode === 'direct'): ?>
-            <p class="x-note">This API needs your own free key<?php if (isset($links['signup'])): ?> — get one at <a href="<?= e($links['signup']) ?>" rel="noopener"><?= e(View::host($links['signup'])) ?></a><?php endif ?>. Requests with personal keys are not sent through this site; the explorer below calls the API directly from your browser.</p>
-          <?php endif ?>
-          <p class="aside">Send a live request and see the response here. It goes straight from your browser when the API allows that, otherwise through a small proxy on this site that only talks to this API’s own hosts.</p>
-          <p class="x-note" data-x-nojs>The live explorer needs JavaScript. Without it, copy the curl command under “Example request” above.</p>
+        <h2 id="h-example">Try it</h2>
+        <?php if ($xMode === 'off' || $xMode === 'direct'): ?>
+          <p class="x-note"><?php if ($d['status'] === 'deprecated'): ?>This API is marked deprecated, so the live explorer is turned off.<?php else: ?>This API needs your own free key<?php if (isset($links['signup'])): ?> — get one at <a href="<?= e($links['signup']) ?>" rel="noopener"><?= e(View::host($links['signup'])) ?></a><?php endif ?>. Requests with personal keys are not sent through this site<?= $xMode === 'direct' ? '; the explorer calls the API directly from your browser' : ', and this API is not known to accept calls from browser JavaScript, so there is no live explorer here. Use the curl command below with your key' ?>.<?php endif ?></p>
+        <?php endif ?>
+        <?php if ($xMode !== 'off'): ?>
+          <p class="x-note" data-x-nojs>The live explorer needs JavaScript. Below is the recorded example request and what it returned.</p>
           <form class="explorer" data-explorer hidden novalidate>
             <script type="application/json" data-explorer-config><?= json_encode($xConfig, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR) ?></script>
+            <p class="aside x-intro">Edit the request and send it live. It goes straight from your browser when the API allows that, otherwise through a small proxy on this site that only talks to this API’s own hosts.</p>
             <div class="x-line">
               <?php if (count($xConfig['methods']) > 1): ?>
                 <label class="sr" for="x-method">Method</label>
@@ -213,8 +201,23 @@ include __DIR__ . '/partials/header.php';
             </div>
             <p class="x-hint" data-x-hint aria-live="polite"></p>
           </form>
-          <div class="x-result" data-x-result hidden></div>
         <?php endif ?>
+        <div class="x-static" data-x-static>
+          <p class="aside">Executed on <?= e($ver['last_verified']) ?>, returned HTTP <?= e($ver['http_status']) ?><?= $ver['with_key'] ? '' : ' (without a key)' ?>.<?php if ($d['example']['method'] === 'POST'): ?> This API takes a POST body.<?php endif ?></p>
+          <div class="code">
+            <div class="code-head"><span class="micro">Request · shell</span><button type="button" class="copy" data-copy="#curl" hidden>Copy</button></div>
+            <pre id="curl"><code><?= e(View::curl($d)) ?></code></pre>
+          </div>
+        </div>
+        <div class="x-panel" data-x-panel aria-live="polite">
+          <div class="x-recorded" data-x-recorded>
+            <div class="code">
+              <div class="code-head"><span class="micro">Response excerpt<?= $excerpt['json'] ? ' · JSON' : '' ?></span><button type="button" class="copy" data-copy="#response" hidden>Copy</button></div>
+              <pre id="response" class="response"><code><?= e($excerpt['text']) ?></code></pre>
+            </div>
+          </div>
+          <div class="x-result" data-x-result hidden></div>
+        </div>
       </section>
 
       <?php if (isset($sections['notes'])): ?>
