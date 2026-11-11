@@ -148,6 +148,10 @@ fetch "/llms.txt"
 if [ "$status" = 200 ]; then r=pass; else r=fail; fi
 $r "GET /llms.txt" "$status $ctype"
 
+fetch "/sitemap.xml"
+if [ "$status" = 200 ] && [[ "$ctype" == application/xml* ]] && grep -qF "<loc>${DEPLOY_PUBLIC_URL}/d/open-meteo-forecast</loc>" "$tmp/body"; then r=pass; else r=fail; fi
+$r "GET /sitemap.xml (absolute public URLs)" "$status $ctype"
+
 fetch "/api/v1/no-such-resource-smoke-test"
 if [ "$status" = 404 ] && [[ "$ctype" == application/problem+json* ]]; then r=pass; else r=fail; fi
 $r "GET /api/v1/<bogus> (404 problem+json)" "$status $ctype"

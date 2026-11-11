@@ -76,8 +76,11 @@ final class LlmsTxt
         $out[] = '';
         $out[] = '## Optional';
         $out[] = '';
-        $out[] = '- [Website](' . $this->url->absolute('/') . '): browsable HTML version';
+        $out[] = '- [Website](' . $this->url->absolute('/') . '): browsable HTML version; one page per category at '
+            . $this->url->absolute('/c/{category}') . ' and per tag at ' . $this->url->absolute('/t/{tag}') . ' (index: ' . $this->url->absolute('/t') . ')';
         $out[] = '- [API documentation](' . $this->url->absolute('/api') . ')';
+        $out[] = '- [Newly added datasets](' . $this->url->absolute('/feed.xml') . '): Atom feed';
+        $out[] = '- [Sitemap](' . $this->url->absolute('/sitemap.xml') . '): every HTML page';
 
         return implode("\n", $out) . "\n";
     }

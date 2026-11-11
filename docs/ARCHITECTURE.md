@@ -23,6 +23,7 @@ src/Api/ListParams.php       query-parameter parsing/validation for /datasets an
 src/Api/OpenApi.php          generated OpenAPI 3.1 document
 src/Api/LlmsTxt.php          /llms.txt and /robots.txt
 src/Web/PageController.php   HTML routes -> templates/*.php
+src/Seo/{IndexPolicy,Meta,StructuredData,Sitemap,Feed}.php   indexing policy, titles, JSON-LD, /sitemap.xml, /feed.xml
 src/Explore/{ExploreController,Policy,Target,Fetcher,RateLimiter,Storage,Refusal}.php   POST /explore proxy
 public/assets/explorer.js    "Try it" explorer (dataset pages, section #example)
 bin/validate.php  bin/build.php  bin/verify.php
@@ -106,13 +107,56 @@ template yields a plain-text fallback. All templates receive:
 
 | Route | Template | Extra variables |
 |---|---|---|
-| `/` | `home.php` | `$params` (`ListParams`, lenient, from the query string: same filters as the API), `$results` (`ResultPage`), `$facets` (counts over the filtered set), `$categories` (with counts), `$tags` (`tag => count`) |
+| `/` | `home.php` | `$params` (`ListParams`, lenient, from the query string: same filters as the API), `$policy` (`Seo\IndexPolicy`), `$results` (`ResultPage`, the whole filtered catalogue unless `?limit=`), `$facets` (counts over the filtered set), `$categories` (with counts), `$tags` (`tag => count`) |
 | `/d/{slug}` | `dataset.php` | `$dataset` (array), `$category` (array with count), `$related` (list of datasets), `$apiUrl` (absolute) |
+| `/c/{id}` | `landing.php` | `$kind = 'category'`, `$landingKey`, `$category`, `$datasets`, `$categories` (404 for unknown or empty categories) |
+| `/t/{tag}` | `landing.php` | `$kind = 'tag'`, `$landingKey`, `$count`, `$datasets`, `$categories`, `$nearTags` (only tags with ≥ 3 datasets; thinner tags 302 to `/?tag=`) |
+| `/t` | `tags.php` | `$tags` (tags with pages), `$categories` |
 | `/api` | `api.php` | `$apiBase`, `$openapiUrl`, `$schemaUrl` (absolute) |
 | `/about` | `about.php` | – |
 | anything else, unknown slug | `404.php` (status 404) | `$path` |
 
 HTML responses get `Cache-Control: public, max-age=300`, an ETag and `X-Content-Type-Options: nosniff`.
+
+Head variables a template may set before including `partials/header.php`: `$title`, `$metaTitle`
+(complete `<title>`), `$ogTitle`, `$description`, `$canonical` (null = none), `$robots`, `$jsonLd`
+(list of schema.org nodes, rendered as one `@graph`), `$ogType`, `$headExtra`, `$rail`, `$current`.
+
+## SEO
+
+The app is one URL-prefix site (`https://endtime-instruments.org/datasets/`) on a shared host; the
+host-root `/robots.txt` is not ours (it currently 404s, which crawlers treat as "allow all"). Our
+`{base}/robots.txt` is therefore advisory; the real controls are per-page.
+
+| URL | Indexable | Canonical |
+|---|---|---|
+| `/` | yes | `/` |
+| `/?sort=…`, `/?utm_…` and other unknown/invalid params only | yes (duplicate) | `/` |
+| `/?category=x` (one category, optional sort) | yes (duplicate) | `/c/x` |
+| `/?tag=x` (one tag with ≥ 3 datasets, optional sort) | yes (duplicate) | `/t/x` |
+| `/?q=…`, other facets, several values/filters, `limit`/`offset`, thin tags | `noindex,follow` | itself, normalised (known params, fixed order, sorted lists) |
+| `/c/{id}`, `/t`, `/t/{tag}`, `/d/{slug}`, `/api`, `/about` | yes | itself |
+| 404 pages | `noindex` | none |
+| `/api/v1/*`, `/llms.txt`, `/sitemap.xml`, `/feed.xml` | `X-Robots-Tag: noindex` | – |
+
+`?category=x` is canonicalised rather than 301-redirected because it is the in-place filter view
+(home page JS, GET form); rail and row links use the clean `/c/x` URL as `href` and give the JS the
+filter URL in `data-filter-href`. Case variants of page URLs 301 to lower case; `www.` 301s to the
+bare host (`public/.htaccess`). Titles and descriptions come from `Seo\Meta` (unique, ≤ 70 / 160
+characters, tested over the real catalogue). `/sitemap.xml` lists exactly the indexable URLs
+(`Seo\Sitemap::entries()`); `lastmod` is the later of `added` and `verification.last_verified`
+(listing pages: their newest record; `/api` and `/about` have none). `/feed.xml` is Atom, newest
+50 by `added`.
+
+JSON-LD (`Seo\StructuredData`): home = `WebSite` (+ `SearchAction` to `/?q=`), `Organization`,
+`DataCatalog`, `CollectionPage` + `ItemList`; landing pages = `CollectionPage` + `ItemList` +
+`BreadcrumbList`; dataset pages = `ItemPage` (`datePublished` = `added`, `dateModified` = record
+lastmod), `Dataset` (name, description, url, sameAs, keywords, creator/publisher, license,
+isAccessibleForFree, spatialCoverage, ISO-8601 `temporalCoverage` only, includedInDataCatalog,
+`DataDownload` only for `links.bulk_download`), `WebAPI` (documentation, termsOfService) and
+`BreadcrumbList`. Not filled because the records cannot say it truthfully: `dateModified` of the
+data itself, `version`, `variableMeasured`, `measurementTechnique`, `citation`, `funder`,
+`identifier`, free-text temporal coverage, and `distribution` for API-only datasets.
 
 ## REST API summary
 
@@ -125,7 +169,7 @@ URLs with a trailing slash 308-redirect to the slash-less form.
 
 - `/api/v1`, `/datasets`, `/datasets/{slug}`, `/categories`, `/categories/{id}`, `/tags`,
   `/facets` (accepts the same filters as `/datasets`), `/schema`, `/openapi.json`
-- `/llms.txt`, `/robots.txt` (outside `/api/v1`)
+- `/llms.txt`, `/robots.txt`, `/sitemap.xml`, `/feed.xml` (outside `/api/v1`)
 
 The OpenAPI document is generated from `schema/dataset.schema.json` and `schema/categories.json`
 (`components.schemas.Dataset` is the schema verbatim minus `$schema`/`$id`), so it cannot drift.
