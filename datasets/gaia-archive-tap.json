@@ -1,0 +1,123 @@
+{
+  "slug": "gaia-archive-tap",
+  "name": "ESA Gaia Archive TAP Service",
+  "provider": {
+    "name": "European Space Agency (Gaia Archive, ESAC)",
+    "url": "https://gea.esac.esa.int/archive/",
+    "type": "intergovernmental"
+  },
+  "summary": "ADQL queries over Gaia DR3 and earlier releases (positions, parallaxes, proper motions, photometry, spectra metadata, variability) through a TAP service that works without an account.",
+  "description": "The Gaia Archive exposes the Gaia data releases (gaiadr1, gaiadr2, gaiaedr3, gaiadr3 and the Focused Product Release gaiafpr) and external cross-match tables as TAP schemas. Synchronous queries return VOTable, CSV, JSON or FITS. The table listing showed about 91 gaiadr3 tables on 2026-11-13. DataLink and login are separate services on the same host.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "gaia",
+    "star-catalogue",
+    "parallax",
+    "tap",
+    "adql",
+    "stars"
+  ],
+  "links": {
+    "homepage": "https://gea.esac.esa.int/archive/",
+    "docs": "https://www.cosmos.esa.int/web/gaia-users/archive/programmatic-access",
+    "terms": "https://www.cosmos.esa.int/web/gaia-users/license"
+  },
+  "api": {
+    "base_url": "https://gea.esac.esa.int/tap-server/tap",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml",
+      "other"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Anonymous queries work; a free Gaia account adds persistent user tables, uploads and cross-matching."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "No request rate is documented; the capabilities document gives an output limit of 50,000 rows, 3,600 s execution time and 129,600 s result retention."
+    },
+    "pagination": "other",
+    "max_page_size": 50000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/sync",
+      "summary": "Synchronous ADQL query (GET or POST); FORMAT is votable, votable_plain, csv, json or fits",
+      "params": [
+        "REQUEST",
+        "LANG",
+        "FORMAT",
+        "QUERY",
+        "MAXREC"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/async",
+      "summary": "Asynchronous ADQL job; poll the job URL and fetch /results/result",
+      "params": [
+        "REQUEST",
+        "LANG",
+        "FORMAT",
+        "QUERY"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tables",
+      "summary": "VOSI table and column listing (large XML)"
+    },
+    {
+      "method": "GET",
+      "path": "/capabilities",
+      "summary": "TAP capabilities including output limits and ADQL functions"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+TOP+2+source_id,ra,dec,parallax,phot_g_mean_mag+FROM+gaiadr3.gaia_source+WHERE+parallax%3E500+ORDER+BY+parallax+DESC",
+    "response_excerpt": "{\"metadata\":\n[\n{\"name\": \"source_id\", \"datatype\": \"long\", \"description\": \"Unique source identifier (unique within a particular Data Release)\", \"unit\": null, ...},\n{\"name\": \"ra\", \"datatype\": \"double\", \"unit\": \"deg\", ...},\n...\n],\n\"data\":\n[\n[5853498713190525696,217.39232147200883,-62.67607511676666,768.0665391873573,8.984749],\n[4472832130942575872,269.44850252543836,4.739420051112412,546.975939730948,8.1939745]\n]\n}"
+  },
+  "data": {
+    "license": {
+      "name": "Gaia data are distributed under CC BY-NC 3.0 IGO as stated on the Gaia licence page, which refers to the ESA space science archives terms for commercial use; acknowledgement of Gaia is requested",
+      "url": "https://www.cosmos.esa.int/web/gaia-users/license",
+      "attribution_required": true,
+      "commercial_use": "restricted"
+    },
+    "coverage": {
+      "geographic": "Sky-wide",
+      "temporal": "Gaia DR3 (observations 2014-2017) and earlier releases"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Responses are an object with metadata (column definitions) and data (array of row arrays), not an array of objects. Use TOP n, not LIMIT; select only the columns you need from gaiadr3.gaia_source, which is huge. For many rows use FORMAT=csv or an async job. Cone searches use CONTAINS(POINT('ICRS',ra,dec),CIRCLE('ICRS',ra0,dec0,radius_deg))=1. Each Gaia release comes with its own acknowledgement text on the credits page.",
+  "caveats": [
+    "No Access-Control-Allow-Origin header was sent, so browsers on other origins cannot call it directly.",
+    "WHERE parallax>700 matches a single DR3 source (Proxima Centauri, 768 mas), so a TOP 2 query on it returns one row; the example uses parallax>500 with ORDER BY to return two.",
+    "Anonymous results are kept for a limited time and visible to other users; the capabilities document says 129,600 s.",
+    "The licence text on the licence page says CC BY-NC 3.0 IGO; read the linked ESA terms before commercial use.",
+    "On 2026-11-13, after about 20 anonymous queries from one client, calls answered HTTP 429 'User (anonymous) has reached the maximum number of jobs allowed per user in the queue (50)' and still did so 8 minutes later. The anonymous account looks shared, so keyless calls can fail until the queue drains; a free Gaia login gives a private queue."
+  ],
+  "status": "unstable",
+  "verification": {
+    "last_verified": "2026-11-13",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials and returned 200 in 0.5 s earlier on 2026-11-13; later runs of bin/verify.php returned 429 (anonymous job queue full), so status is unstable."
+  },
+  "related": [
+    "mast-panstarrs",
+    "mast-archive",
+    "sdss-skyserver",
+    "noirlab-astro-data-lab",
+    "irsa-tap",
+    "nasa-exoplanet-archive"
+  ],
+  "added": "2026-11-13"
+}

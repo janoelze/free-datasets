@@ -105,7 +105,10 @@
   },
   "related": [
     "jpl-sbdb",
-    "nasa-open-apis"
+    "nasa-open-apis",
+    "mast-archive",
+    "gaia-archive-tap",
+    "irsa-tap"
   ],
   "added": "2026-11-11"
 }

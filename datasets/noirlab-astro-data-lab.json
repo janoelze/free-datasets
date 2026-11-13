@@ -1,0 +1,109 @@
+{
+  "slug": "noirlab-astro-data-lab",
+  "name": "NOIRLab Astro Data Lab TAP Service",
+  "provider": {
+    "name": "NSF NOIRLab Astro Data Lab",
+    "url": "https://datalab.noirlab.edu",
+    "type": "academic"
+  },
+  "summary": "ADQL queries over large astronomical survey catalogues (DES DR1/DR2, DELVE, DECaPS, Legacy Surveys, DESI, Euclid Q1, Gaia, AllWISE, CatWISE and more) through an anonymous TAP service.",
+  "description": "Data Lab's TAP endpoint lists more than 90 schemas in tap_schema.schemas, including des_dr2 (Dark Energy Survey DR2), delve_dr1 to dr3, decaps_dr2, desi_dr1, euclid_q1, gaia_dr3, allwise, catwise2020 and the DECam Asteroid Database. des_dr2.main held 691,483,608 rows on 2026-11-13. Anonymous use is limited to synchronous queries of public datasets.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "star-catalogue",
+    "sky-survey",
+    "galaxies",
+    "tap",
+    "adql",
+    "des",
+    "photometry"
+  ],
+  "links": {
+    "homepage": "https://datalab.noirlab.edu",
+    "docs": "https://datalab.noirlab.edu/docs/manual/UsingAstroDataLab/DataAccessInterfaces/CatalogDataAccessTAPSCS/CatalogDataAccessTAPSCS.html",
+    "terms": "https://datalab.noirlab.edu/docs/manual/UsingAstroDataLab/ServiceInterfaces/QueryManager/QueryManager.html"
+  },
+  "api": {
+    "base_url": "https://datalab.noirlab.edu/tap",
+    "style": "rest",
+    "formats": [
+      "csv",
+      "xml",
+      "text"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Anonymous access covers synchronous queries of public datasets; everything else (async jobs, MyDB, storage) needs a free Data Lab account."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented in the pages fetched."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/sync",
+      "summary": "Synchronous ADQL query; FORMAT csv, tsv or votable",
+      "params": [
+        "REQUEST",
+        "LANG",
+        "FORMAT",
+        "QUERY",
+        "MAXREC"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/capabilities",
+      "summary": "TAP capabilities document"
+    },
+    {
+      "method": "GET",
+      "path": "/tables",
+      "summary": "VOSI table listing (very large; the call did not finish within 120 s)"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://datalab.noirlab.edu/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+TOP+2+coadd_object_id,ra,dec,mag_auto_r+FROM+des_dr2.main",
+    "response_excerpt": "coadd_object_id,ra,dec,mag_auto_r\n931284720,325.843808,-39.606656,18.321281\n931285077,325.847878,-39.608066,22.967152"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the pages checked; acknowledge Astro Data Lab and the survey, as each survey's Data Lab page requests",
+      "url": "https://datalab.noirlab.edu/docs/manual/UsingAstroDataLab/ServiceInterfaces/QueryManager/QueryManager.html",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Per survey (DES covers about 5,000 square degrees of the southern sky)",
+      "temporal": "Per survey"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "List what exists with SELECT schema_name,description FROM tap_schema.schemas (about 2 s), then tables with tap_schema.tables WHERE schema_name='des_dr2'. Qualify tables as schema.table. Use FORMAT=csv; the service cannot return JSON. TOP n is required for quick tests because the tables hold hundreds of millions of rows. Cone searches use q3c_radial_query or the standard CONTAINS/CIRCLE.",
+  "caveats": [
+    "FORMAT=json returned HTTP 200 with a VOTable whose QUERY_STATUS is ERROR ('unknown format: json'), so check the body, not the status.",
+    "No Access-Control-Allow-Origin header was sent, so browsers on other origins cannot call it directly.",
+    "The TAP capabilities document lists http://datalab.noirlab.edu/ivoa-dal/tap/ access URLs that differ from the working https://datalab.noirlab.edu/tap/ base.",
+    "Row limits, rate limits and a licence were not found in the documentation pages fetched.",
+    "The example took 1.9 to 7.9 s across runs on 2026-11-13."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-13",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials."
+  },
+  "related": [
+    "gaia-archive-tap",
+    "mast-panstarrs",
+    "sdss-skyserver",
+    "jpl-sbdb"
+  ],
+  "added": "2026-11-13"
+}

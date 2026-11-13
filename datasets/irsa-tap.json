@@ -1,0 +1,127 @@
+{
+  "slug": "irsa-tap",
+  "name": "NASA/IPAC IRSA TAP and Cone Search (WISE, NEOWISE, 2MASS, Spitzer, ZTF)",
+  "provider": {
+    "name": "NASA/IPAC Infrared Science Archive (Caltech/IPAC)",
+    "url": "https://irsa.ipac.caltech.edu",
+    "type": "government"
+  },
+  "summary": "ADQL queries and simple cone searches over the IRSA catalogues, including AllWISE, NEOWISE-R, 2MASS, Spitzer and the ZTF objects table, without an account.",
+  "description": "IRSA's TAP service exposes its infrared and optical catalogues as tables you list through TAP_SCHEMA: AllWISE source, multiepoch and reject tables, the WISE and NEOWISE single-exposure tables, 2MASS point sources (fp_psc), Spitzer surveys, Gaia cross-match tables and the ZTF objects table (ztf_objects_dr23). The same host serves a plain cone-search endpoint (SCS) per table. Results come as CSV, VOTable, IPAC table, TSV or a VOTable rendered as JSON.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "infrared",
+    "wise",
+    "neowise",
+    "tap",
+    "adql",
+    "cone-search",
+    "star-catalogue"
+  ],
+  "links": {
+    "homepage": "https://irsa.ipac.caltech.edu",
+    "docs": "https://irsa.ipac.caltech.edu/docs/program_interface/TAP.html",
+    "terms": "https://irsa.ipac.caltech.edu/ack.html"
+  },
+  "api": {
+    "base_url": "https://irsa.ipac.caltech.edu/TAP",
+    "style": "rest",
+    "formats": [
+      "csv",
+      "json",
+      "xml",
+      "text"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public data need no login; proprietary ZTF data require an IRSA account."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "No request rate is documented on the TAP page; its stated timeout limit for asynchronous queries is 3 days."
+    },
+    "pagination": "other"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/sync",
+      "summary": "Synchronous ADQL query (GET or POST); FORMAT csv, votable, ipac_table, tsv, json, html",
+      "params": [
+        "QUERY",
+        "FORMAT",
+        "MAXREC",
+        "UPLOAD"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/async",
+      "summary": "Asynchronous ADQL job for long queries",
+      "params": [
+        "QUERY",
+        "FORMAT",
+        "UPLOAD"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tables",
+      "summary": "VOSI table listing (about 165 KB of XML)"
+    },
+    {
+      "method": "GET",
+      "path": "https://irsa.ipac.caltech.edu/SCS",
+      "summary": "Simple cone search of one catalogue table; answered in about 0.5 to 1 s",
+      "params": [
+        "table",
+        "RA",
+        "DEC",
+        "SR",
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://irsa.ipac.caltech.edu/TAP/sync?FORMAT=csv&QUERY=SELECT+TOP+3+table_name,description+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+'allwise%25'",
+    "response_excerpt": "table_name,description\nallwise_p3as_psd,AllWISE Source Catalog\nallwise_p3as_mep,AllWISE Multiepoch Photometry Table\nallwise_p3as_psr,AllWISE Reject Table"
+  },
+  "data": {
+    "license": {
+      "name": "Public data hosted by IRSA; the archive asks users to acknowledge IRSA and the individual missions (see acknowledgement page)",
+      "url": "https://irsa.ipac.caltech.edu/ack.html",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Sky-wide, per catalogue",
+      "temporal": "Per catalogue; WISE/NEOWISE, 2MASS, Spitzer, ZTF and others"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Start with TAP_SCHEMA.tables and TAP_SCHEMA.columns (both answer in under a second) to find table and column names. Position queries use WHERE CONTAINS(POINT('J2000',ra,dec),CIRCLE('J2000',ra0,dec0,radius_deg))=1 and took 4 to 22 s on 2026-11-13 for allwise_p3as_psd; use SCS (for example https://irsa.ipac.caltech.edu/SCS?table=allwise_p3as_psd&RA=210.80227&DEC=54.34895&SR=0.002&format=csv) when you only need a cone search. Prefer FORMAT=csv: FORMAT=json is a VOTable converted to nested JSON with <xmlattr> keys. Use TOP n or MAXREC; only MAXREC sets the OVERFLOW indicator.",
+  "caveats": [
+    "Position queries on large tables were slow and variable: allwise_p3as_psd cone queries took 4.4 to 22 s and one ZTF-object cone query 4 to 20 s across repeated runs on 2026-11-13, and a lookup by designation timed out at 40 s. The example is a metadata query that stays under a second.",
+    "FORMAT=json returns a VOTable translated to JSON, with arrays of {\"<xmlattr>\": ...} objects, not a list of row objects.",
+    "No Access-Control-Allow-Origin header was sent, so browsers on other origins cannot call it directly.",
+    "Per-mission acknowledgement texts differ; the IRSA acknowledgement page covers IRSA itself.",
+    "The pages fetched do not state a rate limit or a synchronous row limit."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-13",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials; 0.6 s on 2026-11-13."
+  },
+  "related": [
+    "irsa-ztf-light-curves",
+    "gaia-archive-tap",
+    "mast-archive",
+    "nasa-exoplanet-archive",
+    "alerce-ztf"
+  ],
+  "added": "2026-11-13"
+}

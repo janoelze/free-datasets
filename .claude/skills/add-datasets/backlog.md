@@ -19,6 +19,19 @@ and say why in your report.
 - INPE queimadas (CSV directory, not an API; `static-file` at best)
 - YouTube oEmbed (one narrow endpoint; utility rather than dataset)
 
+## Astronomy leads blocked on 2026-11-13 (retry when CDS is back)
+
+- SIMBAD TAP and VizieR TAP (CDS Strasbourg): CDS reports a cybersecurity incident on its Strasbourg
+  servers. `https://simbad.cds.unistra.fr/simbad/sim-tap/sync` (also `/simbad/sim-tap/capabilities`
+  and `/simbad/`) answers 404 with a static "Page unavailable" page, and simbad.cds.unistra.fr/
+  shows the notice "access to SIMBAD, VizieR, Aladin image surveys, X-Match and other services hosted
+  on our main site cds.unistra.fr is currently degraded". `https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync`
+  timed out at 40 s in two runs (and `/capabilities` after 25 s and 206 s), while vizier.cds.unistra.fr/
+  answered 200. Mirrors answer: `https://simbad.cfa.harvard.edu/simbad/sim-tap/sync` (200 in 0.4 s,
+  data ingested up to 2026-10-14) and `https://simbad.idia.ac.za/simbad/sim-tap/sync` (200 in 4.6 s),
+  but they are stop-gaps, so SIMBAD was not added. The canonical URL and VizieR need a re-check; the
+  old simbad.u-strasbg.fr name no longer resolves.
+
 ## Could not be tested from the sandbox (retry elsewhere)
 
 - Bundestag DIP API (TLS issuer not in the sandbox trust store; free public key documented)
@@ -52,7 +65,7 @@ and say why in your report.
 Working and keyless at the check, not yet written up:
 
 - Life sciences: EBI BioStudies (ArrayExpress), EMDB, PDBe (near-duplicate of `rcsb-pdb`), ENCODE,
-  GloBI, Rfam, NeuroMorpho, OpenNEURO (GraphQL), SDSS SkyServer (SQL), TCIA NBIA, MeSH lookup,
+  GloBI, Rfam, NeuroMorpho, OpenNEURO (GraphQL), TCIA NBIA, MeSH lookup,
   NHS ODS organisation directory, PhysioNet (slow, undocumented), STRING, EBI Search, InterPro
 - Health portals: healthdata.gov (Socrata), CMS OpenPayments (DKAN), CMS Medicare Coverage API
 - National open-data portals with a CKAN/udata API: Austria, Chile, Finland, Hong Kong (also
@@ -95,3 +108,4 @@ UCDP, OpenSanctions, Libraries.io, OpenCorporates, dados.gov.br, YouTube Data AP
 - Lobsters: robots.txt disallows crawlers and AI use; no documented API
 - HTTP Archive: BigQuery only, no REST API
 - Wikiquote: same MediaWiki API as `wikipedia-api`
+- HSC-SSP (Subaru Hyper Suprime-Cam survey archive): data access requires registration and the data are non-commercial

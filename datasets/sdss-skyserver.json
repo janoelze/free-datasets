@@ -1,0 +1,125 @@
+{
+  "slug": "sdss-skyserver",
+  "name": "SDSS SkyServer SQL and Search API",
+  "provider": {
+    "name": "Sloan Digital Sky Survey",
+    "url": "https://www.sdss.org",
+    "type": "academic"
+  },
+  "summary": "SQL queries and positional searches over the Sloan Digital Sky Survey catalogues (imaging, spectra, SDSS-V Milky Way Mapper tables) for data releases up to DR20, free without a key.",
+  "description": "SkyServer's web services accept T-SQL queries against the public SDSS catalog database for each data release (the URL path carries the release, such as dr20) and return JSON, CSV, XML, HTML, VOTable or FITS. Tables include PhotoObj and SpecObj plus the SDSS-V summary tables. Search tools cover radial, rectangular and name-based lookups. DR20 was announced on 2026-07-30 and is the current release; DR19 and DR18 paths still answer.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "sdss",
+    "sky-survey",
+    "star-catalogue",
+    "galaxies",
+    "spectra",
+    "sql"
+  ],
+  "links": {
+    "homepage": "https://skyserver.sdss.org",
+    "docs": "https://skyserver.sdss.org/dr20/en/help/docs/api.aspx",
+    "terms": "https://www.sdss.org/collaboration/citing-sdss/"
+  },
+  "api": {
+    "base_url": "https://skyserver.sdss.org/dr20/SkyServerWS",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml",
+      "html",
+      "other"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "any",
+    "rate_limit": {
+      "summary": "The SkyServer limits page (DR14) states a maximum of 60 queries per minute per client; that page has no DR20 version, and DR20 answered a row-limit error of top 500000.",
+      "requests": 60,
+      "per": "minute",
+      "scope": "ip"
+    },
+    "pagination": "none",
+    "max_page_size": 500000
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/SearchTools/SqlSearch",
+      "summary": "Run a SQL query; format is csv, html, xml, votable, json or fits",
+      "params": [
+        "cmd",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/SearchTools/RadialSearch",
+      "summary": "Objects within a radius of a position",
+      "params": [
+        "ra",
+        "dec",
+        "radius",
+        "whichway",
+        "limit",
+        "format",
+        "whichquery"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/SearchTools/RectangularSearch",
+      "summary": "Objects in an RA/Dec rectangle",
+      "params": [
+        "min_ra",
+        "max_ra",
+        "min_dec",
+        "max_dec",
+        "limit",
+        "format"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://skyserver.sdss.org/dr20/SkyServerWS/SearchTools/SqlSearch?cmd=select+top+2+objid,ra,dec,r+from+photoobj+where+r%3C12&format=json",
+    "response_excerpt": "[\n  {\n    \"TableName\": \"Table1\",\n    \"Rows\": [\n      {\"objid\": 1237651758284997361, \"ra\": 269.992781540926, \"dec\": 0.105030455307205, \"r\": 11.91207},\n      {\"objid\": 1237651758284931153, \"ra\": 269.882198900415, \"dec\": 0.0209650873337183, \"r\": 10.36562}\n    ]\n  },\n  {\"TableName\": \"SqlQuery\", \"Rows\": [{\"query\": \"select top 2 objid,ra,dec,r from photoobj where r<12\"}]}\n]"
+  },
+  "data": {
+    "license": {
+      "name": "No licence text found on the pages checked; SDSS requests the acknowledgement and citations listed on its citing page",
+      "url": "https://www.sdss.org/collaboration/citing-sdss/",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "SDSS imaging footprint, mostly the northern sky, plus SDSS-V all-sky programmes",
+      "temporal": "SDSS-I through SDSS-V (DR20)"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Put the release in the path (dr20 now) and keep it fixed so results are reproducible. URL-encode the query: a space as + or %20 and < as %3C. The response is an array of tables, each with TableName and Rows; the first is your result and the second echoes the query. Use TOP n (the server rejects queries above top 500000). Tables and columns are listed in the schema browser at skyserver.sdss.org/dr20/en/help/browser/browser.aspx.",
+  "caveats": [
+    "An unencoded < in cmd returns HTTP 500 {\"Message\":\"An error has occurred.\"}; send it as %3C (verified on dr20 on 2026-11-13).",
+    "SQL errors and limit errors come back as HTTP 200 with an error message in the body (csv format showed 'error: limit is top 500000').",
+    "The row and rate limits are documented on release-specific pages (DR14); no DR20 limits page existed (404), so the 60 queries per minute figure is not confirmed for DR20.",
+    "No licence statement was found; only the acknowledgement and citation request on the SDSS citing page."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-13",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials."
+  },
+  "related": [
+    "gaia-archive-tap",
+    "mast-panstarrs",
+    "noirlab-astro-data-lab"
+  ],
+  "added": "2026-11-13"
+}

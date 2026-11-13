@@ -1,0 +1,119 @@
+{
+  "slug": "alerce-ztf",
+  "name": "ALeRCE ZTF API",
+  "provider": {
+    "name": "ALeRCE (Automatic Learning for the Rapid Classification of Events) broker",
+    "url": "https://alerce.science",
+    "type": "academic"
+  },
+  "summary": "ZTF transient and variable objects with machine-learning classifications, detections, non-detections, light curves and features from the ALeRCE alert broker, free without a key.",
+  "description": "The API lists ZTF objects filtered by classifier, class, probability, number of detections, dates and sky position, and returns per-object detections, non-detections, magnitude statistics, features, probabilities and light curves. Classifiers include lc_classifier and its transient and stochastic variants; classes include SNIa, SNII, QSO, AGN and variable-star types. Filtering on lc_classifier and SNIa with count=true reported 35,756 objects on 2026-11-13.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "transients",
+    "supernovae",
+    "light-curves",
+    "ztf",
+    "classification",
+    "alerts"
+  ],
+  "links": {
+    "homepage": "https://alerce.science",
+    "docs": "https://api.alerce.online/ztf/v1/",
+    "openapi": "https://api.alerce.online/ztf/v1/swagger.json"
+  },
+  "api": {
+    "base_url": "https://api.alerce.online/ztf/v1",
+    "style": "rest",
+    "formats": [
+      "json"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "reflect",
+    "rate_limit": {
+      "summary": "Not documented."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/objects/",
+      "summary": "List objects by filters; returns items plus paging fields",
+      "params": [
+        "classifier",
+        "class",
+        "probability",
+        "ndet",
+        "ra",
+        "dec",
+        "radius",
+        "page",
+        "page_size",
+        "count",
+        "order_by",
+        "order_mode"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/objects/{id}",
+      "summary": "One object by ZTF object id (for example ZTF20aaelulu)"
+    },
+    {
+      "method": "GET",
+      "path": "/objects/{id}/lightcurve",
+      "summary": "Detections and non-detections for an object"
+    },
+    {
+      "method": "GET",
+      "path": "/objects/{id}/probabilities",
+      "summary": "Classifier probabilities for an object"
+    },
+    {
+      "method": "GET",
+      "path": "/classifiers/",
+      "summary": "Available classifiers, versions and classes"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://api.alerce.online/ztf/v1/objects/?classifier=lc_classifier&class=SNIa&page_size=2",
+    "response_excerpt": "{\"total\": null, \"page\": null, \"next\": null, \"has_next\": false, \"prev\": null, \"has_prev\": false, \"items\": [\n  {\"oid\": \"ZTF17aaaaafj\", \"ndethist\": \"63\", \"ncovhist\": 2090, \"mjdstarthist\": 58094.10457180021, \"corrected\": true, \"stellar\": false, \"ndet\": 22, \"firstmjd\": 58547.24010419985, \"lastmjd\": 61037.21305559995, \"meanra\": 60.42331094754027, \"meandec\": 48.07712809538436, \"class\": \"SNIa\", \"classifier\": \"lc_classifier\", \"probability\": 0.17208, ...},\n  {\"oid\": \"ZTF17aaadars\", ...}\n]}"
+  },
+  "data": {
+    "license": {
+      "name": "Not stated on the API, the Swagger page or the project site pages checked",
+      "url": "https://alerce.science",
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Northern sky visible to ZTF",
+      "temporal": "ZTF alert stream from 2018 to the present"
+    },
+    "update_frequency": "daily"
+  },
+  "agent_notes": "Add count=true to get total and a working next/has_next; without it total is null and has_next is false even when more pages exist (page=2 still returns rows). Sort with order_by and order_mode. classifier and class go together: call /classifiers/ for valid names. Probabilities are per classifier, so low values are normal for an unthresholded class filter.",
+  "caveats": [
+    "Without count=true the response reports total null and has_next false although later pages exist (checked with page=2).",
+    "CORS reflected the request Origin (https://example.org and https://other.example.org were both echoed).",
+    "The first rows for class=SNIa have probabilities around 0.17 to 0.22; filter by probability yourself for confident supernovae.",
+    "No licence, rate limit or citation text was found in the pages fetched.",
+    "The example response shows the unfiltered count fields as null; ndethist is a string while other counts are numbers."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-13",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials; 2.2 s on 2026-11-13."
+  },
+  "related": [
+    "irsa-ztf-light-curves",
+    "irsa-tap"
+  ],
+  "added": "2026-11-13"
+}

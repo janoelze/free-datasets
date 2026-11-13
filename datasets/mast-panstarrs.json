@@ -1,0 +1,119 @@
+{
+  "slug": "mast-panstarrs",
+  "name": "MAST Pan-STARRS Catalog API",
+  "provider": {
+    "name": "Space Telescope Science Institute (MAST)",
+    "url": "https://archive.stsci.edu",
+    "type": "nonprofit"
+  },
+  "summary": "Cone searches and column filters over the Pan-STARRS1 DR1 and DR2 source catalogues (mean, stack, detection and forced-photometry tables), free without a key.",
+  "description": "The MAST catalog API serves the Pan-STARRS1 3-pi survey tables for DR1 and DR2 as JSON, CSV or VOTable: mean object photometry and astrometry, stacked-image photometry, individual detections and forced-mean photometry. A cone search around one position returned 523 mean-table objects within 0.01 degrees of RA 210.80227, Dec 54.34895 on 2026-11-13. Companion paths give row counts, column metadata and positional crossmatch.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "star-catalogue",
+    "photometry",
+    "cone-search",
+    "sky-survey",
+    "pan-starrs"
+  ],
+  "links": {
+    "homepage": "https://archive.stsci.edu/panstarrs/",
+    "docs": "https://catalogs.mast.stsci.edu/docs/panstarrs.html",
+    "terms": "https://archive.stsci.edu/publishing/data-use"
+  },
+  "api": {
+    "base_url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs",
+    "style": "rest",
+    "formats": [
+      "json",
+      "csv",
+      "xml"
+    ],
+    "auth": {
+      "type": "none"
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "Not documented on the API docs page."
+    },
+    "pagination": "page"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/{release}/{catalog}",
+      "summary": "Cone search or column filter; release is dr1 or dr2, catalog is mean, stack, detection or forced_mean (dr2). Add .json, .csv or .votable to the path or use format=",
+      "params": [
+        "ra",
+        "dec",
+        "radius",
+        "columns",
+        "sort_by",
+        "pagesize",
+        "page",
+        "format"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{release}/{catalog}/count.json",
+      "summary": "Number of rows matching the same filters",
+      "params": [
+        "ra",
+        "dec",
+        "radius"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/{release}/{catalog}/metadata.json",
+      "summary": "Column names, types, units and descriptions"
+    },
+    {
+      "method": "GET",
+      "path": "/{release}/{catalog}/crossmatch",
+      "summary": "Positional crossmatch (radius at most about 5 arcseconds); a JSON or CSV upload variant is documented"
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=210.80227&dec=54.34895&radius=0.01&pagesize=2&columns=[objName,raMean,decMean,gMeanPSFMag]",
+    "response_excerpt": "{ \"info\" :[{\"name\": \"objName\", \"type\": \"char\", \"db_type\": \"STRING\", \"column_name\": \"objName\", \"description\": \"IAU name for this object.\", \"unit\": \"NULL\", ...}, ...],\n  \"data\": [\n    [\"PSO J210.7934+54.3409\", 210.79343402, 54.3409469, -999.0],\n    [\"PSO J210.7937+54.3410\", 210.7936607, 54.34102059, -999.0]\n  ] }"
+  },
+  "data": {
+    "license": {
+      "name": "Most MAST data are public domain (CC0 under NASA policy); acknowledgement expected. The Pan-STARRS page does not state a separate licence.",
+      "url": "https://archive.stsci.edu/publishing/data-use",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Sky north of about declination -30 (Pan-STARRS1 3-pi survey)",
+      "temporal": "Pan-STARRS1 DR1 and DR2"
+    },
+    "update_frequency": "static"
+  },
+  "agent_notes": "Responses are an object with info (one entry per column, with units and descriptions) and data (array of row arrays in the order of columns), not an array of objects. Name the columns you need with columns=[a,b] or repeated columns=a&columns=b, otherwise every column of the table is returned. Coordinates and radius are decimal degrees; radius must be between zero and 1.0. Missing values are -999. Use pagesize with page for more rows, and /count.json first to see how big a result is. The docs recommend POST for large requests.",
+  "caveats": [
+    "No Access-Control-Allow-Origin header was sent, so browsers on other origins cannot call it directly.",
+    "A missing value is -999.0, for example gMeanPSFMag in the example rows, not null.",
+    "The docs page states no rate limit and no maximum pagesize; neither was tested.",
+    "The Pan-STARRS docs page names no licence or citation text; the acknowledgement guidance is on the Pan-STARRS archive page and the MAST data-use page.",
+    "The sibling path catalogs.mast.stsci.edu/api/v0.1/panstarrs.json returned 404 on 2026-11-13; use the release and catalog paths above."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-13",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials; JSON 200 in 0.5 s, CSV variant also 200."
+  },
+  "related": [
+    "mast-archive",
+    "gaia-archive-tap",
+    "sdss-skyserver",
+    "noirlab-astro-data-lab"
+  ],
+  "added": "2026-11-13"
+}

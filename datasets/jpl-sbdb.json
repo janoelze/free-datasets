@@ -105,7 +105,8 @@
   },
   "related": [
     "jpl-horizons",
-    "nasa-exoplanet-archive"
+    "nasa-exoplanet-archive",
+    "noirlab-astro-data-lab"
   ],
   "added": "2026-11-11"
 }

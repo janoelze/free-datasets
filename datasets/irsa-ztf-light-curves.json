@@ -1,0 +1,102 @@
+{
+  "slug": "irsa-ztf-light-curves",
+  "name": "IRSA ZTF Light Curve API",
+  "provider": {
+    "name": "NASA/IPAC Infrared Science Archive (Caltech/IPAC)",
+    "url": "https://irsa.ipac.caltech.edu",
+    "type": "government"
+  },
+  "summary": "Time-series photometry (g, r and i band magnitudes over time) of Zwicky Transient Facility objects, selected by object ID or by a cone around a position.",
+  "description": "The ZTF light-curve API returns, for each matching ZTF object, one row per epoch with Modified Julian Date, magnitude, error, catalogue flags, filter code, field and CCD identifiers and the photometric zero point. Objects are chosen by ID or by a position (POS=CIRCLE ra dec radius), band, minimum observation count, magnitude range and time range. The default collection is the most recent public ZTF data release.",
+  "category": "space-astronomy",
+  "tags": [
+    "astronomy",
+    "light-curves",
+    "variable-stars",
+    "transients",
+    "photometry",
+    "ztf",
+    "time-series"
+  ],
+  "links": {
+    "homepage": "https://irsa.ipac.caltech.edu/Missions/ztf.html",
+    "docs": "https://irsa.ipac.caltech.edu/docs/program_interface/ztf_lightcurve_api.html",
+    "terms": "https://irsa.ipac.caltech.edu/ack.html"
+  },
+  "api": {
+    "base_url": "https://irsa.ipac.caltech.edu/cgi-bin/ZTF",
+    "style": "rest",
+    "formats": [
+      "csv",
+      "xml",
+      "text",
+      "html"
+    ],
+    "auth": {
+      "type": "none",
+      "notes": "Public releases need no login; proprietary ZTF data need an IRSA account and a session cookie."
+    },
+    "cors": "none",
+    "rate_limit": {
+      "summary": "No request rate is documented. The docs ask users who need more than about 1,000 light curves to use the ZTF HATS catalogue notebook instead of this API."
+    },
+    "pagination": "none"
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/nph_light_curves",
+      "summary": "Light curves selected by ID or position; FORMAT is votable (default), ipac_table, html, csv or tsv",
+      "params": [
+        "ID",
+        "POS",
+        "BANDNAME",
+        "NOBS_MIN",
+        "MAG",
+        "TIME",
+        "BAD_CATFLAGS_MASK",
+        "COLLECTION",
+        "FORMAT"
+      ]
+    }
+  ],
+  "example": {
+    "method": "GET",
+    "url": "https://irsa.ipac.caltech.edu/cgi-bin/ZTF/nph_light_curves?ID=1684211300120167&TIME=58244+58250&FORMAT=csv",
+    "response_excerpt": "oid,expid,hjd,mjd,mag,magerr,catflags,filtercode,ra,dec,chi,sharp,filefracday,field,ccdid,qid,limitmag,magzp,magzprms,clrcoeff,clrcounc,exptime,airmass,programid\n1684211300120167,49049381,2458244.994436902,58244.493819399999,16.2640533,0.0181261469,0,zr,298.0036936,29.8707629,0.625999987,0.0469999984,20180506493785,1684,0xb,0x3,19.5200005,26.4164505,0.0274044666,0.108019762,1.4592847e-05,30,1.02499998,2\n1684211300120167,49049427,2458244.9948883322,58244.494270800002,16.2957897,..."
+  },
+  "data": {
+    "license": {
+      "name": "Public ZTF data released through IRSA; the archive asks users to acknowledge IRSA (see acknowledgement page)",
+      "url": "https://irsa.ipac.caltech.edu/ack.html",
+      "attribution_required": true,
+      "commercial_use": "unknown"
+    },
+    "coverage": {
+      "geographic": "Northern sky visible from Palomar",
+      "temporal": "ZTF public data releases from 2018"
+    },
+    "update_frequency": "irregular"
+  },
+  "agent_notes": "Find object IDs (oid) with the IRSA TAP table ztf_objects_dr23 (SELECT oid,ra,dec,filtercode,nobs ...) and fetch a light curve with ID=<oid>. A cone with POS=CIRCLE ra dec radius works too (radius in degrees, at most 0.1667), but a 5 arcsec cone with BANDNAME=g and NOBS_MIN=3 returned 409 KB and took 37 s, so add ID or a TIME range (MJD) to keep responses small. Parameters can be repeated or space-separated; use + for spaces in URLs. Filter bad epochs with BAD_CATFLAGS_MASK=32768. Rows are per epoch; split by filtercode (zg, zr, zi).",
+  "caveats": [
+    "FORMAT=json is not supported: it returned HTTP 400 with an XML body on 2026-11-13. Use csv, tsv, ipac_table or votable.",
+    "Position queries return every light curve within the cone and can be large and slow (409 KB in 37 s for a 5 arcsec cone around RA 298.0025, Dec 29.87147).",
+    "No Access-Control-Allow-Origin header was sent, so browsers on other origins cannot call it directly.",
+    "The default collection is the latest public data release; COLLECTION=ztf_drN selects one of the last five.",
+    "Errors come back as XML (VOTable) even when CSV was requested."
+  ],
+  "status": "active",
+  "verification": {
+    "last_verified": "2026-11-13",
+    "http_status": 200,
+    "with_key": true,
+    "notes": "Exact example request executed without credentials; 2.0 s on 2026-11-13."
+  },
+  "related": [
+    "irsa-tap",
+    "alerce-ztf",
+    "mast-archive"
+  ],
+  "added": "2026-11-13"
+}
